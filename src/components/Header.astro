@@ -1,0 +1,50 @@
+---
+import { getLangFromUrl, useTranslations, localizePath, type Lang } from '../i18n/ui';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  altPath?: string;
+}
+
+const lang: Lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const { altPath } = Astro.props;
+
+const nav = [
+  { href: localizePath(lang), label: t('nav.home') },
+  { href: localizePath(lang, 'archive'), label: t('nav.archive') },
+  { href: localizePath(lang, 'films'), label: t('nav.films') },
+  { href: localizePath(lang, 'about'), label: t('nav.about') },
+];
+
+const current = Astro.url.pathname.replace(/\/$/, '');
+const isActive = (href: string) => current === href.replace(/\/$/, '');
+---
+
+<header class="border-b border-ink bg-background">
+  <div class="frame flex items-stretch justify-between">
+    <a href={localizePath(lang)} class="flex flex-col justify-center py-4 no-underline">
+      <span class="font-display text-headline-md leading-none text-ink">{t('site.title')}</span>
+      <span class="label mt-1">{t('site.tagline')}</span>
+    </a>
+
+    <nav class="flex items-stretch" aria-label="Principal">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'label flex items-center border-l border-ink px-5 no-underline transition-colors hover:bg-ink hover:text-white',
+              isActive(item.href) && 'bg-ink text-white',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <div class="flex items-center border-l border-ink pl-5">
+        <LanguageSwitcher altPath={altPath} />
+      </div>
+    </nav>
+  </div>
+</header>

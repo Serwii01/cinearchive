@@ -1,0 +1,67 @@
+---
+import { getLangFromUrl, useTranslations, type Lang } from '../i18n/ui';
+import { getCollection } from 'astro:content';
+
+const lang: Lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const entries = (await getCollection('articles', (e) => e.data.lang === lang && !e.data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 6)
+  .map((e) => `${e.data.title} (${e.data.year})`);
+
+const items = entries.length ? entries : [t('site.tagline')];
+---
+
+<div class="border-b border-ink bg-ochre text-ink">
+  <div class="flex items-stretch overflow-hidden">
+    <span class="label flex shrink-0 items-center border-r border-ink bg-ink px-3 py-2 text-background">
+      {t('ticker.label')}
+    </span>
+    <div class="marquee flex-1 overflow-hidden py-2">
+      <div class="marquee__track">
+        {
+          [0, 1].map(() => (
+            <div class="marquee__group" aria-hidden="false">
+              {items.map((it) => (
+                <span class="font-mono text-meta-data uppercase tracking-[0.08em]">
+                  {it}
+                  <span class="mx-4 text-ochre-dim">/</span>
+                </span>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+  }
+  .marquee__group {
+    display: flex;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+    }
+  }
+</style>

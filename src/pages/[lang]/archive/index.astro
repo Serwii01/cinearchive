@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import IndexCard from '../../../components/IndexCard.astro';
+import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+
+const entries = (await getCollection('articles', (e) => e.data.lang === lang && !e.data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<BaseLayout
+  title={t('archive.title')}
+  description={t('archive.intro')}
+  altPath={localizePath(lang === 'es' ? 'en' : 'es', 'archive')}
+>
+  <section class="frame py-12">
+    <header class="border-b border-ink pb-6">
+      <span class="label">{t('nav.archive')} · {entries.length}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('archive.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('archive.intro')}</p>
+    </header>
+
+    {
+      entries.length ? (
+        <div class="mt-10 grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+          {entries.map((entry, i) => (
+            <IndexCard entry={entry} index={i} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-10 font-mono text-body-md text-muted">{t('archive.empty')}</p>
+      )
+    }
+  </section>
+</BaseLayout>

@@ -1,0 +1,51 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleMeta from '../../../components/ArticleMeta.astro';
+import { useTranslations, localizePath, formatDate, type Lang } from '../../../i18n/ui';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles', (e) => !e.data.draft);
+  return all.map((entry) => ({
+    params: { lang: entry.data.lang, slug: entry.data.pair },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+const d = entry.data;
+const { Content } = await render(entry);
+
+// Ruta del mismo artículo en el otro idioma (mismo "pair").
+const altLang: Lang = lang === 'es' ? 'en' : 'es';
+const altPath = localizePath(altLang, `archive/${d.pair}`);
+---
+
+<BaseLayout title={d.title} description={d.excerpt} altPath={altPath}>
+  <article class="frame py-12">
+    <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">← {t('article.backToArchive')}</a>
+
+    <header class="mt-6 border-b border-ink pb-8">
+      <span class="label">{d.category}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{d.title}</h1>
+      <p class="mt-5 max-w-3xl text-body-lg text-charcoal">{d.excerpt}</p>
+      <p class="mt-5 font-mono text-meta-data uppercase tracking-[0.08em] text-muted">
+        {d.director} · {d.year} · {d.country} · {formatDate(d.pubDate, lang)}
+      </p>
+    </header>
+
+    {/* Hoja de archivo: cuerpo + barra lateral de metadatos */}
+    <div class="grid grid-cols-1 gap-8 pt-10 md:grid-cols-12 md:gap-12">
+      <div class="prose-archive md:col-span-8 md:border-r md:border-ink md:pr-12">
+        <Content />
+      </div>
+      <div class="md:col-span-4">
+        <div class="md:sticky md:top-8">
+          <ArticleMeta entry={entry} />
+        </div>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

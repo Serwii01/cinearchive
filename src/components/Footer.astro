@@ -1,0 +1,28 @@
+---
+import { getLangFromUrl, useTranslations, localizePath, type Lang } from '../i18n/ui';
+
+const lang: Lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-ink bg-charcoal text-background">
+  <div class="frame flex flex-col gap-6 py-10 md:flex-row md:items-end md:justify-between">
+    <div>
+      <p class="font-display text-headline-md leading-none">{t('site.title')}</p>
+      <p class="label mt-2 text-outline-variant">{t('site.tagline')}</p>
+    </div>
+
+    <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label="Pie">
+      <a href={localizePath(lang)} class="label text-background no-underline hover:text-ochre">{t('nav.home')}</a>
+      <a href={localizePath(lang, 'archive')} class="label text-background no-underline hover:text-ochre">{t('nav.archive')}</a>
+      <a href={localizePath(lang, 'films')} class="label text-background no-underline hover:text-ochre">{t('nav.films')}</a>
+      <a href={localizePath(lang, 'about')} class="label text-background no-underline hover:text-ochre">{t('nav.about')}</a>
+    </nav>
+
+    <div class="md:text-right">
+      <p class="font-mono text-meta-data text-outline-variant">© {year} {t('site.title')}. {t('footer.rights')}</p>
+      <p class="font-mono text-meta-data text-outline">{t('footer.builtWith')}</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,111 @@
+/* Fuentes auto-alojadas (sin peticiones a Google) */
+@import '@fontsource-variable/eb-garamond';
+@import '@fontsource/geist-sans/400.css';
+@import '@fontsource/geist-sans/500.css';
+@import '@fontsource/geist-sans/600.css';
+@import '@fontsource/space-mono/400.css';
+@import '@fontsource/space-mono/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-charcoal font-body text-body-md antialiased;
+  }
+
+  /* Brutalismo: esquinas rectas en absolutamente todo. */
+  *,
+  *::before,
+  *::after {
+    border-radius: 0 !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink;
+    text-wrap: balance;
+  }
+
+  a {
+    @apply text-ink underline-offset-4;
+  }
+
+  ::selection {
+    @apply bg-ochre text-ink;
+  }
+}
+
+@layer components {
+  /* Marco general de página: márgenes "art-book" y ancho máximo. */
+  .frame {
+    @apply mx-auto w-full max-w-frame px-4 md:px-12;
+  }
+
+  /* Etiqueta en versalitas monoespaciada ("hoja de archivo"). */
+  .label {
+    @apply font-mono text-label-caps uppercase tracking-[0.1em] text-muted;
+  }
+
+  /* Botón primario: relleno ochre, hover invertido a negro. */
+  .btn {
+    @apply inline-flex items-center gap-2 border border-ink px-5 py-3 font-mono text-label-caps uppercase tracking-[0.1em] transition-colors duration-150;
+  }
+  .btn-primary {
+    @apply bg-ochre text-ink hover:bg-ink hover:text-white;
+  }
+  .btn-secondary {
+    @apply bg-transparent text-ink hover:bg-ink hover:text-white;
+  }
+
+  /* Regla 1px que conecta de borde a borde. */
+  .rule {
+    @apply border-t border-ink;
+  }
+
+  /* Relleno con grano de película para placeholders de stills. */
+  .film-grain {
+    background-color: #1a1a1a;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 3px),
+      radial-gradient(circle at 30% 20%, rgba(234, 179, 8, 0.18), transparent 60%),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.06), transparent 55%);
+  }
+}
+
+@layer base {
+  /* Tipografía de cuerpo dentro de los artículos (Markdown renderizado). */
+  .prose-archive :where(h2) {
+    @apply mt-12 mb-4 font-display text-headline-lg text-ink;
+  }
+  .prose-archive :where(h3) {
+    @apply mt-8 mb-3 font-display text-headline-md text-ink;
+  }
+  .prose-archive :where(p) {
+    @apply mb-5 text-body-lg text-charcoal;
+  }
+  .prose-archive :where(blockquote) {
+    @apply my-8 border-l-2 border-ochre bg-film-white py-3 pl-5 pr-3 font-display text-headline-md italic text-ink;
+  }
+  .prose-archive :where(a) {
+    @apply text-ink underline decoration-ochre decoration-2;
+  }
+  .prose-archive :where(ul) {
+    @apply mb-5 list-disc pl-6 text-body-lg text-charcoal;
+  }
+  .prose-archive :where(strong) {
+    @apply font-semibold text-ink;
+  }
+}

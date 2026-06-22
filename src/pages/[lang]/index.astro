@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import IndexCard from '../../components/IndexCard.astro';
+import { useTranslations, localizePath, formatDate, type Lang } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+
+const all = (await getCollection('articles', (e) => e.data.lang === lang && !e.data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const featured = all.find((e) => e.data.featured) ?? all[0];
+const rest = all.filter((e) => e.id !== featured?.id).slice(0, 4);
+const f = featured?.data;
+---
+
+<BaseLayout altPath={localizePath(lang === 'es' ? 'en' : 'es')}>
+  {/* HERO / DESTACADO */}
+  {
+    f && (
+      <section class="border-b border-ink">
+        <div class="frame">
+          <div class="grid grid-cols-1 md:grid-cols-12">
+            <div class="flex flex-col justify-between border-ink py-8 md:col-span-7 md:border-r md:py-12 md:pr-12">
+              <span class="label">{t('home.featured')} · {f.category}</span>
+              <h1 class="mt-6 text-display-mobile md:text-display-lg">
+                <a href={localizePath(lang, `archive/${f.pair}`)} class="text-ink no-underline hover:text-muted">
+                  {f.title}
+                </a>
+              </h1>
+              <p class="mt-6 max-w-2xl text-body-lg text-charcoal">{f.excerpt}</p>
+              <div class="mt-8 flex flex-wrap items-center gap-4">
+                <a href={localizePath(lang, `archive/${f.pair}`)} class="btn btn-primary no-underline">
+                  {t('home.readEssay')}
+                </a>
+                <span class="font-mono text-meta-data text-muted">
+                  {f.director} · {f.year} · {f.runtime}
+                </span>
+              </div>
+            </div>
+
+            <div class="flex md:col-span-5">
+              <div class="film-grain relative flex min-h-[16rem] w-full flex-col justify-end p-6">
+                <span class="font-display text-display-mobile leading-none text-background/90">{f.year}</span>
+                <span class="label mt-2 text-ochre">{f.country}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {/* ÚLTIMAS ENTRADAS */}
+  <section class="frame py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('home.latest')}</h2>
+      <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">{t('home.viewArchive')} →</a>
+    </div>
+
+    <div class="grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+      {rest.map((entry, i) => <IndexCard entry={entry} index={i} />)}
+    </div>
+  </section>
+</BaseLayout>

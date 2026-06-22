@@ -1,0 +1,25 @@
+---
+import { getLangFromUrl, localizePath, type Lang } from '../i18n/ui';
+
+interface Props {
+  /** Ruta completa del idioma alterno. Si no se pasa, se calcula desde la URL actual. */
+  altPath?: string;
+}
+
+const lang: Lang = getLangFromUrl(Astro.url);
+const altLang: Lang = lang === 'es' ? 'en' : 'es';
+
+// Si no nos dan una ruta concreta del equivalente, intercambiamos el prefijo de idioma.
+const { altPath } = Astro.props;
+const fallback = Astro.url.pathname.replace(/^\/(es|en)/, `/${altLang}`);
+const target = altPath ?? (fallback === Astro.url.pathname ? localizePath(altLang) : fallback);
+---
+
+<a
+  href={target}
+  hreflang={altLang}
+  class="label border border-ink px-3 py-2 no-underline transition-colors hover:bg-ink hover:text-white"
+  aria-label={`Cambiar idioma a ${altLang === 'es' ? 'Español' : 'English'}`}
+>
+  {altLang === 'es' ? 'ES' : 'EN'}
+</a>

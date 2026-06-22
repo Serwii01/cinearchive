@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+
+const copy = {
+  es: {
+    lead: 'Cine Archive es una publicación editorial y un archivo digital dedicado a la historia y la curaduría del cine. No alojamos películas: catalogamos ideas.',
+    body: [
+      'Cada entrada es una ficha: una obra, sus metadatos técnicos y un ensayo que intenta entender por qué importa. Tratamos el texto como quien ordena un fichero de biblioteca, con la convicción de que la forma —la rejilla, la regla de un píxel, la tipografía— también es una manera de pensar.',
+      'Escribimos en español e inglés porque el cine es un lenguaje sin fronteras y la crítica debería serlo también. Las dos versiones de cada artículo no son traducciones automáticas: son lecturas paralelas de la misma obra.',
+      'Este es un proyecto independiente, sin publicidad y de código abierto en su construcción. Si llegaste hasta aquí, ya formas parte del archivo.',
+    ],
+    principlesTitle: 'Principios',
+    principles: [
+      ['Catálogo, no catálogo de ventas', 'Indexamos obras y ensayos, nunca contenido para consumir.'],
+      ['Forma brutalista', 'Sin sombras, sin adornos: estructura, contraste y tipografía.'],
+      ['Bilingüe por convicción', 'Cada texto vive en español y en inglés.'],
+    ],
+  },
+  en: {
+    lead: 'Cine Archive is an editorial publication and a digital archive devoted to the history and curation of cinema. We don\'t host films: we catalogue ideas.',
+    body: [
+      'Every entry is a card: a work, its technical metadata and an essay that tries to understand why it matters. We treat text the way one orders a library index, convinced that form — the grid, the one-pixel rule, the typography — is also a way of thinking.',
+      'We write in Spanish and English because cinema is a borderless language and criticism should be too. The two versions of each piece are not machine translations: they are parallel readings of the same work.',
+      'This is an independent project, ad-free and open in its making. If you made it this far, you are already part of the archive.',
+    ],
+    principlesTitle: 'Principles',
+    principles: [
+      ['An index, not a storefront', 'We index works and essays, never content to consume.'],
+      ['Brutalist form', 'No shadows, no ornament: structure, contrast and type.'],
+      ['Bilingual by conviction', 'Every text lives in Spanish and English.'],
+    ],
+  },
+}[lang];
+---
+
+<BaseLayout title={t('about.title')} altPath={localizePath(lang === 'es' ? 'en' : 'es', 'about')}>
+  <section class="frame py-12">
+    <header class="border-b border-ink pb-8">
+      <span class="label">{t('about.title')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('site.title')}</h1>
+      <p class="mt-6 max-w-3xl font-display text-headline-md text-ink">{copy.lead}</p>
+    </header>
+
+    <div class="grid grid-cols-1 gap-12 pt-10 md:grid-cols-12">
+      <div class="prose-archive md:col-span-7 md:border-r md:border-ink md:pr-12">
+        {copy.body.map((p) => <p>{p}</p>)}
+      </div>
+
+      <div class="md:col-span-5">
+        <h2 class="label border-b border-ink pb-2">{copy.principlesTitle}</h2>
+        <dl class="mt-4">
+          {
+            copy.principles.map(([term, desc], i) => (
+              <div class:list={['py-4', i < copy.principles.length - 1 && 'border-b border-outline-variant']}>
+                <dt class="font-display text-headline-md text-ink">{term}</dt>
+                <dd class="mt-1 text-body-md text-charcoal">{desc}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

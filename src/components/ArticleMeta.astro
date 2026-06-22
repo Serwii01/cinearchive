@@ -1,0 +1,35 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getLangFromUrl, useTranslations, formatDate, type Lang } from '../i18n/ui';
+
+interface Props {
+  entry: CollectionEntry<'articles'>;
+}
+
+const lang: Lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const d = Astro.props.entry.data;
+
+const rows = [
+  { label: t('article.director'), value: d.director },
+  { label: t('article.year'), value: String(d.year) },
+  { label: t('article.runtime'), value: d.runtime },
+  { label: t('article.country'), value: d.country },
+  { label: t('article.filedUnder'), value: d.category },
+  { label: t('article.published'), value: formatDate(d.pubDate, lang) },
+];
+---
+
+<aside class="border border-ink bg-film-white">
+  <h2 class="label border-b border-ink bg-ink px-3 py-2 text-background">{t('article.metadata')}</h2>
+  <dl>
+    {
+      rows.map((row, i) => (
+        <div class:list={['flex justify-between gap-4 px-3 py-2', i < rows.length - 1 && 'border-b border-outline-variant']}>
+          <dt class="label pt-0.5">{row.label}</dt>
+          <dd class="text-right font-mono text-meta-data text-ink">{row.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+</aside>
