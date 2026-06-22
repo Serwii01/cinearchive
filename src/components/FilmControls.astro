@@ -1,0 +1,137 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  tmdbId: number;
+  lang: Lang;
+  status?: 'want' | 'seen' | 'favorite' | null;
+  rating?: number | null;
+  note?: string | null;
+}
+
+const { tmdbId, lang, status = null, rating = null, note = null } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<film-controls
+  data-tmdb-id={tmdbId}
+  data-lang={lang}
+  data-status={status ?? ''}
+  data-rating={rating ?? ''}
+  data-note={note ?? ''}
+  data-l-want={t('controls.want')}
+  data-l-seen={t('controls.seen')}
+  data-l-fav={t('controls.favorite')}
+  data-l-rate={t('controls.rating')}
+  data-l-note={t('controls.note')}
+  data-l-save={t('controls.save')}
+  data-l-saved={t('controls.saved')}
+  data-l-remove={t('controls.remove')}
+  data-login-url={`/${lang}/login`}
+  class="block border border-ink bg-film-white"
+>
+  <noscript><p class="p-3 font-mono text-meta-data text-muted">JS necesario.</p></noscript>
+</film-controls>
+
+<script>
+  class FilmControls extends HTMLElement {
+    connectedCallback() {
+      const d = this.dataset;
+      const tmdbId = Number(d.tmdbId);
+      const lang = d.lang || 'es';
+      let status = d.status || '';
+      let rating = d.rating ? Number(d.rating) : 0;
+      let note = d.note || '';
+
+      const L = {
+        want: d.lWant!, seen: d.lSeen!, fav: d.lFav!, rate: d.lRate!,
+        note: d.lNote!, save: d.lSave!, saved: d.lSaved!, remove: d.lRemove!,
+      };
+
+      const render = () => {
+        const statusBtn = (val: string, label: string) =>
+          `<button type="button" data-status="${val}" class="label flex-1 border-r border-ink px-2 py-2 transition-colors ${
+            status === val ? 'bg-ink text-white' : 'hover:bg-ink hover:text-white'
+          }">${label}</button>`;
+
+        const star = (n: number) =>
+          `<button type="button" data-rate="${n}" aria-label="${n}" class="h-7 w-7 border-r border-ink font-mono text-meta-data transition-colors ${
+            rating >= n ? 'bg-ochre text-ink' : 'hover:bg-ochre'
+          }">${n}</button>`;
+
+        this.innerHTML = `
+          <div class="flex border-b border-ink">
+            ${statusBtn('want', L.want)}${statusBtn('seen', L.seen)}
+            <button type="button" data-status="favorite" class="label flex-1 px-2 py-2 transition-colors ${
+              status === 'favorite' ? 'bg-ochre text-ink' : 'hover:bg-ochre'
+            }">${L.fav}</button>
+          </div>
+          <div class="flex items-center gap-2 border-b border-ink px-3 py-2">
+            <span class="label">${L.rate}</span>
+            <span class="flex border border-ink">${[1, 2, 3, 4, 5].map(star).join('')}</span>
+          </div>
+          <div class="p-3">
+            <label class="label mb-1 block">${L.note}</label>
+            <textarea data-note rows="2" class="w-full border border-ink bg-white px-2 py-1 font-body text-body-md focus:bg-film-white focus:outline-none">${note}</textarea>
+            <div class="mt-2 flex items-center justify-between">
+              <button type="button" data-save class="btn btn-primary">${L.save}</button>
+              ${status ? `<button type="button" data-remove class="label text-error hover:underline">${L.remove}</button>` : ''}
+              <span data-msg class="font-mono text-meta-data text-muted"></span>
+            </div>
+          </div>`;
+        wire();
+      };
+
+      const post = async (body: object) => {
+        const res = await fetch('/api/me/films', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ tmdbId, ...body }),
+        });
+        if (res.status === 401) {
+          window.location.href = `${d.loginUrl}?next=${encodeURIComponent(window.location.pathname)}`;
+          return false;
+        }
+        return res.ok;
+      };
+
+      const flash = () => {
+        const msg = this.querySelector('[data-msg]');
+        if (msg) {
+          msg.textContent = L.saved;
+          setTimeout(() => (msg.textContent = ''), 1500);
+        }
+      };
+
+      const wire = () => {
+        this.querySelectorAll<HTMLButtonElement>('[data-status]').forEach((b) =>
+          b.addEventListener('click', async () => {
+            status = b.dataset.status!;
+            if (await post({ status })) { render(); flash(); }
+          }),
+        );
+        this.querySelectorAll<HTMLButtonElement>('[data-rate]').forEach((b) =>
+          b.addEventListener('click', async () => {
+            rating = Number(b.dataset.rate);
+            if (await post({ rating, status: status || 'seen' })) { status = status || 'seen'; render(); flash(); }
+          }),
+        );
+        this.querySelector<HTMLButtonElement>('[data-save]')?.addEventListener('click', async () => {
+          note = this.querySelector<HTMLTextAreaElement>('[data-note]')?.value ?? '';
+          if (await post({ note, status: status || 'want' })) { status = status || 'want'; render(); flash(); }
+        });
+        this.querySelector<HTMLButtonElement>('[data-remove]')?.addEventListener('click', async () => {
+          const res = await fetch('/api/me/films', {
+            method: 'DELETE',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ tmdbId }),
+          });
+          if (res.ok) { status = ''; rating = 0; note = ''; render(); }
+        });
+      };
+
+      render();
+    }
+  }
+  if (!customElements.get('film-controls')) customElements.define('film-controls', FilmControls);
+</script>

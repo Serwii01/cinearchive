@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FilmControls from '../../../components/FilmControls.astro';
+import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { getFilm } from '../../../lib/films';
+import { director, posterUrl } from '../../../lib/tmdb';
+import { genreName } from '../../../data/genres';
+import { db } from '../../../db/client';
+import { userFilms } from '../../../db/schema';
+import { and, eq } from 'drizzle-orm';
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+const tmdbId = Number(Astro.params.tmdbId);
+
+if (!Number.isInteger(tmdbId) || tmdbId <= 0) {
+  return Astro.redirect(localizePath(lang, 'films'));
+}
+
+let film;
+try {
+  film = await getFilm(tmdbId, lang);
+} catch {
+  return new Response(t('film.notFound'), { status: 404 });
+}
+const { tmdb, omdb } = film;
+const dir = director(tmdb);
+const poster = posterUrl(tmdb.poster_path, 'w342');
+const year = tmdb.release_date ? tmdb.release_date.slice(0, 4) : '';
+
+// Estado actual del usuario para esta película (si hay sesión).
+let userState: { status: 'want' | 'seen' | 'favorite'; rating: number | null; note: string | null } | null = null;
+if (Astro.locals.user) {
+  const [row] = await db
+    .select()
+    .from(userFilms)
+    .where(and(eq(userFilms.userId, Astro.locals.user.id), eq(userFilms.tmdbId, tmdbId)))
+    .limit(1);
+  if (row) userState = { status: row.status, rating: row.rating, note: row.note };
+}
+
+const ratings = omdb?.Ratings ?? [];
+---
+
+<BaseLayout title={tmdb.title} description={tmdb.overview} altPath={localizePath(lang === 'es' ? 'en' : 'es', `film/${tmdbId}`)}>
+  <article class="frame py-12">
+    <a href={localizePath(lang, 'films')} class="label no-underline hover:text-ink">← {t('film.backToFilms')}</a>
+
+    <div class="mt-6 grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-12">
+      <!-- Póster + controles -->
+      <div class="md:col-span-4">
+        <div class="border border-ink bg-charcoal">
+          {poster ? (
+            <img src={poster} alt={tmdb.title} width="342" height="513" class="w-full" />
+          ) : (
+            <div class="film-grain aspect-[2/3] w-full"></div>
+          )}
+        </div>
+
+        <div class="mt-6">
+          {Astro.locals.user ? (
+            <FilmControls
+              tmdbId={tmdbId}
+              lang={lang}
+              status={userState?.status ?? null}
+              rating={userState?.rating ?? null}
+              note={userState?.note ?? null}
+            />
+          ) : (
+            <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`} class="btn btn-primary w-full justify-center no-underline">
+              {t('film.addToList')}
+            </a>
+          )}
+        </div>
+      </div>
+
+      <!-- Ficha -->
+      <div class="md:col-span-8">
+        <span class="label">{tmdb.original_title}{year && ` · ${year}`}</span>
+        <h1 class="mt-2 text-display-mobile md:text-display-lg">{tmdb.title}</h1>
+
+        <p class="mt-5 font-mono text-meta-data uppercase tracking-[0.08em] text-muted">
+          {[dir, tmdb.runtime ? `${tmdb.runtime} min` : null, tmdb.production_countries[0]?.name]
+            .filter(Boolean)
+            .join(' · ')}
+        </p>
+
+        <div class="mt-4 flex flex-wrap gap-2">
+          {tmdb.genres.map((g) => (
+            <span class="label border border-ink px-2 py-1">{genreName(g.id, lang)}</span>
+          ))}
+        </div>
+
+        <p class="prose-archive mt-6 max-w-2xl text-body-lg text-charcoal">{tmdb.overview}</p>
+
+        <!-- Notas externas -->
+        {(ratings.length > 0 || tmdb.vote_average > 0) && (
+          <div class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
+            <div class="bg-film-white p-3">
+              <span class="label">TMDB</span>
+              <p class="font-display text-headline-md text-ink">{tmdb.vote_average.toFixed(1)}</p>
+            </div>
+            {omdb?.imdbRating && (
+              <div class="bg-film-white p-3">
+                <span class="label">{t('film.imdb')}</span>
+                <p class="font-display text-headline-md text-ink">{omdb.imdbRating}</p>
+              </div>
+            )}
+            {ratings
+              .filter((r) => r.Source !== 'Internet Movie Database')
+              .slice(0, 2)
+              .map((r) => (
+                <div class="bg-film-white p-3">
+                  <span class="label">{r.Source.replace('Rotten Tomatoes', 'RT')}</span>
+                  <p class="font-display text-headline-md text-ink">{r.Value}</p>
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </article>
+</BaseLayout>

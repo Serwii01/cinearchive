@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { enabledSocialProviders } from '../../lib/auth';
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+
+if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
+
+const hasGoogle = enabledSocialProviders.includes('google');
+const hasGithub = enabledSocialProviders.includes('github');
+---
+
+<BaseLayout title={t('auth.registerTitle')}>
+  <section class="frame py-12">
+    <div class="mx-auto max-w-md border border-ink bg-surface">
+      <h1 class="border-b border-ink px-6 py-4 font-display text-headline-lg text-ink">{t('auth.registerTitle')}</h1>
+
+      <form id="register-form" class="flex flex-col gap-4 p-6" novalidate data-errmsg={t('auth.error')}>
+        <label class="block">
+          <span class="label mb-1 block">{t('auth.name')}</span>
+          <input name="name" type="text" required autocomplete="name" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md focus:bg-film-white focus:outline-none" />
+        </label>
+        <label class="block">
+          <span class="label mb-1 block">{t('auth.email')}</span>
+          <input name="email" type="email" required autocomplete="email" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md focus:bg-film-white focus:outline-none" />
+        </label>
+        <label class="block">
+          <span class="label mb-1 block">{t('auth.password')}</span>
+          <input name="password" type="password" required autocomplete="new-password" minlength="8" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md focus:bg-film-white focus:outline-none" />
+        </label>
+        <p data-error class="hidden font-mono text-meta-data text-error"></p>
+        <button type="submit" class="btn btn-primary justify-center">{t('auth.signUp')}</button>
+      </form>
+
+      {(hasGoogle || hasGithub) && (
+        <div class="border-t border-ink p-6">
+          <p class="label mb-3 text-center">{t('auth.or')}</p>
+          <div class="flex flex-col gap-3">
+            {hasGoogle && <button type="button" data-social="google" class="btn btn-secondary justify-center">{t('auth.withGoogle')}</button>}
+            {hasGithub && <button type="button" data-social="github" class="btn btn-secondary justify-center">{t('auth.withGithub')}</button>}
+          </div>
+        </div>
+      )}
+
+      <a href={localizePath(lang, 'login')} class="block border-t border-ink px-6 py-4 text-center font-mono text-meta-data text-muted no-underline hover:text-ink">
+        {t('auth.haveAccount')}
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { signUp, signIn } from '../../lib/auth-client';
+
+  const form = document.getElementById('register-form') as HTMLFormElement;
+  const errEl = form.querySelector('[data-error]') as HTMLElement;
+  const errMsg = form.dataset.errmsg || 'Error';
+  const lang = window.location.pathname.startsWith('/en') ? 'en' : 'es';
+  const home = `/${lang}/account`;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errEl.classList.add('hidden');
+    const fd = new FormData(form);
+    const { error } = await signUp.email({
+      name: String(fd.get('name')),
+      email: String(fd.get('email')),
+      password: String(fd.get('password')),
+    });
+    if (error) {
+      errEl.textContent = error.message || errMsg;
+      errEl.classList.remove('hidden');
+    } else {
+      window.location.href = home;
+    }
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-social]').forEach((b) =>
+    b.addEventListener('click', () =>
+      signIn.social({ provider: b.dataset.social as 'google' | 'github', callbackURL: home }),
+    ),
+  );
+</script>

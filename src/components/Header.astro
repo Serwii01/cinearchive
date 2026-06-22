@@ -1,6 +1,7 @@
 ---
 import { getLangFromUrl, useTranslations, localizePath, type Lang } from '../i18n/ui';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import AuthNav from './AuthNav.astro';
 
 interface Props {
   altPath?: string;
@@ -28,7 +29,7 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
       <span class="label mt-1">{t('site.tagline')}</span>
     </a>
 
-    <nav class="flex items-stretch" aria-label="Principal">
+    <nav class="flex flex-wrap items-stretch justify-end" aria-label="Principal">
       {
         nav.map((item) => (
           <a
@@ -42,7 +43,8 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
           </a>
         ))
       }
-      <div class="flex items-center border-l border-ink pl-5">
+      <AuthNav />
+      <div class="flex items-center border-l border-ink px-4">
         <LanguageSwitcher altPath={altPath} />
       </div>
     </nav>

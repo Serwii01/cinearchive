@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { db } from '../../db/client';
+import { userFilms } from '../../db/schema';
+import { eq, desc } from 'drizzle-orm';
+import { getFilmsBrief } from '../../lib/films';
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+
+// El middleware ya garantiza sesión en /watchlist.
+const userId = Astro.locals.user!.id;
+
+const rows = await db
+  .select()
+  .from(userFilms)
+  .where(eq(userFilms.userId, userId))
+  .orderBy(desc(userFilms.updatedAt));
+
+const briefs = await getFilmsBrief(rows.map((r) => r.tmdbId), lang);
+
+const groups: { key: 'want' | 'seen' | 'favorite'; label: string }[] = [
+  { key: 'favorite', label: t('watchlist.favorite') },
+  { key: 'want', label: t('watchlist.want') },
+  { key: 'seen', label: t('watchlist.seen') },
+];
+const byStatus = (s: string) => rows.filter((r) => r.status === s);
+---
+
+<BaseLayout title={t('watchlist.title')}>
+  <section class="frame py-12">
+    <header class="border-b border-ink pb-6">
+      <span class="label">{t('nav.watchlist')} · {rows.length}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('watchlist.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('watchlist.intro')}</p>
+    </header>
+
+    {rows.length === 0 ? (
+      <p class="mt-10 font-mono text-body-md text-muted">
+        {t('watchlist.empty')} <a href={localizePath(lang, 'films')} class="text-ink underline decoration-ochre">{t('nav.films')}</a>
+      </p>
+    ) : (
+      groups.map((g) => {
+        const items = byStatus(g.key);
+        return items.length > 0 ? (
+          <div class="mt-10">
+            <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{g.label} <span class="label">· {items.length}</span></h2>
+            <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((r) => {
+                const b = briefs.get(r.tmdbId);
+                return (
+                  <a href={localizePath(lang, `film/${r.tmdbId}`)} class="flex gap-3 bg-surface p-3 no-underline hover:bg-film-white">
+                    <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
+                      {b?.poster && <img src={b.poster} alt={b.title} class="h-full w-full object-cover" />}
+                    </div>
+                    <div class="min-w-0">
+                      <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${r.tmdbId}`}</p>
+                      <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
+                      {r.rating && <p class="mt-1 font-mono text-meta-data text-ink">{'★'.repeat(r.rating)}<span class="text-outline-variant">{'★'.repeat(5 - r.rating)}</span></p>}
+                      {r.note && <p class="mt-1 line-clamp-2 text-body-md text-charcoal/80">{r.note}</p>}
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        ) : null;
+      })
+    )}
+  </section>
+</BaseLayout>

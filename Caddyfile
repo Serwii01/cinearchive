@@ -1,0 +1,24 @@
+# TLS automático (Let's Encrypt) para el dominio. {$DOMAIN} y {$EMAIL} llegan por
+# variables de entorno desde docker-compose.
+{
+	email {$EMAIL}
+}
+
+{$DOMAIN} {
+	encode gzip zstd
+
+	# Cabeceras de seguridad (sustituyen a public/_headers de Cloudflare).
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "DENY"
+		-Server
+	}
+
+	# Cache larga para los assets con hash de Astro.
+	@assets path /_astro/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
+	reverse_proxy app:4321
+}

@@ -1,0 +1,71 @@
+---
+import { getLangFromUrl, useTranslations, localizePath, type Lang } from '../i18n/ui';
+
+const lang: Lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const user = Astro.locals.user;
+
+const config = {
+  initial: user ? 'user' : 'guest',
+  links: {
+    login: localizePath(lang, 'login'),
+    register: localizePath(lang, 'register'),
+    account: localizePath(lang, 'account'),
+    watchlist: localizePath(lang, 'watchlist'),
+    recs: localizePath(lang, 'recommendations'),
+    home: localizePath(lang),
+  },
+  labels: {
+    login: t('nav.login'),
+    register: t('nav.register'),
+    account: t('nav.account'),
+    watchlist: t('nav.watchlist'),
+    recs: t('nav.recommendations'),
+    logout: t('nav.logout'),
+  },
+};
+---
+
+<auth-nav data-config={JSON.stringify(config)} class="flex items-stretch"></auth-nav>
+
+<script>
+  import { signOut } from '../lib/auth-client';
+
+  class AuthNav extends HTMLElement {
+    connectedCallback() {
+      const cfg = JSON.parse(this.dataset.config!);
+      const link = (href: string, label: string, accent = false) =>
+        `<a href="${href}" class="label flex items-center border-l border-ink px-4 no-underline transition-colors hover:bg-ink hover:text-white ${
+          accent ? 'bg-ochre text-ink' : ''
+        }">${label}</a>`;
+
+      const renderGuest = () => {
+        this.innerHTML = link(cfg.links.login, cfg.labels.login) + link(cfg.links.register, cfg.labels.register, true);
+      };
+      const renderUser = () => {
+        this.innerHTML =
+          link(cfg.links.recs, cfg.labels.recs) +
+          link(cfg.links.watchlist, cfg.labels.watchlist) +
+          link(cfg.links.account, cfg.labels.account, true) +
+          `<button type="button" data-logout class="label flex items-center border-l border-ink px-4 transition-colors hover:bg-ink hover:text-white">${cfg.labels.logout}</button>`;
+        this.querySelector('[data-logout]')?.addEventListener('click', async () => {
+          await signOut();
+          window.location.href = cfg.links.home;
+        });
+      };
+
+      // Estado inicial del servidor (correcto en páginas SSR), luego reconciliar.
+      cfg.initial === 'user' ? renderUser() : renderGuest();
+
+      fetch('/api/auth/get-session', { headers: { accept: 'application/json' } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          const isUser = !!data?.user;
+          if (isUser && cfg.initial !== 'user') renderUser();
+          else if (!isUser && cfg.initial === 'user') renderGuest();
+        })
+        .catch(() => {});
+    }
+  }
+  if (!customElements.get('auth-nav')) customElements.define('auth-nav', AuthNav);
+</script>
