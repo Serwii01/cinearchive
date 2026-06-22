@@ -4,15 +4,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
+    "dev": "node --env-file-if-exists=.env node_modules/astro/astro.js dev",
+    "build": "node --env-file-if-exists=.env node_modules/astro/astro.js build",
+    "preview": "node --env-file-if-exists=.env node_modules/astro/astro.js preview",
     "astro": "astro",
-    "start": "node ./dist/server/entry.mjs",
+    "start": "node --env-file-if-exists=.env ./dist/server/entry.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:deploy": "node scripts/migrate.mjs"
+    "db:deploy": "node --env-file-if-exists=.env scripts/migrate.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.5",
