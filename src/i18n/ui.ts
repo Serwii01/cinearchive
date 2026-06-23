@@ -101,6 +101,12 @@ export const ui = {
     'film.backToFilms': 'Volver a la filmoteca',
     'film.imdb': 'IMDb',
     'film.notFound': 'Película no encontrada.',
+    'tmdb.title': 'Buscar películas',
+    'tmdb.placeholder': 'Busca cualquier película en TMDB…',
+    'tmdb.hint': 'Resultados en vivo desde la base de datos de TMDB.',
+    'tmdb.searching': 'Buscando…',
+    'tmdb.noResults': 'Sin resultados para esa búsqueda.',
+    'tmdb.error': 'No se pudo buscar ahora mismo. Inténtalo de nuevo.',
   },
   en: {
     'site.title': 'Cine Archive',
@@ -195,6 +201,12 @@ export const ui = {
     'film.backToFilms': 'Back to filmography',
     'film.imdb': 'IMDb',
     'film.notFound': 'Film not found.',
+    'tmdb.title': 'Search films',
+    'tmdb.placeholder': 'Search any film on TMDB…',
+    'tmdb.hint': 'Live results from the TMDB database.',
+    'tmdb.searching': 'Searching…',
+    'tmdb.noResults': 'No results for that search.',
+    'tmdb.error': 'Could not search right now. Try again.',
   },
 } as const;
 

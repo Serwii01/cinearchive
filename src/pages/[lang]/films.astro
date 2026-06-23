@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import TmdbSearch from '../../components/TmdbSearch.astro';
 import filmsData from '../../data/films.json';
 import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
@@ -26,17 +27,27 @@ const intro = t('films.intro').replace('{count}', String(films.length));
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('films.title')}</h1>
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{intro}</p>
 
+    </header>
+
+    <!-- Buscador en vivo sobre toda la base de datos de TMDB -->
+    <div class="mt-8">
+      <TmdbSearch lang={lang} />
+    </div>
+
+    <!-- Catálogo curado (filtro local sobre las 122 fichas del archivo) -->
+    <div class="mt-12 flex flex-col gap-3 border-b border-ink pb-3 sm:flex-row sm:items-end sm:justify-between">
+      <h2 class="text-headline-lg text-ink">{t('archive.title')}</h2>
       <input
         id="film-filter"
         type="search"
         placeholder={t('films.search')}
         autocomplete="off"
-        class="mt-6 w-full max-w-md border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
+        class="w-full max-w-xs border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
       />
-    </header>
+    </div>
 
     <!-- Tabla de catálogo -->
-    <div class="mt-8 overflow-x-auto border border-ink">
+    <div class="mt-6 overflow-x-auto border border-ink">
       <table class="w-full border-collapse text-left">
         <thead>
           <tr class="border-b border-ink bg-ink text-background">

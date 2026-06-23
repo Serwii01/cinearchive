@@ -1,0 +1,116 @@
+---
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<tmdb-search
+  data-lang={lang}
+  data-film-base={localizePath(lang, 'film')}
+  data-l-searching={t('tmdb.searching')}
+  data-l-none={t('tmdb.noResults')}
+  data-l-error={t('tmdb.error')}
+  class="block border border-ink bg-surface"
+>
+  <div class="border-b border-ink p-4">
+    <h2 class="label mb-2">{t('tmdb.title')}</h2>
+    <input
+      data-input
+      type="search"
+      autocomplete="off"
+      placeholder={t('tmdb.placeholder')}
+      class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
+    />
+    <p class="mt-2 font-mono text-meta-data text-muted">{t('tmdb.hint')}</p>
+  </div>
+  <div data-status class="hidden px-4 py-3 font-mono text-meta-data text-muted"></div>
+  <div data-results class="hidden grid grid-cols-2 gap-px bg-ink sm:grid-cols-3 lg:grid-cols-4"></div>
+</tmdb-search>
+
+<script>
+  class TmdbSearch extends HTMLElement {
+    connectedCallback() {
+      const d = this.dataset;
+      const input = this.querySelector('[data-input]') as HTMLInputElement;
+      const statusEl = this.querySelector('[data-status]') as HTMLElement;
+      const results = this.querySelector('[data-results]') as HTMLElement;
+      let timer: ReturnType<typeof setTimeout>;
+      let controller: AbortController | null = null;
+
+      const setStatus = (msg: string) => {
+        statusEl.textContent = msg;
+        statusEl.classList.toggle('hidden', !msg);
+      };
+      const clearResults = () => {
+        results.innerHTML = '';
+        results.classList.add('hidden');
+      };
+
+      const esc = (s: string) =>
+        s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+      const render = (items: any[]) => {
+        if (!items.length) {
+          clearResults();
+          setStatus(d.lNone!);
+          return;
+        }
+        setStatus('');
+        results.classList.remove('hidden');
+        results.innerHTML = items
+          .map((r) => {
+            const meta = [r.originalTitle && r.originalTitle !== r.title ? esc(r.originalTitle) : '', r.year ?? '']
+              .filter(Boolean)
+              .join(' · ');
+            const img = r.poster
+              ? `<img src="${r.poster}" alt="${esc(r.title)}" loading="lazy" class="h-full w-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0" />`
+              : `<div class="film-grain h-full w-full"></div>`;
+            return `<a href="${d.filmBase}/${r.tmdbId}" class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+              <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">${img}</div>
+              <div class="flex flex-1 flex-col p-2">
+                <p class="font-display text-body-lg leading-tight text-ink">${esc(r.title)}</p>
+                <p class="font-mono text-meta-data text-muted">${meta}</p>
+              </div>
+            </a>`;
+          })
+          .join('');
+      };
+
+      const run = async (q: string) => {
+        controller?.abort();
+        controller = new AbortController();
+        setStatus(d.lSearching!);
+        clearResults();
+        try {
+          const res = await fetch(
+            `/api/films/search?q=${encodeURIComponent(q)}&lang=${d.lang}`,
+            { signal: controller.signal, headers: { accept: 'application/json' } },
+          );
+          if (!res.ok) throw new Error(String(res.status));
+          const data = await res.json();
+          render(data.results ?? []);
+        } catch (err) {
+          if ((err as Error).name === 'AbortError') return;
+          setStatus(d.lError!);
+        }
+      };
+
+      input.addEventListener('input', () => {
+        const q = input.value.trim();
+        clearTimeout(timer);
+        if (q.length < 2) {
+          controller?.abort();
+          clearResults();
+          setStatus('');
+          return;
+        }
+        timer = setTimeout(() => run(q), 350);
+      });
+    }
+  }
+  if (!customElements.get('tmdb-search')) customElements.define('tmdb-search', TmdbSearch);
+</script>
