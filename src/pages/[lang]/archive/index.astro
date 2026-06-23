@@ -1,8 +1,8 @@
 ---
 export const prerender = true;
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import IndexCard from '../../../components/IndexCard.astro';
+import IssueCard from '../../../components/IssueCard.astro';
+import { periodicals } from '../../../lib/periodicals';
 import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 
 export function getStaticPaths() {
@@ -12,9 +12,11 @@ export function getStaticPaths() {
 const lang = Astro.params.lang as Lang;
 const t = useTranslations(lang);
 
-const entries = (await getCollection('articles', (e) => e.data.lang === lang && !e.data.draft)).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const items = periodicals
+  .slice()
+  .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
+
+const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sort((a, b) => b - a);
 ---
 
 <BaseLayout
@@ -24,21 +26,66 @@ const entries = (await getCollection('articles', (e) => e.data.lang === lang && 
 >
   <section class="frame py-12">
     <header class="border-b border-ink pb-6">
-      <span class="label">{t('nav.archive')} · {entries.length}</span>
+      <span class="label">{t('nav.archive')} · {items.length}</span>
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('archive.title')}</h1>
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('archive.intro')}</p>
+
+      {/* Filtros */}
+      <div class="mt-6 flex flex-wrap gap-3">
+        <label class="flex items-center gap-2">
+          <span class="label">{t('archive.filterType')}</span>
+          <select id="filter-type" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none">
+            <option value="">{t('archive.all')}</option>
+            <option value="magazine">{t('archive.type.magazine')}</option>
+            <option value="newspaper">{t('archive.type.newspaper')}</option>
+          </select>
+        </label>
+        <label class="flex items-center gap-2">
+          <span class="label">{t('archive.filterDecade')}</span>
+          <select id="filter-decade" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none">
+            <option value="">{t('archive.all')}</option>
+            {decades.map((d) => <option value={d}>{d}s</option>)}
+          </select>
+        </label>
+      </div>
     </header>
 
-    {
-      entries.length ? (
-        <div class="mt-10 grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
-          {entries.map((entry, i) => (
-            <IndexCard entry={entry} index={i} />
-          ))}
-        </div>
-      ) : (
-        <p class="mt-10 font-mono text-body-md text-muted">{t('archive.empty')}</p>
-      )
-    }
+    <div
+      id="issue-grid"
+      class="mt-10 grid grid-cols-2 gap-px border-l border-r border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4"
+    >
+      {
+        items.map((item) => (
+          <div data-type={item.type} data-decade={Math.floor(item.year / 10) * 10}>
+            <IssueCard item={item} lang={lang} />
+          </div>
+        ))
+      }
+    </div>
+    <p id="issue-empty" class="mt-10 hidden font-mono text-body-md text-muted">{t('archive.empty')}</p>
+
+    <p class="mt-10 border-t border-ink pt-4 font-mono text-meta-data text-muted">{t('archive.credit')}</p>
   </section>
 </BaseLayout>
+
+<script>
+  const typeSel = document.getElementById('filter-type') as HTMLSelectElement | null;
+  const decadeSel = document.getElementById('filter-decade') as HTMLSelectElement | null;
+  const cells = Array.from(document.querySelectorAll<HTMLElement>('#issue-grid > [data-type]'));
+  const empty = document.getElementById('issue-empty');
+
+  const apply = () => {
+    const ty = typeSel?.value ?? '';
+    const de = decadeSel?.value ?? '';
+    let visible = 0;
+    for (const cell of cells) {
+      const ok = (!ty || cell.dataset.type === ty) && (!de || cell.dataset.decade === de);
+      cell.hidden = !ok;
+      if (ok) visible++;
+    }
+    empty?.classList.toggle('hidden', visible !== 0);
+  };
+
+  typeSel?.addEventListener('change', apply);
+  decadeSel?.addEventListener('change', apply);
+</script>

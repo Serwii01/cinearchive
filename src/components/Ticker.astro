@@ -1,14 +1,15 @@
 ---
 import { getLangFromUrl, useTranslations, type Lang } from '../i18n/ui';
-import { getCollection } from 'astro:content';
+import { periodicals } from '../lib/periodicals';
 
 const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const entries = (await getCollection('articles', (e) => e.data.lang === lang && !e.data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 6)
-  .map((e) => `${e.data.title} (${e.data.year})`);
+const entries = periodicals
+  .slice()
+  .sort((a, b) => b.year - a.year)
+  .slice(0, 8)
+  .map((p) => `${p.title} (${p.year})`);
 
 const items = entries.length ? entries : [t('site.tagline')];
 ---

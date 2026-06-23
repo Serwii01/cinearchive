@@ -36,7 +36,7 @@ const intro = t('films.intro').replace('{count}', String(films.length));
 
     <!-- Catálogo curado (filtro local sobre las 122 fichas del archivo) -->
     <div class="mt-12 flex flex-col gap-3 border-b border-ink pb-3 sm:flex-row sm:items-end sm:justify-between">
-      <h2 class="text-headline-lg text-ink">{t('archive.title')}</h2>
+      <h2 class="text-headline-lg text-ink">{t('films.catalog')}</h2>
       <input
         id="film-filter"
         type="search"
@@ -51,7 +51,6 @@ const intro = t('films.intro').replace('{count}', String(films.length));
       <table class="w-full border-collapse text-left">
         <thead>
           <tr class="border-b border-ink bg-ink text-background">
-            <th class="label px-3 py-2 font-medium text-background">·</th>
             <th class="label px-3 py-2 font-medium text-background">{t('films.colTitle')}</th>
             <th class="label hidden px-3 py-2 font-medium text-background md:table-cell">{t('films.colDirector')}</th>
             <th class="label px-3 py-2 font-medium text-background">{t('films.colYear')}</th>
@@ -66,17 +65,8 @@ const intro = t('films.intro').replace('{count}', String(films.length));
                 class="border-b border-outline-variant align-top transition-colors last:border-b-0 hover:bg-film-white"
                 data-search={`${f.title} ${f.original_title} ${f.director}`.toLowerCase()}
               >
-                <td class="px-3 py-3 text-center font-mono text-meta-data">
-                  {f.has_essay ? <span class="text-ochre" title={t('films.hasEssay')}>●</span> : <span class="text-outline-variant">·</span>}
-                </td>
                 <td class="px-3 py-3">
-                  {f.has_essay ? (
-                    <a href={localizePath(lang, `archive/${f.essay_pair}`)} class="font-display text-headline-md leading-tight text-ink no-underline hover:text-muted">
-                      {f.title}
-                    </a>
-                  ) : (
-                    <span class="font-display text-headline-md leading-tight text-ink">{f.title}</span>
-                  )}
+                  <span class="font-display text-headline-md leading-tight text-ink">{f.title}</span>
                   {f.original_title !== f.title && (
                     <span class="mt-0.5 block font-mono text-meta-data text-muted">{f.original_title}</span>
                   )}

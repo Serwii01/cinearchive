@@ -1,18 +1,18 @@
 ---
 export const prerender = false; // la película del día se obtiene en cada visita (cacheada por día)
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import IndexCard from '../../components/IndexCard.astro';
+import IssueCard from '../../components/IssueCard.astro';
+import { periodicals } from '../../lib/periodicals';
 import { getFilmOfDay } from '../../lib/featured';
 import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
 const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
 const t = useTranslations(lang);
 
-const all = (await getCollection('articles', (e) => e.data.lang === lang && !e.data.draft)).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
-const latest = all.slice(0, 6);
+const latestIssues = periodicals
+  .slice()
+  .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title))
+  .slice(0, 4);
 
 const film = await getFilmOfDay(lang);
 const overview = film?.overview && film.overview.length > 320 ? film.overview.slice(0, 317) + '…' : film?.overview;
@@ -73,15 +73,15 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
     )
   }
 
-  {/* ÚLTIMAS ENTRADAS (ensayos) */}
+  {/* ÚLTIMOS NÚMEROS (hemeroteca) */}
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
-      <h2 class="text-headline-lg text-ink">{t('home.latest')}</h2>
+      <h2 class="text-headline-lg text-ink">{t('home.latestIssues')}</h2>
       <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">{t('home.viewArchive')} →</a>
     </div>
 
-    <div class="grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
-      {latest.map((entry, i) => <IndexCard entry={entry} index={i} />)}
+    <div class="grid grid-cols-2 gap-px border-l border-r border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+      {latestIssues.map((item) => <IssueCard item={item} lang={lang} />)}
     </div>
   </section>
 </BaseLayout>

@@ -1,0 +1,41 @@
+---
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
+import { coverUrl, type Periodical } from '../lib/periodicals';
+
+interface Props {
+  item: Periodical;
+  lang: Lang;
+}
+
+const { item, lang } = Astro.props;
+const t = useTranslations(lang);
+const href = localizePath(lang, `archive/${item.id}`);
+const cover = coverUrl(item.id);
+const typeLabel = t(item.type === 'magazine' ? 'archive.type.magazine' : 'archive.type.newspaper');
+---
+
+<article class="group flex h-full flex-col border-t border-ink bg-surface">
+  <a href={href} class="flex h-full flex-col no-underline">
+    <div class="flex items-center justify-between border-b border-ink px-3 py-2">
+      <span class="label">{typeLabel}</span>
+      <span class="font-mono text-meta-data text-muted">{item.year}</span>
+    </div>
+
+    <div class="aspect-[3/4] overflow-hidden border-b border-ink bg-charcoal">
+      <img
+        src={cover}
+        alt={`${item.title} — ${item.issue}`}
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full object-cover object-top"
+      />
+    </div>
+
+    <div class="flex flex-1 flex-col p-3">
+      <h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">
+        {item.title}
+      </h3>
+      <p class="mt-1 font-mono text-meta-data text-muted">{item.issue} · {item.country}</p>
+    </div>
+  </a>
+</article>

@@ -1,0 +1,59 @@
+---
+export const prerender = true;
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { periodicals, embedUrl, iaUrl, type Periodical } from '../../../lib/periodicals';
+import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+
+export function getStaticPaths() {
+  const paths: { params: { lang: string; id: string }; props: { item: Periodical } }[] = [];
+  for (const lang of ['es', 'en']) {
+    for (const item of periodicals) {
+      paths.push({ params: { lang, id: item.id }, props: { item } });
+    }
+  }
+  return paths;
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+const { item } = Astro.props as { item: Periodical };
+
+const blurb = lang === 'es' ? item.blurb_es : item.blurb_en;
+const typeLabel = t(item.type === 'magazine' ? 'archive.type.magazine' : 'archive.type.newspaper');
+const altPath = localizePath(lang === 'es' ? 'en' : 'es', `archive/${item.id}`);
+---
+
+<BaseLayout title={`${item.title} — ${item.issue}`} description={blurb} altPath={altPath}>
+  <article class="frame py-12">
+    <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">← {t('archive.backToArchive')}</a>
+
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{typeLabel} · {item.year}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{item.title}</h1>
+      <p class="mt-3 font-mono text-meta-data uppercase tracking-[0.08em] text-muted">
+        {[item.issue, item.publisher, item.country].filter(Boolean).join(' · ')}
+      </p>
+      <p class="mt-5 max-w-2xl text-body-lg text-charcoal">{blurb}</p>
+      <a href={iaUrl(item.id)} target="_blank" rel="noopener noreferrer" class="btn btn-secondary mt-6 no-underline">
+        {t('archive.openIA')} ↗
+      </a>
+    </header>
+
+    {/* Visor incrustado de Internet Archive */}
+    <div class="mt-8 border border-ink bg-charcoal">
+      <div class="border-b border-ink bg-ink px-3 py-2">
+        <span class="label text-background">{t('archive.reader')}</span>
+      </div>
+      <iframe
+        src={embedUrl(item.id)}
+        title={`${item.title} — ${item.issue}`}
+        loading="lazy"
+        allowfullscreen
+        class="h-[78vh] min-h-[28rem] w-full"
+        style="border:0"
+      ></iframe>
+    </div>
+
+    <p class="mt-6 font-mono text-meta-data text-muted">{t('archive.credit')}</p>
+  </article>
+</BaseLayout>
