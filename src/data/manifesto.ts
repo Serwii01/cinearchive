@@ -8,31 +8,33 @@ export interface ManifestoCopy {
 
 export const manifesto: Record<'es' | 'en', ManifestoCopy> = {
   es: {
-    lead: 'Cine Archive es una publicación editorial y un archivo digital dedicado a la historia y la curaduría del cine. No alojamos películas: catalogamos ideas.',
+    lead: 'Cine Archive es un archivo de cine abierto y bilingüe. Creemos que la cultura cinematográfica —su historia, su prensa, su memoria— es un bien público, y la reunimos a partir de lo que ya pertenece a todos: el dominio público y el acceso abierto.',
     body: [
-      'Cada entrada es una ficha: una obra, sus metadatos técnicos y un ensayo que intenta entender por qué importa. Tratamos el texto como quien ordena un fichero de biblioteca, con la convicción de que la forma —la rejilla, la regla de un píxel, la tipografía— también es una manera de pensar.',
-      'Escribimos en español e inglés porque el cine es un lenguaje sin fronteras y la crítica debería serlo también. Las dos versiones de cada artículo no son traducciones automáticas: son lecturas paralelas de la misma obra.',
-      'Este es un proyecto independiente, sin publicidad y de código abierto en su construcción. Si llegaste hasta aquí, ya formas parte del archivo.',
+      'Nuestra hemeroteca rescata revistas y periódicos de cine en dominio público: cientos de páginas que documentan más de un siglo de imágenes y que cualquiera puede leer, sin muros ni cuentas. No las encerramos: las mostramos tal como son —libres— y enlazamos su fuente.',
+      'Catalogamos, no vendemos. Aquí no hay entradas, ni suscripciones, ni publicidad, ni rastreadores. Los datos vienen de fuentes abiertas y gratuitas —Internet Archive, TMDB, OMDb, Wikidata— y el proyecto es abierto en su construcción. Lo que tomamos prestado, lo devolvemos con atribución.',
+      'Escribimos y navegamos en español e inglés porque el cine es un lenguaje sin fronteras, y el conocimiento que es de todos no debería hablar una sola lengua. Si llegaste hasta aquí, esto también es tuyo.',
     ],
     principlesTitle: 'Principios',
     principles: [
-      ['Catálogo, no catálogo de ventas', 'Indexamos obras y ensayos, nunca contenido para consumir.'],
-      ['Forma brutalista', 'Sin sombras, sin adornos: estructura, contraste y tipografía.'],
-      ['Bilingüe por convicción', 'Cada texto vive en español y en inglés.'],
+      ['De dominio público', 'Damos prioridad a lo que ya es libre: dominio público y acceso abierto, con su fuente siempre citada.'],
+      ['Sin muros', 'Sin pagos, sin anuncios, sin rastreo. Un catálogo para explorar, no una tienda.'],
+      ['Bilingüe por convicción', 'Todo vive en español y en inglés, a partir de fuentes abiertas.'],
+      ['Forma brutalista', 'Sin adornos: estructura, contraste y tipografía como manera de pensar.'],
     ],
   },
   en: {
-    lead: "Cine Archive is an editorial publication and a digital archive devoted to the history and curation of cinema. We don't host films: we catalogue ideas.",
+    lead: 'Cine Archive is an open, bilingual film archive. We believe film culture —its history, its press, its memory— is a public good, and we gather it from what already belongs to everyone: the public domain and open access.',
     body: [
-      'Every entry is a card: a work, its technical metadata and an essay that tries to understand why it matters. We treat text the way one orders a library index, convinced that form — the grid, the one-pixel rule, the typography — is also a way of thinking.',
-      'We write in Spanish and English because cinema is a borderless language and criticism should be too. The two versions of each piece are not machine translations: they are parallel readings of the same work.',
-      'This is an independent project, ad-free and open in its making. If you made it this far, you are already part of the archive.',
+      'Our periodicals library rescues public-domain film magazines and newspapers: hundreds of pages documenting more than a century of moving images that anyone can read, with no paywalls and no accounts. We don\'t lock them away —we show them as they are, free, and link back to their source.',
+      'We catalogue, we don\'t sell. There are no tickets, no subscriptions, no advertising, no trackers. Our data comes from open, free sources —Internet Archive, TMDB, OMDb, Wikidata— and the project is open in its making. What we borrow, we return with attribution.',
+      'We write and browse in Spanish and English because cinema is a borderless language, and knowledge that belongs to everyone should not speak only one. If you made it this far, this is yours too.',
     ],
     principlesTitle: 'Principles',
     principles: [
-      ['An index, not a storefront', 'We index works and essays, never content to consume.'],
-      ['Brutalist form', 'No shadows, no ornament: structure, contrast and type.'],
-      ['Bilingual by conviction', 'Every text lives in Spanish and English.'],
+      ['Public domain first', 'We prioritise what is already free: public domain and open access, always crediting the source.'],
+      ['No walls', 'No payments, no ads, no tracking. An index to explore, not a store.'],
+      ['Bilingual by conviction', 'Everything lives in Spanish and English, built from open sources.'],
+      ['Brutalist form', 'No ornament: structure, contrast and type as a way of thinking.'],
     ],
   },
 };

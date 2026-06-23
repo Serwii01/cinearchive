@@ -12,7 +12,7 @@ export const ui = {
     'site.title': 'Cine Archive',
     'site.tagline': 'Archivo editorial de cine',
     'site.description':
-      'Publicación editorial y archivo digital de cine: ensayos, reseñas y curaduría sobre la historia del cine.',
+      'Archivo de cine abierto y bilingüe: hemeroteca de revistas en dominio público, fichas de películas y revistas de acceso abierto. Sin muros ni publicidad.',
     'nav.home': 'Portada',
     'nav.archive': 'Archivo',
     'nav.films': 'Filmoteca',
@@ -245,7 +245,7 @@ export const ui = {
     'site.title': 'Cine Archive',
     'site.tagline': 'A film editorial archive',
     'site.description':
-      'An editorial publication and digital film archive: essays, reviews and curation on the history of cinema.',
+      'An open, bilingual film archive: a public-domain periodicals library, film entries and open-access journals. No walls, no ads.',
     'nav.home': 'Front Page',
     'nav.archive': 'Archive',
     'nav.films': 'Filmography',
