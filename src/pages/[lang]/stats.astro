@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { getUserStats } from '../../lib/stats';
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+const userId = Astro.locals.user!.id; // middleware garantiza sesión
+
+let stats;
+try {
+  stats = await getUserStats(userId, lang);
+} catch {
+  stats = null;
+}
+
+const pct = (count: number, max: number) => (max > 0 ? Math.round((count / max) * 100) : 0);
+const histMax = stats ? Math.max(1, ...stats.ratingHistogram) : 1;
+const genreMax = stats ? Math.max(1, ...stats.topGenres.map((g) => g.count)) : 1;
+const dirMax = stats ? Math.max(1, ...stats.topDirectors.map((d) => d.count)) : 1;
+const decadeMax = stats ? Math.max(1, ...stats.byDecade.map((d) => d.count)) : 1;
+
+const totals = stats
+  ? [
+      { label: t('stats.inList'), value: String(stats.total) },
+      { label: t('stats.seen'), value: String(stats.seen) },
+      { label: t('stats.favorites'), value: String(stats.favorite) },
+      { label: t('stats.hours'), value: String(stats.hoursWatched) },
+      { label: t('stats.avg'), value: stats.avgRating ? `★ ${stats.avgRating.toFixed(1)}` : '—' },
+    ]
+  : [];
+const isEmpty = !stats || stats.total === 0;
+---
+
+<BaseLayout title={t('stats.title')}>
+  <section class="frame py-12">
+    <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('stats.title')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('stats.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('stats.intro')}</p>
+    </header>
+
+    {isEmpty ? (
+      <p class="mt-10 font-mono text-body-md text-muted">
+        {t('stats.empty')}{' '}
+        <a href={localizePath(lang, 'films')} class="text-ink underline decoration-ochre">{t('nav.films')}</a>
+      </p>
+    ) : (
+      <div class="mt-10 flex flex-col gap-12">
+        {/* TOTALES */}
+        <div class="grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-5">
+          {totals.map((c) => (
+            <div class="bg-surface p-4">
+              <span class="label">{c.label}</span>
+              <p class="mt-1 font-display text-display-mobile text-ink">{c.value}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+          {/* GÉNEROS */}
+          {stats.topGenres.length > 0 && (
+            <section>
+              <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.topGenres')}</h2>
+              <ul class="mt-4 flex flex-col gap-2">
+                {stats.topGenres.map((g) => (
+                  <li class="grid grid-cols-[8rem_1fr_2rem] items-center gap-3">
+                    <span class="truncate font-mono text-meta-data text-charcoal">{g.label}</span>
+                    <span class="h-4 bg-ink" style={`width:${pct(g.count, genreMax)}%`}></span>
+                    <span class="text-right font-mono text-meta-data text-muted">{g.count}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* DIRECTORES */}
+          {stats.topDirectors.length > 0 && (
+            <section>
+              <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.topDirectors')}</h2>
+              <ul class="mt-4 flex flex-col gap-2">
+                {stats.topDirectors.map((d) => (
+                  <li class="grid grid-cols-[8rem_1fr_2rem] items-center gap-3">
+                    <span class="truncate font-mono text-meta-data text-charcoal">{d.label}</span>
+                    <span class="h-4 bg-ochre" style={`width:${pct(d.count, dirMax)}%`}></span>
+                    <span class="text-right font-mono text-meta-data text-muted">{d.count}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* DÉCADAS */}
+          {stats.byDecade.length > 0 && (
+            <section>
+              <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.byDecade')}</h2>
+              <ul class="mt-4 flex flex-col gap-2">
+                {stats.byDecade.map((d) => (
+                  <li class="grid grid-cols-[8rem_1fr_2rem] items-center gap-3">
+                    <span class="font-mono text-meta-data text-charcoal">{d.decade}s</span>
+                    <span class="h-4 bg-ink" style={`width:${pct(d.count, decadeMax)}%`}></span>
+                    <span class="text-right font-mono text-meta-data text-muted">{d.count}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* VALORACIONES */}
+          {stats.rated > 0 && (
+            <section>
+              <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.ratings')}</h2>
+              <ul class="mt-4 flex flex-col gap-2">
+                {[5, 4, 3, 2, 1].map((star) => (
+                  <li class="grid grid-cols-[8rem_1fr_2rem] items-center gap-3">
+                    <span class="font-mono text-meta-data text-charcoal">{'★'.repeat(star)}</span>
+                    <span class="h-4 bg-ochre" style={`width:${pct(stats.ratingHistogram[star - 1], histMax)}%`}></span>
+                    <span class="text-right font-mono text-meta-data text-muted">{stats.ratingHistogram[star - 1]}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
+      </div>
+    )}
+  </section>
+</BaseLayout>

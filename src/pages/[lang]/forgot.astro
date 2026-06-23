@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
+---
+
+<BaseLayout title={t('auth.forgotTitle')}>
+  <section class="frame py-12">
+    <div class="mx-auto max-w-md border border-ink bg-surface">
+      <h1 class="border-b border-ink px-6 py-4 font-display text-headline-lg text-ink">{t('auth.forgotTitle')}</h1>
+
+      <form id="forgot-form" class="flex flex-col gap-4 p-6" novalidate data-reset={localizePath(lang, 'reset')} data-okmsg={t('auth.checkEmail')}>
+        <p class="text-body-md text-charcoal">{t('auth.forgotIntro')}</p>
+        <label class="block">
+          <span class="label mb-1 block">{t('auth.email')}</span>
+          <input name="email" type="email" required autocomplete="email" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md focus:bg-film-white focus:outline-none" />
+        </label>
+        <p data-ok class="hidden font-mono text-meta-data text-ink"></p>
+        <button type="submit" class="btn btn-primary justify-center">{t('auth.sendReset')}</button>
+      </form>
+
+      <a href={localizePath(lang, 'login')} class="block border-t border-ink px-6 py-4 text-center font-mono text-meta-data text-muted no-underline hover:text-ink">
+        {t('auth.backToLogin')}
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { forgetPassword } from '../../lib/auth-client';
+  const form = document.getElementById('forgot-form') as HTMLFormElement;
+  const ok = form.querySelector('[data-ok]') as HTMLElement;
+  const resetPath = form.dataset.reset || '/es/reset';
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = String(new FormData(form).get('email'));
+    await forgetPassword({ email, redirectTo: location.origin + resetPath });
+    // Respuesta neutra siempre (no revela si el correo existe).
+    ok.textContent = form.dataset.okmsg || 'OK';
+    ok.classList.remove('hidden');
+    (form.querySelector('button[type="submit"]') as HTMLButtonElement).disabled = true;
+  });
+</script>

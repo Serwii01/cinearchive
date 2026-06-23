@@ -15,6 +15,27 @@
       "when": 1782175949272,
       "tag": "0001_condemned_senator_kelly",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782231997024,
+      "tag": "0002_plain_jean_grey",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1782233914584,
+      "tag": "0003_fantastic_radioactive_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1782235349525,
+      "tag": "0004_classy_madripoor",
+      "breakpoints": true
     }
   ]
 }

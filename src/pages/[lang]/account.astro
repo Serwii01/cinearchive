@@ -5,10 +5,12 @@ import { GENRES } from '../../data/genres';
 import { db } from '../../db/client';
 import { userPreferences } from '../../db/schema';
 import { eq } from 'drizzle-orm';
+import { isAdmin } from '../../lib/admin';
 
 const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
 const t = useTranslations(lang);
 const user = Astro.locals.user!; // middleware garantiza sesión
+const admin = isAdmin(user);
 
 const [prefs] = await db
   .select()
@@ -30,7 +32,28 @@ const theme = prefs?.theme ?? 'light';
       <button id="logout" type="button" class="btn btn-secondary mt-5">{t('nav.logout')}</button>
     </header>
 
-    <form id="prefs-form" class="mt-10 max-w-3xl" data-saved={t('account.saved')}>
+    {/* Hub: accesos a la actividad del usuario */}
+    <nav class="mt-10" aria-label={t('account.sections')}>
+      <h2 class="label mb-3">{t('account.sections')}</h2>
+      <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
+        {[
+          { href: localizePath(lang, 'watchlist'), label: t('nav.watchlist') },
+          { href: localizePath(lang, 'stats'), label: t('nav.stats') },
+          { href: localizePath(lang, 'recommendations'), label: t('nav.recommendations') },
+          ...(admin ? [{ href: localizePath(lang, 'admin'), label: t('nav.admin') }] : []),
+        ].map((s) => (
+          <a
+            href={s.href}
+            class="flex items-center justify-between bg-surface p-4 font-display text-headline-md text-ink no-underline transition-colors hover:bg-ink hover:text-white"
+          >
+            {s.label}
+            <span aria-hidden="true">→</span>
+          </a>
+        ))}
+      </div>
+    </nav>
+
+    <form id="prefs-form" class="mt-12 max-w-3xl" data-saved={t('account.saved')}>
       <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('account.preferences')}</h2>
 
       <!-- Géneros favoritos -->
@@ -72,7 +95,6 @@ const theme = prefs?.theme ?? 'light';
       <div class="mt-8 flex items-center gap-4">
         <button type="submit" class="btn btn-primary">{t('account.save')}</button>
         <span data-msg class="font-mono text-meta-data text-muted"></span>
-        <a href={localizePath(lang, 'recommendations')} class="label no-underline hover:text-ink">{t('nav.recommendations')} →</a>
       </div>
     </form>
   </section>

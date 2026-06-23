@@ -20,6 +20,7 @@ const config = {
     account: localizePath(lang, 'account'),
     watchlist: localizePath(lang, 'watchlist'),
     recs: localizePath(lang, 'recommendations'),
+    stats: localizePath(lang, 'stats'),
     home: localizePath(lang),
   },
   labels: {
@@ -28,6 +29,7 @@ const config = {
     account: t('nav.account'),
     watchlist: t('nav.watchlist'),
     recs: t('nav.recommendations'),
+    stats: t('nav.stats'),
     logout: t('nav.logout'),
   },
 };
@@ -59,7 +61,6 @@ const config = {
           : 'label flex items-center border-l border-ink px-4 transition-colors hover:bg-ink hover:text-white';
         this.innerHTML =
           link(cfg.links.recs, cfg.labels.recs) +
-          link(cfg.links.watchlist, cfg.labels.watchlist) +
           link(cfg.links.account, cfg.labels.account, true) +
           `<button type="button" data-logout class="${btnClass}">${cfg.labels.logout}</button>`;
         this.querySelector('[data-logout]')?.addEventListener('click', async () => {

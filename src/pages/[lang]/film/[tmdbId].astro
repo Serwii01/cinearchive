@@ -3,8 +3,9 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import FilmControls from '../../../components/FilmControls.astro';
 import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { getFilm } from '../../../lib/films';
-import { director, posterUrl, posterSrcset } from '../../../lib/tmdb';
+import { director, posterUrl, posterSrcset, profileUrl, backdropUrl, trailerKey, type TmdbSearchResult } from '../../../lib/tmdb';
 import { genreName } from '../../../data/genres';
+import { WATCH_REGIONS, countryName } from '../../../data/countries';
 import { db } from '../../../db/client';
 import { userFilms } from '../../../db/schema';
 import { and, eq } from 'drizzle-orm';
@@ -23,7 +24,7 @@ try {
 } catch {
   return new Response(t('film.notFound'), { status: 404 });
 }
-const { tmdb, omdb, watchmode } = film;
+const { tmdb, omdb, watchmode, locations } = film;
 const dir = director(tmdb);
 const poster = posterUrl(tmdb.poster_path, 'w500');
 const poster2x = posterSrcset(tmdb.poster_path, 'w500', 'w780');
@@ -54,6 +55,49 @@ if (Astro.locals.user) {
 }
 
 const ratings = omdb?.Ratings ?? [];
+
+// Tráiler (YouTube), reparto y películas similares (ya vienen en la tmdb cacheada).
+const trailer = trailerKey(tmdb);
+const trailerThumb = backdropUrl(tmdb.backdrop_path, 'w780');
+const cast = (tmdb.credits?.cast ?? []).slice(0, 8);
+const similar: TmdbSearchResult[] = [];
+const seen = new Set<number>([tmdbId]);
+for (const s of [...(tmdb.recommendations?.results ?? []), ...(tmdb.similar?.results ?? [])]) {
+  if (similar.length >= 12) break;
+  if (s.poster_path && !seen.has(s.id)) {
+    seen.add(s.id);
+    similar.push(s);
+  }
+}
+
+// Regiones para el selector de "dónde ver".
+const regions = WATCH_REGIONS.map((code) => ({ code, name: countryName(code, lang) }));
+const watchLabels = { sub: t('film.sub'), free: t('film.free'), rent: t('film.rent'), buy: t('film.buy') };
+
+// Datos curiosos: finanzas (TMDB), taquilla y premios (OMDb), productoras.
+const fmtMoney = (n?: number) =>
+  n && n > 0
+    ? new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0,
+      }).format(n)
+    : null;
+const cleanOmdb = (v?: string) => (v && v !== 'N/A' ? v : null);
+const profitVal = tmdb.budget && tmdb.revenue && tmdb.budget > 0 && tmdb.revenue > 0 ? tmdb.revenue - tmdb.budget : null;
+const companies = (tmdb.production_companies ?? []).map((c) => c.name).slice(0, 4);
+
+const facts = [
+  { label: t('film.budget'), value: fmtMoney(tmdb.budget) },
+  { label: t('film.revenue'), value: fmtMoney(tmdb.revenue) },
+  { label: t('film.profit'), value: profitVal != null ? fmtMoney(profitVal) : null },
+  { label: t('film.boxOffice'), value: cleanOmdb(omdb?.BoxOffice) },
+  { label: t('film.awards'), value: cleanOmdb(omdb?.Awards) },
+  { label: t('film.companies'), value: companies.length > 0 ? companies.join(', ') : null },
+].filter((f) => f.value);
+
+const hasLocations = !!locations && (locations.filming.length > 0 || locations.narrative.length > 0);
+const tagline = cleanOmdb(tmdb.tagline);
 ---
 
 <BaseLayout title={tmdb.title} description={tmdb.overview} altPath={localizePath(lang === 'es' ? 'en' : 'es', `film/${tmdbId}`)}>
@@ -100,6 +144,7 @@ const ratings = omdb?.Ratings ?? [];
       <div class="md:col-span-8">
         <span class="label">{tmdb.original_title}{year && ` · ${year}`}</span>
         <h1 class="mt-2 text-display-mobile md:text-display-lg">{tmdb.title}</h1>
+        {tagline && <p class="mt-3 max-w-2xl font-display text-headline-md italic text-muted">«{tagline}»</p>}
 
         <p class="mt-5 font-mono text-meta-data uppercase tracking-[0.08em] text-muted">
           {[dir, tmdb.runtime ? `${tmdb.runtime} min` : null, tmdb.production_countries[0]?.name]
@@ -114,6 +159,22 @@ const ratings = omdb?.Ratings ?? [];
         </div>
 
         <p class="prose-archive mt-6 max-w-2xl text-body-lg text-charcoal">{tmdb.overview}</p>
+
+        {/* Tráiler (YouTube, carga diferida al pulsar → privacidad) */}
+        {trailer && (
+          <div id="trailer" class="mt-8 border border-ink" data-key={trailer}>
+            <button type="button" id="trailer-btn" class="group relative block w-full" aria-label={t('film.playTrailer')}>
+              {trailerThumb ? (
+                <img src={trailerThumb} alt={t('film.trailer')} width="780" height="439" loading="lazy" decoding="async" class="aspect-video w-full object-cover" />
+              ) : (
+                <div class="film-grain aspect-video w-full"></div>
+              )}
+              <span class="absolute inset-0 flex items-center justify-center bg-ink/30 transition-colors group-hover:bg-ink/50">
+                <span class="btn btn-primary pointer-events-none">▶ {t('film.playTrailer')}</span>
+              </span>
+            </button>
+          </div>
+        )}
 
         <!-- Notas externas -->
         {(ratings.length > 0 || tmdb.vote_average > 0) && (
@@ -140,17 +201,96 @@ const ratings = omdb?.Ratings ?? [];
           </div>
         )}
 
+        {/* Datos curiosos: presupuesto, recaudación, premios, productoras */}
+        {facts.length > 0 && (
+          <section class="mt-10">
+            <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('film.facts')}</h2>
+            <dl class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2">
+              {facts.map((f) => (
+                <div class="bg-surface p-3">
+                  <dt class="label">{f.label}</dt>
+                  <dd class="mt-1 font-mono text-body-md text-ink">{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        {/* Localizaciones (Wikidata) */}
+        {hasLocations && (
+          <section class="mt-10">
+            <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('film.locations')}</h2>
+            {locations!.filming.length > 0 && (
+              <div class="mt-4">
+                <span class="label">{t('film.filmingLocation')}</span>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  {locations!.filming.map((l) => (
+                    <span class="border border-ink px-2 py-1 font-mono text-meta-data text-ink">{l}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {locations!.narrative.length > 0 && (
+              <div class="mt-4">
+                <span class="label">{t('film.narrativeLocation')}</span>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  {locations!.narrative.map((l) => (
+                    <span class="border border-ink px-2 py-1 font-mono text-meta-data text-charcoal">{l}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            <p class="mt-3 font-mono text-meta-data text-muted">{t('film.locationsBy')}</p>
+          </section>
+        )}
+
+        {/* Reparto */}
+        {cast.length > 0 && (
+          <section class="mt-10">
+            <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('film.cast')}</h2>
+            <ul class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
+              {cast.map((c) => (
+                <li class="flex flex-col bg-surface">
+                  <div class="aspect-[2/3] w-full bg-charcoal">
+                    {profileUrl(c.profile_path) ? (
+                      <img src={profileUrl(c.profile_path)} alt={c.name} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                    ) : (
+                      <div class="film-grain h-full w-full"></div>
+                    )}
+                  </div>
+                  <div class="p-2">
+                    <p class="font-display text-body-md leading-tight text-ink">{c.name}</p>
+                    <p class="font-mono text-meta-data text-muted">{c.character}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         {/* Dónde ver (Watchmode) — solo si la API está configurada */}
         {watchmode && (
-          <section class="mt-10 border border-ink">
-            <div class="flex items-baseline justify-between border-b border-ink bg-ink px-3 py-2">
-              <h2 class="label text-background">{t('film.whereToWatch')} · {t('film.region')}</h2>
+          <section
+            id="watch-section"
+            class="mt-10 border border-ink"
+            data-id={tmdbId}
+            data-labels={JSON.stringify(watchLabels)}
+            data-empty={t('film.noSources')}
+          >
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-ink bg-ink px-3 py-2">
+              <h2 class="label text-background">{t('film.whereToWatch')}</h2>
+              <label class="flex items-center gap-2">
+                <span class="label text-background">{t('film.regionSelect')}</span>
+                <select id="watch-region" class="border border-background bg-ink px-2 py-1 font-mono text-meta-data text-background focus:outline-none">
+                  {regions.map((r) => <option value={r.code} selected={r.code === 'ES'}>{r.name}</option>)}
+                </select>
+              </label>
             </div>
-            {watchmode.sources.length === 0 ? (
-              <p class="px-3 py-4 font-mono text-meta-data text-muted">{t('film.noSources')}</p>
-            ) : (
-              <div>
-                {watchGroups
+            <div id="watch-groups">
+              {watchmode.sources.length === 0 ? (
+                <p class="px-3 py-4 font-mono text-meta-data text-muted">{t('film.noSources')}</p>
+              ) : (
+                watchGroups
                   .filter((g) => g.items.length > 0)
                   .map((g) => (
                     <div class="flex flex-col gap-2 border-b border-outline-variant px-3 py-3 last:border-b-0 sm:flex-row sm:items-center">
@@ -168,9 +308,9 @@ const ratings = omdb?.Ratings ?? [];
                         ))}
                       </div>
                     </div>
-                  ))}
-              </div>
-            )}
+                  ))
+              )}
+            </div>
             <p class="border-t border-outline-variant px-3 py-2 font-mono text-meta-data text-muted">
               {t('film.sourcesBy')}
             </p>
@@ -178,5 +318,93 @@ const ratings = omdb?.Ratings ?? [];
         )}
       </div>
     </div>
+
+    {/* Películas similares */}
+    {similar.length > 0 && (
+      <section class="mt-14">
+        <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('film.similar')}</h2>
+        <div class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+          {similar.map((s) => (
+            <a href={localizePath(lang, `film/${s.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+              <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+                <img
+                  src={posterUrl(s.poster_path, 'w342')}
+                  srcset={posterSrcset(s.poster_path, 'w342', 'w500') ?? undefined}
+                  sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw"
+                  alt={s.title}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover"
+                />
+              </div>
+              <div class="flex flex-1 flex-col p-2">
+                <p class="font-display text-body-lg leading-tight text-ink">{s.title}</p>
+                <p class="font-mono text-meta-data text-muted">{s.release_date ? s.release_date.slice(0, 4) : ''}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
   </article>
+
+  <script>
+    // Tráiler: inyecta el iframe de YouTube solo al pulsar (privacidad + menos peso).
+    const tw = document.getElementById('trailer');
+    const tb = document.getElementById('trailer-btn');
+    tb?.addEventListener('click', () => {
+      const key = tw?.dataset.key;
+      if (!tw || !key) return;
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${key}?autoplay=1`;
+      f.title = 'Tráiler';
+      f.allow = 'autoplay; encrypted-media; fullscreen';
+      f.setAttribute('allowfullscreen', '');
+      f.className = 'aspect-video w-full';
+      f.style.border = '0';
+      tw.replaceChildren(f);
+    });
+
+    // Selector de región: pide a /api/films/:id/watch y reconstruye la lista.
+    const ws = document.getElementById('watch-section');
+    const sel = document.getElementById('watch-region') as HTMLSelectElement | null;
+    const groups = document.getElementById('watch-groups');
+    if (ws && sel && groups) {
+      const id = ws.dataset.id;
+      const labels = JSON.parse(ws.dataset.labels || '{}');
+      const emptyMsg = ws.dataset.empty || '';
+      const order = ['sub', 'free', 'rent', 'buy'];
+
+      const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
+      const render = (sources: { name: string; type: string; url: string }[]) => {
+        if (!sources || sources.length === 0) {
+          groups.innerHTML = `<p class="px-3 py-4 font-mono text-meta-data text-muted">${escape(emptyMsg)}</p>`;
+          return;
+        }
+        let html = '';
+        for (const type of order) {
+          const items = sources.filter((s) => s.type === type);
+          if (items.length === 0) continue;
+          const links = items
+            .map((s) => `<a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer" class="border border-ink px-3 py-1 font-mono text-meta-data text-ink no-underline transition-colors hover:bg-ink hover:text-white">${escape(s.name)}</a>`)
+            .join('');
+          html += `<div class="flex flex-col gap-2 border-b border-outline-variant px-3 py-3 last:border-b-0 sm:flex-row sm:items-center"><span class="label shrink-0 sm:w-32">${escape(labels[type] || type)}</span><div class="flex flex-wrap gap-2">${links}</div></div>`;
+        }
+        groups.innerHTML = html;
+      };
+
+      sel.addEventListener('change', async () => {
+        groups.style.opacity = '0.5';
+        try {
+          const res = await fetch(`/api/films/${id}/watch?region=${encodeURIComponent(sel.value)}`);
+          const data = await res.json();
+          render(data?.watchmode?.sources ?? []);
+        } catch {
+          /* mantiene lo anterior */
+        } finally {
+          groups.style.opacity = '1';
+        }
+      });
+    }
+  </script>
 </BaseLayout>

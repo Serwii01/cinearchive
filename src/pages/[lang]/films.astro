@@ -1,18 +1,13 @@
 ---
-export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TmdbSearch from '../../components/TmdbSearch.astro';
-import filmsData from '../../data/films.json';
+import { getCatalog } from '../../lib/catalog';
 import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
-export function getStaticPaths() {
-  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
-}
-
-const lang = Astro.params.lang as Lang;
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
 const t = useTranslations(lang);
 
-const films = [...filmsData.films].sort((a, b) => a.year - b.year || a.title.localeCompare(b.title));
+const films = (await getCatalog()).sort((a, b) => a.year - b.year || a.title.localeCompare(b.title));
 const intro = t('films.intro').replace('{count}', String(films.length));
 ---
 
@@ -66,7 +61,11 @@ const intro = t('films.intro').replace('{count}', String(films.length));
                 data-search={`${f.title} ${f.original_title} ${f.director}`.toLowerCase()}
               >
                 <td class="px-3 py-3">
-                  <span class="font-display text-headline-md leading-tight text-ink">{f.title}</span>
+                  {f.tmdbId ? (
+                    <a href={localizePath(lang, `film/${f.tmdbId}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{f.title}</a>
+                  ) : (
+                    <span class="font-display text-headline-md leading-tight text-ink">{f.title}</span>
+                  )}
                   {f.original_title !== f.title && (
                     <span class="mt-0.5 block font-mono text-meta-data text-muted">{f.original_title}</span>
                   )}

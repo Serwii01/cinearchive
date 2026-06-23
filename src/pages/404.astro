@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getLangFromUrl, useTranslations, localizePath } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={t('error.title')}>
+  <section class="frame py-24 text-center">
+    <p class="font-display text-display-lg text-ink">404</p>
+    <h1 class="mt-4 text-headline-lg text-ink">{t('error.title')}</h1>
+    <p class="mt-3 text-body-lg text-charcoal">{t('error.text')}</p>
+    <a href={localizePath(lang)} class="btn btn-primary mt-8 no-underline">{t('error.home')}</a>
+  </section>
+</BaseLayout>

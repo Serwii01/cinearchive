@@ -13,11 +13,26 @@ try {
 } catch {
   recs = [];
 }
+
+const hero = recs[0] ?? null;
+const filmBase = localizePath(lang, 'film'); // /es/film  → el script añade /{id}
+// Datos para el botón "otra recomendación" (se cicla en el cliente, sin más peticiones).
+const heroData = JSON.stringify(
+  recs.map((r) => ({
+    id: r.tmdbId,
+    title: r.title,
+    year: r.year,
+    overview: r.overview,
+    backdrop: r.backdrop,
+    because: r.because,
+  })),
+).replace(/</g, '\\u003c');
 ---
 
 <BaseLayout title={t('recs.title')}>
   <section class="frame py-12">
-    <header class="border-b border-ink pb-6">
+    <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
       <span class="label">{t('recs.title')} · {recs.length}</span>
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('recs.title')}</h1>
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('recs.intro')}</p>
@@ -29,32 +44,120 @@ try {
         <a href={localizePath(lang, 'account')} class="text-ink underline decoration-ochre">{t('nav.account')}</a>
       </p>
     ) : (
-      <div class="mt-10 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
-        {recs.map((r) => (
-          <a href={localizePath(lang, `film/${r.tmdbId}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
-            <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
-              {r.poster ? (
-                <img
-                  src={r.poster}
-                  srcset={r.posterSrcset ?? undefined}
-                  sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw"
-                  alt={r.title}
-                  loading="lazy"
-                  decoding="async"
-                  class="h-full w-full object-cover"
-                />
-              ) : (
-                <div class="film-grain h-full w-full"></div>
-              )}
+      <>
+        {/* PELÍCULA GRANDE RECOMENDADA + BOTÓN "OTRA" */}
+        <section id="rec-hero" class="mt-10 border border-ink" data-base={filmBase} data-because={t('recs.because')}>
+          <div class="grid grid-cols-1 md:grid-cols-12">
+            <div class="flex flex-col justify-between gap-6 py-8 md:col-span-5 md:border-r md:border-ink md:py-10 md:pr-8 md:pl-8">
+              <div class="flex items-center justify-between gap-4">
+                <span class="label">{t('recs.heroLabel')}</span>
+                <span id="rec-because" class="font-mono text-meta-data text-ochre-dim">
+                  {hero?.because ? `${t('recs.because')} ${hero.because}` : ''}
+                </span>
+              </div>
+              <h2 class="text-display-mobile md:text-headline-lg lg:text-display-mobile">
+                <a id="rec-link" href={`${filmBase}/${hero?.tmdbId}`} class="text-ink no-underline hover:text-muted">
+                  {hero?.title}
+                </a>
+              </h2>
+              <p id="rec-overview" class="max-w-2xl text-body-md text-charcoal">{hero?.overview}</p>
+              <div class="flex flex-wrap items-center gap-4">
+                <a id="rec-cta" href={`${filmBase}/${hero?.tmdbId}`} class="btn btn-primary no-underline">
+                  {t('home.viewFilm')}
+                </a>
+                <button id="rec-next" type="button" class="btn border border-ink bg-background text-ink no-underline transition-colors hover:bg-ink hover:text-background">
+                  {t('recs.another')} ↻
+                </button>
+                <span id="rec-year" class="font-mono text-meta-data text-muted">{hero?.year}</span>
+              </div>
             </div>
-            <div class="flex flex-1 flex-col p-2">
-              <p class="font-display text-body-lg leading-tight text-ink">{r.title}</p>
-              <p class="font-mono text-meta-data text-muted">{r.year}</p>
-              {r.because && <p class="mt-auto pt-2 font-mono text-meta-data text-ochre-dim">{t('recs.because')} {r.because}</p>}
-            </div>
-          </a>
-        ))}
-      </div>
+
+            <a id="rec-imglink" href={`${filmBase}/${hero?.tmdbId}`} class="block border-t border-ink md:col-span-7 md:border-l md:border-t-0">
+              <img
+                id="rec-img"
+                src={hero?.backdrop ?? ''}
+                alt={hero?.title}
+                width="1280"
+                height="720"
+                decoding="async"
+                class:list={['h-56 w-full object-cover sm:h-72 md:h-full md:min-h-[22rem]', !hero?.backdrop && 'hidden']}
+              />
+              <div id="rec-grain" class:list={['film-grain h-56 w-full sm:h-72 md:h-full md:min-h-[22rem]', hero?.backdrop && 'hidden']}></div>
+            </a>
+          </div>
+        </section>
+
+        {/* REJILLA — MÁS PARA TI */}
+        <h2 class="mt-14 border-b border-ink pb-3 text-headline-lg text-ink">{t('recs.more')}</h2>
+        <div class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+          {recs.map((r) => (
+            <a href={`${filmBase}/${r.tmdbId}`} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+              <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+                {r.poster ? (
+                  <img
+                    src={r.poster}
+                    srcset={r.posterSrcset ?? undefined}
+                    sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw"
+                    alt={r.title}
+                    loading="lazy"
+                    decoding="async"
+                    class="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div class="film-grain h-full w-full"></div>
+                )}
+              </div>
+              <div class="flex flex-1 flex-col p-2">
+                <p class="font-display text-body-lg leading-tight text-ink">{r.title}</p>
+                <p class="font-mono text-meta-data text-muted">{r.year}</p>
+                {r.because && <p class="mt-auto pt-2 font-mono text-meta-data text-ochre-dim">{t('recs.because')} {r.because}</p>}
+              </div>
+            </a>
+          ))}
+        </div>
+      </>
     )}
   </section>
+
+  <script type="application/json" id="rec-data" set:html={heroData}></script>
+  <script>
+    const el = document.getElementById('rec-hero');
+    const raw = document.getElementById('rec-data')?.textContent;
+    if (el && raw) {
+      const data = JSON.parse(raw);
+      const base = el.dataset.base ?? '';
+      const becausePrefix = el.dataset.because ?? '';
+      const $ = (id: string) => document.getElementById(id) as HTMLElement;
+      let i = 0;
+
+      const render = () => {
+        const r = data[i];
+        if (!r) return;
+        const href = `${base}/${r.id}`;
+        $('rec-link').textContent = r.title;
+        $('rec-link').setAttribute('href', href);
+        $('rec-cta').setAttribute('href', href);
+        $('rec-imglink').setAttribute('href', href);
+        $('rec-overview').textContent = r.overview ?? '';
+        $('rec-year').textContent = r.year ?? '';
+        $('rec-because').textContent = r.because ? `${becausePrefix} ${r.because}` : '';
+        const img = $('rec-img');
+        const grain = $('rec-grain');
+        if (r.backdrop) {
+          img.setAttribute('src', r.backdrop);
+          img.setAttribute('alt', r.title);
+          img.classList.remove('hidden');
+          grain.classList.add('hidden');
+        } else {
+          img.classList.add('hidden');
+          grain.classList.remove('hidden');
+        }
+      };
+
+      $('rec-next')?.addEventListener('click', () => {
+        i = (i + 1) % data.length;
+        render();
+      });
+    }
+  </script>
 </BaseLayout>

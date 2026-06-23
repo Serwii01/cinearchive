@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
-import { enabledSocialProviders } from '../../lib/auth';
+import SocialButtons from '../../components/SocialButtons.astro';
 
 const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
 const t = useTranslations(lang);
@@ -10,8 +10,6 @@ const t = useTranslations(lang);
 if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
 
 const next = Astro.url.searchParams.get('next') || localizePath(lang);
-const hasGoogle = enabledSocialProviders.includes('google');
-const hasGithub = enabledSocialProviders.includes('github');
 ---
 
 <BaseLayout title={t('auth.loginTitle')}>
@@ -30,17 +28,10 @@ const hasGithub = enabledSocialProviders.includes('github');
         </label>
         <p data-error class="hidden font-mono text-meta-data text-error"></p>
         <button type="submit" class="btn btn-primary justify-center">{t('auth.signIn')}</button>
+        <a href={localizePath(lang, 'forgot')} class="text-center font-mono text-meta-data text-muted no-underline hover:text-ink">{t('auth.forgot')}</a>
       </form>
 
-      {(hasGoogle || hasGithub) && (
-        <div class="border-t border-ink p-6">
-          <p class="label mb-3 text-center">{t('auth.or')}</p>
-          <div class="flex flex-col gap-3">
-            {hasGoogle && <button type="button" data-social="google" class="btn btn-secondary justify-center">{t('auth.withGoogle')}</button>}
-            {hasGithub && <button type="button" data-social="github" class="btn btn-secondary justify-center">{t('auth.withGithub')}</button>}
-          </div>
-        </div>
-      )}
+      <SocialButtons lang={lang} />
 
       <a href={localizePath(lang, 'register')} class="block border-t border-ink px-6 py-4 text-center font-mono text-meta-data text-muted no-underline hover:text-ink">
         {t('auth.noAccount')}

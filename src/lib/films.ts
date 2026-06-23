@@ -9,14 +9,17 @@ import { filmsCache } from '../db/schema';
 import { getMovie, director, posterUrl, type TmdbMovie } from './tmdb';
 import { getOmdbByImdbId, type OmdbData } from './omdb';
 import { getWatchSources, type WatchAvailability } from './watchmode';
+import { getFilmLocations, type FilmLocations } from './wikidata';
 
 const OMDB_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
 const WATCHMODE_TTL_MS = 14 * 24 * 60 * 60 * 1000; // 14 días (límite mensual bajo)
+const WIKIDATA_TTL_MS = 60 * 24 * 60 * 60 * 1000; // 60 días (cambia rara vez)
 
 export interface FilmDetail {
   tmdb: TmdbMovie;
   omdb: OmdbData | null;
   watchmode: WatchAvailability | null;
+  locations: FilmLocations | null;
 }
 
 export async function getFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
@@ -58,15 +61,29 @@ export async function getFilm(tmdbId: number, locale: string): Promise<FilmDetai
     }
   }
 
+  // Wikidata: localizaciones (rodaje/narrativa). Cache muy prolongada.
+  let locations = (cached?.wikidata as FilmLocations | null) ?? null;
+  const wdFresh =
+    cached?.wikidataFetchedAt &&
+    Date.now() - new Date(cached.wikidataFetchedAt).getTime() < WIKIDATA_TTL_MS;
+  let wikidataFetchedAt = cached?.wikidataFetchedAt ?? null;
+  if (!wdFresh && tmdb.imdb_id) {
+    const fresh = await getFilmLocations(tmdb.imdb_id);
+    if (fresh) {
+      locations = fresh;
+      wikidataFetchedAt = new Date();
+    }
+  }
+
   await db
     .insert(filmsCache)
-    .values({ tmdbId, tmdb, omdb, watchmode, watchmodeFetchedAt, fetchedAt: new Date() })
+    .values({ tmdbId, tmdb, omdb, watchmode, watchmodeFetchedAt, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() })
     .onConflictDoUpdate({
       target: filmsCache.tmdbId,
-      set: { tmdb, omdb, watchmode, watchmodeFetchedAt, fetchedAt: new Date() },
+      set: { tmdb, omdb, watchmode, watchmodeFetchedAt, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() },
     });
 
-  return { tmdb, omdb, watchmode };
+  return { tmdb, omdb, watchmode, locations };
 }
 
 export interface FilmBrief {
@@ -75,15 +92,22 @@ export interface FilmBrief {
   year: string;
   director: string | null;
   poster: string | null;
+  genreIds: number[];
+  decade: number | null;
+  runtime: number;
 }
 
 function briefFromTmdb(m: TmdbMovie): FilmBrief {
+  const year = m.release_date ? Number(m.release_date.slice(0, 4)) : null;
   return {
     tmdbId: m.id,
     title: m.title,
-    year: m.release_date ? m.release_date.slice(0, 4) : '',
+    year: year ? String(year) : '',
     director: director(m),
     poster: posterUrl(m.poster_path, 'w185'),
+    genreIds: (m.genres ?? []).map((g) => g.id),
+    decade: year ? Math.floor(year / 10) * 10 : null,
+    runtime: m.runtime ?? 0,
   };
 }
 

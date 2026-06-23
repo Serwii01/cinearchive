@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '../db/client';
 import { user, session, account, verification } from '../db/schema';
+import { sendEmail } from './email';
 
 /**
  * Configuración de Better Auth (solo servidor).
@@ -52,6 +53,18 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
+    // Envía el enlace de restablecimiento por correo (Resend). Sin clave de email,
+    // no se envía nada (el login social sigue funcionando igual).
+    sendResetPassword: async ({ user: u, url }) => {
+      await sendEmail({
+        to: u.email,
+        subject: 'Restablecer tu contraseña — Cine Archive',
+        text: `Has solicitado restablecer tu contraseña en Cine Archive.\n\nAbre este enlace para crear una nueva: ${url}\n\nSi no fuiste tú, ignora este correo.`,
+        html: `<p>Has solicitado restablecer tu contraseña en <strong>Cine Archive</strong>.</p>
+<p><a href="${url}">Crear una contraseña nueva</a></p>
+<p style="color:#666;font-size:14px">Si no fuiste tú, puedes ignorar este correo.</p>`,
+      });
+    },
   },
   socialProviders,
   session: {
@@ -71,6 +84,11 @@ export const auth = betterAuth({
   },
   advanced: {
     cookiePrefix: 'cine',
+    // Detrás de Caddy, la IP real del cliente llega en X-Forwarded-For; así el
+    // rate limiting anti fuerza-bruta del login cuenta por IP real, no compartida.
+    ipAddress: {
+      ipAddressHeaders: ['x-forwarded-for', 'x-real-ip'],
+    },
     // En producción (HTTPS) fuerza cookies seguras; en local (http) no, para que
     // el desarrollo funcione.
     useSecureCookies: !isLocal,

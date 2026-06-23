@@ -2,10 +2,36 @@
 # variables de entorno desde docker-compose.
 {
 	email {$EMAIL}
+	# Habilita el módulo de rate limiting (imagen construida con Dockerfile.caddy).
+	order rate_limit before basic_auth
 }
 
 {$DOMAIN} {
 	encode gzip zstd
+
+	# --- Protección frente a inundación de peticiones (DoS) ---
+	# Límite por IP en el borde, antes de llegar a la app. Dos zonas: una general
+	# para toda la web y otra más estricta para la API y el login.
+	rate_limit {
+		zone general {
+			key {remote_host}
+			events 240
+			window 1m
+		}
+		zone api {
+			match {
+				path /api/*
+			}
+			key {remote_host}
+			events 90
+			window 1m
+		}
+	}
+
+	# Rechaza cuerpos de petición desproporcionados (otro vector de abuso).
+	request_body {
+		max_size 1MB
+	}
 
 	# Cabeceras de seguridad (sustituyen a public/_headers de Cloudflare).
 	header {
@@ -18,7 +44,7 @@
 		# CSP estricta: scripts y estilos propios; imágenes desde TMDB e Internet
 		# Archive; el visor de la hemeroteca se incrusta desde archive.org (frame-src).
 		# (No se necesita 'unsafe-inline' en scripts: no hay scripts inline.)
-		Content-Security-Policy "default-src 'self'; img-src 'self' https://image.tmdb.org https://archive.org https://*.archive.org data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src https://archive.org https://*.archive.org; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+		Content-Security-Policy "default-src 'self'; img-src 'self' https://image.tmdb.org https://archive.org https://*.archive.org data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src https://archive.org https://*.archive.org https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 		-Server
 	}
 

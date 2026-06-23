@@ -76,7 +76,37 @@ export const filmsCache = pgTable('films_cache', {
   omdb: jsonb('omdb'),
   watchmode: jsonb('watchmode'),
   watchmodeFetchedAt: timestamp('watchmode_fetched_at'),
+  wikidata: jsonb('wikidata'),
+  wikidataFetchedAt: timestamp('wikidata_fetched_at'),
   fetchedAt: timestamp('fetched_at').notNull().defaultNow(),
+});
+
+/** Cache de "dónde ver" por película y región (cuota Watchmode baja: 1000/mes). */
+export const watchCache = pgTable(
+  'watch_cache',
+  {
+    tmdbId: integer('tmdb_id').notNull(),
+    region: text('region').notNull(),
+    data: jsonb('data'),
+    fetchedAt: timestamp('fetched_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.tmdbId, t.region] }),
+  }),
+);
+
+/** Películas añadidas al catálogo de la filmoteca desde el panel de administración. */
+export const extraFilms = pgTable('extra_films', {
+  tmdbId: integer('tmdb_id').primaryKey(),
+  title: text('title').notNull(),
+  originalTitle: text('original_title').notNull().default(''),
+  director: text('director'),
+  year: integer('year'),
+  country: text('country'),
+  runtimeMin: integer('runtime_min'),
+  language: text('language'),
+  addedBy: text('added_by'),
+  addedAt: timestamp('added_at').notNull().defaultNow(),
 });
 
 /** Estado de una película en la lista del usuario. */
@@ -117,3 +147,5 @@ export type User = typeof user.$inferSelect;
 export type UserFilm = typeof userFilms.$inferSelect;
 export type UserPreferences = typeof userPreferences.$inferSelect;
 export type FilmCache = typeof filmsCache.$inferSelect;
+export type WatchCache = typeof watchCache.$inferSelect;
+export type ExtraFilm = typeof extraFilms.$inferSelect;

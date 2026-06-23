@@ -1,0 +1,7 @@
+# Caddy con el módulo de rate limiting (no incluido en la imagen oficial).
+# Bloquea inundaciones de peticiones por IP en el borde, antes de llegar a Node.
+FROM caddy:2-builder-alpine AS builder
+RUN xcaddy build --with github.com/mholt/caddy-ratelimit
+
+FROM caddy:2-alpine
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy

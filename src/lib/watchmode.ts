@@ -42,6 +42,21 @@ function normalizeType(t: string): SourceType | null {
  * Devuelve las plataformas donde ver la película en la región dada (por defecto ES).
  * Hace 2 llamadas: mapear tmdbId → id de Watchmode, y obtener las fuentes.
  */
+/** Cuota de la cuenta de Watchmode (para el panel admin). null si no hay clave/error. */
+export async function getWatchmodeStatus(): Promise<{ quota: number; quotaUsed: number } | null> {
+  const key = process.env.WATCHMODE_API_KEY;
+  if (!key) return null;
+  try {
+    const res = await fetch(`${BASE}/status/?apiKey=${key}`);
+    if (!res.ok) return null;
+    const d = (await res.json()) as { quota?: number; quotaUsed?: number };
+    if (typeof d.quota !== 'number') return null;
+    return { quota: d.quota, quotaUsed: d.quotaUsed ?? 0 };
+  } catch {
+    return null;
+  }
+}
+
 export async function getWatchSources(
   tmdbId: number,
   region = 'ES',

@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={t('auth.resetTitle')}>
+  <section class="frame py-12">
+    <div class="mx-auto max-w-md border border-ink bg-surface">
+      <h1 class="border-b border-ink px-6 py-4 font-display text-headline-lg text-ink">{t('auth.resetTitle')}</h1>
+
+      <form
+        id="reset-form"
+        class="flex flex-col gap-4 p-6"
+        novalidate
+        data-done={t('auth.resetDone')}
+        data-error={t('auth.resetError')}
+        data-login={localizePath(lang, 'login')}
+      >
+        <label class="block">
+          <span class="label mb-1 block">{t('auth.newPassword')}</span>
+          <input name="password" type="password" required autocomplete="new-password" minlength="8" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md focus:bg-film-white focus:outline-none" />
+        </label>
+        <p data-msg class="hidden font-mono text-meta-data"></p>
+        <button type="submit" class="btn btn-primary justify-center">{t('auth.resetSubmit')}</button>
+      </form>
+
+      <a href={localizePath(lang, 'login')} class="block border-t border-ink px-6 py-4 text-center font-mono text-meta-data text-muted no-underline hover:text-ink">
+        {t('auth.backToLogin')}
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { resetPassword } from '../../lib/auth-client';
+  const form = document.getElementById('reset-form') as HTMLFormElement;
+  const msg = form.querySelector('[data-msg]') as HTMLElement;
+  const token = new URLSearchParams(location.search).get('token') || '';
+
+  if (!token) {
+    msg.textContent = form.dataset.error || 'Invalid link';
+    msg.className = 'font-mono text-meta-data text-error';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const password = String(new FormData(form).get('password'));
+    const { error } = await resetPassword({ newPassword: password, token });
+    if (error) {
+      msg.textContent = form.dataset.error || 'Error';
+      msg.className = 'font-mono text-meta-data text-error';
+      msg.classList.remove('hidden');
+    } else {
+      msg.textContent = form.dataset.done || 'Done';
+      msg.className = 'font-mono text-meta-data text-ink';
+      msg.classList.remove('hidden');
+      setTimeout(() => (location.href = form.dataset.login || '/'), 1500);
+    }
+  });
+</script>

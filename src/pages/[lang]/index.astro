@@ -2,8 +2,10 @@
 export const prerender = false; // la película del día se obtiene en cada visita (cacheada por día)
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import IssueCard from '../../components/IssueCard.astro';
-import { periodicals } from '../../lib/periodicals';
+import JournalCard from '../../components/JournalCard.astro';
+import { periodicals, journals } from '../../lib/periodicals';
 import { getFilmOfDay } from '../../lib/featured';
+import { manifesto } from '../../data/manifesto';
 import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
 const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
@@ -13,6 +15,8 @@ const latestIssues = periodicals
   .slice()
   .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title))
   .slice(0, 4);
+
+const manifestoCopy = manifesto[lang];
 
 const film = await getFilmOfDay(lang);
 const overview = film?.overview && film.overview.length > 320 ? film.overview.slice(0, 317) + '…' : film?.overview;
@@ -82,6 +86,47 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
 
     <div class="grid grid-cols-2 gap-px border-l border-r border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
       {latestIssues.map((item) => <IssueCard item={item} lang={lang} />)}
+    </div>
+  </section>
+
+  {/* REVISTAS ACTUALES · ACCESO ABIERTO */}
+  <section class="frame py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('archive.current')}</h2>
+      <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">{t('home.viewArchive')} →</a>
+    </div>
+    <p class="mb-8 max-w-2xl text-body-md text-charcoal">{t('archive.currentIntro')}</p>
+
+    <div class="grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+      {journals.map((j) => <JournalCard item={j} lang={lang} />)}
+    </div>
+  </section>
+
+  {/* MANIFIESTO (antes en el navbar) */}
+  <section class="frame border-t border-ink py-12">
+    <header class="border-b border-ink pb-6">
+      <span class="label">{t('about.title')}</span>
+      <p class="mt-4 max-w-3xl font-display text-headline-md text-ink">{manifestoCopy.lead}</p>
+    </header>
+
+    <div class="grid grid-cols-1 gap-10 pt-8 md:grid-cols-12">
+      <div class="prose-archive md:col-span-7 md:border-r md:border-ink md:pr-10">
+        {manifestoCopy.body.map((p) => <p>{p}</p>)}
+        <a href={localizePath(lang, 'about')} class="label mt-2 inline-block no-underline hover:text-ink">
+          {t('home.readManifesto')} →
+        </a>
+      </div>
+
+      <dl class="md:col-span-5">
+        {
+          manifestoCopy.principles.map(([term, desc], i) => (
+            <div class:list={['py-4', i < manifestoCopy.principles.length - 1 && 'border-b border-outline-variant']}>
+              <dt class="font-display text-headline-md text-ink">{term}</dt>
+              <dd class="mt-1 text-body-md text-charcoal">{desc}</dd>
+            </div>
+          ))
+        }
+      </dl>
     </div>
   </section>
 </BaseLayout>

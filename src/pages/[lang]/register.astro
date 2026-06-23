@@ -1,15 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
-import { enabledSocialProviders } from '../../lib/auth';
+import SocialButtons from '../../components/SocialButtons.astro';
 
 const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
 const t = useTranslations(lang);
 
 if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
-
-const hasGoogle = enabledSocialProviders.includes('google');
-const hasGithub = enabledSocialProviders.includes('github');
 ---
 
 <BaseLayout title={t('auth.registerTitle')}>
@@ -17,7 +14,7 @@ const hasGithub = enabledSocialProviders.includes('github');
     <div class="mx-auto max-w-md border border-ink bg-surface">
       <h1 class="border-b border-ink px-6 py-4 font-display text-headline-lg text-ink">{t('auth.registerTitle')}</h1>
 
-      <form id="register-form" class="flex flex-col gap-4 p-6" novalidate data-errmsg={t('auth.error')}>
+      <form id="register-form" class="flex flex-col gap-4 p-6" novalidate data-errmsg={t('auth.error')} data-acceptmsg={t('auth.mustAccept')}>
         <label class="block">
           <span class="label mb-1 block">{t('auth.name')}</span>
           <input name="name" type="text" required autocomplete="name" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md focus:bg-film-white focus:outline-none" />
@@ -30,19 +27,20 @@ const hasGithub = enabledSocialProviders.includes('github');
           <span class="label mb-1 block">{t('auth.password')}</span>
           <input name="password" type="password" required autocomplete="new-password" minlength="8" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md focus:bg-film-white focus:outline-none" />
         </label>
+        <label class="flex items-start gap-2 text-body-md text-charcoal">
+          <input name="accept" type="checkbox" required class="mt-1 h-4 w-4 shrink-0 accent-ink" />
+          <span>
+            {t('auth.acceptPre')}{' '}
+            <a href={localizePath(lang, 'privacy')} target="_blank" rel="noopener" class="text-ink underline decoration-ochre">{t('nav.privacy')}</a>{' '}
+            {t('auth.acceptMid')}{' '}
+            <a href={localizePath(lang, 'terms')} target="_blank" rel="noopener" class="text-ink underline decoration-ochre">{t('nav.terms')}</a>.
+          </span>
+        </label>
         <p data-error class="hidden font-mono text-meta-data text-error"></p>
         <button type="submit" class="btn btn-primary justify-center">{t('auth.signUp')}</button>
       </form>
 
-      {(hasGoogle || hasGithub) && (
-        <div class="border-t border-ink p-6">
-          <p class="label mb-3 text-center">{t('auth.or')}</p>
-          <div class="flex flex-col gap-3">
-            {hasGoogle && <button type="button" data-social="google" class="btn btn-secondary justify-center">{t('auth.withGoogle')}</button>}
-            {hasGithub && <button type="button" data-social="github" class="btn btn-secondary justify-center">{t('auth.withGithub')}</button>}
-          </div>
-        </div>
-      )}
+      <SocialButtons lang={lang} />
 
       <a href={localizePath(lang, 'login')} class="block border-t border-ink px-6 py-4 text-center font-mono text-meta-data text-muted no-underline hover:text-ink">
         {t('auth.haveAccount')}
@@ -57,12 +55,19 @@ const hasGithub = enabledSocialProviders.includes('github');
   const form = document.getElementById('register-form') as HTMLFormElement;
   const errEl = form.querySelector('[data-error]') as HTMLElement;
   const errMsg = form.dataset.errmsg || 'Error';
+  const acceptMsg = form.dataset.acceptmsg || 'You must accept the terms.';
+  const accept = form.querySelector('[name="accept"]') as HTMLInputElement;
   const lang = window.location.pathname.startsWith('/en') ? 'en' : 'es';
   const home = `/${lang}/account`;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errEl.classList.add('hidden');
+    if (!accept?.checked) {
+      errEl.textContent = acceptMsg;
+      errEl.classList.remove('hidden');
+      return;
+    }
     const fd = new FormData(form);
     const { error } = await signUp.email({
       name: String(fd.get('name')),

@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { discoverMovies, posterUrl, posterSrcset, type DiscoverParams } from '../../lib/tmdb';
+import { GENRES } from '../../data/genres';
+import { COUNTRIES } from '../../data/countries';
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+const sp = Astro.url.searchParams;
+
+const genre = Number(sp.get('genre')) || null;
+const decade = Number(sp.get('decade')) || null;
+const country = sp.get('country') || null;
+const sortParam = sp.get('sort') || 'popularity.desc';
+const allowedSorts = ['popularity.desc', 'vote_average.desc', 'primary_release_date.desc'] as const;
+const sort = (allowedSorts as readonly string[]).includes(sortParam)
+  ? (sortParam as DiscoverParams['sort'])
+  : 'popularity.desc';
+const page = Math.max(1, Math.min(500, Number(sp.get('page')) || 1));
+
+const decades: number[] = [];
+for (let d = 2020; d >= 1900; d -= 10) decades.push(d);
+
+let results: Awaited<ReturnType<typeof discoverMovies>> = { results: [], totalPages: 1 };
+try {
+  results = await discoverMovies(
+    { genres: genre ? [genre] : undefined, decade: decade ?? undefined, country: country ?? undefined, sort, page },
+    lang,
+  );
+} catch {
+  /* deja resultados vacíos */
+}
+
+// Construye una URL conservando filtros y cambiando la página.
+const pageUrl = (p: number) => {
+  const q = new URLSearchParams();
+  if (genre) q.set('genre', String(genre));
+  if (decade) q.set('decade', String(decade));
+  if (country) q.set('country', country);
+  if (sort && sort !== 'popularity.desc') q.set('sort', sort);
+  if (p > 1) q.set('page', String(p));
+  const qs = q.toString();
+  return localizePath(lang, 'discover') + (qs ? `?${qs}` : '');
+};
+
+const selectCls =
+  'border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none';
+---
+
+<BaseLayout title={t('discover.title')} description={t('discover.intro')} altPath={localizePath(lang === 'es' ? 'en' : 'es', 'discover')}>
+  <section class="frame py-12">
+    <header class="border-b border-ink pb-6">
+      <span class="label">{t('discover.title')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('discover.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('discover.intro')}</p>
+
+      <form method="get" class="mt-6 flex flex-wrap items-end gap-3">
+        <label class="flex flex-col gap-1">
+          <span class="label">{t('discover.genre')}</span>
+          <select name="genre" class={selectCls}>
+            <option value="">{t('discover.all')}</option>
+            {GENRES.map((g) => <option value={g.id} selected={genre === g.id}>{g[lang]}</option>)}
+          </select>
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="label">{t('discover.decade')}</span>
+          <select name="decade" class={selectCls}>
+            <option value="">{t('discover.all')}</option>
+            {decades.map((d) => <option value={d} selected={decade === d}>{d}s</option>)}
+          </select>
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="label">{t('discover.country')}</span>
+          <select name="country" class={selectCls}>
+            <option value="">{t('discover.all')}</option>
+            {COUNTRIES.map((c) => <option value={c.code} selected={country === c.code}>{c[lang]}</option>)}
+          </select>
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="label">{t('discover.sort')}</span>
+          <select name="sort" class={selectCls}>
+            <option value="popularity.desc" selected={sort === 'popularity.desc'}>{t('discover.sortPopular')}</option>
+            <option value="vote_average.desc" selected={sort === 'vote_average.desc'}>{t('discover.sortRated')}</option>
+            <option value="primary_release_date.desc" selected={sort === 'primary_release_date.desc'}>{t('discover.sortRecent')}</option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn-primary">{t('discover.apply')}</button>
+      </form>
+    </header>
+
+    {results.results.length === 0 ? (
+      <p class="mt-10 font-mono text-body-md text-muted">{t('discover.empty')}</p>
+    ) : (
+      <div class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+        {results.results.map((r) => (
+          <a href={localizePath(lang, `film/${r.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+            <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+              {r.poster_path ? (
+                <img
+                  src={posterUrl(r.poster_path, 'w342')}
+                  srcset={posterSrcset(r.poster_path, 'w342', 'w500') ?? undefined}
+                  sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw"
+                  alt={r.title}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover"
+                />
+              ) : (
+                <div class="film-grain h-full w-full"></div>
+              )}
+            </div>
+            <div class="flex flex-1 flex-col p-2">
+              <p class="font-display text-body-lg leading-tight text-ink">{r.title}</p>
+              <p class="font-mono text-meta-data text-muted">
+                {[r.release_date ? r.release_date.slice(0, 4) : null, r.vote_average ? `★ ${r.vote_average.toFixed(1)}` : null].filter(Boolean).join(' · ')}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+
+    {/* Paginación */}
+    <nav class="mt-10 flex items-center justify-between border-t border-ink pt-4" aria-label="Paginación">
+      {page > 1 ? (
+        <a href={pageUrl(page - 1)} class="label no-underline hover:text-ink">{t('discover.prev')}</a>
+      ) : (
+        <span class="label text-muted">{t('discover.prev')}</span>
+      )}
+      <span class="font-mono text-meta-data text-muted">{page} / {results.totalPages}</span>
+      {page < results.totalPages ? (
+        <a href={pageUrl(page + 1)} class="label no-underline hover:text-ink">{t('discover.next')}</a>
+      ) : (
+        <span class="label text-muted">{t('discover.next')}</span>
+      )}
+    </nav>
+  </section>
+</BaseLayout>

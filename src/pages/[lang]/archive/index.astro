@@ -2,7 +2,8 @@
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import IssueCard from '../../../components/IssueCard.astro';
-import { periodicals } from '../../../lib/periodicals';
+import JournalCard from '../../../components/JournalCard.astro';
+import { periodicals, journals } from '../../../lib/periodicals';
 import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 
 export function getStaticPaths() {
@@ -73,6 +74,19 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
     <p id="issue-empty" class="mt-10 hidden font-mono text-body-md text-muted">{t('archive.empty')}</p>
 
     <p class="mt-10 border-t border-ink pt-4 font-mono text-meta-data text-muted">{t('archive.credit')}</p>
+
+    {/* Revistas actuales de acceso abierto (enlazadas a su web oficial) */}
+    <div class="mt-16 border-t-2 border-ink pt-10">
+      <span class="label">{t('archive.current')} · {journals.length}</span>
+      <h2 class="mt-3 text-headline-lg md:text-display-mobile">{t('archive.current')}</h2>
+      <p class="mt-3 max-w-2xl text-body-md text-charcoal">{t('archive.currentIntro')}</p>
+
+      <div class="mt-8 grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+        {journals.map((j) => <JournalCard item={j} lang={lang} />)}
+      </div>
+
+      <p class="mt-6 border-t border-ink pt-4 font-mono text-meta-data text-muted">{t('archive.currentCredit')}</p>
+    </div>
   </section>
 </BaseLayout>
 

@@ -13,6 +13,8 @@ export interface OmdbData {
   Ratings?: { Source: string; Value: string }[];
   Rated?: string;
   Awards?: string;
+  BoxOffice?: string;
+  Production?: string;
   Response: 'True' | 'False';
   Error?: string;
 }

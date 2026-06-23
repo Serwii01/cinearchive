@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { and, eq } from 'drizzle-orm';
 import { db } from '../../../db/client';
 import { userFilms } from '../../../db/schema';
+import { invalidateRecommendations } from '../../../lib/recs';
+import { invalidateStats } from '../../../lib/stats';
 
 export const prerender = false;
 
@@ -56,6 +58,8 @@ export const POST: APIRoute = async ({ locals, request }) => {
       },
     });
 
+  invalidateRecommendations(locals.user.id);
+  invalidateStats(locals.user.id);
   return Response.json({ ok: true });
 };
 
@@ -71,5 +75,7 @@ export const DELETE: APIRoute = async ({ locals, request }) => {
   await db
     .delete(userFilms)
     .where(and(eq(userFilms.userId, locals.user.id), eq(userFilms.tmdbId, parsed.data.tmdbId)));
+  invalidateRecommendations(locals.user.id);
+  invalidateStats(locals.user.id);
   return Response.json({ ok: true });
 };

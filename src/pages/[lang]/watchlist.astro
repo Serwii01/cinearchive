@@ -30,7 +30,8 @@ const byStatus = (s: string) => rows.filter((r) => r.status === s);
 
 <BaseLayout title={t('watchlist.title')}>
   <section class="frame py-12">
-    <header class="border-b border-ink pb-6">
+    <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
       <span class="label">{t('nav.watchlist')} · {rows.length}</span>
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('watchlist.title')}</h1>
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('watchlist.intro')}</p>

@@ -34,8 +34,11 @@ export interface TmdbSearchResult {
   original_title: string;
   release_date?: string;
   poster_path: string | null;
+  backdrop_path?: string | null;
   overview: string;
   vote_average: number;
+  vote_count?: number;
+  popularity?: number;
   genre_ids?: number[];
 }
 
@@ -55,24 +58,42 @@ export interface TmdbMovie {
   title: string;
   original_title: string;
   overview: string;
+  tagline?: string;
   release_date?: string;
   runtime: number | null;
+  budget?: number;
+  revenue?: number;
+  original_language?: string;
   poster_path: string | null;
   backdrop_path: string | null;
   vote_average: number;
   genres: { id: number; name: string }[];
   production_countries: { iso_3166_1: string; name: string }[];
-  credits?: { crew: { job: string; name: string }[]; cast: { name: string; character: string }[] };
+  production_companies?: { id: number; name: string }[];
+  credits?: {
+    crew: { job: string; name: string }[];
+    cast: { name: string; character: string; profile_path: string | null }[];
+  };
   keywords?: { keywords: { id: number; name: string }[] };
   recommendations?: { results: TmdbSearchResult[] };
   similar?: { results: TmdbSearchResult[] };
+  videos?: { results: { key: string; site: string; type: string; name: string; official?: boolean }[] };
 }
 
 export async function getMovie(id: number, locale: string) {
   return tmdbFetch<TmdbMovie>(`/movie/${id}`, {
     language: toTmdbLang(locale),
-    append_to_response: 'credits,keywords,recommendations,similar',
+    append_to_response: 'credits,keywords,recommendations,similar,videos',
   });
+}
+
+/** Clave de YouTube del mejor tráiler (oficial > tráiler > teaser), o null. */
+export function trailerKey(movie: TmdbMovie): string | null {
+  const vids = (movie.videos?.results ?? []).filter((v) => v.site === 'YouTube');
+  if (vids.length === 0) return null;
+  const score = (v: { type: string; official?: boolean }) =>
+    (v.type === 'Trailer' ? 2 : v.type === 'Teaser' ? 1 : 0) + (v.official ? 1 : 0);
+  return vids.slice().sort((a, b) => score(b) - score(a))[0]?.key ?? null;
 }
 
 export interface TmdbTrending extends TmdbSearchResult {
@@ -86,13 +107,53 @@ export async function trendingDay(locale: string) {
   return data.results;
 }
 
-export async function discoverByGenres(genreIds: number[], locale: string) {
+export async function discoverByGenres(
+  genreIds: number[],
+  locale: string,
+  sort: 'vote_average.desc' | 'popularity.desc' = 'vote_average.desc',
+  page = 1,
+) {
   const data = await tmdbFetch<{ results: TmdbSearchResult[] }>('/discover/movie', {
     language: toTmdbLang(locale),
-    with_genres: genreIds.join(','),
-    sort_by: 'vote_average.desc',
-    'vote_count.gte': '500',
+    // OR entre géneros ('|'): basta con que coincida uno, para un pool amplio.
+    with_genres: genreIds.join('|'),
+    sort_by: sort,
+    'vote_count.gte': sort === 'popularity.desc' ? '100' : '300',
+    include_adult: 'false',
+    page: String(page),
+  });
+  return data.results;
+}
+
+/** Busca una persona por nombre y devuelve su id de TMDB (o null). */
+export async function searchPerson(name: string, locale: string): Promise<number | null> {
+  const data = await tmdbFetch<{ results: { id: number }[] }>('/search/person', {
+    query: name,
+    language: toTmdbLang(locale),
+    include_adult: 'false',
     page: '1',
+  });
+  return data.results[0]?.id ?? null;
+}
+
+/** Películas dirigidas/escritas por una persona (para directores favoritos). */
+export async function discoverByCrew(personId: number, locale: string) {
+  const data = await tmdbFetch<{ results: TmdbSearchResult[] }>('/discover/movie', {
+    language: toTmdbLang(locale),
+    with_crew: String(personId),
+    sort_by: 'vote_average.desc',
+    'vote_count.gte': '50',
+    include_adult: 'false',
+    page: '1',
+  });
+  return data.results;
+}
+
+/** Populares (arranque en frío / relleno hasta el mínimo de recomendaciones). */
+export async function popularMovies(locale: string, page = 1) {
+  const data = await tmdbFetch<{ results: TmdbSearchResult[] }>('/movie/popular', {
+    language: toTmdbLang(locale),
+    page: String(page),
   });
   return data.results;
 }
@@ -114,4 +175,39 @@ export function posterSrcset(path: string | null, base: PosterSize = 'w342', ret
 
 export function backdropUrl(path: string | null, size: 'w780' | 'w1280' = 'w1280') {
   return path ? `${TMDB_IMG}/${size}${path}` : null;
+}
+
+/** Foto de perfil de una persona del reparto. */
+export function profileUrl(path: string | null, size: 'w185' | 'h632' = 'w185') {
+  return path ? `${TMDB_IMG}/${size}${path}` : null;
+}
+
+export interface DiscoverParams {
+  genres?: number[];
+  decade?: number; // p. ej. 1980 → 1980-01-01..1989-12-31
+  country?: string; // ISO 3166-1 (origen)
+  sort?: 'popularity.desc' | 'vote_average.desc' | 'primary_release_date.desc' | 'revenue.desc';
+  page?: number;
+}
+
+/** Explorador del catálogo de TMDB para la página Descubrir. */
+export async function discoverMovies(opts: DiscoverParams, locale: string) {
+  const params: Record<string, string> = {
+    language: toTmdbLang(locale),
+    sort_by: opts.sort ?? 'popularity.desc',
+    include_adult: 'false',
+    page: String(opts.page ?? 1),
+    'vote_count.gte': opts.sort === 'vote_average.desc' ? '300' : '50',
+  };
+  if (opts.genres?.length) params.with_genres = opts.genres.join('|');
+  if (opts.country) params.with_origin_country = opts.country;
+  if (opts.decade) {
+    params['primary_release_date.gte'] = `${opts.decade}-01-01`;
+    params['primary_release_date.lte'] = `${opts.decade + 9}-12-31`;
+  }
+  const data = await tmdbFetch<{ results: TmdbSearchResult[]; total_pages: number }>(
+    '/discover/movie',
+    params,
+  );
+  return { results: data.results, totalPages: Math.min(data.total_pages, 500) };
 }

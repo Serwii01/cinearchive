@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 import { db } from '../../../db/client';
 import { userPreferences } from '../../../db/schema';
+import { invalidateRecommendations } from '../../../lib/recs';
 
 export const prerender = false;
 
@@ -72,5 +73,6 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
       },
     });
 
+  invalidateRecommendations(locals.user.id);
   return Response.json({ ok: true });
 };
