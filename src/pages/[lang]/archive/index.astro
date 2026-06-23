@@ -47,6 +47,14 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
             {decades.map((d) => <option value={d}>{d}s</option>)}
           </select>
         </label>
+        <label class="flex items-center gap-2">
+          <span class="label">{t('archive.filterLang')}</span>
+          <select id="filter-lang" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none">
+            <option value="">{t('archive.all')}</option>
+            <option value="es">Español</option>
+            <option value="en">English</option>
+          </select>
+        </label>
       </div>
     </header>
 
@@ -56,7 +64,7 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
     >
       {
         items.map((item) => (
-          <div data-type={item.type} data-decade={Math.floor(item.year / 10) * 10}>
+          <div data-type={item.type} data-decade={Math.floor(item.year / 10) * 10} data-lang={item.lang}>
             <IssueCard item={item} lang={lang} />
           </div>
         ))
@@ -71,15 +79,20 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
 <script>
   const typeSel = document.getElementById('filter-type') as HTMLSelectElement | null;
   const decadeSel = document.getElementById('filter-decade') as HTMLSelectElement | null;
+  const langSel = document.getElementById('filter-lang') as HTMLSelectElement | null;
   const cells = Array.from(document.querySelectorAll<HTMLElement>('#issue-grid > [data-type]'));
   const empty = document.getElementById('issue-empty');
 
   const apply = () => {
     const ty = typeSel?.value ?? '';
     const de = decadeSel?.value ?? '';
+    const lg = langSel?.value ?? '';
     let visible = 0;
     for (const cell of cells) {
-      const ok = (!ty || cell.dataset.type === ty) && (!de || cell.dataset.decade === de);
+      const ok =
+        (!ty || cell.dataset.type === ty) &&
+        (!de || cell.dataset.decade === de) &&
+        (!lg || cell.dataset.lang === lg);
       cell.hidden = !ok;
       if (ok) visible++;
     }
@@ -88,4 +101,5 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
 
   typeSel?.addEventListener('change', apply);
   decadeSel?.addEventListener('change', apply);
+  langSel?.addEventListener('change', apply);
 </script>
