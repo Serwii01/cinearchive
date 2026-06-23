@@ -1,64 +1,79 @@
 ---
-export const prerender = true;
+export const prerender = false; // la película del día se obtiene en cada visita (cacheada por día)
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import IndexCard from '../../components/IndexCard.astro';
-import { useTranslations, localizePath, formatDate, type Lang } from '../../i18n/ui';
+import { getFilmOfDay } from '../../lib/featured';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
-export function getStaticPaths() {
-  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
-}
-
-const lang = Astro.params.lang as Lang;
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
 const t = useTranslations(lang);
 
 const all = (await getCollection('articles', (e) => e.data.lang === lang && !e.data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+const latest = all.slice(0, 6);
 
-const featured = all.find((e) => e.data.featured) ?? all[0];
-const rest = all.filter((e) => e.id !== featured?.id).slice(0, 4);
-const f = featured?.data;
+const film = await getFilmOfDay(lang);
+const overview = film?.overview && film.overview.length > 320 ? film.overview.slice(0, 317) + '…' : film?.overview;
 ---
 
 <BaseLayout altPath={localizePath(lang === 'es' ? 'en' : 'es')}>
-  {/* HERO / DESTACADO */}
+  {/* HERO — PELÍCULA DEL DÍA (TMDB) */}
   {
-    f && (
+    film ? (
       <section class="border-b border-ink">
         <div class="frame">
           <div class="grid grid-cols-1 md:grid-cols-12">
-            <div class="flex flex-col justify-between border-ink py-8 md:col-span-7 md:border-r md:py-12 md:pr-12">
-              <span class="label">{t('home.featured')} · {f.category}</span>
-              <h1 class="mt-6 text-display-mobile md:text-display-lg">
-                <a href={localizePath(lang, `archive/${f.pair}`)} class="text-ink no-underline hover:text-muted">
-                  {f.title}
+            <div class="flex flex-col justify-between gap-6 border-ink py-8 md:col-span-5 md:border-r md:py-12 md:pr-10">
+              <span class="label">{t('home.filmOfDay')}</span>
+              <h1 class="text-display-mobile md:text-display-lg">
+                <a href={localizePath(lang, `film/${film.tmdbId}`)} class="text-ink no-underline hover:text-muted">
+                  {film.title}
                 </a>
               </h1>
-              <p class="mt-6 max-w-2xl text-body-lg text-charcoal">{f.excerpt}</p>
-              <div class="mt-8 flex flex-wrap items-center gap-4">
-                <a href={localizePath(lang, `archive/${f.pair}`)} class="btn btn-primary no-underline">
-                  {t('home.readEssay')}
+              <p class="max-w-2xl text-body-lg text-charcoal">{overview}</p>
+              <div class="flex flex-wrap items-center gap-4">
+                <a href={localizePath(lang, `film/${film.tmdbId}`)} class="btn btn-primary no-underline">
+                  {t('home.viewFilm')}
                 </a>
                 <span class="font-mono text-meta-data text-muted">
-                  {f.director} · {f.year} · {f.runtime}
+                  {[film.year, film.voteAverage ? `★ ${film.voteAverage.toFixed(1)}` : null].filter(Boolean).join(' · ')}
                 </span>
               </div>
             </div>
 
-            <div class="flex md:col-span-5">
-              <div class="film-grain relative flex min-h-[16rem] w-full flex-col justify-end p-6">
-                <span class="font-display text-display-mobile leading-none text-background/90">{f.year}</span>
-                <span class="label mt-2 text-ochre">{f.country}</span>
-              </div>
+            <div class="md:col-span-7">
+              <a
+                href={localizePath(lang, `film/${film.tmdbId}`)}
+                class="block h-full border-t border-ink md:border-l md:border-t-0"
+              >
+                {film.backdrop ? (
+                  <img
+                    src={film.backdrop}
+                    alt={film.title}
+                    width="1280"
+                    height="720"
+                    decoding="async"
+                    class="h-56 w-full object-cover sm:h-72 md:h-full md:min-h-[24rem]"
+                  />
+                ) : (
+                  <div class="film-grain h-56 w-full sm:h-72 md:h-full md:min-h-[24rem]" />
+                )}
+              </a>
             </div>
           </div>
         </div>
       </section>
+    ) : (
+      <section class="frame border-b border-ink py-16">
+        <span class="label">{t('site.tagline')}</span>
+        <h1 class="mt-4 text-display-mobile md:text-display-lg">{t('site.title')}</h1>
+      </section>
     )
   }
 
-  {/* ÚLTIMAS ENTRADAS */}
+  {/* ÚLTIMAS ENTRADAS (ensayos) */}
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('home.latest')}</h2>
@@ -66,7 +81,7 @@ const f = featured?.data;
     </div>
 
     <div class="grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
-      {rest.map((entry, i) => <IndexCard entry={entry} index={i} />)}
+      {latest.map((entry, i) => <IndexCard entry={entry} index={i} />)}
     </div>
   </section>
 </BaseLayout>

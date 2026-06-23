@@ -23,11 +23,24 @@ try {
 } catch {
   return new Response(t('film.notFound'), { status: 404 });
 }
-const { tmdb, omdb } = film;
+const { tmdb, omdb, watchmode } = film;
 const dir = director(tmdb);
 const poster = posterUrl(tmdb.poster_path, 'w500');
 const poster2x = posterSrcset(tmdb.poster_path, 'w500', 'w780');
 const year = tmdb.release_date ? tmdb.release_date.slice(0, 4) : '';
+
+// Plataformas donde ver, agrupadas por tipo (solo si Watchmode está configurado).
+const watchGroups = watchmode
+  ? ([
+      { type: 'sub', label: t('film.sub') },
+      { type: 'free', label: t('film.free') },
+      { type: 'rent', label: t('film.rent') },
+      { type: 'buy', label: t('film.buy') },
+    ] as const).map((g) => ({
+      ...g,
+      items: watchmode.sources.filter((s) => s.type === g.type),
+    }))
+  : [];
 
 // Estado actual del usuario para esta película (si hay sesión).
 let userState: { status: 'want' | 'seen' | 'favorite'; rating: number | null; note: string | null } | null = null;
@@ -125,6 +138,43 @@ const ratings = omdb?.Ratings ?? [];
                 </div>
               ))}
           </div>
+        )}
+
+        {/* Dónde ver (Watchmode) — solo si la API está configurada */}
+        {watchmode && (
+          <section class="mt-10 border border-ink">
+            <div class="flex items-baseline justify-between border-b border-ink bg-ink px-3 py-2">
+              <h2 class="label text-background">{t('film.whereToWatch')} · {t('film.region')}</h2>
+            </div>
+            {watchmode.sources.length === 0 ? (
+              <p class="px-3 py-4 font-mono text-meta-data text-muted">{t('film.noSources')}</p>
+            ) : (
+              <div>
+                {watchGroups
+                  .filter((g) => g.items.length > 0)
+                  .map((g) => (
+                    <div class="flex flex-col gap-2 border-b border-outline-variant px-3 py-3 last:border-b-0 sm:flex-row sm:items-center">
+                      <span class="label shrink-0 sm:w-32">{g.label}</span>
+                      <div class="flex flex-wrap gap-2">
+                        {g.items.map((s) => (
+                          <a
+                            href={s.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="border border-ink px-3 py-1 font-mono text-meta-data text-ink no-underline transition-colors hover:bg-ink hover:text-white"
+                          >
+                            {s.name}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+            <p class="border-t border-outline-variant px-3 py-2 font-mono text-meta-data text-muted">
+              {t('film.sourcesBy')}
+            </p>
+          </section>
         )}
       </div>
     </div>

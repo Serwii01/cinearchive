@@ -8,12 +8,15 @@ import { db } from '../db/client';
 import { filmsCache } from '../db/schema';
 import { getMovie, director, posterUrl, type TmdbMovie } from './tmdb';
 import { getOmdbByImdbId, type OmdbData } from './omdb';
+import { getWatchSources, type WatchAvailability } from './watchmode';
 
 const OMDB_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
+const WATCHMODE_TTL_MS = 14 * 24 * 60 * 60 * 1000; // 14 días (límite mensual bajo)
 
 export interface FilmDetail {
   tmdb: TmdbMovie;
   omdb: OmdbData | null;
+  watchmode: WatchAvailability | null;
 }
 
 export async function getFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
@@ -41,15 +44,29 @@ export async function getFilm(tmdbId: number, locale: string): Promise<FilmDetai
     omdb = (await getOmdbByImdbId(tmdb.imdb_id)) ?? omdb;
   }
 
+  // Watchmode: cache prolongada (límite mensual bajo).
+  let watchmode = (cached?.watchmode as WatchAvailability | null) ?? null;
+  const wmFresh =
+    cached?.watchmodeFetchedAt &&
+    Date.now() - new Date(cached.watchmodeFetchedAt).getTime() < WATCHMODE_TTL_MS;
+  let watchmodeFetchedAt = cached?.watchmodeFetchedAt ?? null;
+  if (!wmFresh) {
+    const fresh = await getWatchSources(tmdbId, 'ES');
+    if (fresh) {
+      watchmode = fresh;
+      watchmodeFetchedAt = new Date();
+    }
+  }
+
   await db
     .insert(filmsCache)
-    .values({ tmdbId, tmdb, omdb, fetchedAt: new Date() })
+    .values({ tmdbId, tmdb, omdb, watchmode, watchmodeFetchedAt, fetchedAt: new Date() })
     .onConflictDoUpdate({
       target: filmsCache.tmdbId,
-      set: { tmdb, omdb, fetchedAt: new Date() },
+      set: { tmdb, omdb, watchmode, watchmodeFetchedAt, fetchedAt: new Date() },
     });
 
-  return { tmdb, omdb };
+  return { tmdb, omdb, watchmode };
 }
 
 export interface FilmBrief {

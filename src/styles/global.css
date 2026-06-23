@@ -78,7 +78,8 @@
   }
 
   ::selection {
-    @apply bg-ochre text-on-accent;
+    @apply bg-ochre;
+    color: var(--c-on-accent);
   }
 }
 
@@ -98,7 +99,8 @@
     @apply inline-flex items-center gap-2 border border-ink px-5 py-3 font-mono text-label-caps uppercase tracking-[0.1em] transition-colors duration-150;
   }
   .btn-primary {
-    @apply bg-ochre text-on-accent hover:bg-ink hover:text-white;
+    @apply bg-ochre hover:bg-ink hover:text-white;
+    color: var(--c-on-accent);
   }
   .btn-secondary {
     @apply bg-transparent text-ink hover:bg-ink hover:text-white;

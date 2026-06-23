@@ -69,11 +69,13 @@ export const verification = pgTable('verification', {
  * Tablas de la aplicación.
  * ------------------------------------------------------------------ */
 
-/** Cache server-side de las respuestas de TMDB/OMDb (nunca expone claves). */
+/** Cache server-side de las respuestas de TMDB/OMDb/Watchmode (nunca expone claves). */
 export const filmsCache = pgTable('films_cache', {
   tmdbId: integer('tmdb_id').primaryKey(),
   tmdb: jsonb('tmdb').notNull(),
   omdb: jsonb('omdb'),
+  watchmode: jsonb('watchmode'),
+  watchmodeFetchedAt: timestamp('watchmode_fetched_at'),
   fetchedAt: timestamp('fetched_at').notNull().defaultNow(),
 });
 

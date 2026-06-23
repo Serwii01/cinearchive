@@ -75,6 +75,17 @@ export async function getMovie(id: number, locale: string) {
   });
 }
 
+export interface TmdbTrending extends TmdbSearchResult {
+  backdrop_path: string | null;
+}
+
+export async function trendingDay(locale: string) {
+  const data = await tmdbFetch<{ results: TmdbTrending[] }>('/trending/movie/day', {
+    language: toTmdbLang(locale),
+  });
+  return data.results;
+}
+
 export async function discoverByGenres(genreIds: number[], locale: string) {
   const data = await tmdbFetch<{ results: TmdbSearchResult[] }>('/discover/movie', {
     language: toTmdbLang(locale),
