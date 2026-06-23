@@ -15,7 +15,11 @@ services:
       retries: 12
 
   app:
-    build: .
+    build:
+      context: .
+      args:
+        # Dominio público en tiempo de build (canonical/sitemap/OpenGraph).
+        SITE_URL: ${SITE_URL}
     restart: unless-stopped
     # Carga las claves (TMDB/OMDb/auth/OAuth) desde .env. Nunca se versiona.
     env_file: .env

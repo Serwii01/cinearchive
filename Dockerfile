@@ -4,6 +4,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
+# El dominio público se fija en build (canonical/sitemap/OpenGraph). Llega como
+# build arg desde docker-compose (variable SITE_URL del .env). Sin esto, saldría
+# el dominio de ejemplo de astro.config.
+ARG SITE_URL
+ENV SITE_URL=$SITE_URL
 RUN npm run build
 
 # ---- Runtime stage: solo dependencias de producción + artefactos ----

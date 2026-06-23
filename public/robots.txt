@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-# Actualiza el dominio al tuyo tras desplegar.
-Sitemap: https://cine-archive.tudominio.com/sitemap-index.xml
