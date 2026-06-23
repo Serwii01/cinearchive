@@ -107,6 +107,7 @@ export const ui = {
     'tmdb.searching': 'Buscando…',
     'tmdb.noResults': 'Sin resultados para esa búsqueda.',
     'tmdb.error': 'No se pudo buscar ahora mismo. Inténtalo de nuevo.',
+    'theme.toggle': 'Cambiar tema (claro/oscuro)',
   },
   en: {
     'site.title': 'Cine Archive',
@@ -207,6 +208,7 @@ export const ui = {
     'tmdb.searching': 'Searching…',
     'tmdb.noResults': 'No results for that search.',
     'tmdb.error': 'Could not search right now. Try again.',
+    'theme.toggle': 'Toggle theme (light/dark)',
   },
 } as const;
 

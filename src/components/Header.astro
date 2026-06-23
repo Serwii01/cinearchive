@@ -2,6 +2,7 @@
 import { getLangFromUrl, useTranslations, localizePath, type Lang } from '../i18n/ui';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import AuthNav from './AuthNav.astro';
+import ThemeToggle from './ThemeToggle.astro';
 
 interface Props {
   altPath?: string;
@@ -44,6 +45,7 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
         ))
       }
       <AuthNav />
+      <ThemeToggle />
       <div class="flex items-center border-l border-ink px-4">
         <LanguageSwitcher altPath={altPath} />
       </div>

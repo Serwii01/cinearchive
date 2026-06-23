@@ -9,7 +9,7 @@
 import { and, eq, gte } from 'drizzle-orm';
 import { db } from '../db/client';
 import { userFilms, userPreferences } from '../db/schema';
-import { getMovie, discoverByGenres, director, posterUrl, type TmdbSearchResult } from './tmdb';
+import { getMovie, discoverByGenres, director, posterUrl, posterSrcset, type TmdbSearchResult } from './tmdb';
 import { genreName } from '../data/genres';
 
 export interface Recommendation {
@@ -17,6 +17,7 @@ export interface Recommendation {
   title: string;
   year: string;
   poster: string | null;
+  posterSrcset: string | null;
   because: string | null;
 }
 
@@ -98,7 +99,8 @@ export async function getRecommendations(userId: string, locale: string): Promis
     tmdbId: s.c.id,
     title: s.c.title,
     year: s.c.release_date ? s.c.release_date.slice(0, 4) : '',
-    poster: posterUrl(s.c.poster_path, 'w185'),
+    poster: posterUrl(s.c.poster_path, 'w342'),
+    posterSrcset: posterSrcset(s.c.poster_path, 'w342', 'w500'),
     because: s.topGenre ? genreName(s.topGenre, locale as 'es' | 'en') : null,
   }));
 }

@@ -40,7 +40,7 @@ const theme = prefs?.theme ?? 'light';
           {GENRES.map((g) => (
             <label class="cursor-pointer">
               <input type="checkbox" name="genre" value={g.id} checked={favGenres.has(g.id)} class="peer sr-only" />
-              <span class="label inline-block border border-ink px-3 py-2 transition-colors peer-checked:bg-ochre peer-checked:text-ink hover:bg-ink hover:text-white peer-checked:hover:bg-ochre peer-checked:hover:text-ink">
+              <span class="label inline-block border border-ink px-3 py-2 transition-colors peer-checked:bg-ochre peer-checked:text-on-accent hover:bg-ink hover:text-white peer-checked:hover:bg-ochre peer-checked:hover:text-on-accent">
                 {g[lang]}
               </span>
             </label>
@@ -101,6 +101,14 @@ const theme = prefs?.theme ?? 'light';
       .map((s) => s.trim())
       .filter(Boolean);
     const theme = (form.querySelector('input[name="theme"]:checked') as HTMLInputElement)?.value || 'light';
+
+    // Aplica el tema de inmediato y lo recuerda en este dispositivo.
+    if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    try {
+      localStorage.setItem('theme', theme);
+    } catch (e) {}
+    document.dispatchEvent(new Event('themechange'));
 
     const res = await fetch('/api/me/preferences', {
       method: 'PATCH',

@@ -14,6 +14,9 @@ export default defineConfig({
   // editoriales se marcan con `export const prerender = true` y se sirven estáticas.
   output: 'server',
   adapter: node({ mode: 'standalone' }),
+  // Puerto fijo en dev/preview para que la URI de redirección de OAuth (Google)
+  // siempre coincida: http://localhost:4321/api/auth/callback/google
+  server: { port: 4321 },
   trailingSlash: 'ignore',
   redirects: {
     '/': '/es',

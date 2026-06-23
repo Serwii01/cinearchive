@@ -2,23 +2,25 @@
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}'],
   theme: {
-    // Paleta cerrada del design system "Cinematic Archival Brutalism".
+    // Design system "Cinematic Archival Brutalism" mapeado a variables CSS, para
+    // que el modo oscuro se active cambiando las variables en [data-theme="dark"].
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
-      ink: '#000000',
-      charcoal: '#1A1A1A',
-      ochre: '#EAB308',
-      'ochre-dim': '#604700',
-      background: '#FAFAFA',
-      surface: '#F9F9F9',
-      'film-white': '#F4F4F4',
-      'surface-dim': '#DADADA',
-      outline: '#817660',
-      'outline-variant': '#D3C5AC',
-      muted: '#4F4633',
-      white: '#FFFFFF',
-      error: '#BA1A1A',
+      ink: 'var(--c-ink)',
+      charcoal: 'var(--c-charcoal)',
+      ochre: 'var(--c-ochre)',
+      'ochre-dim': 'var(--c-ochre-dim)',
+      'on-accent': 'var(--c-on-accent)',
+      background: 'var(--c-background)',
+      surface: 'var(--c-surface)',
+      'film-white': 'var(--c-film-white)',
+      'surface-dim': 'var(--c-surface-dim)',
+      outline: 'var(--c-outline)',
+      'outline-variant': 'var(--c-outline-variant)',
+      muted: 'var(--c-muted)',
+      white: 'var(--c-white)',
+      error: 'var(--c-error)',
     },
     extend: {
       fontFamily: {

@@ -13,7 +13,7 @@ const entries = (await getCollection('articles', (e) => e.data.lang === lang && 
 const items = entries.length ? entries : [t('site.tagline')];
 ---
 
-<div class="border-b border-ink bg-ochre text-ink">
+<div class="border-b border-ink bg-ochre text-on-accent">
   <div class="flex items-stretch overflow-hidden">
     <span class="label flex shrink-0 items-center border-r border-ink bg-ink px-3 py-2 text-background">
       {t('ticker.label')}

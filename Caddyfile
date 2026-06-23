@@ -13,6 +13,11 @@
 		X-Content-Type-Options "nosniff"
 		Referrer-Policy "strict-origin-when-cross-origin"
 		X-Frame-Options "DENY"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+		Cross-Origin-Opener-Policy "same-origin"
+		# CSP estricta: scripts y estilos propios; imágenes también desde TMDB.
+		# (No se necesita 'unsafe-inline' en scripts: no hay scripts inline.)
+		Content-Security-Policy "default-src 'self'; img-src 'self' https://image.tmdb.org data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 		-Server
 	}
 

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { searchMovies, posterUrl } from '../../../lib/tmdb';
+import { searchMovies, posterUrl, posterSrcset } from '../../../lib/tmdb';
 import { rateLimit, clientIp } from '../../../lib/ratelimit';
 
 export const prerender = false;
@@ -22,7 +22,8 @@ export const GET: APIRoute = async ({ request, url }) => {
       title: r.title,
       originalTitle: r.original_title,
       year: r.release_date ? Number(r.release_date.slice(0, 4)) : null,
-      poster: posterUrl(r.poster_path, 'w185'),
+      poster: posterUrl(r.poster_path, 'w342'),
+      posterSrcset: posterSrcset(r.poster_path, 'w342', 'w500'),
       overview: r.overview,
     }));
     return Response.json({ results: slim });

@@ -67,7 +67,7 @@ const t = useTranslations(lang);
               .filter(Boolean)
               .join(' · ');
             const img = r.poster
-              ? `<img src="${r.poster}" alt="${esc(r.title)}" loading="lazy" class="h-full w-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0" />`
+              ? `<img src="${r.poster}" ${r.posterSrcset ? `srcset="${r.posterSrcset}"` : ''} sizes="(min-width:1024px) 18vw, (min-width:640px) 30vw, 45vw" alt="${esc(r.title)}" loading="lazy" decoding="async" class="h-full w-full object-cover" />`
               : `<div class="film-grain h-full w-full"></div>`;
             return `<a href="${d.filmBase}/${r.tmdbId}" class="group flex flex-col bg-surface no-underline hover:bg-film-white">
               <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">${img}</div>

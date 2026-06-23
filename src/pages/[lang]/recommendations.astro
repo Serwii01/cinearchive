@@ -34,7 +34,15 @@ try {
           <a href={localizePath(lang, `film/${r.tmdbId}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
               {r.poster ? (
-                <img src={r.poster} alt={r.title} class="h-full w-full object-cover grayscale transition-all group-hover:grayscale-0" />
+                <img
+                  src={r.poster}
+                  srcset={r.posterSrcset ?? undefined}
+                  sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw"
+                  alt={r.title}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover"
+                />
               ) : (
                 <div class="film-grain h-full w-full"></div>
               )}

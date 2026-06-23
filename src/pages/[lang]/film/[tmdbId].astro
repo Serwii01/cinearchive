@@ -3,7 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import FilmControls from '../../../components/FilmControls.astro';
 import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { getFilm } from '../../../lib/films';
-import { director, posterUrl } from '../../../lib/tmdb';
+import { director, posterUrl, posterSrcset } from '../../../lib/tmdb';
 import { genreName } from '../../../data/genres';
 import { db } from '../../../db/client';
 import { userFilms } from '../../../db/schema';
@@ -25,7 +25,8 @@ try {
 }
 const { tmdb, omdb } = film;
 const dir = director(tmdb);
-const poster = posterUrl(tmdb.poster_path, 'w342');
+const poster = posterUrl(tmdb.poster_path, 'w500');
+const poster2x = posterSrcset(tmdb.poster_path, 'w500', 'w780');
 const year = tmdb.release_date ? tmdb.release_date.slice(0, 4) : '';
 
 // Estado actual del usuario para esta película (si hay sesión).
@@ -51,7 +52,15 @@ const ratings = omdb?.Ratings ?? [];
       <div class="md:col-span-4">
         <div class="border border-ink bg-charcoal">
           {poster ? (
-            <img src={poster} alt={tmdb.title} width="342" height="513" class="w-full" />
+            <img
+              src={poster}
+              srcset={poster2x ?? undefined}
+              alt={tmdb.title}
+              width="500"
+              height="750"
+              decoding="async"
+              class="w-full"
+            />
           ) : (
             <div class="film-grain aspect-[2/3] w-full"></div>
           )}

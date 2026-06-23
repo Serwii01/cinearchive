@@ -58,8 +58,26 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 30, // 30 días
     updateAge: 60 * 60 * 24, // refresco diario
   },
+  // Límite de peticiones (anti fuerza bruta). Más estricto en /sign-in/sign-up.
+  rateLimit: {
+    enabled: true,
+    window: 60, // segundos
+    max: 60, // peticiones por ventana e IP (global)
+    customRules: {
+      '/sign-in/email': { window: 60, max: 8 },
+      '/sign-up/email': { window: 60, max: 5 },
+      '/forget-password': { window: 60, max: 5 },
+    },
+  },
   advanced: {
     cookiePrefix: 'cine',
+    // En producción (HTTPS) fuerza cookies seguras; en local (http) no, para que
+    // el desarrollo funcione.
+    useSecureCookies: !isLocal,
+    defaultCookieAttributes: {
+      httpOnly: true,
+      sameSite: 'lax',
+    },
   },
 });
 

@@ -1,0 +1,42 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+const t = useTranslations(getLangFromUrl(Astro.url));
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label={t('theme.toggle')}
+  title={t('theme.toggle')}
+  class="flex items-center border-l border-ink px-4 font-mono text-meta-data transition-colors hover:bg-ink hover:text-white"
+>
+  <span data-icon aria-hidden="true">☾</span>
+</button>
+
+<script>
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const icon = btn?.querySelector('[data-icon]');
+
+  const sync = () => {
+    if (icon) icon.textContent = root.getAttribute('data-theme') === 'dark' ? '☀' : '☾';
+  };
+  sync();
+  document.addEventListener('themechange', sync);
+
+  btn?.addEventListener('click', () => {
+    const dark = root.getAttribute('data-theme') !== 'dark';
+    if (dark) root.setAttribute('data-theme', 'dark');
+    else root.removeAttribute('data-theme');
+    try {
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    } catch (e) {}
+    sync();
+    // Persiste la preferencia si hay sesión (silencioso si no la hay → 401).
+    fetch('/api/me/preferences', {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ theme: dark ? 'dark' : 'light' }),
+    }).catch(() => {});
+  });
+</script>

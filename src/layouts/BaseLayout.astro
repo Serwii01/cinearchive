@@ -29,6 +29,8 @@ const altHref = altPath ? new URL(altPath, Astro.site).href : undefined;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Aplica el tema guardado antes de pintar (evita parpadeo). */}
+    <script is:inline src="/theme-init.js"></script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDesc} />

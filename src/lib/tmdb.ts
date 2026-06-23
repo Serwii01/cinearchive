@@ -90,6 +90,17 @@ export function director(movie: TmdbMovie): string | null {
   return movie.credits?.crew.find((c) => c.job === 'Director')?.name ?? null;
 }
 
-export function posterUrl(path: string | null, size: 'w185' | 'w342' | 'w500' = 'w342') {
+export type PosterSize = 'w185' | 'w342' | 'w500' | 'w780';
+export function posterUrl(path: string | null, size: PosterSize = 'w342') {
+  return path ? `${TMDB_IMG}/${size}${path}` : null;
+}
+
+/** srcset 1x/2x para imágenes nítidas en pantallas retina. */
+export function posterSrcset(path: string | null, base: PosterSize = 'w342', retina: PosterSize = 'w500') {
+  if (!path) return null;
+  return `${TMDB_IMG}/${base}${path} 1x, ${TMDB_IMG}/${retina}${path} 2x`;
+}
+
+export function backdropUrl(path: string | null, size: 'w780' | 'w1280' = 'w1280') {
   return path ? `${TMDB_IMG}/${size}${path}` : null;
 }

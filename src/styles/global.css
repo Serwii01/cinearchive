@@ -11,8 +11,42 @@
 @tailwind utilities;
 
 @layer base {
+  /* ---- Tema CLARO (por defecto) ---- */
   :root {
     color-scheme: light;
+    --c-ink: #000000;
+    --c-charcoal: #1a1a1a;
+    --c-ochre: #eab308;
+    --c-ochre-dim: #6b4e07;
+    --c-on-accent: #1a1a1a; /* texto sobre ochre: SIEMPRE oscuro */
+    --c-background: #fafafa;
+    --c-surface: #f9f9f9;
+    --c-film-white: #f4f4f4;
+    --c-surface-dim: #dadada;
+    --c-outline: #817660;
+    --c-outline-variant: #d3c5ac;
+    --c-muted: #4f4633;
+    --c-white: #ffffff; /* fondo de inputs / texto sobre "ink" */
+    --c-error: #ba1a1a;
+  }
+
+  /* ---- Tema OSCURO ---- */
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+    --c-ink: #ececec; /* líneas y titulares pasan a claro */
+    --c-charcoal: #c9c9c9; /* texto de cuerpo claro */
+    --c-ochre: #f2be1d;
+    --c-ochre-dim: #c99a2e;
+    --c-on-accent: #1a1a1a; /* sigue oscuro sobre el ochre */
+    --c-background: #0d0d0d;
+    --c-surface: #151515;
+    --c-film-white: #1f1f1f; /* relleno de estados activos */
+    --c-surface-dim: #2c2c2c;
+    --c-outline: #8a7e62;
+    --c-outline-variant: #3a3527;
+    --c-muted: #a89f8c;
+    --c-white: #161616; /* inputs oscuros / texto oscuro sobre "ink" claro */
+    --c-error: #ff7a7a;
   }
 
   html {
@@ -44,7 +78,7 @@
   }
 
   ::selection {
-    @apply bg-ochre text-ink;
+    @apply bg-ochre text-on-accent;
   }
 }
 
@@ -64,7 +98,7 @@
     @apply inline-flex items-center gap-2 border border-ink px-5 py-3 font-mono text-label-caps uppercase tracking-[0.1em] transition-colors duration-150;
   }
   .btn-primary {
-    @apply bg-ochre text-ink hover:bg-ink hover:text-white;
+    @apply bg-ochre text-on-accent hover:bg-ink hover:text-white;
   }
   .btn-secondary {
     @apply bg-transparent text-ink hover:bg-ink hover:text-white;

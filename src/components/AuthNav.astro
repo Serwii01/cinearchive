@@ -36,7 +36,7 @@ const config = {
       const cfg = JSON.parse(this.dataset.config!);
       const link = (href: string, label: string, accent = false) =>
         `<a href="${href}" class="label flex items-center border-l border-ink px-4 no-underline transition-colors hover:bg-ink hover:text-white ${
-          accent ? 'bg-ochre text-ink' : ''
+          accent ? 'bg-ochre text-on-accent' : ''
         }">${label}</a>`;
 
       const renderGuest = () => {
