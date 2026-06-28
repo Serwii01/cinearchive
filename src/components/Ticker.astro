@@ -1,17 +1,45 @@
 ---
 import { getLangFromUrl, useTranslations, type Lang } from '../i18n/ui';
 import { periodicals } from '../lib/periodicals';
+import { pdFilms } from '../lib/pdfilms';
+import { books } from '../lib/library';
+import { collections, collectionTitle } from '../lib/collections';
 
 const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const entries = periodicals
+// Selección repartida de un conjunto, para variedad sin azar en cada carga.
+const sample = <T,>(arr: T[], n: number): T[] => {
+  if (arr.length <= n) return arr.slice();
+  const step = arr.length / n;
+  return Array.from({ length: n }, (_, i) => arr[Math.floor(i * step)]);
+};
+
+// Mezcla "novedades" de varias secciones para el teletipo.
+const periodicalItems = periodicals
   .slice()
   .sort((a, b) => b.year - a.year)
-  .slice(0, 8)
+  .slice(0, 4)
   .map((p) => `${p.title} (${p.year})`);
+const cinemaItems = sample(pdFilms, 4).map((f) => `${f.title} (${f.year})`);
+const bookItems = sample(books, 3).map((b) => b.title);
+const collectionItems = collections.slice(0, 3).map((c) => collectionTitle(c, lang));
 
-const items = entries.length ? entries : [t('site.tagline')];
+// Intercala los tipos para que el teletipo no agrupe por sección.
+const pools = [periodicalItems, cinemaItems, bookItems, collectionItems];
+const mixed: string[] = [];
+for (let i = 0; mixed.length < 14; i++) {
+  let added = false;
+  for (const pool of pools) {
+    if (pool[i]) {
+      mixed.push(pool[i]);
+      added = true;
+    }
+  }
+  if (!added) break;
+}
+
+const items = mixed.length ? mixed : [t('site.tagline')];
 ---
 
 <div class="border-b border-ink bg-ochre text-on-accent">

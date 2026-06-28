@@ -38,10 +38,10 @@ const manifestoCopy = manifesto[lang];
 const film = await getFilmOfDay(lang);
 const overview = film?.overview && film.overview.length > 320 ? film.overview.slice(0, 317) + '…' : film?.overview;
 
-// Efemérides: eventos de hoy si los hay; si no, una selección rotatoria del archivo.
-const { onThisDay, pick } = getEphemerides();
-const ephemList = onThisDay.length > 0 ? onThisDay : [pick];
-const ephemHeading = onThisDay.length > 0 ? t('home.onThisDay') : t('home.fromArchive');
+// Efemérides: eventos de hoy si los hay; si no, la próxima del calendario.
+const { onThisDay, next } = getEphemerides();
+const ephemList = onThisDay.length > 0 ? onThisDay : [next];
+const ephemHeading = onThisDay.length > 0 ? t('home.onThisDay') : t('home.nextAnniversary');
 ---
 
 <BaseLayout altPath={localizePath(lang === 'es' ? 'en' : 'es')}>
@@ -99,23 +99,26 @@ const ephemHeading = onThisDay.length > 0 ? t('home.onThisDay') : t('home.fromAr
     )
   }
 
-  {/* EFEMÉRIDES — UN DÍA COMO HOY */}
-  <section class="border-b border-ink bg-charcoal text-background">
-    <div class="frame flex flex-col gap-4 py-8 md:flex-row md:items-baseline md:gap-10">
-      <span class="label shrink-0 text-ochre">{ephemHeading}</span>
-      <ul class="flex flex-1 flex-col gap-4">
+  {/* EFEMÉRIDES — UN DÍA COMO HOY / PRÓXIMA EFEMÉRIDE */}
+  <section class="border-b border-ink bg-surface">
+    <div class="frame grid gap-5 py-8 md:grid-cols-[12rem_1fr] md:gap-10">
+      <div class="flex items-center gap-3">
+        <span class="h-3 w-3 shrink-0 border border-ink bg-ochre"></span>
+        <span class="label">{ephemHeading}</span>
+      </div>
+      <ul class="flex flex-col divide-y divide-outline-variant">
         {
           ephemList.map((e) => (
-            <li class="flex flex-col gap-1 border-b border-outline pb-4 last:border-b-0 last:pb-0 sm:flex-row sm:items-baseline sm:gap-4">
-              <span class="shrink-0 font-mono text-meta-data uppercase tracking-[0.08em] text-ochre sm:w-48">{ephemerisDate(e, lang)}</span>
-              <span class="font-display text-headline-md leading-tight text-background">
+            <li class="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-baseline sm:gap-5">
+              <span class="shrink-0 font-mono text-meta-data uppercase tracking-[0.08em] text-muted sm:w-44">{ephemerisDate(e, lang)}</span>
+              <p class="font-display text-headline-md leading-tight text-ink">
                 {ephemerisText(e, lang)}
                 {e.tmdbId && (
-                  <a href={localizePath(lang, `film/${e.tmdbId}`)} class="ml-2 align-middle font-mono text-meta-data uppercase tracking-[0.08em] text-ochre no-underline hover:underline">
+                  <a href={localizePath(lang, `film/${e.tmdbId}`)} class="ml-2 inline-block align-baseline font-mono text-meta-data uppercase tracking-[0.08em] text-ochre-dim no-underline hover:underline">
                     {t('home.viewFilm')} →
                   </a>
                 )}
-              </span>
+              </p>
             </li>
           ))
         }

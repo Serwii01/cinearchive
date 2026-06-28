@@ -29,21 +29,23 @@ export function ephemerisDate(e: Ephemeris, lang: Lang): string {
 export interface TodayEphemerides {
   /** Eventos cuyo día y mes coinciden con la fecha dada (puede estar vacío). */
   onThisDay: Ephemeris[];
-  /** Selección rotatoria por día del año, para que la sección nunca quede vacía. */
-  pick: Ephemeris;
+  /** Próxima efeméride por calendario (la más cercana a partir de hoy, con vuelta de año). */
+  next: Ephemeris;
 }
 
-/** Día del año (0-based, UTC) para rotar la selección de reserva. */
-function dayOfYear(date: Date): number {
-  const start = Date.UTC(date.getUTCFullYear(), 0, 0);
-  const now = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-  return Math.floor((now - start) / 86_400_000);
-}
+/** Clave comparable mes/día (mmdd). */
+const md = (e: { month: number; day: number }) => e.month * 100 + e.day;
 
 export function getEphemerides(date = new Date()): TodayEphemerides {
   const m = date.getUTCMonth() + 1;
   const d = date.getUTCDate();
+  const todayKey = m * 100 + d;
   const onThisDay = ephemerides.filter((e) => e.month === m && e.day === d);
-  const pick = ephemerides[dayOfYear(date) % ephemerides.length];
-  return { onThisDay, pick };
+
+  // La próxima efeméride a partir de hoy; si no queda ninguna este año, la primera del siguiente.
+  const sorted = ephemerides.slice().sort((a, b) => md(a) - md(b));
+  const upcoming = sorted.find((e) => md(e) >= todayKey);
+  const next = upcoming ?? sorted[0];
+
+  return { onThisDay, next };
 }
