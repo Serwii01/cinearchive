@@ -32,12 +32,15 @@ const sections: { label: string; films: FilmographyEntry[] }[] = isDirector
       { label: t('person.directed'), films: directed },
     ];
 
-// Enlace de "volver" según de dónde se llegó (figuras vs. filmoteca).
+// Enlace de "volver" según de dónde se llegó (figuras / película / filmoteca).
 const from = Astro.url.searchParams.get('from');
-const back =
-  from === 'figures'
-    ? { href: localizePath(lang, 'figures'), label: t('nav.figures') }
-    : { href: localizePath(lang, 'films'), label: t('nav.films') };
+const fid = Number(Astro.url.searchParams.get('fid'));
+let back = { href: localizePath(lang, 'films'), label: t('nav.films') };
+if (from === 'figures') {
+  back = { href: localizePath(lang, 'figures'), label: t('nav.figures') };
+} else if (from === 'film' && Number.isInteger(fid) && fid > 0) {
+  back = { href: localizePath(lang, `film/${fid}`), label: t('person.backToFilm') };
+}
 
 const fmtDate = (s: string | null) =>
   s ? new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en-GB', { dateStyle: 'long' }).format(new Date(s)) : null;

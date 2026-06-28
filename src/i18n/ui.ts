@@ -82,6 +82,7 @@ export const ui = {
     'person.acted': 'Como intérprete',
     'person.filmography': 'Filmografía',
     'person.notFound': 'Persona no encontrada.',
+    'person.backToFilm': 'Volver a la película',
     'nav.figures': 'Figuras',
     'figures.title': 'Figuras del cine',
     'figures.intro':
@@ -387,6 +388,7 @@ export const ui = {
     'person.acted': 'As actor',
     'person.filmography': 'Filmography',
     'person.notFound': 'Person not found.',
+    'person.backToFilm': 'Back to the film',
     'nav.figures': 'Figures',
     'figures.title': 'Figures of Cinema',
     'figures.intro':

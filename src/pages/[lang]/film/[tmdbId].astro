@@ -150,7 +150,7 @@ const tagline = cleanOmdb(tmdb.tagline);
 
         <p class="mt-5 font-mono text-meta-data uppercase tracking-[0.08em] text-muted">
           {dirPerson ? (
-            <a href={localizePath(lang, `person/${dirPerson.id}`)} class="text-muted no-underline hover:text-ink hover:underline">{dirPerson.name}</a>
+            <a href={`${localizePath(lang, `person/${dirPerson.id}`)}?from=film&fid=${tmdbId}`} class="text-muted no-underline hover:text-ink hover:underline">{dirPerson.name}</a>
           ) : (
             dir
           )}
@@ -256,7 +256,7 @@ const tagline = cleanOmdb(tmdb.tagline);
             <ul class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
               {cast.map((c) => (
                 <li class="bg-surface">
-                  <a href={localizePath(lang, `person/${c.id}`)} class="group flex h-full flex-col no-underline hover:bg-film-white">
+                  <a href={`${localizePath(lang, `person/${c.id}`)}?from=film&fid=${tmdbId}`} class="group flex h-full flex-col no-underline hover:bg-film-white">
                     <div class="aspect-[2/3] w-full bg-charcoal">
                       {profileUrl(c.profile_path) ? (
                         <img src={profileUrl(c.profile_path)} alt={c.name} loading="lazy" decoding="async" class="h-full w-full object-cover" />
