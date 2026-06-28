@@ -45,6 +45,18 @@ export const ui = {
     'cinema.directedBy': 'Dirección',
     'cinema.viewerNote':
       'Reproductor de Internet Archive. La obra es de dominio público; al reproducir, tu navegador se conecta a archive.org.',
+    'nav.library': 'Biblioteca',
+    'library.title': 'Biblioteca',
+    'library.intro':
+      'Lecturas de cine en dominio público: teoría, historia y manuales de los primeros tiempos del cine, para leer aquí mismo.',
+    'library.count': 'textos',
+    'library.read': 'Leer texto',
+    'library.author': 'Autoría',
+    'library.atIA': 'Ver en Internet Archive',
+    'library.backToLibrary': 'Volver a la biblioteca',
+    'library.reader': 'Lectura',
+    'library.readerNote':
+      'Lector de Internet Archive. El texto es de dominio público; al abrirlo, tu navegador se conecta a archive.org.',
     'ticker.label': 'Nuevas adquisiciones',
     'home.featured': 'Destacado',
     'home.filmOfDay': 'Película del día',
@@ -292,6 +304,18 @@ export const ui = {
     'cinema.directedBy': 'Directed by',
     'cinema.viewerNote':
       'Internet Archive player. The work is in the public domain; on play, your browser connects to archive.org.',
+    'nav.library': 'Library',
+    'library.title': 'Library',
+    'library.intro':
+      'Public-domain film readings: theory, history and manuals from cinema’s early days, to read right here.',
+    'library.count': 'texts',
+    'library.read': 'Read text',
+    'library.author': 'Author',
+    'library.atIA': 'View on Internet Archive',
+    'library.backToLibrary': 'Back to the library',
+    'library.reader': 'Reading',
+    'library.readerNote':
+      'Internet Archive reader. The text is in the public domain; on opening, your browser connects to archive.org.',
     'ticker.label': 'New acquisitions',
     'home.featured': 'Featured',
     'home.filmOfDay': 'Film of the day',

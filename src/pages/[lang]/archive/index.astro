@@ -31,6 +31,11 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('archive.title')}</h1>
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('archive.intro')}</p>
 
+      <nav class="mt-6 flex flex-wrap gap-2" aria-label={t('films.sections')}>
+        <span class="label flex items-center pr-1">{t('films.sections')}:</span>
+        <a href={localizePath(lang, 'library')} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{t('nav.library')}</a>
+      </nav>
+
       {/* Filtros */}
       <div class="mt-6 flex flex-wrap gap-3">
         <label class="flex items-center gap-2">

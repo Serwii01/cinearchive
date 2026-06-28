@@ -1,0 +1,77 @@
+{
+  "note": "Biblioteca de textos de cine en dominio público (Internet Archive). IDs verificados (mediatype=texts). Miniaturas en public/library/<id>.jpg vía scripts/fetch-library.mjs.",
+  "items": [
+    {
+      "id": "artofmovingpictu00lind",
+      "title": "The Art of the Moving Picture",
+      "author": "Vachel Lindsay",
+      "year": 1915,
+      "lang": "en",
+      "blurb_es": "El primer libro de teoría del cine escrito en inglés: Vachel Lindsay reivindica el cine como un arte nuevo y popular.",
+      "blurb_en": "The first book of film theory written in English: Vachel Lindsay claims cinema as a new, popular art."
+    },
+    {
+      "id": "photoplaypsychol00mnrich",
+      "title": "The Photoplay: A Psychological Study",
+      "author": "Hugo Münsterberg",
+      "year": 1916,
+      "lang": "en",
+      "blurb_es": "Münsterberg estudia cómo la mente del espectador construye el espacio, el tiempo y la emoción del cine. Estética y psicología pioneras.",
+      "blurb_en": "Münsterberg studies how the spectator's mind builds cinematic space, time and emotion. Pioneering aesthetics and psychology."
+    },
+    {
+      "id": "milliononenights00rams",
+      "title": "A Million and One Nights: A History of the Motion Picture",
+      "author": "Terry Ramsaye",
+      "year": 1926,
+      "lang": "en",
+      "blurb_es": "Historia monumental de los orígenes del cine hasta 1925, llena de anécdotas de los pioneros de la industria.",
+      "blurb_en": "A monumental history of cinema's origins up to 1925, full of anecdotes from the industry's pioneers."
+    },
+    {
+      "id": "behindmotionpict00lescrich",
+      "title": "Behind the Motion-Picture Screen",
+      "author": "Austin C. Lescarboura",
+      "year": 1919,
+      "lang": "en",
+      "blurb_es": "Cómo se hacía una película en el cine mudo: guionistas, cámaras, decorados, laboratorio y proyección, paso a paso.",
+      "blurb_en": "How a film was made in the silent era: writers, cameras, sets, lab and projection, step by step."
+    },
+    {
+      "id": "howmotionpictur00croygoog",
+      "title": "How Motion Pictures Are Made",
+      "author": "Homer Croy",
+      "year": 1918,
+      "lang": "en",
+      "blurb_es": "Recorrido divulgativo por los estudios de la época muda y por todos los oficios que intervienen en una película.",
+      "blurb_en": "A popular tour of silent-era studios and of every craft involved in making a film."
+    },
+    {
+      "id": "writingthephotop17903gut",
+      "title": "Writing the Photoplay",
+      "author": "J. Berg Esenwein y Arthur Leeds",
+      "year": 1913,
+      "lang": "en",
+      "blurb_es": "Manual clásico de escritura de guion en los inicios del cine: estructura, ideas y mercado del 'photoplay'.",
+      "blurb_en": "A classic manual of early screenwriting: structure, ideas and the market of the 'photoplay'."
+    },
+    {
+      "id": "motionpicturemak00rathiala",
+      "title": "Motion Picture Making and Exhibiting",
+      "author": "John B. Rathbun",
+      "year": 1914,
+      "lang": "en",
+      "blurb_es": "Tratado técnico temprano: principios de la fotografía en movimiento, la sala, el proyector y la exhibición.",
+      "blurb_en": "An early technical treatise: principles of motion photography, the theater, the projector and exhibition."
+    },
+    {
+      "id": "opportunitiesinm01photiala",
+      "title": "Opportunities in the Motion Picture Industry",
+      "author": "Photoplay Research Society",
+      "year": 1922,
+      "lang": "en",
+      "blurb_es": "Retrato de la industria del cine de los años 20 desde dentro: sus oficios, sus salarios y cómo entrar en ellos.",
+      "blurb_en": "An inside portrait of the 1920s film industry: its trades, its wages and how to break into them."
+    }
+  ]
+}
