@@ -12,7 +12,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:deploy": "node --env-file-if-exists=.env scripts/migrate.mjs"
+    "db:deploy": "node --env-file-if-exists=.env scripts/migrate.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.5",
@@ -31,6 +33,7 @@
   "devDependencies": {
     "@types/pg": "^8.20.0",
     "dotenv": "^17.4.2",
-    "drizzle-kit": "^0.31.10"
+    "drizzle-kit": "^0.31.10",
+    "vitest": "^4.1.9"
   }
 }
