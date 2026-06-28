@@ -1,0 +1,49 @@
+---
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { figures } from '../../lib/figures';
+import { profileUrl } from '../../lib/tmdb';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+const items = figures.slice().sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<BaseLayout
+  title={t('figures.title')}
+  description={t('figures.intro')}
+  altPath={localizePath(lang === 'es' ? 'en' : 'es', 'figures')}
+>
+  <section class="frame py-12">
+    <a href={localizePath(lang, 'films')} class="label no-underline hover:text-ink">← {t('nav.films')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('figures.title')} · {items.length} {t('figures.count')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('figures.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('figures.intro')}</p>
+    </header>
+
+    <div class="mt-10 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+      {
+        items.map((f) => (
+          <a href={localizePath(lang, `person/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+            <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+              {profileUrl(f.profile_path, 'h632') ? (
+                <img src={profileUrl(f.profile_path, 'h632')} alt={f.name} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+              ) : (
+                <div class="film-grain h-full w-full"></div>
+              )}
+            </div>
+            <div class="p-3">
+              <h2 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{f.name}</h2>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

@@ -128,14 +128,22 @@ export async function getFilmsBrief(
     .where(inArray(filmsCache.tmdbId, tmdbIds));
   for (const row of cached) out.set(row.tmdbId, briefFromTmdb(row.tmdb as TmdbMovie));
 
+  // Para los que falten pedimos SOLO a TMDB (no OMDb/Watchmode/Wikidata, que son
+  // lentos y aquí no se usan) y en paralelo; se cachea el tmdb para la ficha completa.
   const missing = tmdbIds.filter((id) => !out.has(id));
-  for (const id of missing) {
-    try {
-      const { tmdb } = await getFilm(id, locale);
-      out.set(id, briefFromTmdb(tmdb));
-    } catch {
-      /* ignorar IDs no resolubles */
-    }
-  }
+  await Promise.all(
+    missing.map(async (id) => {
+      try {
+        const tmdb = await getMovie(id, locale);
+        out.set(id, briefFromTmdb(tmdb));
+        await db
+          .insert(filmsCache)
+          .values({ tmdbId: id, tmdb, fetchedAt: new Date() })
+          .onConflictDoUpdate({ target: filmsCache.tmdbId, set: { tmdb, fetchedAt: new Date() } });
+      } catch {
+        /* ignorar IDs no resolubles */
+      }
+    }),
+  );
   return out;
 }

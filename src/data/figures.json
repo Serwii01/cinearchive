@@ -1,0 +1,165 @@
+{
+  "note": "Cineastas destacados. ids de TMDB resueltos por scripts/fetch-figures.mjs.",
+  "items": [
+    {
+      "id": 119294,
+      "name": "Abbas Kiarostami",
+      "profile_path": "/rTlz5ciu41FxyVuXA82a3tSYVZ8.jpg"
+    },
+    {
+      "id": 6817,
+      "name": "Agnès Varda",
+      "profile_path": "/sZol5QAmWvpopzAPbSxhoSc1DOe.jpg"
+    },
+    {
+      "id": 5026,
+      "name": "Akira Kurosawa",
+      "profile_path": "/g2iwSho2vJxVz7cbD1FAKAmPD6A.jpg"
+    },
+    {
+      "id": 2636,
+      "name": "Alfred Hitchcock",
+      "profile_path": "/108fiNM6poRieMg7RIqLJRxdAwG.jpg"
+    },
+    {
+      "id": 8452,
+      "name": "Andrei Tarkovsky",
+      "profile_path": "/mytn9s5kc6CqzKZtbuJ73oA6ujy.jpg"
+    },
+    {
+      "id": 3146,
+      "name": "Billy Wilder",
+      "profile_path": "/nWV9BDDCbRegP7etiPjl3vYnJEq.jpg"
+    },
+    {
+      "id": 21684,
+      "name": "Bong Joon-ho",
+      "profile_path": "/stwnTvZAoD8gEJEDHpDQyLCyDy5.jpg"
+    },
+    {
+      "id": 11572,
+      "name": "Carl Theodor Dreyer",
+      "profile_path": "/l4g1K4ai3HgAIg0267O5ppnknVX.jpg"
+    },
+    {
+      "id": 143035,
+      "name": "Edward Yang",
+      "profile_path": "/j7K4l87WXqvzT1abKsvgMVnFOyW.jpg"
+    },
+    {
+      "id": 9076,
+      "name": "F. W. Murnau",
+      "profile_path": "/keLp43iiIkkllroUwExIJITeR7a.jpg"
+    },
+    {
+      "id": 4415,
+      "name": "Federico Fellini",
+      "profile_path": "/r0GTpMWUrxgPRbMmv38mNggOBvA.jpg"
+    },
+    {
+      "id": 1776,
+      "name": "Francis Ford Coppola",
+      "profile_path": "/IwGgkmW6IoJ9vuNF0T9CU3FYUX.jpg"
+    },
+    {
+      "id": 1650,
+      "name": "François Truffaut",
+      "profile_path": "/3bXLtipaybsje01LlQvHvuUAZNq.jpg"
+    },
+    {
+      "id": 68,
+      "name": "Fritz Lang",
+      "profile_path": "/9dz4PmFzlSyexldWrOXBLLpkBqB.jpg"
+    },
+    {
+      "id": 608,
+      "name": "Hayao Miyazaki",
+      "profile_path": "/ouhjt9KugzhWtdEyBPipihB3ic8.jpg"
+    },
+    {
+      "id": 64992,
+      "name": "Hou Hsiao-hsien",
+      "profile_path": "/rqP4CEO6toAwGhsj8mmdu3Bta6I.jpg"
+    },
+    {
+      "id": 6648,
+      "name": "Ingmar Bergman",
+      "profile_path": "/nkmOaXNRoioViN9OQf2n9Iu6akA.jpg"
+    },
+    {
+      "id": 11528,
+      "name": "Jean Renoir",
+      "profile_path": "/ePLyIIgSud1ZhhaLtj1yFo2diC4.jpg"
+    },
+    {
+      "id": 3776,
+      "name": "Jean-Luc Godard",
+      "profile_path": "/zP5EDY5MstfkdBmPXNCj8Y6v5KR.jpg"
+    },
+    {
+      "id": 8500,
+      "name": "John Ford",
+      "profile_path": "/ffgVJWV8pDomSdTkjOqdrwMX9G6.jpg"
+    },
+    {
+      "id": 97202,
+      "name": "Kenji Mizoguchi",
+      "profile_path": "/ngKRZZPKh8d7GaeMgcM0eXbzMte.jpg"
+    },
+    {
+      "id": 793,
+      "name": "Luis Buñuel",
+      "profile_path": "/a7wib1eRG6TyonDXpAbF7PZd0f8.jpg"
+    },
+    {
+      "id": 1032,
+      "name": "Martin Scorsese",
+      "profile_path": "/g3DjfKsgZQWZiw30I20hZVk1oMX.jpg"
+    },
+    {
+      "id": 15189,
+      "name": "Michelangelo Antonioni",
+      "profile_path": "/o9QjZcZBkqQg25IW03WPRQfk9tN.jpg"
+    },
+    {
+      "id": 40,
+      "name": "Orson Welles",
+      "profile_path": "/e9lGmqQq3EsHeUQgQLByo275hcc.jpg"
+    },
+    {
+      "id": 309,
+      "name": "Pedro Almodóvar",
+      "profile_path": "/dKlaXJk3NLcsC1CKMx6xmyW5BZD.jpg"
+    },
+    {
+      "id": 10346,
+      "name": "Robert Bresson",
+      "profile_path": "/vgQWc59n5tnlHMD1FdKOoRe2iP7.jpg"
+    },
+    {
+      "id": 12160,
+      "name": "Satyajit Ray",
+      "profile_path": "/qP5mjuc3dL8n9c1zeY4W6L2w38L.jpg"
+    },
+    {
+      "id": 9603,
+      "name": "Sergei Eisenstein",
+      "profile_path": "/ks9uuDtKu9m9w50t18PamLZ91to.jpg"
+    },
+    {
+      "id": 240,
+      "name": "Stanley Kubrick",
+      "profile_path": "/yFT0VyIelI9aegZrsAwOG5iVP4v.jpg"
+    },
+    {
+      "id": 12453,
+      "name": "Wong Kar-wai",
+      "profile_path": "/msp2p1lFpbsQ3Ntpdh1sbryIZBR.jpg"
+    },
+    {
+      "id": 95501,
+      "name": "Yasujiro Ozu",
+      "profile_path": "/s0KBnwAxr6Aujbi6cA3inDqH8Fe.jpg"
+    }
+  ]
+}

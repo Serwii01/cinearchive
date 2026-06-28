@@ -82,6 +82,11 @@ export const ui = {
     'person.acted': 'Como intérprete',
     'person.filmography': 'Filmografía',
     'person.notFound': 'Persona no encontrada.',
+    'nav.figures': 'Figuras',
+    'figures.title': 'Figuras del cine',
+    'figures.intro':
+      'Cineastas esenciales del archivo. Entra en cada figura para ver su biografía y su filmografía.',
+    'figures.count': 'cineastas',
     'nav.atlas': 'Atlas',
     'atlas.title': 'Atlas del archivo',
     'atlas.intro':
@@ -382,6 +387,11 @@ export const ui = {
     'person.acted': 'As actor',
     'person.filmography': 'Filmography',
     'person.notFound': 'Person not found.',
+    'nav.figures': 'Figures',
+    'figures.title': 'Figures of Cinema',
+    'figures.intro':
+      'Essential filmmakers of the archive. Open each figure for their biography and filmography.',
+    'figures.count': 'filmmakers',
     'nav.atlas': 'Atlas',
     'atlas.title': 'Atlas of the Archive',
     'atlas.intro':
