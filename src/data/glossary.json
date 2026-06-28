@@ -1,0 +1,29 @@
+{
+  "note": "Glosario de términos de cine, bilingüe.",
+  "items": [
+    { "term_es": "Plano", "term_en": "Shot", "def_es": "Fragmento de imagen rodado de forma continua, sin cortes; la unidad básica del montaje.", "def_en": "A continuously filmed image fragment without cuts; the basic unit of editing." },
+    { "term_es": "Plano secuencia", "term_en": "Long take", "def_es": "Toma única y prolongada que resuelve una escena entera sin cortar.", "def_en": "A single, extended take that resolves a whole scene without a cut." },
+    { "term_es": "Primer plano", "term_en": "Close-up", "def_es": "Encuadre cercano, normalmente del rostro, que subraya la emoción o un detalle.", "def_en": "A tight framing, usually of the face, that emphasizes emotion or a detail." },
+    { "term_es": "Plano general", "term_en": "Wide shot", "def_es": "Encuadre amplio que sitúa a los personajes en su entorno.", "def_en": "A broad framing that places characters within their setting." },
+    { "term_es": "Campo / Contracampo", "term_en": "Shot / reverse shot", "def_es": "Alternancia de planos opuestos, habitual para filmar diálogos.", "def_en": "Alternation of opposing shots, the standard way to film dialogue." },
+    { "term_es": "Travelling", "term_en": "Tracking shot", "def_es": "Desplazamiento físico de la cámara sobre raíles o ruedas durante la toma.", "def_en": "A physical movement of the camera on rails or wheels during the take." },
+    { "term_es": "Picado / Contrapicado", "term_en": "High / low angle", "def_es": "Cámara situada por encima o por debajo del sujeto, que altera su poder o fragilidad.", "def_en": "Camera placed above or below the subject, altering their power or fragility." },
+    { "term_es": "Profundidad de campo", "term_en": "Deep focus", "def_es": "Técnica que mantiene nítidos a la vez el primer término y el fondo.", "def_en": "A technique keeping both foreground and background in sharp focus." },
+    { "term_es": "Montaje", "term_en": "Editing / montage", "def_es": "Selección y ordenación de los planos; donde el cine construye su sentido y su ritmo.", "def_en": "The selection and ordering of shots; where film builds its meaning and rhythm." },
+    { "term_es": "Raccord", "term_en": "Continuity", "def_es": "Coherencia visual y de acción entre planos contiguos para que el corte pase inadvertido.", "def_en": "Visual and action consistency between adjacent shots so the cut goes unnoticed." },
+    { "term_es": "Elipsis", "term_en": "Ellipsis", "def_es": "Omisión de un tramo de tiempo o acción que el espectador completa.", "def_en": "Omission of a stretch of time or action that the viewer fills in." },
+    { "term_es": "Encadenado", "term_en": "Dissolve", "def_es": "Transición en la que una imagen se funde gradualmente con la siguiente.", "def_en": "A transition in which one image gradually melts into the next." },
+    { "term_es": "Fundido", "term_en": "Fade", "def_es": "Aparición desde (o desaparición hacia) el negro, que abre o cierra una secuencia.", "def_en": "An appearance from (or vanishing into) black that opens or closes a sequence." },
+    { "term_es": "Fuera de campo", "term_en": "Off-screen space", "def_es": "Lo que existe fuera del encuadre y la película sugiere sin mostrar.", "def_en": "What exists outside the frame and the film implies without showing." },
+    { "term_es": "Diégesis", "term_en": "Diegesis", "def_es": "El mundo de la ficción; lo diegético es lo que ocurre dentro de ese mundo.", "def_en": "The world of the fiction; the diegetic is what happens within that world." },
+    { "term_es": "Voz en off", "term_en": "Voice-over", "def_es": "Voz cuya fuente no está en la imagen, a menudo narradora o interior.", "def_en": "A voice whose source is not in the image, often narrating or interior." },
+    { "term_es": "Plano subjetivo", "term_en": "POV shot", "def_es": "Encuadre que adopta el punto de vista físico de un personaje.", "def_en": "A framing that adopts a character's physical point of view." },
+    { "term_es": "Mirada a cámara", "term_en": "Breaking the fourth wall", "def_es": "Cuando un personaje mira o se dirige directamente al espectador.", "def_en": "When a character looks at or addresses the viewer directly." },
+    { "term_es": "MacGuffin", "term_en": "MacGuffin", "def_es": "Objeto o meta que pone en marcha la trama, aunque importe poco en sí mismo.", "def_en": "An object or goal that drives the plot, though it matters little in itself." },
+    { "term_es": "Día por noche", "term_en": "Day for night", "def_es": "Rodar de día y oscurecer la imagen para simular la noche.", "def_en": "Shooting in daylight and darkening the image to simulate night." },
+    { "term_es": "Cámara lenta", "term_en": "Slow motion", "def_es": "Rodar a más fotogramas por segundo para dilatar el tiempo en pantalla.", "def_en": "Shooting at more frames per second to dilate on-screen time." },
+    { "term_es": "Fotograma", "term_en": "Frame", "def_es": "Cada una de las imágenes fijas que, proyectadas en sucesión, crean el movimiento.", "def_en": "Each of the still images that, projected in succession, create movement." },
+    { "term_es": "Steadicam", "term_en": "Steadicam", "def_es": "Sistema de estabilización que permite planos móviles fluidos a mano.", "def_en": "A stabilizing rig that allows fluid handheld moving shots." },
+    { "term_es": "Found footage", "term_en": "Found footage", "def_es": "Ficción presentada como metraje real grabado por los personajes.", "def_en": "Fiction presented as real footage recorded by the characters." }
+  ]
+}

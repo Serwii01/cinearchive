@@ -1,0 +1,77 @@
+{
+  "note": "Cronología de movimientos y épocas del cine. keyFilms = tmdbIds del catálogo verificado.",
+  "items": [
+    {
+      "name_es": "Cine mudo",
+      "name_en": "Silent era",
+      "period": "1895–1927",
+      "desc_es": "Del nacimiento del cine a la llegada del sonido: el lenguaje visual se inventa casi por completo en estas tres décadas.",
+      "desc_en": "From cinema's birth to the arrival of sound: the visual language is almost entirely invented in these three decades.",
+      "keyFilms": [780, 626]
+    },
+    {
+      "name_es": "Expresionismo alemán",
+      "name_en": "German Expressionism",
+      "period": "1919–1931",
+      "desc_es": "Sombras pintadas, decorados deformes y almas atormentadas: el cine como pintura del subconsciente.",
+      "desc_en": "Painted shadows, warped sets and tormented souls: cinema as a painting of the subconscious.",
+      "keyFilms": [234, 653, 19, 832]
+    },
+    {
+      "name_es": "Montaje soviético",
+      "name_en": "Soviet montage",
+      "period": "1924–1930",
+      "desc_es": "Eisenstein y sus contemporáneos convierten el corte en arma ideológica y emocional.",
+      "desc_en": "Eisenstein and his contemporaries turn the cut into an ideological and emotional weapon.",
+      "keyFilms": [643]
+    },
+    {
+      "name_es": "Hollywood clásico",
+      "name_en": "Classical Hollywood",
+      "period": "1930–1960",
+      "desc_es": "El sistema de estudios y los géneros perfeccionan un cine narrativo de relojería que aún domina la cultura popular.",
+      "desc_en": "The studio system and its genres perfect a clockwork narrative cinema that still dominates popular culture.",
+      "keyFilms": [15, 289, 599, 426]
+    },
+    {
+      "name_es": "Neorrealismo italiano",
+      "name_en": "Italian Neorealism",
+      "period": "1945–1952",
+      "desc_es": "Cámara a la calle, actores no profesionales y la posguerra como tema: la realidad irrumpe en la ficción.",
+      "desc_en": "Camera to the street, non-professional actors and the postwar as subject: reality bursts into fiction.",
+      "keyFilms": [5156, 307]
+    },
+    {
+      "name_es": "Nouvelle Vague",
+      "name_en": "French New Wave",
+      "period": "1958–1968",
+      "desc_es": "Jóvenes críticos toman la cámara y reinventan la gramática del cine con libertad e ironía.",
+      "desc_en": "Young critics pick up the camera and reinvent cinema's grammar with freedom and irony.",
+      "keyFilms": [147, 269, 1628]
+    },
+    {
+      "name_es": "Nuevo cine alemán",
+      "name_en": "New German Cinema",
+      "period": "1962–1982",
+      "desc_es": "Fassbinder, Herzog y Wenders reconstruyen un cine de autor sobre las ruinas morales de la posguerra.",
+      "desc_en": "Fassbinder, Herzog and Wenders rebuild an auteur cinema on the moral ruins of the postwar.",
+      "keyFilms": [2000, 661, 144]
+    },
+    {
+      "name_es": "Nuevo Hollywood",
+      "name_en": "New Hollywood",
+      "period": "1967–1980",
+      "desc_es": "Una generación influida por Europa renueva el cine norteamericano con ambición autoral y temas adultos.",
+      "desc_en": "A Europe-influenced generation renews American cinema with authorial ambition and adult themes.",
+      "keyFilms": [238, 103, 28]
+    },
+    {
+      "name_es": "Nuevo cine asiático",
+      "name_en": "New Asian cinema",
+      "period": "1990–presente",
+      "desc_es": "Hong Kong, Taiwán, Corea, Irán o Tailandia: las cinematografías que han redefinido el cine de autor contemporáneo.",
+      "desc_en": "Hong Kong, Taiwan, Korea, Iran or Thailand: the cinemas that have redefined contemporary arthouse film.",
+      "keyFilms": [843, 670, 496243, 60243]
+    }
+  ]
+}

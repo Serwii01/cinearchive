@@ -65,6 +65,16 @@ export const ui = {
     'collections.films': 'películas',
     'collections.view': 'Ver dosier',
     'collections.backToCollections': 'Volver a los dosieres',
+    'nav.glossary': 'Glosario',
+    'glossary.title': 'Glosario del cine',
+    'glossary.intro':
+      'Un vocabulario breve para mirar el cine con más precisión: del plano secuencia al MacGuffin.',
+    'glossary.count': 'términos',
+    'nav.timeline': 'Cronología',
+    'timeline.title': 'Cronología del cine',
+    'timeline.intro':
+      'Las grandes corrientes y épocas que han dado forma al cine, de los hermanos Lumière al presente.',
+    'timeline.keyFilms': 'Películas clave',
     'ticker.label': 'Nuevas adquisiciones',
     'home.featured': 'Destacado',
     'home.filmOfDay': 'Película del día',
@@ -334,6 +344,16 @@ export const ui = {
     'collections.films': 'films',
     'collections.view': 'View dossier',
     'collections.backToCollections': 'Back to dossiers',
+    'nav.glossary': 'Glossary',
+    'glossary.title': 'Film Glossary',
+    'glossary.intro':
+      'A short vocabulary to watch cinema more precisely: from the long take to the MacGuffin.',
+    'glossary.count': 'terms',
+    'nav.timeline': 'Timeline',
+    'timeline.title': 'Film Timeline',
+    'timeline.intro':
+      'The great movements and eras that have shaped cinema, from the Lumière brothers to the present.',
+    'timeline.keyFilms': 'Key films',
     'ticker.label': 'New acquisitions',
     'home.featured': 'Featured',
     'home.filmOfDay': 'Film of the day',
