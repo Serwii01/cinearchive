@@ -18,8 +18,6 @@ export const manifesto: Record<'es' | 'en', ManifestoCopy> = {
     principles: [
       ['De dominio público', 'Damos prioridad a lo que ya es libre: dominio público y acceso abierto, con su fuente siempre citada.'],
       ['Sin muros', 'Sin pagos, sin anuncios, sin rastreo. Un catálogo para explorar, no una tienda.'],
-      ['Bilingüe por convicción', 'Todo vive en español y en inglés, a partir de fuentes abiertas.'],
-      ['Forma brutalista', 'Sin adornos: estructura, contraste y tipografía como manera de pensar.'],
     ],
   },
   en: {
@@ -33,8 +31,6 @@ export const manifesto: Record<'es' | 'en', ManifestoCopy> = {
     principles: [
       ['Public domain first', 'We prioritise what is already free: public domain and open access, always crediting the source.'],
       ['No walls', 'No payments, no ads, no tracking. An index to explore, not a store.'],
-      ['Bilingual by conviction', 'Everything lives in Spanish and English, built from open sources.'],
-      ['Brutalist form', 'No ornament: structure, contrast and type as a way of thinking.'],
     ],
   },
 };
