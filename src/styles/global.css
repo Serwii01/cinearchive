@@ -56,6 +56,16 @@
 
   body {
     @apply bg-background text-charcoal font-body text-body-md antialiased;
+    /* Evita scroll horizontal accidental en móvil por algún hijo desbordado. */
+    overflow-x: hidden;
+  }
+
+  /* Los titulares (con palabras o títulos largos) parten en lugar de desbordar. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    overflow-wrap: break-word;
   }
 
   /* Brutalismo: esquinas rectas en absolutamente todo. */

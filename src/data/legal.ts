@@ -171,6 +171,93 @@ export const privacy: Record<'es' | 'en', LegalDoc> = {
   },
 };
 
+export const accessibility: Record<'es' | 'en', LegalDoc> = {
+  es: {
+    title: 'Accesibilidad',
+    updated: 'Última actualización',
+    date: DATE_ES,
+    intro:
+      'Cine Archive aspira a ser un archivo abierto a todo el mundo. La accesibilidad forma parte de esa idea de lo público: un sitio que cualquiera pueda leer y usar, con o sin ayudas técnicas. Esta declaración describe lo que hacemos, lo que sabemos que aún falta y cómo avisarnos.',
+    sections: [
+      {
+        heading: 'Nuestro compromiso',
+        body: [
+          'Trabajamos para acercarnos al nivel AA de las Pautas de Accesibilidad para el Contenido Web (WCAG 2.1). Es un objetivo de mejora continua, no una certificación: revisamos la accesibilidad al añadir funciones nuevas.',
+        ],
+      },
+      {
+        heading: 'Qué hemos tenido en cuenta',
+        body: [
+          'HTML semántico: encabezados jerárquicos, regiones (cabecera, navegación, principal, pie) y listas reales, para que los lectores de pantalla anuncien la estructura.',
+          'Navegación con teclado: puedes recorrer enlaces, botones y formularios con el tabulador, con un indicador de foco visible. No hay trampas de teclado.',
+          'Texto alternativo en carteles y portadas, y etiquetas (aria-label) en los controles que no llevan texto visible.',
+          'Tema claro y oscuro, y un diseño con tipografía amplia pensado para ofrecer buen contraste en ambos modos.',
+          'Diseño adaptable (responsive) que funciona con zoom y en pantallas pequeñas sin pérdida de contenido.',
+          'Respetamos «prefers-reduced-motion»: si tu sistema pide menos animación, reducimos los movimientos.',
+        ],
+      },
+      {
+        heading: 'Limitaciones conocidas',
+        body: [
+          'El visor de la hemeroteca se incrusta desde Internet Archive (archive.org). Su accesibilidad depende de ese servicio y queda fuera de nuestro control.',
+          'Los tráileres se reproducen mediante el reproductor incrustado de YouTube, sujeto a la accesibilidad de YouTube.',
+          'Aún no hemos realizado una auditoría externa completa, así que pueden quedar problemas que desconocemos. Por eso tu aviso nos ayuda.',
+        ],
+      },
+      {
+        heading: 'Cómo avisarnos',
+        body: [
+          'Si encuentras una barrera de accesibilidad —algo que no puedes leer, enfocar o usar— escríbenos a ' +
+            CONTACT_EMAIL +
+            '. Indícanos la página, qué intentabas hacer y, si puedes, el navegador o la ayuda técnica que usas. Intentamos responder y corregir lo antes posible.',
+        ],
+      },
+    ],
+  },
+  en: {
+    title: 'Accessibility',
+    updated: 'Last updated',
+    date: DATE_EN,
+    intro:
+      'Cine Archive aims to be an archive open to everyone. Accessibility is part of that idea of the public good: a site anyone can read and use, with or without assistive technology. This statement describes what we do, what we know is still missing, and how to tell us.',
+    sections: [
+      {
+        heading: 'Our commitment',
+        body: [
+          'We work towards level AA of the Web Content Accessibility Guidelines (WCAG 2.1). This is an ongoing goal, not a certification: we review accessibility whenever we add new features.',
+        ],
+      },
+      {
+        heading: 'What we have considered',
+        body: [
+          'Semantic HTML: hierarchical headings, landmark regions (header, navigation, main, footer) and real lists, so screen readers can announce the structure.',
+          'Keyboard navigation: you can reach links, buttons and forms with the Tab key, with a visible focus indicator. There are no keyboard traps.',
+          'Alternative text on posters and covers, and labels (aria-label) on controls that have no visible text.',
+          'Light and dark themes, and a generous typographic design intended to keep good contrast in both modes.',
+          'Responsive layout that works with zoom and on small screens without loss of content.',
+          'We honour «prefers-reduced-motion»: if your system asks for less animation, we reduce motion.',
+        ],
+      },
+      {
+        heading: 'Known limitations',
+        body: [
+          'The periodicals viewer is embedded from the Internet Archive (archive.org). Its accessibility depends on that service and is outside our control.',
+          'Trailers play through the embedded YouTube player, subject to YouTube’s own accessibility.',
+          'We have not yet carried out a full external audit, so issues we are not aware of may remain. That is why your report helps.',
+        ],
+      },
+      {
+        heading: 'How to tell us',
+        body: [
+          'If you hit an accessibility barrier —something you cannot read, focus or use— write to ' +
+            CONTACT_EMAIL +
+            '. Tell us the page, what you were trying to do and, if you can, the browser or assistive technology you use. We try to respond and fix things as soon as possible.',
+        ],
+      },
+    ],
+  },
+};
+
 export const terms: Record<'es' | 'en', LegalDoc> = {
   es: {
     title: 'Términos y Condiciones',

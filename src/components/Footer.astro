@@ -17,14 +17,15 @@ const year = new Date().getFullYear();
       <a href={localizePath(lang)} class="label text-background no-underline hover:text-ochre">{t('nav.home')}</a>
       <a href={localizePath(lang, 'archive')} class="label text-background no-underline hover:text-ochre">{t('nav.archive')}</a>
       <a href={localizePath(lang, 'films')} class="label text-background no-underline hover:text-ochre">{t('nav.films')}</a>
+      <a href={localizePath(lang, 'discover')} class="label text-background no-underline hover:text-ochre">{t('nav.discover')}</a>
       <a href={localizePath(lang, 'about')} class="label text-background no-underline hover:text-ochre">{t('nav.about')}</a>
       <a href={localizePath(lang, 'privacy')} class="label text-background no-underline hover:text-ochre">{t('nav.privacy')}</a>
       <a href={localizePath(lang, 'terms')} class="label text-background no-underline hover:text-ochre">{t('nav.terms')}</a>
+      <a href={localizePath(lang, 'accessibility')} class="label text-background no-underline hover:text-ochre">{t('nav.accessibility')}</a>
     </nav>
 
     <div class="md:text-right">
-      <p class="font-mono text-meta-data text-outline-variant">© {year} {t('site.title')}. {t('footer.rights')}</p>
-      <p class="font-mono text-meta-data text-outline">{t('footer.builtWith')}</p>
+      <p class="font-mono text-meta-data text-outline-variant">© {year} {t('footer.rights')}</p>
     </div>
   </div>
 </footer>

@@ -65,7 +65,7 @@ const isEmpty = !stats || stats.total === 0;
               <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.topGenres')}</h2>
               <ul class="mt-4 flex flex-col gap-2">
                 {stats.topGenres.map((g) => (
-                  <li class="grid grid-cols-[8rem_1fr_2rem] items-center gap-3">
+                  <li class="grid grid-cols-[5.5rem_1fr_2rem] items-center gap-3 sm:grid-cols-[8rem_1fr_2rem]">
                     <span class="truncate font-mono text-meta-data text-charcoal">{g.label}</span>
                     <span class="h-4 bg-ink" style={`width:${pct(g.count, genreMax)}%`}></span>
                     <span class="text-right font-mono text-meta-data text-muted">{g.count}</span>
@@ -81,7 +81,7 @@ const isEmpty = !stats || stats.total === 0;
               <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.topDirectors')}</h2>
               <ul class="mt-4 flex flex-col gap-2">
                 {stats.topDirectors.map((d) => (
-                  <li class="grid grid-cols-[8rem_1fr_2rem] items-center gap-3">
+                  <li class="grid grid-cols-[5.5rem_1fr_2rem] items-center gap-3 sm:grid-cols-[8rem_1fr_2rem]">
                     <span class="truncate font-mono text-meta-data text-charcoal">{d.label}</span>
                     <span class="h-4 bg-ochre" style={`width:${pct(d.count, dirMax)}%`}></span>
                     <span class="text-right font-mono text-meta-data text-muted">{d.count}</span>
@@ -97,7 +97,7 @@ const isEmpty = !stats || stats.total === 0;
               <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.byDecade')}</h2>
               <ul class="mt-4 flex flex-col gap-2">
                 {stats.byDecade.map((d) => (
-                  <li class="grid grid-cols-[8rem_1fr_2rem] items-center gap-3">
+                  <li class="grid grid-cols-[5.5rem_1fr_2rem] items-center gap-3 sm:grid-cols-[8rem_1fr_2rem]">
                     <span class="font-mono text-meta-data text-charcoal">{d.decade}s</span>
                     <span class="h-4 bg-ink" style={`width:${pct(d.count, decadeMax)}%`}></span>
                     <span class="text-right font-mono text-meta-data text-muted">{d.count}</span>
@@ -113,7 +113,7 @@ const isEmpty = !stats || stats.total === 0;
               <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.ratings')}</h2>
               <ul class="mt-4 flex flex-col gap-2">
                 {[5, 4, 3, 2, 1].map((star) => (
-                  <li class="grid grid-cols-[8rem_1fr_2rem] items-center gap-3">
+                  <li class="grid grid-cols-[5.5rem_1fr_2rem] items-center gap-3 sm:grid-cols-[8rem_1fr_2rem]">
                     <span class="font-mono text-meta-data text-charcoal">{'★'.repeat(star)}</span>
                     <span class="h-4 bg-ochre" style={`width:${pct(stats.ratingHistogram[star - 1], histMax)}%`}></span>
                     <span class="text-right font-mono text-meta-data text-muted">{stats.ratingHistogram[star - 1]}</span>

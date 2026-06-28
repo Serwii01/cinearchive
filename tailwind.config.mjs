@@ -28,12 +28,14 @@ export default {
         body: ['"Geist Sans"', 'Geist', 'system-ui', 'sans-serif'],
         mono: ['"Space Mono"', 'ui-monospace', 'monospace'],
       },
-      // Escala tipográfica exacta del design md.
+      // Escala tipográfica fluida (clamp): el máximo conserva el tamaño exacto del
+      // design md en escritorio, y encoge de forma proporcional en móvil para que
+      // ningún titular se desborde en pantallas estrechas.
       fontSize: {
-        'display-lg': ['84px', { lineHeight: '90px', letterSpacing: '-0.04em', fontWeight: '600' }],
-        'display-mobile': ['48px', { lineHeight: '52px', letterSpacing: '-0.02em', fontWeight: '600' }],
-        'headline-lg': ['42px', { lineHeight: '48px', fontWeight: '500' }],
-        'headline-md': ['32px', { lineHeight: '38px', fontWeight: '500' }],
+        'display-lg': ['clamp(2.625rem, 4.5vw + 1.25rem, 5.25rem)', { lineHeight: '1.07', letterSpacing: '-0.04em', fontWeight: '600' }],
+        'display-mobile': ['clamp(2rem, 5vw + 0.75rem, 3rem)', { lineHeight: '1.08', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'headline-lg': ['clamp(1.875rem, 2.5vw + 1rem, 2.625rem)', { lineHeight: '1.14', fontWeight: '500' }],
+        'headline-md': ['clamp(1.5rem, 1.5vw + 0.9rem, 2rem)', { lineHeight: '1.19', fontWeight: '500' }],
         'body-lg': ['18px', { lineHeight: '28px', fontWeight: '400' }],
         'body-md': ['16px', { lineHeight: '24px', fontWeight: '400' }],
         'label-caps': ['12px', { lineHeight: '16px', letterSpacing: '0.1em', fontWeight: '500' }],
