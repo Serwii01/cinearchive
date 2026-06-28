@@ -4,6 +4,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import IssueCard from '../../components/IssueCard.astro';
 import JournalCard from '../../components/JournalCard.astro';
 import { periodicals, journals } from '../../lib/periodicals';
+import { pdFilms, pdThumbUrl } from '../../lib/pdfilms';
+import { books, bookCoverUrl } from '../../lib/library';
+import { collections, collectionTitle, collectionBlurb } from '../../lib/collections';
+import { figures } from '../../lib/figures';
+import { profileUrl } from '../../lib/tmdb';
 import { getFilmOfDay } from '../../lib/featured';
 import { getEphemerides, ephemerisText, ephemerisDate } from '../../lib/ephemerides';
 import { manifesto } from '../../data/manifesto';
@@ -16,6 +21,17 @@ const latestIssues = periodicals
   .slice()
   .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title))
   .slice(0, 4);
+
+// Selección repartida (variedad) de un conjunto, para los adelantos de portada.
+const sample = <T,>(arr: T[], n: number): T[] => {
+  if (arr.length <= n) return arr.slice();
+  const step = arr.length / n;
+  return Array.from({ length: n }, (_, i) => arr[Math.floor(i * step)]);
+};
+const cinemaPicks = sample(pdFilms, 4);
+const collectionPicks = collections.slice(0, 3);
+const figurePicks = sample(figures, 6);
+const bookPicks = sample(books, 4);
 
 const manifestoCopy = manifesto[lang];
 
@@ -119,6 +135,74 @@ const ephemHeading = onThisDay.length > 0 ? t('home.onThisDay') : t('home.fromAr
     </div>
   </section>
 
+  {/* CINE ABIERTO (dominio público) */}
+  <section class="frame py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('nav.cinema')}</h2>
+      <a href={localizePath(lang, 'cinema')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+    </div>
+    <div class="grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
+      {
+        cinemaPicks.map((f) => (
+          <a href={localizePath(lang, `cinema/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+            <div class="aspect-video overflow-hidden border-b border-ink bg-charcoal">
+              <img src={pdThumbUrl(f.id)} alt={f.title} loading="lazy" decoding="async" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+            </div>
+            <div class="p-3">
+              <h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{f.title}</h3>
+              <p class="mt-1 font-mono text-meta-data text-muted">{f.director} · {f.year}</p>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  {/* DOSIERES */}
+  <section class="frame py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('nav.collections')}</h2>
+      <a href={localizePath(lang, 'collections')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+    </div>
+    <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
+      {
+        collectionPicks.map((c) => (
+          <a href={localizePath(lang, `collections/${c.slug}`)} class="group flex flex-col bg-surface p-5 no-underline transition-colors hover:bg-film-white">
+            <span class="label">{c.tmdbIds.length} {t('collections.films')}</span>
+            <h3 class="mt-2 font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{collectionTitle(c, lang)}</h3>
+            <p class="mt-2 text-body-md text-charcoal">{collectionBlurb(c, lang)}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  {/* FIGURAS */}
+  <section class="frame py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('nav.figures')}</h2>
+      <a href={localizePath(lang, 'figures')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+    </div>
+    <div class="grid grid-cols-3 gap-px border border-ink bg-ink sm:grid-cols-6">
+      {
+        figurePicks.map((f) => (
+          <a href={`${localizePath(lang, `person/${f.id}`)}?from=figures`} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+            <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+              {profileUrl(f.profile_path, 'h632') ? (
+                <img src={profileUrl(f.profile_path, 'h632')} alt={f.name} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+              ) : (
+                <div class="film-grain h-full w-full" />
+              )}
+            </div>
+            <div class="p-2">
+              <h3 class="font-display text-body-md leading-tight text-ink transition-colors group-hover:text-muted">{f.name}</h3>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
   {/* REVISTAS ACTUALES · ACCESO ABIERTO */}
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
@@ -129,6 +213,29 @@ const ephemHeading = onThisDay.length > 0 ? t('home.onThisDay') : t('home.fromAr
 
     <div class="grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
       {journals.map((j) => <JournalCard item={j} lang={lang} />)}
+    </div>
+  </section>
+
+  {/* BIBLIOTECA (textos de dominio público) */}
+  <section class="frame py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('nav.library')}</h2>
+      <a href={localizePath(lang, 'library')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+    </div>
+    <div class="grid grid-cols-2 gap-px border-l border-r border-ink bg-ink sm:grid-cols-4">
+      {
+        bookPicks.map((b) => (
+          <a href={localizePath(lang, `library/${b.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+            <div class="aspect-[3/4] overflow-hidden border-b border-ink bg-charcoal">
+              <img src={bookCoverUrl(b.id)} alt={b.title} loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
+            </div>
+            <div class="p-3">
+              <h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{b.title}</h3>
+              <p class="mt-1 font-mono text-meta-data text-muted">{b.author} · {b.year}</p>
+            </div>
+          </a>
+        ))
+      }
     </div>
   </section>
 
