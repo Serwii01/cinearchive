@@ -30,7 +30,7 @@ const items = figures.slice().sort((a, b) => a.name.localeCompare(b.name));
     <div class="mt-10 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
       {
         items.map((f) => (
-          <a href={localizePath(lang, `person/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+          <a href={`${localizePath(lang, `person/${f.id}`)}?from=figures`} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
               {profileUrl(f.profile_path, 'h632') ? (
                 <img src={profileUrl(f.profile_path, 'h632')} alt={f.name} loading="lazy" decoding="async" class="h-full w-full object-cover" />

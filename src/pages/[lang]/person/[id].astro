@@ -32,6 +32,13 @@ const sections: { label: string; films: FilmographyEntry[] }[] = isDirector
       { label: t('person.directed'), films: directed },
     ];
 
+// Enlace de "volver" según de dónde se llegó (figuras vs. filmoteca).
+const from = Astro.url.searchParams.get('from');
+const back =
+  from === 'figures'
+    ? { href: localizePath(lang, 'figures'), label: t('nav.figures') }
+    : { href: localizePath(lang, 'films'), label: t('nav.films') };
+
 const fmtDate = (s: string | null) =>
   s ? new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en-GB', { dateStyle: 'long' }).format(new Date(s)) : null;
 
@@ -45,7 +52,7 @@ const altPath = localizePath(lang === 'es' ? 'en' : 'es', `person/${id}`);
 
 <BaseLayout title={person.name} description={person.biography?.slice(0, 200)} altPath={altPath}>
   <article class="frame py-12">
-    <a href={localizePath(lang, 'films')} class="label no-underline hover:text-ink">← {t('nav.films')}</a>
+    <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>
 
     <div class="mt-6 grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-12">
       <div class="mx-auto w-full max-w-[16rem] md:mx-0 md:col-span-3">
