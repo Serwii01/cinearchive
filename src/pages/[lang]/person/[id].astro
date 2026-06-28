@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getPersonCached, directedFilms, actedFilms, type FilmographyEntry } from '../../../lib/people';
+import { profileUrl } from '../../../lib/tmdb';
+import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+const id = Number(Astro.params.id);
+
+if (!Number.isInteger(id) || id <= 0) return Astro.redirect(localizePath(lang, 'films'));
+
+let person;
+try {
+  person = await getPersonCached(id, lang);
+} catch {
+  return new Response(t('person.notFound'), { status: 404 });
+}
+
+const photo = profileUrl(person.profile_path, 'h632');
+const directed = directedFilms(person);
+const acted = actedFilms(person);
+// Quien dirige encabeza con su dirección; el resto, con su faceta interpretativa.
+const isDirector = person.known_for_department === 'Directing' || directed.length >= 3;
+const sections: { label: string; films: FilmographyEntry[] }[] = isDirector
+  ? [
+      { label: t('person.directed'), films: directed },
+      { label: t('person.acted'), films: acted },
+    ]
+  : [
+      { label: t('person.acted'), films: acted },
+      { label: t('person.directed'), films: directed },
+    ];
+
+const fmtDate = (s: string | null) =>
+  s ? new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en-GB', { dateStyle: 'long' }).format(new Date(s)) : null;
+
+const facts = [
+  { label: t('person.born'), value: fmtDate(person.birthday) },
+  { label: t('person.died'), value: fmtDate(person.deathday) },
+  { label: t('person.place'), value: person.place_of_birth },
+].filter((f) => f.value);
+const altPath = localizePath(lang === 'es' ? 'en' : 'es', `person/${id}`);
+---
+
+<BaseLayout title={person.name} description={person.biography?.slice(0, 200)} altPath={altPath}>
+  <article class="frame py-12">
+    <a href={localizePath(lang, 'films')} class="label no-underline hover:text-ink">← {t('nav.films')}</a>
+
+    <div class="mt-6 grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-12">
+      <div class="mx-auto w-full max-w-[16rem] md:mx-0 md:col-span-3">
+        <div class="border border-ink bg-charcoal">
+          {photo ? (
+            <img src={photo} alt={person.name} width="421" height="632" decoding="async" class="w-full" />
+          ) : (
+            <div class="film-grain aspect-[2/3] w-full"></div>
+          )}
+        </div>
+        {facts.length > 0 && (
+          <dl class="mt-4 border border-ink">
+            {facts.map((f, i) => (
+              <div class:list={['p-3', i < facts.length - 1 && 'border-b border-outline-variant']}>
+                <dt class="label">{f.label}</dt>
+                <dd class="mt-1 font-mono text-meta-data text-ink">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </div>
+
+      <div class="md:col-span-9">
+        {person.known_for_department && <span class="label">{person.known_for_department}</span>}
+        <h1 class="mt-2 text-display-mobile md:text-display-lg">{person.name}</h1>
+        {person.biography && (
+          <div class="prose-archive mt-5 max-w-3xl">
+            {person.biography.split('\n').filter((p) => p.trim()).slice(0, 6).map((p) => <p>{p}</p>)}
+          </div>
+        )}
+
+        {sections.map((s) =>
+          s.films.length > 0 ? (
+            <section class="mt-10">
+              <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{s.label}</h2>
+              <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-5">
+                {s.films.map((f) => (
+                  <a href={localizePath(lang, `film/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+                    <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+                      {f.poster ? (
+                        <img src={f.poster} alt={f.title} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                      ) : (
+                        <div class="film-grain h-full w-full"></div>
+                      )}
+                    </div>
+                    <div class="flex flex-1 flex-col p-2">
+                      <p class="font-display text-body-md leading-tight text-ink">{f.title}</p>
+                      <p class="font-mono text-meta-data text-muted">{[f.year, f.role].filter(Boolean).join(' · ')}</p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ) : null,
+        )}
+      </div>
+    </div>
+  </article>
+</BaseLayout>

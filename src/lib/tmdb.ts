@@ -71,8 +71,8 @@ export interface TmdbMovie {
   production_countries: { iso_3166_1: string; name: string }[];
   production_companies?: { id: number; name: string }[];
   credits?: {
-    crew: { job: string; name: string }[];
-    cast: { name: string; character: string; profile_path: string | null }[];
+    crew: { id: number; job: string; name: string }[];
+    cast: { id: number; name: string; character: string; profile_path: string | null }[];
   };
   keywords?: { keywords: { id: number; name: string }[] };
   recommendations?: { results: TmdbSearchResult[] };
@@ -160,6 +160,55 @@ export async function popularMovies(locale: string, page = 1) {
 
 export function director(movie: TmdbMovie): string | null {
   return movie.credits?.crew.find((c) => c.job === 'Director')?.name ?? null;
+}
+
+/** Director con su id de TMDB (para enlazar a su ficha de persona), o null. */
+export function directorPerson(movie: TmdbMovie): { id: number; name: string } | null {
+  const d = movie.credits?.crew.find((c) => c.job === 'Director');
+  return d ? { id: d.id, name: d.name } : null;
+}
+
+export interface TmdbPersonCredit {
+  id: number;
+  title?: string;
+  poster_path: string | null;
+  release_date?: string;
+  character?: string;
+  job?: string;
+  department?: string;
+  vote_count?: number;
+}
+
+export interface TmdbPerson {
+  id: number;
+  name: string;
+  biography: string;
+  birthday: string | null;
+  deathday: string | null;
+  place_of_birth: string | null;
+  profile_path: string | null;
+  known_for_department: string | null;
+  movie_credits: { cast: TmdbPersonCredit[]; crew: TmdbPersonCredit[] };
+}
+
+/**
+ * Persona (director, intérprete…) con su filmografía. Si la biografía no existe
+ * en el idioma pedido, recurre a la inglesa para no dejar la ficha vacía.
+ */
+export async function getPerson(id: number, locale: string): Promise<TmdbPerson> {
+  const person = await tmdbFetch<TmdbPerson>(`/person/${id}`, {
+    language: toTmdbLang(locale),
+    append_to_response: 'movie_credits',
+  });
+  if (!person.biography && toTmdbLang(locale) !== 'en-US') {
+    try {
+      const en = await tmdbFetch<{ biography: string }>(`/person/${id}`, { language: 'en-US' });
+      if (en.biography) person.biography = en.biography;
+    } catch {
+      /* sin biografía */
+    }
+  }
+  return person;
 }
 
 export type PosterSize = 'w185' | 'w342' | 'w500' | 'w780';
