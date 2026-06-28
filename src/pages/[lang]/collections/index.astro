@@ -1,0 +1,44 @@
+---
+export const prerender = true;
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { collections, collectionTitle, collectionBlurb } from '../../../lib/collections';
+import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={t('collections.title')}
+  description={t('collections.intro')}
+  altPath={localizePath(lang === 'es' ? 'en' : 'es', 'collections')}
+>
+  <section class="frame py-12">
+    <a href={localizePath(lang, 'films')} class="label no-underline hover:text-ink">← {t('nav.films')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('collections.title')} · {collections.length} {t('collections.count')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('collections.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('collections.intro')}</p>
+    </header>
+
+    <div class="mt-10 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2">
+      {
+        collections.map((c) => (
+          <a
+            href={localizePath(lang, `collections/${c.slug}`)}
+            class="group flex flex-col bg-surface p-5 no-underline transition-colors hover:bg-film-white"
+          >
+            <span class="label">{c.tmdbIds.length} {t('collections.films')}</span>
+            <h2 class="mt-2 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{collectionTitle(c, lang)}</h2>
+            <p class="mt-2 text-body-md text-charcoal">{collectionBlurb(c, lang)}</p>
+            <span class="label mt-4 text-ink">{t('collections.view')} →</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

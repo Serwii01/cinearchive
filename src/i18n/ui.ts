@@ -57,6 +57,14 @@ export const ui = {
     'library.reader': 'Lectura',
     'library.readerNote':
       'Lector de Internet Archive. El texto es de dominio público; al abrirlo, tu navegador se conecta a archive.org.',
+    'nav.collections': 'Dosieres',
+    'collections.title': 'Dosieres',
+    'collections.intro':
+      'Colecciones temáticas comentadas: recorridos por movimientos, autores y formas para explorar el archivo con criterio.',
+    'collections.count': 'dosieres',
+    'collections.films': 'películas',
+    'collections.view': 'Ver dosier',
+    'collections.backToCollections': 'Volver a los dosieres',
     'ticker.label': 'Nuevas adquisiciones',
     'home.featured': 'Destacado',
     'home.filmOfDay': 'Película del día',
@@ -316,6 +324,14 @@ export const ui = {
     'library.reader': 'Reading',
     'library.readerNote':
       'Internet Archive reader. The text is in the public domain; on opening, your browser connects to archive.org.',
+    'nav.collections': 'Dossiers',
+    'collections.title': 'Dossiers',
+    'collections.intro':
+      'Annotated thematic collections: routes through movements, auteurs and forms to explore the archive with a guide.',
+    'collections.count': 'dossiers',
+    'collections.films': 'films',
+    'collections.view': 'View dossier',
+    'collections.backToCollections': 'Back to dossiers',
     'ticker.label': 'New acquisitions',
     'home.featured': 'Featured',
     'home.filmOfDay': 'Film of the day',

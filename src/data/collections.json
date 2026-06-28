@@ -1,0 +1,53 @@
+{
+  "note": "Dosieres: colecciones temáticas curadas que enlazan a fichas. tmdbIds tomados del catálogo verificado de films.json.",
+  "items": [
+    {
+      "slug": "cine-japones",
+      "title_es": "Cumbres del cine japonés",
+      "title_en": "Peaks of Japanese Cinema",
+      "blurb_es": "De la quietud de Ozu al estruendo épico de Kurosawa: el clasicismo japonés que enseñó al mundo a mirar.",
+      "blurb_en": "From Ozu's stillness to Kurosawa's epic thunder: the Japanese classicism that taught the world how to look.",
+      "tmdbIds": [18148, 20530, 346, 548, 3782, 11645, 14696, 20532, 16672]
+    },
+    {
+      "slug": "nouvelle-vague",
+      "title_es": "La Nouvelle Vague",
+      "title_en": "The French New Wave",
+      "blurb_es": "Cámara en mano, montaje insolente y amor por el cine: la generación que rompió las reglas a finales de los cincuenta.",
+      "blurb_en": "Handheld cameras, insolent editing and a love of cinema: the generation that broke the rules in the late fifties.",
+      "tmdbIds": [147, 269, 1628, 2786, 266, 499]
+    },
+    {
+      "slug": "mudo-y-vanguardias",
+      "title_es": "Cine mudo y vanguardias",
+      "title_en": "Silent Cinema & the Avant-Garde",
+      "blurb_es": "Expresionismo, montaje soviético y surrealismo: cuando el cine inventaba su propio lenguaje sin palabras.",
+      "blurb_en": "Expressionism, Soviet montage and surrealism: when cinema invented its own wordless language.",
+      "tmdbIds": [234, 653, 19, 643, 780, 626]
+    },
+    {
+      "slug": "negro-y-suspense",
+      "title_es": "Sombras: cine negro y suspense",
+      "title_en": "Shadows: Film Noir & Suspense",
+      "blurb_es": "Claroscuros, fatalismo y tensión: el lado oscuro de Hollywood y sus herederos.",
+      "blurb_en": "Chiaroscuro, fatalism and tension: Hollywood's dark side and its heirs.",
+      "tmdbIds": [426, 539, 567, 599, 3112, 103]
+    },
+    {
+      "slug": "ciencia-ficcion",
+      "title_es": "Ciencia ficción que piensa",
+      "title_en": "Thinking Science Fiction",
+      "blurb_es": "Futuros y otros mundos como espejo de lo humano: la ciencia ficción cuando es, sobre todo, filosofía.",
+      "blurb_en": "Futures and other worlds as a mirror of the human: science fiction when it is, above all, philosophy.",
+      "tmdbIds": [62, 1398, 593, 78, 19, 38368]
+    },
+    {
+      "slug": "nuevo-cine-asiatico",
+      "title_es": "Nuevo cine asiático",
+      "title_en": "Contemporary Asian Auteurs",
+      "blurb_es": "Hong Kong, Corea, Taiwán, Tailandia, Irán: las voces que han definido el cine de autor de las últimas décadas.",
+      "blurb_en": "Hong Kong, Korea, Taiwan, Thailand, Iran: the voices that have defined arthouse cinema in recent decades.",
+      "tmdbIds": [843, 11104, 670, 496243, 60243, 11534, 30020]
+    }
+  ]
+}

@@ -25,6 +25,7 @@ const intro = t('films.intro').replace('{count}', String(films.length));
       <nav class="mt-6 flex flex-wrap gap-2" aria-label={t('films.sections')}>
         <span class="label flex items-center pr-1">{t('films.sections')}:</span>
         <a href={localizePath(lang, 'cinema')} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{t('nav.cinema')}</a>
+        <a href={localizePath(lang, 'collections')} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{t('nav.collections')}</a>
       </nav>
     </header>
 
