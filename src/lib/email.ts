@@ -28,8 +28,13 @@ export async function sendEmail(msg: EmailMessage): Promise<boolean> {
       headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
       body: JSON.stringify({ from, to: msg.to, subject: msg.subject, html: msg.html, text: msg.text }),
     });
-    if (!res.ok) console.error('[email] Resend respondió', res.status);
-    return res.ok;
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      console.error(`[email] Resend ${res.status} (from="${from}" to="${msg.to}"):`, body);
+      return false;
+    }
+    console.log(`[email] enviado "${msg.subject}" → ${msg.to} (from="${from}")`);
+    return true;
   } catch (e) {
     console.error('[email] error enviando:', e);
     return false;

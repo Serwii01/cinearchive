@@ -56,6 +56,7 @@ export const auth = betterAuth({
     // Envía el enlace de restablecimiento por correo (Resend). Sin clave de email,
     // no se envía nada (el login social sigue funcionando igual).
     sendResetPassword: async ({ user: u, url }) => {
+      console.log('[auth] sendResetPassword solicitado para', u.email);
       await sendEmail({
         to: u.email,
         subject: 'Restablecer tu contraseña — Cine Archive',
