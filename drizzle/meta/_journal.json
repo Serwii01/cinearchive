@@ -36,6 +36,13 @@
       "when": 1782235349525,
       "tag": "0004_classy_madripoor",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1782846077560,
+      "tag": "0005_lazy_jocasta",
+      "breakpoints": true
     }
   ]
 }

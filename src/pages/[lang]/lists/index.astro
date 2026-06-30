@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { db } from '../../../db/client';
+import { userLists, userListFilms } from '../../../db/schema';
+import { count, eq, inArray } from 'drizzle-orm';
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+const user = Astro.locals.user!; // middleware garantiza sesión
+
+const lists = await db
+  .select()
+  .from(userLists)
+  .where(eq(userLists.userId, user.id))
+  .orderBy(userLists.createdAt);
+
+const ids = lists.map((l) => l.id);
+const countMap = new Map<string, number>();
+if (ids.length) {
+  const counts = await db
+    .select({ listId: userListFilms.listId, c: count() })
+    .from(userListFilms)
+    .where(inArray(userListFilms.listId, ids))
+    .groupBy(userListFilms.listId);
+  for (const r of counts) countMap.set(r.listId, Number(r.c));
+}
+const detailBase = localizePath(lang, 'lists');
+---
+
+<BaseLayout title={t('lists.title')}>
+  <section class="frame py-12" data-confirm={t('lists.confirmDelete')} data-rename={t('lists.rename')}>
+    <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('lists.title')} · {lists.length}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('lists.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('lists.intro')}</p>
+
+      <form id="create-list" class="mt-6 flex flex-wrap items-center gap-3">
+        <input
+          name="name"
+          required
+          maxlength="80"
+          autocomplete="off"
+          placeholder={t('lists.namePlaceholder')}
+          class="w-full max-w-xs border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
+        />
+        <button type="submit" class="btn btn-primary">{t('lists.create')}</button>
+      </form>
+    </header>
+
+    {lists.length === 0 ? (
+      <p class="mt-10 font-mono text-body-md text-muted">{t('lists.empty')}</p>
+    ) : (
+      <ul id="lists" class="mt-8 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2" data-base={detailBase}>
+        {lists.map((l) => (
+          <li class="flex items-center justify-between gap-3 bg-surface p-4" data-id={l.id}>
+            <a href={`${detailBase}/${l.id}`} class="min-w-0 flex-1 no-underline">
+              <span class="block truncate font-display text-headline-md text-ink hover:text-muted" data-name>{l.name}</span>
+              <span class="font-mono text-meta-data text-muted">{countMap.get(l.id) ?? 0} {t('lists.count')}</span>
+            </a>
+            <div class="flex shrink-0 gap-2">
+              <button type="button" data-rename-btn class="label border border-ink px-2 py-1 transition-colors hover:bg-ink hover:text-white">{t('lists.rename')}</button>
+              <button type="button" data-delete-btn class="label border border-ink px-2 py-1 transition-colors hover:bg-error hover:text-white">{t('lists.delete')}</button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</BaseLayout>
+
+<script>
+  const root = document.querySelector('[data-confirm]') as HTMLElement | null;
+  const confirmMsg = root?.dataset.confirm || 'Delete?';
+  const renameMsg = root?.dataset.rename || 'Rename';
+
+  // Crear lista
+  const form = document.getElementById('create-list') as HTMLFormElement | null;
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = String(new FormData(form).get('name') || '').trim();
+    if (!name) return;
+    const res = await fetch('/api/me/lists', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
+    if (res.ok) location.reload();
+  });
+
+  // Renombrar / eliminar
+  document.querySelectorAll<HTMLLIElement>('#lists > li').forEach((li) => {
+    const id = li.dataset.id;
+    li.querySelector('[data-rename-btn]')?.addEventListener('click', async () => {
+      const current = li.querySelector('[data-name]')?.textContent ?? '';
+      const name = prompt(renameMsg, current)?.trim();
+      if (!name || name === current) return;
+      const res = await fetch(`/api/me/lists/${id}`, {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+      if (res.ok) location.reload();
+    });
+    li.querySelector('[data-delete-btn]')?.addEventListener('click', async () => {
+      if (!confirm(confirmMsg)) return;
+      const res = await fetch(`/api/me/lists/${id}`, { method: 'DELETE' });
+      if (res.ok) location.reload();
+    });
+  });
+</script>

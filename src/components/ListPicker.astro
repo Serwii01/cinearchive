@@ -1,0 +1,101 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  tmdbId: number;
+  lang: Lang;
+}
+const { tmdbId, lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<list-picker
+  data-tmdb-id={tmdbId}
+  data-l-new={t('lists.newListPlaceholder')}
+  data-l-add={t('lists.add')}
+  data-l-nolists={t('lists.noLists')}
+  data-login-url={`/${lang}/login`}
+  data-login-label={t('film.addToList')}
+  class="block border border-ink bg-film-white"
+>
+  <div class="border-b border-ink px-3 py-2"><span class="label">{t('lists.addTo')}</span></div>
+  <div data-body class="p-3 font-mono text-meta-data text-muted">…</div>
+</list-picker>
+
+<script>
+  interface ListItem { id: string; name: string; count: number; contains: boolean }
+
+  class ListPicker extends HTMLElement {
+    connectedCallback() {
+      const d = this.dataset;
+      const tmdbId = Number(d.tmdbId);
+      const body = this.querySelector('[data-body]') as HTMLElement;
+
+      const esc = (s: string) =>
+        s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+      const toggle = (id: string, contains: boolean) =>
+        fetch(`/api/me/lists/${id}/films`, {
+          method: contains ? 'DELETE' : 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ tmdbId }),
+        });
+
+      const wire = (lists: ListItem[]) => {
+        this.querySelectorAll<HTMLButtonElement>('[data-list]').forEach((btn) =>
+          btn.addEventListener('click', async () => {
+            const l = lists.find((x) => x.id === btn.dataset.list);
+            if (!l) return;
+            await toggle(l.id, l.contains);
+            l.contains = !l.contains;
+            render(lists);
+          }),
+        );
+        this.querySelector<HTMLFormElement>('[data-create]')?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const input = this.querySelector('[data-name]') as HTMLInputElement;
+          const name = input.value.trim();
+          if (!name) return;
+          const res = await fetch('/api/me/lists', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ name }),
+          });
+          if (!res.ok) return;
+          const created = await res.json();
+          await toggle(created.id, false); // añade la película a la lista recién creada
+          load();
+        });
+      };
+
+      const render = (lists: ListItem[]) => {
+        const items = lists
+          .map(
+            (l) => `<button type="button" data-list="${l.id}" class="label flex w-full items-center justify-between border border-ink px-2 py-2 transition-colors ${
+              l.contains ? 'bg-ochre text-on-accent' : 'hover:bg-ink hover:text-white'
+            }"><span class="truncate">${esc(l.name)}</span><span aria-hidden="true">${l.contains ? '✓' : '+'}</span></button>`,
+          )
+          .join('');
+        body.innerHTML = `${
+          lists.length
+            ? `<div class="flex flex-col gap-2">${items}</div>`
+            : `<p class="mb-3 text-muted">${esc(d.lNolists!)}</p>`
+        }<form data-create class="mt-3 flex gap-2"><input data-name maxlength="80" autocomplete="off" placeholder="${esc(d.lNew!)}" class="min-w-0 flex-1 border border-ink bg-white px-2 py-1 font-body text-body-md text-ink focus:bg-film-white focus:outline-none" /><button type="submit" class="btn btn-primary shrink-0">${esc(d.lAdd!)}</button></form>`;
+        wire(lists);
+      };
+
+      const load = async () => {
+        const res = await fetch(`/api/me/lists?tmdbId=${tmdbId}`, { headers: { accept: 'application/json' } });
+        if (res.status === 401) {
+          body.innerHTML = `<a href="${d.loginUrl}?next=${encodeURIComponent(location.pathname)}" class="text-ink underline decoration-ochre">${esc(d.loginLabel || 'Iniciar sesión')}</a>`;
+          return;
+        }
+        const data = await res.json().catch(() => ({ lists: [] }));
+        render(data.lists || []);
+      };
+
+      load();
+    }
+  }
+  if (!customElements.get('list-picker')) customElements.define('list-picker', ListPicker);
+</script>

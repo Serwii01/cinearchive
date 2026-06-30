@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { db } from '../../../db/client';
+import { userLists, userListFilms } from '../../../db/schema';
+import { and, eq } from 'drizzle-orm';
+import { getFilmsBrief } from '../../../lib/films';
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+const user = Astro.locals.user!;
+const id = Astro.params.id!;
+
+const [list] = await db
+  .select()
+  .from(userLists)
+  .where(and(eq(userLists.id, id), eq(userLists.userId, user.id)))
+  .limit(1);
+if (!list) return Astro.redirect(localizePath(lang, 'lists'));
+
+const rows = await db
+  .select({ tmdbId: userListFilms.tmdbId })
+  .from(userListFilms)
+  .where(eq(userListFilms.listId, id))
+  .orderBy(userListFilms.addedAt);
+const ids = rows.map((r) => r.tmdbId);
+const briefs = await getFilmsBrief(ids, lang);
+const films = ids.map((i) => briefs.get(i)).filter((f) => f != null);
+---
+
+<BaseLayout title={list.name}>
+  <section class="frame py-12" data-list={id} data-confirm={t('lists.confirmDelete')} data-rename={t('lists.rename')} data-lists={localizePath(lang, 'lists')}>
+    <a href={localizePath(lang, 'lists')} class="label no-underline hover:text-ink">← {t('lists.backToLists')}</a>
+    <header class="mt-6 flex flex-col gap-4 border-b border-ink pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <span class="label">{t('lists.title')} · {films.length} {t('lists.count')}</span>
+        <h1 id="list-name" class="mt-3 text-display-mobile md:text-display-lg">{list.name}</h1>
+      </div>
+      <div class="flex shrink-0 gap-2">
+        <button type="button" id="rename" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white">{t('lists.rename')}</button>
+        <button type="button" id="delete" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white">{t('lists.delete')}</button>
+      </div>
+    </header>
+
+    {films.length === 0 ? (
+      <p class="mt-10 font-mono text-body-md text-muted">{t('lists.emptyFilms')}</p>
+    ) : (
+      <div id="grid" class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+        {films.map((f) => (
+          <div class="group relative flex flex-col bg-surface" data-id={f!.tmdbId}>
+            <a href={localizePath(lang, `film/${f!.tmdbId}`)} class="flex flex-1 flex-col no-underline hover:bg-film-white">
+              <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+                {f!.poster ? (
+                  <img src={f!.poster} alt={f!.title} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                ) : (
+                  <div class="film-grain h-full w-full" />
+                )}
+              </div>
+              <div class="flex flex-1 flex-col p-2">
+                <p class="font-display text-body-lg leading-tight text-ink">{f!.title}</p>
+                <p class="font-mono text-meta-data text-muted">{[f!.director, f!.year].filter(Boolean).join(' · ')}</p>
+              </div>
+            </a>
+            <button type="button" data-remove class="label absolute right-1 top-1 border border-ink bg-background px-2 py-1 opacity-0 transition-opacity hover:bg-error hover:text-white group-hover:opacity-100">{t('lists.remove')}</button>
+          </div>
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<script>
+  const root = document.querySelector('[data-list]') as HTMLElement | null;
+  if (root) {
+    const id = root.dataset.list!;
+    const confirmMsg = root.dataset.confirm || 'Delete?';
+    const renameMsg = root.dataset.rename || 'Rename';
+    const listsUrl = root.dataset.lists || '/es/lists';
+
+    document.getElementById('rename')?.addEventListener('click', async () => {
+      const current = document.getElementById('list-name')?.textContent ?? '';
+      const name = prompt(renameMsg, current)?.trim();
+      if (!name || name === current) return;
+      const res = await fetch(`/api/me/lists/${id}`, {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+      if (res.ok) location.reload();
+    });
+
+    document.getElementById('delete')?.addEventListener('click', async () => {
+      if (!confirm(confirmMsg)) return;
+      const res = await fetch(`/api/me/lists/${id}`, { method: 'DELETE' });
+      if (res.ok) location.href = listsUrl;
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-remove]').forEach((b) =>
+      b.addEventListener('click', async () => {
+        const cell = b.closest('[data-id]') as HTMLElement | null;
+        const tmdbId = Number(cell?.dataset.id);
+        if (!tmdbId) return;
+        const res = await fetch(`/api/me/lists/${id}/films`, {
+          method: 'DELETE',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ tmdbId }),
+        });
+        if (res.ok) cell?.remove();
+      }),
+    );
+  }
+</script>

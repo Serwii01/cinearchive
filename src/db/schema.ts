@@ -130,6 +130,31 @@ export const userFilms = pgTable(
   }),
 );
 
+/** Listas personalizadas del usuario (p. ej. "Para ver con amigos", "Cine de terror"). */
+export const userLists = pgTable('user_lists', {
+  id: text('id').primaryKey(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+/** Películas dentro de una lista personalizada (una fila por lista y película). */
+export const userListFilms = pgTable(
+  'user_list_films',
+  {
+    listId: text('list_id')
+      .notNull()
+      .references(() => userLists.id, { onDelete: 'cascade' }),
+    tmdbId: integer('tmdb_id').notNull(),
+    addedAt: timestamp('added_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.listId, t.tmdbId] }),
+  }),
+);
+
 /** Preferencias de perfil; alimentan las recomendaciones. */
 export const userPreferences = pgTable('user_preferences', {
   userId: text('user_id')
@@ -149,3 +174,5 @@ export type UserPreferences = typeof userPreferences.$inferSelect;
 export type FilmCache = typeof filmsCache.$inferSelect;
 export type WatchCache = typeof watchCache.$inferSelect;
 export type ExtraFilm = typeof extraFilms.$inferSelect;
+export type UserList = typeof userLists.$inferSelect;
+export type UserListFilm = typeof userListFilms.$inferSelect;

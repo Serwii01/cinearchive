@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import FilmControls from '../../../components/FilmControls.astro';
+import ListPicker from '../../../components/ListPicker.astro';
 import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { resolveBackLink } from '../../../lib/backlink';
 import { getFilm } from '../../../lib/films';
@@ -131,13 +132,16 @@ const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t);
 
         <div class="mt-6">
           {Astro.locals.user ? (
-            <FilmControls
-              tmdbId={tmdbId}
-              lang={lang}
-              status={userState?.status ?? null}
-              rating={userState?.rating ?? null}
-              note={userState?.note ?? null}
-            />
+            <div class="flex flex-col gap-4">
+              <FilmControls
+                tmdbId={tmdbId}
+                lang={lang}
+                status={userState?.status ?? null}
+                rating={userState?.rating ?? null}
+                note={userState?.note ?? null}
+              />
+              <ListPicker tmdbId={tmdbId} lang={lang} />
+            </div>
           ) : (
             <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`} class="btn btn-primary w-full justify-center no-underline">
               {t('film.addToList')}
