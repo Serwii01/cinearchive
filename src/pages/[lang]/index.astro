@@ -100,7 +100,7 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
       <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">{t('home.viewArchive')} →</a>
     </div>
 
-    <div class="grid grid-cols-2 gap-px border-l border-r border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+    <div class="grid grid-cols-2 gap-px border-x border-b border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
       {latestIssues.map((item) => <IssueCard item={item} lang={lang} />)}
     </div>
   </section>
@@ -111,7 +111,7 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
       <h2 class="text-headline-lg text-ink">{t('nav.cinema')}</h2>
       <a href={localizePath(lang, 'cinema')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
-    <div class="grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-px border-x border-b border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
       {
         cinemaPicks.map((f) => (
           <a href={localizePath(lang, `cinema/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
@@ -181,7 +181,7 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
     </div>
     <p class="mb-8 max-w-2xl text-body-md text-charcoal">{t('archive.currentIntro')}</p>
 
-    <div class="grid grid-cols-1 gap-px border-l border-r border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-px border-x border-b border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
       {journals.map((j) => <JournalCard item={j} lang={lang} />)}
     </div>
   </section>
@@ -192,7 +192,7 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
       <h2 class="text-headline-lg text-ink">{t('nav.library')}</h2>
       <a href={localizePath(lang, 'library')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
-    <div class="grid grid-cols-2 gap-px border-l border-r border-ink bg-ink sm:grid-cols-4">
+    <div class="grid grid-cols-2 gap-px border-x border-b border-ink bg-ink sm:grid-cols-4">
       {
         bookPicks.map((b) => (
           <a href={localizePath(lang, `library/${b.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">

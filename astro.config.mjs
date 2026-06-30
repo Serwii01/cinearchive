@@ -29,6 +29,11 @@ export default defineConfig({
       redirectToDefaultLocale: false,
     },
   },
+  // Evita que Astro "incruste" los scripts pequeños inline en el HTML: así todos
+  // salen como /_astro/*.js externos y la CSP estricta (script-src 'self') los
+  // permite. Sin esto, el menú móvil, el modo oscuro y los filtros no funcionan
+  // en producción (sí en dev, donde no hay CSP).
+  vite: { build: { assetsInlineLimit: 0 } },
   integrations: [
     tailwind({ applyBaseStyles: false }),
     sitemap({

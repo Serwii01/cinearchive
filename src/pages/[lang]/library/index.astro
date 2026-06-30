@@ -27,7 +27,7 @@ const items = books.slice().sort((a, b) => a.year - b.year || a.title.localeComp
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('library.intro')}</p>
     </header>
 
-    <div class="mt-10 grid grid-cols-2 gap-px border-l border-r border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+    <div class="mt-10 grid grid-cols-2 gap-px border-x border-b border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
       {
         items.map((b) => (
           <article class="group flex h-full flex-col border-t border-ink bg-surface">
