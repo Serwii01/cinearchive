@@ -8,7 +8,7 @@ import { rateLimit, clientIp, tooMany } from '../../../../lib/ratelimit';
 
 export const prerender = false;
 
-const TTL_MS = 14 * 24 * 60 * 60 * 1000; // 14 días (cuota Watchmode baja)
+const TTL_MS = 45 * 24 * 60 * 60 * 1000; // 45 días (cuota Watchmode baja)
 
 /** GET /api/films/:id/watch?region=XX — plataformas donde ver, cacheadas por región. */
 export const GET: APIRoute = async ({ params, url, request }) => {

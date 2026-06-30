@@ -12,7 +12,7 @@ import { getWatchSources, type WatchAvailability } from './watchmode';
 import { getFilmLocations, type FilmLocations } from './wikidata';
 
 const OMDB_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
-const WATCHMODE_TTL_MS = 14 * 24 * 60 * 60 * 1000; // 14 días (límite mensual bajo)
+const WATCHMODE_TTL_MS = 45 * 24 * 60 * 60 * 1000; // 45 días (cuota mensual baja: refresca poco)
 const WIKIDATA_TTL_MS = 60 * 24 * 60 * 60 * 1000; // 60 días (cambia rara vez)
 
 export interface FilmDetail {

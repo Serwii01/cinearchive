@@ -27,9 +27,13 @@ const fmtDate = (d: Date) => new Date(d).toLocaleDateString(lang === 'es' ? 'es-
 const apiCards = [
   {
     name: 'Watchmode',
-    value: wm ? `${wm.quota - wm.quotaUsed} / ${wm.quota}` : t('admin.noKey'),
-    note: wm ? t('admin.remaining') : '',
-    warn: wm ? wm.quota - wm.quotaUsed < wm.quota * 0.1 : false,
+    value: wm.ok
+      ? `${wm.quota - wm.quotaUsed} / ${wm.quota}`
+      : wm.reason === 'nokey'
+        ? t('admin.noKey')
+        : t('admin.quotaOut'),
+    note: wm.ok ? t('admin.remaining') : '',
+    warn: !wm.ok || wm.quota - wm.quotaUsed < wm.quota * 0.1,
   },
   { name: 'OMDb', value: '—', note: t('admin.noCounter'), warn: false },
   { name: 'TMDB', value: '∞', note: t('admin.unlimited'), warn: false },
