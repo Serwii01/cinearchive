@@ -58,6 +58,35 @@ export function invalidateRecommendations(userId: string): void {
   for (const key of cache.keys()) if (key.startsWith(`${userId}:`)) cache.delete(key);
 }
 
+/**
+ * Intercala las recomendaciones por su "motivo" (director/género) en round-robin,
+ * para que no salgan 7 seguidas de "porque te gusta Fincher" y luego 7 de "Terror".
+ * Conserva el orden por puntuación dentro de cada motivo.
+ */
+function interleaveByReason(recs: Recommendation[]): Recommendation[] {
+  const groups = new Map<string, Recommendation[]>();
+  for (const r of recs) {
+    const key = r.because ?? '—';
+    let list = groups.get(key);
+    if (!list) groups.set(key, (list = []));
+    list.push(r);
+  }
+  const lists = [...groups.values()]; // en orden de aparición ≈ de mayor a menor fuerza
+  const out: Recommendation[] = [];
+  let added = true;
+  while (added) {
+    added = false;
+    for (const list of lists) {
+      const next = list.shift();
+      if (next) {
+        out.push(next);
+        added = true;
+      }
+    }
+  }
+  return out;
+}
+
 async function computeRecommendations(userId: string, locale: string): Promise<Recommendation[]> {
   const [prefs] = await db
     .select()
@@ -216,5 +245,6 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
     }
   }
 
-  return recs;
+  // Mezcla por motivo para que las recomendaciones no salgan agrupadas.
+  return interleaveByReason(recs);
 }
