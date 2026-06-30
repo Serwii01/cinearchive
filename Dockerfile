@@ -19,7 +19,10 @@ ENV NODE_ENV=production \
     PORT=4321
 
 COPY package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+# --ignore-scripts: en runtime no se compila nada (se ejecuta el dist ya construido
+# y las migraciones usan drizzle-orm+pg en JS puro), así evitamos el postinstall de
+# esbuild/@esbuild-kit, que falla por choque de versiones y no se necesita aquí.
+RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
 # Artefactos necesarios en tiempo de ejecución.
 COPY --from=build /app/dist ./dist
