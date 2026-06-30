@@ -1,9 +1,14 @@
 /**
  * "Película del día" para la portada (SOLO SERVIDOR).
+ *
  * Se elige de las tendencias de TMDB de forma determinista por fecha (cambia cada
- * día) y se cachea en memoria por idioma para no repetir la llamada en cada visita.
+ * día). Garantiza:
+ *   - La MISMA película en español y en inglés: el id del día se fija una sola vez
+ *     (compartido entre idiomas) y luego se localiza por idioma.
+ *   - SIN películas infantiles: se descartan los géneros Animación y Familia.
+ * Se cachea en memoria por idioma para no repetir la llamada en cada visita.
  */
-import { trendingDay, backdropUrl, posterUrl, type TmdbTrending } from './tmdb';
+import { trendingDay, getMovie, backdropUrl, posterUrl, type TmdbTrending } from './tmdb';
 
 export interface FilmOfDay {
   tmdbId: number;
@@ -15,11 +20,39 @@ export interface FilmOfDay {
   voteAverage: number;
 }
 
+// Géneros que consideramos "infantiles": 16 = Animación, 10751 = Familia.
+const KIDS_GENRES = new Set([16, 10751]);
+const isKids = (r: { genre_ids?: number[] }) => (r.genre_ids ?? []).some((g) => KIDS_GENRES.has(g));
+
+type PickLike = {
+  id: number;
+  title: string;
+  overview: string;
+  release_date?: string;
+  backdrop_path: string | null;
+  poster_path: string | null;
+  vote_average: number;
+};
+
 const cache = new Map<string, { day: number; data: FilmOfDay }>();
+// Id elegido para el día, compartido por todos los idiomas (misma peli en ES/EN).
+let chosen: { day: number; id: number } | null = null;
 
 /** Día absoluto (UTC) desde epoch: cambia una vez al día. */
 function dayNumber(): number {
   return Math.floor(Date.now() / 86_400_000);
+}
+
+function toFilmOfDay(p: PickLike): FilmOfDay {
+  return {
+    tmdbId: p.id,
+    title: p.title,
+    overview: p.overview,
+    year: p.release_date ? p.release_date.slice(0, 4) : '',
+    backdrop: backdropUrl(p.backdrop_path, 'w1280'),
+    poster: posterUrl(p.poster_path, 'w500'),
+    voteAverage: p.vote_average,
+  };
 }
 
 export async function getFilmOfDay(locale: string): Promise<FilmOfDay | null> {
@@ -29,20 +62,22 @@ export async function getFilmOfDay(locale: string): Promise<FilmOfDay | null> {
 
   try {
     const results = await trendingDay(locale);
-    const withImage = results.filter((r: TmdbTrending) => r.backdrop_path);
-    if (withImage.length === 0) return null;
+    // Con imagen y sin infantiles.
+    const candidates = results.filter((r: TmdbTrending) => r.backdrop_path && !isKids(r));
+    if (candidates.length === 0) return null;
 
-    // Selección determinista del día (rota por la lista cada jornada).
-    const pick = withImage[day % withImage.length];
-    const data: FilmOfDay = {
-      tmdbId: pick.id,
-      title: pick.title,
-      overview: pick.overview,
-      year: pick.release_date ? pick.release_date.slice(0, 4) : '',
-      backdrop: backdropUrl(pick.backdrop_path, 'w1280'),
-      poster: posterUrl(pick.poster_path, 'w500'),
-      voteAverage: pick.vote_average,
-    };
+    // Fija el id del día UNA sola vez. Orden por id (estable) en lugar del ranking
+    // volátil del trending, para que la elección no dependa del momento de la llamada.
+    if (!chosen || chosen.day !== day) {
+      const sorted = [...candidates].sort((a, b) => a.id - b.id);
+      chosen = { day, id: sorted[day % sorted.length].id };
+    }
+
+    // Localiza la película elegida en el idioma pedido. Si no aparece en este
+    // trending (el conjunto pudo variar), pide su ficha para localizarla igual.
+    const inList = candidates.find((r) => r.id === chosen!.id);
+    const data = inList ? toFilmOfDay(inList) : toFilmOfDay(await getMovie(chosen.id, locale));
+
     cache.set(locale, { day, data });
     return data;
   } catch {
