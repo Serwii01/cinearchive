@@ -48,7 +48,7 @@ const heroData = JSON.stringify(
         {/* PELÍCULA GRANDE RECOMENDADA + BOTÓN "OTRA" */}
         <section id="rec-hero" class="mt-10 border border-ink" data-base={filmBase} data-because={t('recs.because')}>
           <div class="grid grid-cols-1 md:grid-cols-12">
-            <div class="flex flex-col justify-between gap-6 py-8 md:col-span-5 md:border-r md:border-ink md:py-10 md:pr-8 md:pl-8">
+            <div class="order-2 flex flex-col justify-between gap-6 border-t border-ink px-5 py-8 md:order-none md:border-t-0 md:border-r md:px-8 md:py-10">
               <div class="flex items-center justify-between gap-4">
                 <span class="label">{t('recs.heroLabel')}</span>
                 <span id="rec-because" class="font-mono text-meta-data text-ochre-dim">
@@ -72,7 +72,7 @@ const heroData = JSON.stringify(
               </div>
             </div>
 
-            <a id="rec-imglink" href={`${filmBase}/${hero?.tmdbId}`} class="block border-t border-ink md:col-span-7 md:border-l md:border-t-0">
+            <a id="rec-imglink" href={`${filmBase}/${hero?.tmdbId}`} class="order-1 block md:order-none md:col-span-7 md:border-l md:border-ink">
               <img
                 id="rec-img"
                 src={hero?.backdrop ?? ''}
