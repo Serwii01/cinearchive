@@ -10,7 +10,6 @@ import { collections, collectionTitle, collectionBlurb } from '../../lib/collect
 import { figures } from '../../lib/figures';
 import { profileUrl } from '../../lib/tmdb';
 import { getFilmOfDay } from '../../lib/featured';
-import { getEphemerides, ephemerisText, ephemerisDate } from '../../lib/ephemerides';
 import { manifesto } from '../../data/manifesto';
 import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
@@ -37,11 +36,6 @@ const manifestoCopy = manifesto[lang];
 
 const film = await getFilmOfDay(lang);
 const overview = film?.overview && film.overview.length > 320 ? film.overview.slice(0, 317) + '…' : film?.overview;
-
-// Efemérides: eventos de hoy si los hay; si no, la próxima del calendario.
-const { onThisDay, next } = getEphemerides();
-const ephemList = onThisDay.length > 0 ? onThisDay : [next];
-const ephemHeading = onThisDay.length > 0 ? t('home.onThisDay') : t('home.nextAnniversary');
 ---
 
 <BaseLayout altPath={localizePath(lang === 'es' ? 'en' : 'es')}>
@@ -98,33 +92,6 @@ const ephemHeading = onThisDay.length > 0 ? t('home.onThisDay') : t('home.nextAn
       </section>
     )
   }
-
-  {/* EFEMÉRIDES — UN DÍA COMO HOY / PRÓXIMA EFEMÉRIDE */}
-  <section class="border-b border-ink bg-surface">
-    <div class="frame grid gap-5 py-8 md:grid-cols-[12rem_1fr] md:gap-10">
-      <div class="flex items-center gap-3">
-        <span class="h-3 w-3 shrink-0 border border-ink bg-ochre"></span>
-        <span class="label">{ephemHeading}</span>
-      </div>
-      <ul class="flex flex-col divide-y divide-outline-variant">
-        {
-          ephemList.map((e) => (
-            <li class="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-baseline sm:gap-5">
-              <span class="shrink-0 font-mono text-meta-data uppercase tracking-[0.08em] text-muted sm:w-44">{ephemerisDate(e, lang)}</span>
-              <p class="font-display text-headline-md leading-tight text-ink">
-                {ephemerisText(e, lang)}
-                {e.tmdbId && (
-                  <a href={localizePath(lang, `film/${e.tmdbId}`)} class="ml-2 inline-block align-baseline font-mono text-meta-data uppercase tracking-[0.08em] text-ochre-dim no-underline hover:underline">
-                    {t('home.viewFilm')} →
-                  </a>
-                )}
-              </p>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
 
   {/* ÚLTIMOS NÚMEROS (hemeroteca) */}
   <section class="frame py-12">
@@ -191,8 +158,8 @@ const ephemHeading = onThisDay.length > 0 ? t('home.onThisDay') : t('home.nextAn
         figurePicks.map((f) => (
           <a href={`${localizePath(lang, `person/${f.id}`)}?from=figures`} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
-              {profileUrl(f.profile_path, 'h632') ? (
-                <img src={profileUrl(f.profile_path, 'h632')} alt={f.name} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+              {profileUrl(f.profile_path, 'w185') ? (
+                <img src={profileUrl(f.profile_path, 'w185')} alt={f.name} loading="lazy" decoding="async" class="h-full w-full object-cover" />
               ) : (
                 <div class="film-grain h-full w-full" />
               )}
