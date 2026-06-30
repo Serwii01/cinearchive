@@ -43,31 +43,33 @@ async function main() {
 @font-face{font-family:'Space Mono';src:url(data:font/woff2;base64,${mono400}) format('woff2');font-weight:400;}
 @font-face{font-family:'Space Mono';src:url(data:font/woff2;base64,${mono700}) format('woff2');font-weight:700;}`;
 
-  // --- Marca cuadrada (monograma "CA" con perforaciones de película) ---
-  const markInner = (square, hole, ca) => `
-    <rect x="0" y="0" width="200" height="200" fill="${square}"/>
-    ${[22, 66, 110, 154].map((y) => `<rect x="12" y="${y}" width="16" height="24" fill="${hole}"/><rect x="172" y="${y}" width="16" height="24" fill="${hole}"/>`).join('')}
-    <text x="100" y="104" font-family="'EB Garamond', Georgia, serif" font-size="104" font-weight="600" fill="${ca}" text-anchor="middle" dominant-baseline="middle">CA</text>`;
+  // --- Marca: el logotipo real del sitio (favicon brutalista, public/favicon.svg) ---
+  const markShapes = (bg, fg, accent) => `
+    <rect width="32" height="32" fill="${bg}"/>
+    <rect x="1" y="1" width="30" height="30" fill="none" stroke="${fg}" stroke-width="2"/>
+    <rect x="6" y="6" width="20" height="9" fill="${accent}" stroke="${fg}" stroke-width="2"/>
+    <line x1="6" y1="20" x2="26" y2="20" stroke="${fg}" stroke-width="2"/>
+    <line x1="6" y1="25" x2="20" y2="25" stroke="${fg}" stroke-width="2"/>`;
 
   const svgFontStyle = `<style>${`
 @font-face{font-family:'EB Garamond';src:url(data:font/woff2;base64,${ebg}) format('woff2');font-weight:400 700;}
 @font-face{font-family:'Space Mono';src:url(data:font/woff2;base64,${mono700}) format('woff2');font-weight:700;}`}</style>`;
 
-  const markSvg = (square, hole, ca) =>
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">${svgFontStyle}${markInner(square, hole, ca)}</svg>`;
+  const markSvg = (bg, fg, accent) =>
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="200" height="200" shape-rendering="crispEdges">${markShapes(bg, fg, accent)}</svg>`;
 
-  const wordmarkSvg = (text, tag, square, hole, ca) =>
+  const wordmarkSvg = (text, tag, bg, fg, accent) =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" width="760" height="220">${svgFontStyle}
-      <g transform="translate(24,30) scale(0.8)">${markInner(square, hole, ca)}</g>
+      <g transform="translate(24,30) scale(5)" shape-rendering="crispEdges">${markShapes(bg, fg, accent)}</g>
       <text x="224" y="120" font-family="'EB Garamond', Georgia, serif" font-size="86" font-weight="600" fill="${text}" letter-spacing="-2">Cine Archive</text>
       <text x="228" y="160" font-family="'Space Mono', monospace" font-size="17" font-weight="700" letter-spacing="3" fill="${tag}">ARCHIVO EDITORIAL DE CINE</text>
     </svg>`;
 
-  // Variantes
-  const markStd = markSvg(C.charcoal, C.background, C.ochre);
-  const markInv = markSvg(C.background, C.charcoal, C.charcoal);
-  const wmStd = wordmarkSvg(C.charcoal, C.muted, C.charcoal, C.background, C.ochre);
-  const wmInv = wordmarkSvg(C.background, C.outlineVariant, C.background, C.charcoal, C.charcoal);
+  // Variantes (bg, líneas/borde, banda ocre)
+  const markStd = markSvg(C.background, C.ink, C.ochre);
+  const markInv = markSvg(C.darkBg, C.background, C.ochre);
+  const wmStd = wordmarkSvg(C.charcoal, C.muted, C.background, C.ink, C.ochre);
+  const wmInv = wordmarkSvg(C.background, C.outlineVariant, C.darkBg, C.background, C.ochre);
 
   await writeFile(join(logosDir, 'cine-archive-mark.svg'), markStd);
   await writeFile(join(logosDir, 'cine-archive-mark-inverso.svg'), markInv);
@@ -129,7 +131,7 @@ h1,h2,h3{font-family:'EB Garamond',Georgia,serif;color:${C.ink};margin:0;}
 
   <section class="sec">
     <h2 style="font-size:28px;">Logotipo</h2>
-    <p style="max-width:60ch;font-size:14px;">El logotipo combina un monograma «CA» con perforaciones de película y la palabra-marca en serif. Mantén un área de respeto mínima equivalente a la altura del monograma. No lo deformes, recolorees fuera de la paleta ni le añadas sombras o esquinas redondeadas.</p>
+    <p style="max-width:60ch;font-size:14px;">El logotipo combina la marca del sitio —un sello de archivo enmarcado, con su banda ocre y dos reglas— y la palabra-marca en serif. Mantén un área de respeto mínima equivalente a la altura de la marca. No la deformes, recolorees fuera de la paleta ni le añadas sombras o esquinas redondeadas.</p>
     <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:14px;">
       <div style="border:2px solid ${C.ink};background:${C.background};padding:22px;">${wmStd.replace('width="760" height="220"', 'width="100%" height="auto"')}</div>
       <div style="border:2px solid ${C.ink};background:${C.darkBg};padding:22px;">${wmInv.replace('width="760" height="220"', 'width="100%" height="auto"')}</div>
@@ -210,8 +212,8 @@ Contenido:
   logos/                  Logotipos en SVG (vector) y PNG.
     cine-archive-wordmark(.svg/.png)           Palabra-marca, fondo claro.
     cine-archive-wordmark-inverso(.svg/.png)   Palabra-marca, fondo oscuro.
-    cine-archive-mark(.svg/.png)               Monograma, fondo claro.
-    cine-archive-mark-inverso(.svg/.png)       Monograma, fondo oscuro.
+    cine-archive-mark(.svg/.png)               Marca / icono, fondo claro.
+    cine-archive-mark-inverso(.svg/.png)       Marca / icono, fondo oscuro.
 
 Tipografías: EB Garamond (titulares), Geist Sans (texto), Space Mono (datos).
 Acento: ocre #eab308 (texto oscuro encima). Esquinas siempre rectas.
