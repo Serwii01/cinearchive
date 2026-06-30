@@ -7,13 +7,20 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="mt-24 border-t border-ink bg-charcoal text-background">
-  <div class="frame flex flex-col gap-6 py-10 md:flex-row md:items-end md:justify-between">
-    <div>
-      <p class="font-display text-headline-md leading-none">{t('site.title')}</p>
-      <p class="label mt-2 text-outline-variant">{t('site.tagline')}</p>
+  <div class="frame py-10">
+    {/* Fila superior: marca + autoría */}
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="font-display text-headline-md leading-none">{t('site.title')}</p>
+        <p class="label mt-2 text-outline-variant">{t('site.tagline')}</p>
+      </div>
+      <p class="font-mono text-meta-data text-outline-variant">
+        © {year} <a href={localizePath(lang, 'sergio')} class="text-outline-variant no-underline hover:text-ochre hover:underline">{t('footer.rights')}</a>
+      </p>
     </div>
 
-    <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label="Pie">
+    {/* Fila inferior: navegación a todo el ancho */}
+    <nav class="mt-8 flex flex-wrap gap-x-6 gap-y-3 border-t border-outline pt-6" aria-label="Pie">
       <a href={localizePath(lang)} class="label text-background no-underline hover:text-ochre">{t('nav.home')}</a>
       <a href={localizePath(lang, 'archive')} class="label text-background no-underline hover:text-ochre">{t('nav.archive')}</a>
       <a href={localizePath(lang, 'films')} class="label text-background no-underline hover:text-ochre">{t('nav.films')}</a>
@@ -25,9 +32,5 @@ const year = new Date().getFullYear();
       <a href={localizePath(lang, 'accessibility')} class="label text-background no-underline hover:text-ochre">{t('nav.accessibility')}</a>
       <a href={localizePath(lang, 'style')} class="label text-background no-underline hover:text-ochre">{t('nav.style')}</a>
     </nav>
-
-    <div class="md:text-right">
-      <p class="font-mono text-meta-data text-outline-variant">© {year} <a href={localizePath(lang, 'sergio')} class="text-outline-variant no-underline hover:text-ochre hover:underline">{t('footer.rights')}</a></p>
-    </div>
   </div>
 </footer>
