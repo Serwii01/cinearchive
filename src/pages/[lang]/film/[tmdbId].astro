@@ -100,11 +100,18 @@ const facts = [
 
 const hasLocations = !!locations && (locations.filming.length > 0 || locations.narrative.length > 0);
 const tagline = cleanOmdb(tmdb.tagline);
+
+// Enlace de "volver" según el origen (?from). Por defecto, la filmoteca.
+const from = Astro.url.searchParams.get('from');
+const back =
+  from === 'awards'
+    ? { href: localizePath(lang, 'awards'), label: t('film.backToAwards') }
+    : { href: localizePath(lang, 'films'), label: t('film.backToFilms') };
 ---
 
 <BaseLayout title={tmdb.title} description={tmdb.overview} altPath={localizePath(lang === 'es' ? 'en' : 'es', `film/${tmdbId}`)}>
   <article class="frame py-12">
-    <a href={localizePath(lang, 'films')} class="label no-underline hover:text-ink">← {t('film.backToFilms')}</a>
+    <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>
 
     <div class="mt-6 grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-12">
       <!-- Póster + controles -->

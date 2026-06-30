@@ -45,7 +45,7 @@ const t = useTranslations(lang);
                     <td class="px-3 py-2 font-mono text-meta-data text-muted">{w.year}</td>
                     <td class="px-3 py-2">
                       {w.tmdbId ? (
-                        <a href={localizePath(lang, `film/${w.tmdbId}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{w.title}</a>
+                        <a href={`${localizePath(lang, `film/${w.tmdbId}`)}?from=awards`} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{w.title}</a>
                       ) : (
                         <span class="font-display text-headline-md leading-tight text-ink">{w.title}</span>
                       )}
