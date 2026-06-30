@@ -17,10 +17,19 @@ import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
 const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
 const t = useTranslations(lang);
 
-const latestIssues = periodicals
-  .slice()
-  .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title))
-  .slice(0, 4);
+// Últimos números: el más reciente de 4 publicaciones DISTINTAS (sin repetir título).
+const latestIssues = (() => {
+  const sorted = periodicals.slice().sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
+  const seen = new Set<string>();
+  const out: typeof sorted = [];
+  for (const p of sorted) {
+    if (seen.has(p.title)) continue;
+    seen.add(p.title);
+    out.push(p);
+    if (out.length === 4) break;
+  }
+  return out;
+})();
 
 // Selección repartida (variedad) de un conjunto, para los adelantos de portada.
 const sample = <T,>(arr: T[], n: number): T[] => {
@@ -106,7 +115,7 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
       <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">{t('home.viewArchive')} →</a>
     </div>
 
-    <div class="grid grid-cols-2 gap-px border-x border-b border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+    <div class="grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
       {latestIssues.map((item) => <IssueCard item={item} lang={lang} />)}
     </div>
   </section>
@@ -117,7 +126,7 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
       <h2 class="text-headline-lg text-ink">{t('nav.cinema')}</h2>
       <a href={localizePath(lang, 'cinema')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
-    <div class="grid grid-cols-1 gap-px border-x border-b border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
       {
         cinemaPicks.map((f) => (
           <a href={localizePath(lang, `cinema/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
@@ -187,7 +196,7 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
     </div>
     <p class="mb-8 max-w-2xl text-body-md text-charcoal">{t('archive.currentIntro')}</p>
 
-    <div class="grid grid-cols-1 gap-px border-x border-b border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
       {journals.map((j) => <JournalCard item={j} lang={lang} />)}
     </div>
   </section>
@@ -198,7 +207,7 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
       <h2 class="text-headline-lg text-ink">{t('nav.library')}</h2>
       <a href={localizePath(lang, 'library')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
-    <div class="grid grid-cols-2 gap-px border-x border-b border-ink bg-ink sm:grid-cols-4">
+    <div class="grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
       {
         bookPicks.map((b) => (
           <a href={localizePath(lang, `library/${b.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">

@@ -69,7 +69,7 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
 
     <div
       id="issue-grid"
-      class="mt-10 grid grid-cols-2 gap-px border-x border-b border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4"
+      class="mt-10 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4"
     >
       {
         items.map((item) => (
@@ -89,7 +89,7 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
       <h2 class="mt-3 text-headline-lg md:text-display-mobile">{t('archive.current')}</h2>
       <p class="mt-3 max-w-2xl text-body-md text-charcoal">{t('archive.currentIntro')}</p>
 
-      <div class="mt-8 grid grid-cols-1 gap-px border-x border-b border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-8 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
         {journals.map((j) => <JournalCard item={j} lang={lang} />)}
       </div>
 

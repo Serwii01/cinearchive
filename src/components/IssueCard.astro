@@ -14,7 +14,7 @@ const cover = coverUrl(item.id);
 const typeLabel = t(item.type === 'magazine' ? 'archive.type.magazine' : 'archive.type.newspaper');
 ---
 
-<article class="group flex h-full flex-col border-t border-ink bg-surface">
+<article class="group flex h-full flex-col bg-surface">
   <a href={href} class="flex h-full flex-col no-underline">
     <div class="flex items-center justify-between border-b border-ink px-3 py-2">
       <span class="label">{typeLabel}</span>
