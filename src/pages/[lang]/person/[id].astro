@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getPersonCached, directedFilms, actedFilms, type FilmographyEntry } from '../../../lib/people';
 import { profileUrl } from '../../../lib/tmdb';
+import { resolveBackLink } from '../../../lib/backlink';
 import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 
 const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
@@ -32,15 +33,8 @@ const sections: { label: string; films: FilmographyEntry[] }[] = isDirector
       { label: t('person.directed'), films: directed },
     ];
 
-// Enlace de "volver" según de dónde se llegó (figuras / película / filmoteca).
-const from = Astro.url.searchParams.get('from');
-const fid = Number(Astro.url.searchParams.get('fid'));
-let back = { href: localizePath(lang, 'films'), label: t('nav.films') };
-if (from === 'figures') {
-  back = { href: localizePath(lang, 'figures'), label: t('nav.figures') };
-} else if (from === 'film' && Number.isInteger(fid) && fid > 0) {
-  back = { href: localizePath(lang, `film/${fid}`), label: t('person.backToFilm') };
-}
+// Enlace de "volver" según el origen real (cabecera Referer).
+const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t);
 
 const fmtDate = (s: string | null) =>
   s ? new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en-GB', { dateStyle: 'long' }).format(new Date(s)) : null;

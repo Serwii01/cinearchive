@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import FilmControls from '../../../components/FilmControls.astro';
 import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { resolveBackLink } from '../../../lib/backlink';
 import { getFilm } from '../../../lib/films';
 import { director, directorPerson, posterUrl, posterSrcset, profileUrl, backdropUrl, trailerKey, type TmdbSearchResult } from '../../../lib/tmdb';
 import { genreName } from '../../../data/genres';
@@ -101,12 +102,8 @@ const facts = [
 const hasLocations = !!locations && (locations.filming.length > 0 || locations.narrative.length > 0);
 const tagline = cleanOmdb(tmdb.tagline);
 
-// Enlace de "volver" según el origen (?from). Por defecto, la filmoteca.
-const from = Astro.url.searchParams.get('from');
-const back =
-  from === 'awards'
-    ? { href: localizePath(lang, 'awards'), label: t('film.backToAwards') }
-    : { href: localizePath(lang, 'films'), label: t('film.backToFilms') };
+// Enlace de "volver" según el origen real (cabecera Referer).
+const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t);
 ---
 
 <BaseLayout title={tmdb.title} description={tmdb.overview} altPath={localizePath(lang === 'es' ? 'en' : 'es', `film/${tmdbId}`)}>
@@ -157,7 +154,7 @@ const back =
 
         <p class="mt-5 font-mono text-meta-data uppercase tracking-[0.08em] text-muted">
           {dirPerson ? (
-            <a href={`${localizePath(lang, `person/${dirPerson.id}`)}?from=film&fid=${tmdbId}`} class="text-muted no-underline hover:text-ink hover:underline">{dirPerson.name}</a>
+            <a href={localizePath(lang, `person/${dirPerson.id}`)} class="text-muted no-underline hover:text-ink hover:underline">{dirPerson.name}</a>
           ) : (
             dir
           )}
@@ -263,7 +260,7 @@ const back =
             <ul class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
               {cast.map((c) => (
                 <li class="bg-surface">
-                  <a href={`${localizePath(lang, `person/${c.id}`)}?from=film&fid=${tmdbId}`} class="group flex h-full flex-col no-underline hover:bg-film-white">
+                  <a href={localizePath(lang, `person/${c.id}`)} class="group flex h-full flex-col no-underline hover:bg-film-white">
                     <div class="aspect-[2/3] w-full bg-charcoal">
                       {profileUrl(c.profile_path) ? (
                         <img src={profileUrl(c.profile_path)} alt={c.name} loading="lazy" decoding="async" class="h-full w-full object-cover" />
