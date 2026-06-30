@@ -22,6 +22,7 @@ const pageDesc = description ?? t('site.description');
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const altLang = lang === 'es' ? 'en' : 'es';
 const altHref = altPath ? new URL(altPath, Astro.site).href : undefined;
+const ogImage = new URL('/og.png', Astro.site).href;
 ---
 
 <!doctype html>
@@ -41,9 +42,19 @@ const altHref = altPath ? new URL(altPath, Astro.site).href : undefined;
     {altHref && <link rel="alternate" hreflang={altLang} href={altHref} />}
     {altHref && <link rel="alternate" hreflang={lang} href={canonical.href} />}
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={t('site.title')} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDesc} />
+    <meta property="og:url" content={canonical.href} />
     <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={t('site.title')} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDesc} />
+    <meta name="twitter:image" content={ogImage} />
     <meta name="generator" content={Astro.generator} />
   </head>
   <body class="flex min-h-screen flex-col">

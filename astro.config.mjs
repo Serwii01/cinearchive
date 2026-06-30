@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import node from '@astrojs/node';
 
 // Dominio público de la app. En el VPS se sobrescribe con la variable de entorno SITE_URL.
-const SITE = process.env.SITE_URL ?? 'https://cine-archive.example.com';
+const SITE = process.env.SITE_URL ?? 'https://cinearchive.es';
 
 // https://astro.build/config
 export default defineConfig({

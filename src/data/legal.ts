@@ -19,8 +19,8 @@ export interface LegalDoc {
   sections: LegalSection[];
 }
 
-const DATE_ES = '23 de junio de 2026';
-const DATE_EN = 'June 23, 2026';
+const DATE_ES = '30 de junio de 2026';
+const DATE_EN = 'June 30, 2026';
 
 export const privacy: Record<'es' | 'en', LegalDoc> = {
   es: {
@@ -33,7 +33,7 @@ export const privacy: Record<'es' | 'en', LegalDoc> = {
       {
         heading: 'Responsable del tratamiento',
         body: [
-          `El responsable de este sitio gestiona los datos descritos aquí. Para cualquier consulta sobre privacidad puedes escribir a ${CONTACT_EMAIL}.`,
+          `El responsable del tratamiento es Sergio Fernández Morales, titular y operador de cinearchive.es. Para cualquier consulta sobre privacidad o para ejercer tus derechos, puedes escribir a ${CONTACT_EMAIL}.`,
         ],
       },
       {
@@ -64,6 +64,7 @@ export const privacy: Record<'es' | 'en', LegalDoc> = {
           'La información de las películas procede de The Movie Database (TMDB), OMDb y Watchmode. Estas consultas se hacen desde nuestro servidor: no enviamos tus datos personales a esos servicios, solo identificadores o términos de búsqueda de películas.',
           'La hemeroteca incrusta el visor de Internet Archive (archive.org). Al abrir un número, tu navegador se conecta a archive.org, que aplica su propia política de privacidad.',
           'Si inicias sesión con Google o GitHub, esos proveedores nos facilitan los datos básicos de tu perfil (nombre y correo) según su propia política.',
+          'Para enviar correos transaccionales (como el de restablecer la contraseña) usamos Resend como proveedor de envío; solo trata tu dirección de correo y el contenido del mensaje, en nuestro nombre.',
         ],
       },
       {
@@ -106,7 +107,7 @@ export const privacy: Record<'es' | 'en', LegalDoc> = {
       {
         heading: 'Data controller',
         body: [
-          `The operator of this site manages the data described here. For any privacy enquiry, write to ${CONTACT_EMAIL}.`,
+          `The data controller is Sergio Fernández Morales, owner and operator of cinearchive.es. For any privacy enquiry or to exercise your rights, write to ${CONTACT_EMAIL}.`,
         ],
       },
       {
@@ -137,6 +138,7 @@ export const privacy: Record<'es' | 'en', LegalDoc> = {
           'Film information comes from The Movie Database (TMDB), OMDb and Watchmode. These queries run from our server: we do not send your personal data to them, only film identifiers or search terms.',
           'The periodicals section embeds the Internet Archive viewer (archive.org). When you open an issue, your browser connects to archive.org, which applies its own privacy policy.',
           'If you sign in with Google or GitHub, those providers share basic profile data (name and email) with us under their own policies.',
+          'To send transactional emails (such as the password reset) we use Resend as our delivery provider; it processes only your email address and the message content, on our behalf.',
         ],
       },
       {
