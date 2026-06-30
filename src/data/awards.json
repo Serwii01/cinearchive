@@ -1,96 +1,1351 @@
 {
-  "note": "Palmarés curado. 'year' = año de la ceremonia (Óscar/Goya) o del festival (Cannes). tmdbId solo cuando el film está en el catálogo verificado.",
+  "note": "Palmarés completo generado por scripts/build-awards.mjs (Wikidata + Wikipedia + TMDB). 'year' = año de ceremonia/festival.",
   "awards": [
     {
       "key": "oscar",
       "name_es": "Óscar a la mejor película",
       "name_en": "Academy Award for Best Picture",
-      "note_es": "Por año de ceremonia. La película suele ser del año anterior.",
-      "note_en": "By ceremony year. The film is usually from the previous year.",
+      "note_es": "Por año de ceremonia, desde la primera edición (1929). La película suele ser del año anterior.",
+      "note_en": "By ceremony year, since the first edition (1929). The film is usually from the previous year.",
       "winners": [
-        { "year": 2024, "title": "Oppenheimer", "director": "Christopher Nolan" },
-        { "year": 2023, "title": "Everything Everywhere All at Once", "director": "Daniels" },
-        { "year": 2022, "title": "CODA", "director": "Sian Heder" },
-        { "year": 2021, "title": "Nomadland", "director": "Chloé Zhao" },
-        { "year": 2020, "title": "Parasite", "director": "Bong Joon-ho", "tmdbId": 496243 },
-        { "year": 2019, "title": "Green Book", "director": "Peter Farrelly" },
-        { "year": 2018, "title": "The Shape of Water", "director": "Guillermo del Toro" },
-        { "year": 2017, "title": "Moonlight", "director": "Barry Jenkins" },
-        { "year": 2016, "title": "Spotlight", "director": "Tom McCarthy" },
-        { "year": 2015, "title": "Birdman", "director": "Alejandro G. Iñárritu" },
-        { "year": 2014, "title": "12 Years a Slave", "director": "Steve McQueen" },
-        { "year": 2013, "title": "Argo", "director": "Ben Affleck" },
-        { "year": 2012, "title": "The Artist", "director": "Michel Hazanavicius" },
-        { "year": 2011, "title": "The King's Speech", "director": "Tom Hooper" },
-        { "year": 2010, "title": "The Hurt Locker", "director": "Kathryn Bigelow" },
-        { "year": 2009, "title": "Slumdog Millionaire", "director": "Danny Boyle" },
-        { "year": 2008, "title": "No Country for Old Men", "director": "Joel & Ethan Coen" },
-        { "year": 2007, "title": "The Departed", "director": "Martin Scorsese" },
-        { "year": 2006, "title": "Crash", "director": "Paul Haggis" },
-        { "year": 2005, "title": "Million Dollar Baby", "director": "Clint Eastwood" },
-        { "year": 2004, "title": "The Lord of the Rings: The Return of the King", "director": "Peter Jackson" },
-        { "year": 2003, "title": "Chicago", "director": "Rob Marshall" },
-        { "year": 2002, "title": "A Beautiful Mind", "director": "Ron Howard" },
-        { "year": 2001, "title": "Gladiator", "director": "Ridley Scott" },
-        { "year": 2000, "title": "American Beauty", "director": "Sam Mendes" }
+        {
+          "year": 2026,
+          "title": "One Battle After Another",
+          "director": "Paul Thomas Anderson",
+          "tmdbId": 1054867
+        },
+        {
+          "year": 2025,
+          "title": "Anora",
+          "director": "Sean Baker",
+          "tmdbId": 1064213
+        },
+        {
+          "year": 2024,
+          "title": "Oppenheimer",
+          "director": "Christopher Nolan",
+          "tmdbId": 872585
+        },
+        {
+          "year": 2023,
+          "title": "Everything Everywhere All at Once",
+          "director": "Dan Kwan",
+          "tmdbId": 545611
+        },
+        {
+          "year": 2022,
+          "title": "CODA",
+          "director": "Siân Héder",
+          "tmdbId": 776503
+        },
+        {
+          "year": 2021,
+          "title": "Nomadland",
+          "director": "Chloé Zhao",
+          "tmdbId": 581734
+        },
+        {
+          "year": 2020,
+          "title": "Parasite",
+          "director": "Bong Joon-ho",
+          "tmdbId": 496243
+        },
+        {
+          "year": 2019,
+          "title": "Green Book",
+          "director": "Peter Farrelly",
+          "tmdbId": 490132
+        },
+        {
+          "year": 2018,
+          "title": "The Shape of Water",
+          "director": "Guillermo del Toro",
+          "tmdbId": 399055
+        },
+        {
+          "year": 2017,
+          "title": "Moonlight",
+          "director": "Barry Jenkins",
+          "tmdbId": 376867
+        },
+        {
+          "year": 2016,
+          "title": "Spotlight",
+          "director": "Tom McCarthy",
+          "tmdbId": 314365
+        },
+        {
+          "year": 2015,
+          "title": "Birdman",
+          "director": "Alejandro González Iñárritu",
+          "tmdbId": 194662
+        },
+        {
+          "year": 2014,
+          "title": "12 Years a Slave",
+          "director": "Steve McQueen",
+          "tmdbId": 76203
+        },
+        {
+          "year": 2013,
+          "title": "Argo",
+          "director": "Ben Affleck",
+          "tmdbId": 68734
+        },
+        {
+          "year": 2012,
+          "title": "The Artist",
+          "director": "Michel Hazanavicius",
+          "tmdbId": 74643
+        },
+        {
+          "year": 2011,
+          "title": "The King's Speech",
+          "director": "Tom Hooper",
+          "tmdbId": 45269
+        },
+        {
+          "year": 2010,
+          "title": "The Hurt Locker",
+          "director": "Kathryn Bigelow",
+          "tmdbId": 12162
+        },
+        {
+          "year": 2009,
+          "title": "Slumdog Millionaire",
+          "director": "Loveleen Tandan",
+          "tmdbId": 12405
+        },
+        {
+          "year": 2008,
+          "title": "No Country for Old Men",
+          "director": "Joel Coen",
+          "tmdbId": 6977
+        },
+        {
+          "year": 2007,
+          "title": "The Departed",
+          "director": "Martin Scorsese",
+          "tmdbId": 1422
+        },
+        {
+          "year": 2006,
+          "title": "Crash",
+          "director": "Paul Haggis",
+          "tmdbId": 1640
+        },
+        {
+          "year": 2005,
+          "title": "Million Dollar Baby",
+          "director": "Clint Eastwood",
+          "tmdbId": 70
+        },
+        {
+          "year": 2004,
+          "title": "The Lord of the Rings: The Return of the King",
+          "director": "Peter Jackson",
+          "tmdbId": 122
+        },
+        {
+          "year": 2003,
+          "title": "Chicago",
+          "director": "Rob Marshall",
+          "tmdbId": 1574
+        },
+        {
+          "year": 2002,
+          "title": "A Beautiful Mind",
+          "director": "Ron Howard",
+          "tmdbId": 453
+        },
+        {
+          "year": 2001,
+          "title": "Gladiator",
+          "director": "Ridley Scott",
+          "tmdbId": 98
+        },
+        {
+          "year": 2000,
+          "title": "American Beauty",
+          "director": "Sam Mendes",
+          "tmdbId": 14
+        },
+        {
+          "year": 1999,
+          "title": "Shakespeare in Love",
+          "director": "John Madden",
+          "tmdbId": 1934
+        },
+        {
+          "year": 1998,
+          "title": "Titanic",
+          "director": "James Cameron",
+          "tmdbId": 597
+        },
+        {
+          "year": 1997,
+          "title": "The English Patient",
+          "director": "Anthony Minghella",
+          "tmdbId": 409
+        },
+        {
+          "year": 1996,
+          "title": "Braveheart",
+          "director": "Mel Gibson",
+          "tmdbId": 197
+        },
+        {
+          "year": 1994,
+          "title": "Schindler's List",
+          "director": "Steven Spielberg",
+          "tmdbId": 424
+        },
+        {
+          "year": 1993,
+          "title": "Unforgiven",
+          "director": "Clint Eastwood",
+          "tmdbId": 33
+        },
+        {
+          "year": 1992,
+          "title": "The Silence of the Lambs",
+          "director": "Jonathan Demme",
+          "tmdbId": 274
+        },
+        {
+          "year": 1991,
+          "title": "Dances with Wolves",
+          "director": "Kevin Costner",
+          "tmdbId": 581
+        },
+        {
+          "year": 1990,
+          "title": "Driving Miss Daisy",
+          "director": "Bruce Beresford",
+          "tmdbId": 403
+        },
+        {
+          "year": 1989,
+          "title": "Rain Man",
+          "director": "Barry Levinson",
+          "tmdbId": 380
+        },
+        {
+          "year": 1988,
+          "title": "The Last Emperor",
+          "director": "Bernardo Bertolucci",
+          "tmdbId": 746
+        },
+        {
+          "year": 1987,
+          "title": "Platoon",
+          "director": "Oliver Stone",
+          "tmdbId": 792
+        },
+        {
+          "year": 1986,
+          "title": "Out of Africa",
+          "director": "Sydney Pollack",
+          "tmdbId": 606
+        },
+        {
+          "year": 1985,
+          "title": "Amadeus",
+          "director": "Miloš Forman",
+          "tmdbId": 279
+        },
+        {
+          "year": 1984,
+          "title": "Terms of Endearment",
+          "director": "James L. Brooks",
+          "tmdbId": 11050
+        },
+        {
+          "year": 1983,
+          "title": "Gandhi",
+          "director": "Richard Attenborough",
+          "tmdbId": 783
+        },
+        {
+          "year": 1982,
+          "title": "Chariots of Fire",
+          "director": "Hugh Hudson",
+          "tmdbId": 9443
+        },
+        {
+          "year": 1981,
+          "title": "Ordinary People",
+          "director": "Robert Redford",
+          "tmdbId": 16619
+        },
+        {
+          "year": 1980,
+          "title": "Kramer vs. Kramer",
+          "director": "Robert Benton",
+          "tmdbId": 12102
+        },
+        {
+          "year": 1979,
+          "title": "The Deer Hunter",
+          "director": "Michael Cimino",
+          "tmdbId": 11778
+        },
+        {
+          "year": 1978,
+          "title": "Annie Hall",
+          "director": "Woody Allen",
+          "tmdbId": 703
+        },
+        {
+          "year": 1977,
+          "title": "Rocky",
+          "director": "John G. Avildsen",
+          "tmdbId": 1366
+        },
+        {
+          "year": 1976,
+          "title": "One Flew Over the Cuckoo's Nest",
+          "director": "Miloš Forman",
+          "tmdbId": 510
+        },
+        {
+          "year": 1975,
+          "title": "The Godfather Part II",
+          "director": "Francis Ford Coppola",
+          "tmdbId": 240
+        },
+        {
+          "year": 1974,
+          "title": "The Sting",
+          "director": "George Roy Hill",
+          "tmdbId": 9277
+        },
+        {
+          "year": 1973,
+          "title": "The Godfather",
+          "director": "Francis Ford Coppola",
+          "tmdbId": 238
+        },
+        {
+          "year": 1972,
+          "title": "The French Connection",
+          "director": "William Friedkin",
+          "tmdbId": 1051
+        },
+        {
+          "year": 1971,
+          "title": "Patton",
+          "director": "Franklin J. Schaffner",
+          "tmdbId": 11202
+        },
+        {
+          "year": 1970,
+          "title": "Midnight Cowboy",
+          "director": "John Schlesinger",
+          "tmdbId": 3116
+        },
+        {
+          "year": 1969,
+          "title": "Oliver!",
+          "director": "Carol Reed",
+          "tmdbId": 17917
+        },
+        {
+          "year": 1968,
+          "title": "In the Heat of the Night",
+          "director": "Norman Jewison",
+          "tmdbId": 10633
+        },
+        {
+          "year": 1967,
+          "title": "A Man for All Seasons",
+          "director": "Fred Zinnemann",
+          "tmdbId": 874
+        },
+        {
+          "year": 1966,
+          "title": "The Sound of Music",
+          "director": "Robert Wise",
+          "tmdbId": 15121
+        },
+        {
+          "year": 1965,
+          "title": "My Fair Lady",
+          "director": "George Cukor",
+          "tmdbId": 11113
+        },
+        {
+          "year": 1964,
+          "title": "Tom Jones",
+          "director": "Tony Richardson",
+          "tmdbId": 5769
+        },
+        {
+          "year": 1963,
+          "title": "Lawrence of Arabia",
+          "director": "David Lean",
+          "tmdbId": 947
+        },
+        {
+          "year": 1962,
+          "title": "West Side Story",
+          "director": "Robert Wise",
+          "tmdbId": 1725
+        },
+        {
+          "year": 1961,
+          "title": "The Apartment",
+          "director": "Billy Wilder",
+          "tmdbId": 284
+        },
+        {
+          "year": 1960,
+          "title": "Ben-Hur",
+          "director": "William Wyler",
+          "tmdbId": 665
+        },
+        {
+          "year": 1959,
+          "title": "Gigi",
+          "director": "Vincente Minnelli",
+          "tmdbId": 17281
+        },
+        {
+          "year": 1958,
+          "title": "The Bridge on the River Kwai",
+          "director": "David Lean",
+          "tmdbId": 826
+        },
+        {
+          "year": 1957,
+          "title": "Around the World in 80 Days",
+          "director": "Michael Anderson",
+          "tmdbId": 2897
+        },
+        {
+          "year": 1956,
+          "title": "Marty",
+          "director": "Delbert Mann",
+          "tmdbId": 15919
+        },
+        {
+          "year": 1955,
+          "title": "On the Waterfront",
+          "director": "Elia Kazan",
+          "tmdbId": 654
+        },
+        {
+          "year": 1954,
+          "title": "From Here to Eternity",
+          "director": "Fred Zinnemann",
+          "tmdbId": 11426
+        },
+        {
+          "year": 1953,
+          "title": "The Greatest Show on Earth",
+          "director": "Cecil B. DeMille",
+          "tmdbId": 27191
+        },
+        {
+          "year": 1952,
+          "title": "An American in Paris",
+          "director": "Vincente Minnelli",
+          "tmdbId": 2769
+        },
+        {
+          "year": 1951,
+          "title": "All About Eve",
+          "director": "Joseph L. Mankiewicz",
+          "tmdbId": 705
+        },
+        {
+          "year": 1950,
+          "title": "All the King's Men",
+          "director": "Robert Rossen",
+          "tmdbId": 25430
+        },
+        {
+          "year": 1949,
+          "title": "Hamlet",
+          "director": "Laurence Olivier",
+          "tmdbId": 23383
+        },
+        {
+          "year": 1948,
+          "title": "Gentleman's Agreement",
+          "director": "Elia Kazan",
+          "tmdbId": 33667
+        },
+        {
+          "year": 1947,
+          "title": "The Best Years of Our Lives",
+          "director": "William Wyler",
+          "tmdbId": 887
+        },
+        {
+          "year": 1946,
+          "title": "The Lost Weekend",
+          "director": "Billy Wilder",
+          "tmdbId": 28580
+        },
+        {
+          "year": 1945,
+          "title": "Going My Way",
+          "director": "Leo McCarey",
+          "tmdbId": 17661
+        },
+        {
+          "year": 1944,
+          "title": "Casablanca",
+          "director": "Michael Curtiz",
+          "tmdbId": 289
+        },
+        {
+          "year": 1943,
+          "title": "Mrs. Miniver",
+          "director": "William Wyler",
+          "tmdbId": 27367
+        },
+        {
+          "year": 1942,
+          "title": "How Green Was My Valley",
+          "director": "John Ford",
+          "tmdbId": 43266
+        },
+        {
+          "year": 1941,
+          "title": "Rebecca",
+          "director": "Alfred Hitchcock",
+          "tmdbId": 223
+        },
+        {
+          "year": 1940,
+          "title": "Gone with the Wind",
+          "director": "Victor Fleming",
+          "tmdbId": 770
+        },
+        {
+          "year": 1939,
+          "title": "You Can't Take It With You",
+          "director": "Frank Capra",
+          "tmdbId": 34106
+        },
+        {
+          "year": 1938,
+          "title": "The Life of Emile Zola",
+          "director": "William Dieterle",
+          "tmdbId": 43278
+        },
+        {
+          "year": 1937,
+          "title": "The Great Ziegfeld",
+          "director": "Robert Z. Leonard",
+          "tmdbId": 43277
+        },
+        {
+          "year": 1936,
+          "title": "Mutiny on the Bounty",
+          "director": "Frank Lloyd",
+          "tmdbId": 12311
+        },
+        {
+          "year": 1935,
+          "title": "It Happened One Night",
+          "director": "Frank Capra",
+          "tmdbId": 3078
+        },
+        {
+          "year": 1934,
+          "title": "Cavalcade",
+          "director": "Frank Lloyd",
+          "tmdbId": 56164
+        },
+        {
+          "year": 1932,
+          "title": "Grand Hotel",
+          "director": "Edmund Goulding",
+          "tmdbId": 33680
+        },
+        {
+          "year": 1931,
+          "title": "Cimarron",
+          "director": "Wesley Ruggles",
+          "tmdbId": 42861
+        },
+        {
+          "year": 1930,
+          "title": "All Quiet on the Western Front",
+          "director": "Lewis Milestone",
+          "tmdbId": 143
+        },
+        {
+          "year": 1930,
+          "title": "The Broadway Melody",
+          "director": "Harry Beaumont",
+          "tmdbId": 65203
+        },
+        {
+          "year": 1929,
+          "title": "Wings",
+          "director": "Harry d'Abbadie d'Arrast",
+          "tmdbId": 28966
+        }
       ]
     },
     {
       "key": "cannes",
       "name_es": "Palma de Oro · Festival de Cannes",
       "name_en": "Palme d'Or · Cannes Film Festival",
-      "note_es": "Por año del festival. No se concedió en 2020.",
-      "note_en": "By festival year. Not awarded in 2020.",
+      "note_es": "Máximo galardón del Festival de Cannes, por año. Algunos años no se concedió.",
+      "note_en": "The Cannes Film Festival’s top prize, by year. In some years it was not awarded.",
       "winners": [
-        { "year": 2024, "title": "Anora", "director": "Sean Baker" },
-        { "year": 2023, "title": "Anatomy of a Fall", "director": "Justine Triet" },
-        { "year": 2022, "title": "Triangle of Sadness", "director": "Ruben Östlund" },
-        { "year": 2021, "title": "Titane", "director": "Julia Ducournau" },
-        { "year": 2019, "title": "Parasite", "director": "Bong Joon-ho", "tmdbId": 496243 },
-        { "year": 2018, "title": "Shoplifters", "director": "Hirokazu Kore-eda" },
-        { "year": 2017, "title": "The Square", "director": "Ruben Östlund" },
-        { "year": 2016, "title": "I, Daniel Blake", "director": "Ken Loach" },
-        { "year": 2015, "title": "Dheepan", "director": "Jacques Audiard" },
-        { "year": 2014, "title": "Winter Sleep", "director": "Nuri Bilge Ceylan" },
-        { "year": 2013, "title": "Blue Is the Warmest Colour", "director": "Abdellatif Kechiche" },
-        { "year": 2012, "title": "Amour", "director": "Michael Haneke" },
-        { "year": 2011, "title": "The Tree of Life", "director": "Terrence Malick" },
-        { "year": 2010, "title": "Uncle Boonmee Who Can Recall His Past Lives", "director": "Apichatpong Weerasethakul", "tmdbId": 38368 },
-        { "year": 2009, "title": "The White Ribbon", "director": "Michael Haneke" },
-        { "year": 2008, "title": "The Class", "director": "Laurent Cantet" },
-        { "year": 2007, "title": "4 Months, 3 Weeks and 2 Days", "director": "Cristian Mungiu" },
-        { "year": 2006, "title": "The Wind That Shakes the Barley", "director": "Ken Loach" },
-        { "year": 2005, "title": "L'Enfant", "director": "Jean-Pierre & Luc Dardenne" },
-        { "year": 2004, "title": "Fahrenheit 9/11", "director": "Michael Moore" },
-        { "year": 2003, "title": "Elephant", "director": "Gus Van Sant" },
-        { "year": 2002, "title": "The Pianist", "director": "Roman Polanski" },
-        { "year": 2001, "title": "The Son's Room", "director": "Nanni Moretti" },
-        { "year": 2000, "title": "Dancer in the Dark", "director": "Lars von Trier" }
+        {
+          "year": 2026,
+          "title": "Fjord",
+          "director": "Cristian Mungiu",
+          "tmdbId": 1401459
+        },
+        {
+          "year": 2025,
+          "title": "It Was Just an Accident",
+          "director": "Jafar Panahi",
+          "tmdbId": 1456349
+        },
+        {
+          "year": 2024,
+          "title": "Anora",
+          "director": "Sean Baker",
+          "tmdbId": 1064213
+        },
+        {
+          "year": 2023,
+          "title": "Anatomy of a Fall",
+          "director": "Justine Triet",
+          "tmdbId": 915935
+        },
+        {
+          "year": 2022,
+          "title": "Triangle of Sadness",
+          "director": "Ruben Östlund",
+          "tmdbId": 497828
+        },
+        {
+          "year": 2021,
+          "title": "Titane",
+          "director": "Julia Ducournau",
+          "tmdbId": 630240
+        },
+        {
+          "year": 2019,
+          "title": "Parasite",
+          "director": "Bong Joon-ho",
+          "tmdbId": 496243
+        },
+        {
+          "year": 2018,
+          "title": "Shoplifters",
+          "director": "Hirokazu Koreeda",
+          "tmdbId": 505192
+        },
+        {
+          "year": 2017,
+          "title": "The Square",
+          "director": "Ruben Östlund",
+          "tmdbId": 401246
+        },
+        {
+          "year": 2016,
+          "title": "I, Daniel Blake",
+          "director": "Ken Loach",
+          "tmdbId": 374473
+        },
+        {
+          "year": 2015,
+          "title": "Dheepan",
+          "director": "Jacques Audiard",
+          "tmdbId": 314402
+        },
+        {
+          "year": 2014,
+          "title": "Winter Sleep",
+          "director": "Nuri Bilge Ceylan",
+          "tmdbId": 265169
+        },
+        {
+          "year": 2013,
+          "title": "Blue Is the Warmest Colour",
+          "director": "Abdellatif Kechiche",
+          "tmdbId": 152584
+        },
+        {
+          "year": 2012,
+          "title": "Amour",
+          "director": "Michael Haneke",
+          "tmdbId": 86837
+        },
+        {
+          "year": 2011,
+          "title": "The Tree of Life",
+          "director": "Terrence Malick",
+          "tmdbId": 8967
+        },
+        {
+          "year": 2010,
+          "title": "Uncle Boonmee Who Can Recall His Past Lives",
+          "director": "Apichatpong Weerasethakul",
+          "tmdbId": 38368
+        },
+        {
+          "year": 2009,
+          "title": "The White Ribbon",
+          "director": "Michael Haneke",
+          "tmdbId": 37903
+        },
+        {
+          "year": 2008,
+          "title": "The Class",
+          "director": "Laurent Cantet",
+          "tmdbId": 8841
+        },
+        {
+          "year": 2007,
+          "title": "4 Months, 3 Weeks and 2 Days",
+          "director": "Cristian Mungiu",
+          "tmdbId": 2009
+        },
+        {
+          "year": 2006,
+          "title": "The Wind That Shakes the Barley",
+          "director": "Ken Loach",
+          "tmdbId": 1116
+        },
+        {
+          "year": 2005,
+          "title": "The Child",
+          "director": "Jean-Pierre Dardenne",
+          "tmdbId": 11490
+        },
+        {
+          "year": 2004,
+          "title": "Fahrenheit 9/11",
+          "director": "Michael Moore",
+          "tmdbId": 1777
+        },
+        {
+          "year": 2003,
+          "title": "Elephant",
+          "director": "Gus Van Sant",
+          "tmdbId": 1807
+        },
+        {
+          "year": 2002,
+          "title": "The Pianist",
+          "director": "Roman Polanski",
+          "tmdbId": 423
+        },
+        {
+          "year": 2001,
+          "title": "The Son's Room",
+          "director": "Nanni Moretti",
+          "tmdbId": 11447
+        },
+        {
+          "year": 2000,
+          "title": "Dancer in the Dark",
+          "director": "Lars von Trier",
+          "tmdbId": 16
+        },
+        {
+          "year": 1999,
+          "title": "Rosetta",
+          "director": "Jean-Pierre Dardenne",
+          "tmdbId": 11489
+        },
+        {
+          "year": 1998,
+          "title": "Eternity and a Day",
+          "director": "Thodoros Angelopoulos",
+          "tmdbId": 24858
+        },
+        {
+          "year": 1997,
+          "title": "Taste of Cherry",
+          "director": "Abbas Kiarostami",
+          "tmdbId": 30020
+        },
+        {
+          "year": 1997,
+          "title": "The Eel",
+          "director": "Shohei Imamura",
+          "tmdbId": 20506
+        },
+        {
+          "year": 1996,
+          "title": "Secrets & Lies",
+          "director": "Mike Leigh",
+          "tmdbId": 11159
+        },
+        {
+          "year": 1995,
+          "title": "Underground",
+          "director": "Emir Kusturica",
+          "tmdbId": 11902
+        },
+        {
+          "year": 1994,
+          "title": "Pulp Fiction",
+          "director": "Quentin Tarantino",
+          "tmdbId": 680
+        },
+        {
+          "year": 1993,
+          "title": "Farewell My Concubine",
+          "director": "Chen Kaige",
+          "tmdbId": 10997
+        },
+        {
+          "year": 1993,
+          "title": "The Piano",
+          "director": "Jane Campion",
+          "tmdbId": 713
+        },
+        {
+          "year": 1992,
+          "title": "The Best Intentions",
+          "director": "Bille August",
+          "tmdbId": 41764
+        },
+        {
+          "year": 1991,
+          "title": "Barton Fink",
+          "director": "Joel Coen",
+          "tmdbId": 290
+        },
+        {
+          "year": 1990,
+          "title": "Wild at Heart",
+          "director": "David Lynch",
+          "tmdbId": 483
+        },
+        {
+          "year": 1989,
+          "title": "Sex, Lies, and Videotape",
+          "director": "Steven Soderbergh",
+          "tmdbId": 1412
+        },
+        {
+          "year": 1988,
+          "title": "Pelle the Conqueror",
+          "director": "Bille August",
+          "tmdbId": 11174
+        },
+        {
+          "year": 1987,
+          "title": "Under the Sun of Satan",
+          "director": "Maurice Pialat",
+          "tmdbId": 31300
+        },
+        {
+          "year": 1986,
+          "title": "The Mission",
+          "director": "Roland Joffé",
+          "tmdbId": 11416
+        },
+        {
+          "year": 1985,
+          "title": "When Father Was Away on Business",
+          "director": "Emir Kusturica",
+          "tmdbId": 21042
+        },
+        {
+          "year": 1984,
+          "title": "Paris, Texas",
+          "director": "Wim Wenders",
+          "tmdbId": 655
+        },
+        {
+          "year": 1983,
+          "title": "The Ballad of Narayama",
+          "director": "Shohei Imamura",
+          "tmdbId": 42113
+        },
+        {
+          "year": 1982,
+          "title": "Missing",
+          "director": "Costa-Gavras",
+          "tmdbId": 15600
+        },
+        {
+          "year": 1982,
+          "title": "Yol",
+          "director": "Yılmaz Güney",
+          "tmdbId": 52556
+        },
+        {
+          "year": 1981,
+          "title": "Man of Iron",
+          "director": "Andrzej Wajda",
+          "tmdbId": 225
+        },
+        {
+          "year": 1980,
+          "title": "All That Jazz",
+          "director": "Bob Fosse",
+          "tmdbId": 16858
+        },
+        {
+          "year": 1980,
+          "title": "Kagemusha",
+          "director": "Akira Kurosawa",
+          "tmdbId": 11953
+        },
+        {
+          "year": 1979,
+          "title": "Apocalypse Now",
+          "director": "Francis Ford Coppola",
+          "tmdbId": 28
+        },
+        {
+          "year": 1979,
+          "title": "The Tin Drum",
+          "director": "Volker Schlöndorff",
+          "tmdbId": 659
+        },
+        {
+          "year": 1978,
+          "title": "The Tree of Wooden Clogs",
+          "director": "Ermanno Olmi",
+          "tmdbId": 31542
+        },
+        {
+          "year": 1977,
+          "title": "Padre Padrone",
+          "director": "Paolo Taviani",
+          "tmdbId": 42225
+        },
+        {
+          "year": 1976,
+          "title": "Taxi Driver",
+          "director": "Martin Scorsese",
+          "tmdbId": 103
+        },
+        {
+          "year": 1975,
+          "title": "Chronicle of the Years of Fire",
+          "director": "Mohammed Lakhdar-Hamina",
+          "tmdbId": 52555
+        },
+        {
+          "year": 1974,
+          "title": "The Conversation",
+          "director": "Francis Ford Coppola",
+          "tmdbId": 592
+        },
+        {
+          "year": 1973,
+          "title": "The Hireling",
+          "director": "Alan Bridges",
+          "tmdbId": 80382
+        },
+        {
+          "year": 1972,
+          "title": "The Mattei Affair",
+          "director": "Francesco Rosi",
+          "tmdbId": 62382
+        },
+        {
+          "year": 1972,
+          "title": "The Working Class Goes to Heaven",
+          "director": "Elio Petri",
+          "tmdbId": 56231
+        },
+        {
+          "year": 1971,
+          "title": "The Go-Between",
+          "director": "Joseph Losey",
+          "tmdbId": 36194
+        },
+        {
+          "year": 1970,
+          "title": "MASH",
+          "director": "Robert Altman",
+          "tmdbId": 651
+        },
+        {
+          "year": 1969,
+          "title": "If....",
+          "director": "Lindsay Anderson",
+          "tmdbId": 14794
+        },
+        {
+          "year": 1967,
+          "title": "Blowup",
+          "director": "Michelangelo Antonioni",
+          "tmdbId": 1052
+        },
+        {
+          "year": 1966,
+          "title": "A Man and a Woman",
+          "director": "Claude Lelouch",
+          "tmdbId": 42726
+        },
+        {
+          "year": 1966,
+          "title": "The Birds, the Bees and the Italians",
+          "director": "Pietro Germi",
+          "tmdbId": 17974
+        },
+        {
+          "year": 1965,
+          "title": "El knack... y cómo lograrlo",
+          "director": "Richard Lester",
+          "tmdbId": 42744
+        },
+        {
+          "year": 1964,
+          "title": "The Umbrellas of Cherbourg",
+          "director": "Jacques Demy",
+          "tmdbId": 5967
+        },
+        {
+          "year": 1963,
+          "title": "The Leopard",
+          "director": "Luchino Visconti",
+          "tmdbId": 1040
+        },
+        {
+          "year": 1962,
+          "title": "O Pagador de Promessas",
+          "director": "Anselmo Duarte",
+          "tmdbId": 59990
+        },
+        {
+          "year": 1961,
+          "title": "The Long Absence",
+          "director": "Henri Colpi",
+          "tmdbId": 131836
+        },
+        {
+          "year": 1961,
+          "title": "Viridiana",
+          "director": "Luis Buñuel",
+          "tmdbId": 4497
+        },
+        {
+          "year": 1960,
+          "title": "La Dolce Vita",
+          "director": "Federico Fellini",
+          "tmdbId": 439
+        },
+        {
+          "year": 1959,
+          "title": "Black Orpheus",
+          "director": "Marcel Camus",
+          "tmdbId": 40423
+        },
+        {
+          "year": 1958,
+          "title": "The Cranes Are Flying",
+          "director": "Mikhail Kalatozov",
+          "tmdbId": 38360
+        },
+        {
+          "year": 1957,
+          "title": "Friendly Persuasion",
+          "director": "William Wyler",
+          "tmdbId": 43258
+        },
+        {
+          "year": 1956,
+          "title": "The Silent World",
+          "director": "Jacques Cousteau",
+          "tmdbId": 60234
+        },
+        {
+          "year": 1955,
+          "title": "Marty",
+          "director": "Delbert Mann",
+          "tmdbId": 15919
+        },
+        {
+          "year": 1953,
+          "title": "The Wages of Fear",
+          "director": "Henri-Georges Clouzot",
+          "tmdbId": 204
+        },
+        {
+          "year": 1952,
+          "title": "Othello",
+          "director": "Orson Welles",
+          "tmdbId": 47697
+        },
+        {
+          "year": 1952,
+          "title": "Two Cents Worth of Hope",
+          "director": "Renato Castellani",
+          "tmdbId": 117478
+        },
+        {
+          "year": 1951,
+          "title": "Miss Julie",
+          "director": "Alf Sjöberg",
+          "tmdbId": 18650
+        }
       ]
     },
     {
       "key": "goya",
       "name_es": "Goya a la mejor película",
       "name_en": "Goya Award for Best Film",
-      "note_es": "Por año de ceremonia. Premia el cine español del año anterior.",
-      "note_en": "By ceremony year. Honours the previous year's Spanish cinema.",
+      "note_es": "Por año de ceremonia, desde la primera edición (1987). Premia el cine español del año anterior.",
+      "note_en": "By ceremony year, since the first edition (1987). Honours the previous year’s Spanish cinema.",
       "winners": [
-        { "year": 2024, "title": "La sociedad de la nieve", "director": "J. A. Bayona" },
-        { "year": 2023, "title": "As bestas", "director": "Rodrigo Sorogoyen" },
-        { "year": 2022, "title": "El buen patrón", "director": "Fernando León de Aranoa" },
-        { "year": 2021, "title": "Las niñas", "director": "Pilar Palomero" },
-        { "year": 2020, "title": "Mientras dure la guerra", "director": "Alejandro Amenábar" },
-        { "year": 2019, "title": "Campeones", "director": "Javier Fesser" },
-        { "year": 2018, "title": "La librería", "director": "Isabel Coixet" },
-        { "year": 2017, "title": "Tarde para la ira", "director": "Raúl Arévalo" },
-        { "year": 2016, "title": "Truman", "director": "Cesc Gay" },
-        { "year": 2015, "title": "La isla mínima", "director": "Alberto Rodríguez" },
-        { "year": 2014, "title": "Vivir es fácil con los ojos cerrados", "director": "David Trueba" },
-        { "year": 2013, "title": "Blancanieves", "director": "Pablo Berger" },
-        { "year": 2012, "title": "No habrá paz para los malvados", "director": "Enrique Urbizu" },
-        { "year": 2011, "title": "Pa negre", "director": "Agustí Villaronga" },
-        { "year": 2010, "title": "Celda 211", "director": "Daniel Monzón" },
-        { "year": 2009, "title": "Camino", "director": "Javier Fesser" }
+        {
+          "year": 2026,
+          "title": "Los domingos",
+          "director": "Alauda Ruiz de Azúa",
+          "tmdbId": 1443576
+        },
+        {
+          "year": 2025,
+          "title": "El 47",
+          "director": "Marcel Barrena",
+          "tmdbId": 1174481
+        },
+        {
+          "year": 2025,
+          "title": "La infiltrada",
+          "director": "Arantxa Echevarría",
+          "tmdbId": 1215185
+        },
+        {
+          "year": 2024,
+          "title": "La sociedad de la nieve",
+          "director": "Juan Antonio Bayona",
+          "tmdbId": 906126
+        },
+        {
+          "year": 2023,
+          "title": "As bestas",
+          "director": "Rodrigo Sorogoyen",
+          "tmdbId": 848685
+        },
+        {
+          "year": 2022,
+          "title": "El buen patrón",
+          "director": "Fernando León de Aranoa",
+          "tmdbId": 820722
+        },
+        {
+          "year": 2021,
+          "title": "Las niñas",
+          "director": "Pilar Palomero",
+          "tmdbId": 619443
+        },
+        {
+          "year": 2020,
+          "title": "Dolor y gloria",
+          "director": "Pedro Almodóvar",
+          "tmdbId": 519010
+        },
+        {
+          "year": 2019,
+          "title": "Campeones",
+          "director": "Javier Fesser",
+          "tmdbId": 456929
+        },
+        {
+          "year": 2018,
+          "title": "La librería",
+          "director": "Isabel Coixet",
+          "tmdbId": 444539
+        },
+        {
+          "year": 2017,
+          "title": "Tarde para la ira",
+          "director": "Raúl Arévalo",
+          "tmdbId": 411638
+        },
+        {
+          "year": 2016,
+          "title": "Truman",
+          "director": "Cesc Gay",
+          "tmdbId": 341744
+        },
+        {
+          "year": 2015,
+          "title": "La isla mínima",
+          "director": "Alberto Rodríguez",
+          "tmdbId": 236735
+        },
+        {
+          "year": 2014,
+          "title": "Vivir es fácil con los ojos cerrados",
+          "director": "David Trueba",
+          "tmdbId": 209415
+        },
+        {
+          "year": 2013,
+          "title": "Blancanieves",
+          "director": "Pablo Berger",
+          "tmdbId": 127864
+        },
+        {
+          "year": 2012,
+          "title": "No habrá paz para los malvados",
+          "director": "Enrique Urbizu",
+          "tmdbId": 76013
+        },
+        {
+          "year": 2011,
+          "title": "Pan negro",
+          "director": "Agustí Villaronga",
+          "tmdbId": 57521
+        },
+        {
+          "year": 2010,
+          "title": "Celda 211",
+          "director": "Daniel Monzón",
+          "tmdbId": 33273
+        },
+        {
+          "year": 2009,
+          "title": "Camino",
+          "director": "Javier Fesser",
+          "tmdbId": 17893
+        },
+        {
+          "year": 2008,
+          "title": "La soledad",
+          "director": "Jaime Rosales",
+          "tmdbId": 797227
+        },
+        {
+          "year": 2007,
+          "title": "Volver",
+          "director": "Pedro Almodóvar",
+          "tmdbId": 219
+        },
+        {
+          "year": 2006,
+          "title": "La vida secreta de las palabras",
+          "director": "Isabel Coixet",
+          "tmdbId": 148
+        },
+        {
+          "year": 2005,
+          "title": "Mar adentro",
+          "director": "Alejandro Amenábar",
+          "tmdbId": 1913
+        },
+        {
+          "year": 2004,
+          "title": "Te doy mis ojos",
+          "director": "Icíar Bollaín",
+          "tmdbId": 1418
+        },
+        {
+          "year": 2003,
+          "title": "Los lunes al sol",
+          "director": "Fernando León de Aranoa",
+          "tmdbId": 54580
+        },
+        {
+          "year": 2002,
+          "title": "Los otros",
+          "director": "Alejandro Amenábar",
+          "tmdbId": 1933
+        },
+        {
+          "year": 2001,
+          "title": "El Bola",
+          "director": "Achero Mañas",
+          "tmdbId": 33504
+        },
+        {
+          "year": 2000,
+          "title": "Todo sobre mi madre",
+          "director": "Pedro Almodóvar",
+          "tmdbId": 99
+        },
+        {
+          "year": 1999,
+          "title": "La niña de tus ojos",
+          "director": "Fernando Trueba",
+          "tmdbId": 67297
+        },
+        {
+          "year": 1998,
+          "title": "La buena estrella",
+          "director": "Ricardo Franco",
+          "tmdbId": 97295
+        },
+        {
+          "year": 1997,
+          "title": "Tesis",
+          "director": "Alejandro Amenábar",
+          "tmdbId": 9299
+        },
+        {
+          "year": 1996,
+          "title": "Nadie hablará de nosotras cuando hayamos muerto",
+          "director": "Agustín Díaz Yanes",
+          "tmdbId": 74840
+        },
+        {
+          "year": 1995,
+          "title": "Días contados",
+          "director": "Imanol Uribe",
+          "tmdbId": 114218
+        },
+        {
+          "year": 1994,
+          "title": "Todos a la cárcel",
+          "director": "Luis García Berlanga",
+          "tmdbId": 99902
+        },
+        {
+          "year": 1993,
+          "title": "Belle Époque",
+          "director": "Fernando Trueba",
+          "tmdbId": 2470
+        },
+        {
+          "year": 1992,
+          "title": "Amantes",
+          "director": "Vicente Aranda",
+          "tmdbId": 41782
+        },
+        {
+          "year": 1991,
+          "title": "¡Ay, Carmela!",
+          "director": "Carlos Saura",
+          "tmdbId": 41806
+        },
+        {
+          "year": 1990,
+          "title": "El sueño del mono loco",
+          "director": "Fernando Trueba",
+          "tmdbId": 110928
+        },
+        {
+          "year": 1989,
+          "title": "Mujeres al borde de un ataque de nervios",
+          "director": "Pedro Almodóvar",
+          "tmdbId": 4203
+        },
+        {
+          "year": 1988,
+          "title": "El bosque animado",
+          "director": "José Luis Cuerda",
+          "tmdbId": 60311
+        },
+        {
+          "year": 1987,
+          "title": "El viaje a ninguna parte",
+          "director": "Fernando Fernán Gómez",
+          "tmdbId": 156453
+        }
       ]
     }
   ]
