@@ -1,0 +1,145 @@
+---
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+
+const palette: [string, string, string, string][] = [
+  ['Ink', '#000000', '--c-ink', '#fff'],
+  ['Charcoal', '#1a1a1a', '--c-charcoal', '#fff'],
+  ['Ochre', '#eab308', '--c-ochre', '#1a1a1a'],
+  ['Ochre dim', '#6b4e07', '--c-ochre-dim', '#fff'],
+  ['Background', '#fafafa', '--c-background', '#1a1a1a'],
+  ['Surface', '#f9f9f9', '--c-surface', '#1a1a1a'],
+  ['Film white', '#f4f4f4', '--c-film-white', '#1a1a1a'],
+  ['Surface dim', '#dadada', '--c-surface-dim', '#1a1a1a'],
+  ['Outline', '#817660', '--c-outline', '#fff'],
+  ['Outline variant', '#d3c5ac', '--c-outline-variant', '#1a1a1a'],
+  ['Muted', '#4f4633', '--c-muted', '#fff'],
+  ['Error', '#ba1a1a', '--c-error', '#fff'],
+  ['Dark bg', '#0d0d0d', '--c-background (dark)', '#fff'],
+  ['Dark ochre', '#f2be1d', '--c-ochre (dark)', '#1a1a1a'],
+];
+
+const voice =
+  lang === 'es'
+    ? [
+        ['Esquinas rectas.', 'Sin redondeos en ningún elemento.'],
+        ['Alto contraste y retícula.', 'Líneas de 1–2 px que conectan de borde a borde.'],
+        ['El ocre es el único acento.', 'Con moderación y siempre con texto oscuro encima.'],
+        ['La tipografía es la estructura.', 'Serif para titulares, sans para leer, mono para datos.'],
+        ['Tono.', 'Sobrio, editorial, al servicio de lo público y de dominio público.'],
+      ]
+    : [
+        ['Straight corners.', 'No rounding on any element.'],
+        ['High contrast and grid.', '1–2 px lines that connect edge to edge.'],
+        ['Ochre is the only accent.', 'Used sparingly, always with dark text on top.'],
+        ['Type is the structure.', 'Serif for headlines, sans to read, mono for data.'],
+        ['Tone.', 'Sober, editorial, in service of the public and the public domain.'],
+      ];
+---
+
+<BaseLayout title={t('style.title')} description={t('style.intro')} altPath={localizePath(lang === 'es' ? 'en' : 'es', 'style')}>
+  <section class="frame py-12">
+    <header class="border-b border-ink pb-6">
+      <span class="label">{t('style.title')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('style.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('style.intro')}</p>
+    </header>
+
+    {/* LOGOTIPO */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('style.logo')}</h2>
+    <div class="mt-6 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2">
+      <div class="flex items-center gap-5 bg-background p-8">
+        <svg viewBox="0 0 32 32" class="h-20 w-20 shrink-0" shape-rendering="crispEdges" role="img" aria-label="Cine Archive">
+          <rect width="32" height="32" fill="var(--c-background)"></rect>
+          <rect x="1" y="1" width="30" height="30" fill="none" stroke="var(--c-ink)" stroke-width="2"></rect>
+          <rect x="6" y="6" width="20" height="9" fill="var(--c-ochre)" stroke="var(--c-ink)" stroke-width="2"></rect>
+          <line x1="6" y1="20" x2="26" y2="20" stroke="var(--c-ink)" stroke-width="2"></line>
+          <line x1="6" y1="25" x2="20" y2="25" stroke="var(--c-ink)" stroke-width="2"></line>
+        </svg>
+        <div>
+          <p class="font-display text-display-mobile leading-none text-ink">Cine Archive</p>
+          <p class="label mt-2">{t('site.tagline')}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-5 bg-charcoal p-8" style="background:#0d0d0d">
+        <svg viewBox="0 0 32 32" class="h-20 w-20 shrink-0" shape-rendering="crispEdges" aria-hidden="true">
+          <rect width="32" height="32" fill="#0d0d0d"></rect>
+          <rect x="1" y="1" width="30" height="30" fill="none" stroke="#fafafa" stroke-width="2"></rect>
+          <rect x="6" y="6" width="20" height="9" fill="#eab308" stroke="#fafafa" stroke-width="2"></rect>
+          <line x1="6" y1="20" x2="26" y2="20" stroke="#fafafa" stroke-width="2"></line>
+          <line x1="6" y1="25" x2="20" y2="25" stroke="#fafafa" stroke-width="2"></line>
+        </svg>
+        <p class="font-display text-display-mobile leading-none" style="color:#fafafa">Cine Archive</p>
+      </div>
+    </div>
+
+    {/* PALETA */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('style.palette')}</h2>
+    <div class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+      {palette.map(([name, hex, varn, on]) => (
+        <div class="bg-surface">
+          <div class="flex h-20 items-end p-2 font-mono text-meta-data" style={`background:${hex};color:${on}`}>{hex}</div>
+          <div class="border-t border-ink p-3">
+            <p class="font-display text-body-lg leading-none text-ink">{name}</p>
+            <p class="font-mono text-meta-data text-muted">{varn}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* TIPOGRAFÍA */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('style.typography')}</h2>
+    <div class="mt-6 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-3">
+      <div class="bg-surface p-5">
+        <span class="label">Display · EB Garamond</span>
+        <p class="mt-2 font-display text-display-lg leading-none text-ink">Aa</p>
+        <p class="mt-3 font-display text-headline-md text-ink">El cine es memoria</p>
+      </div>
+      <div class="bg-surface p-5">
+        <span class="label">Texto · Geist Sans</span>
+        <p class="mt-2 font-body text-display-lg font-semibold leading-none text-ink">Aa</p>
+        <p class="mt-3 font-body text-body-md text-charcoal">Texto de interfaz y cuerpo, claro y neutro a cualquier tamaño.</p>
+      </div>
+      <div class="bg-surface p-5">
+        <span class="label">Mono · Space Mono</span>
+        <p class="mt-2 font-mono text-headline-lg leading-none text-ink">Aa</p>
+        <p class="label mt-4">Etiquetas · Metadatos · 2026</p>
+      </div>
+    </div>
+
+    {/* COMPONENTES */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('style.components')}</h2>
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+      <span class="btn btn-primary">{t('style.components')}</span>
+      <span class="btn btn-secondary">{t('style.components')}</span>
+      <span class="label border border-ink px-3 py-2">Etiqueta</span>
+      <span class="label border border-ink bg-ink px-3 py-2 text-background">Etiqueta inversa</span>
+    </div>
+    <div class="mt-6 max-w-xs border border-ink">
+      <div class="label border-b border-ink bg-ink px-3 py-2 text-background">Ficha</div>
+      <div class="p-4">
+        <p class="font-display text-headline-md text-ink">Título de la obra</p>
+        <p class="mt-1 font-mono text-meta-data uppercase tracking-[0.08em] text-muted">Dirección · 1962 · 90′</p>
+      </div>
+    </div>
+
+    {/* LENGUAJE VISUAL */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('style.voice')}</h2>
+    <dl class="mt-4 max-w-3xl">
+      {voice.map(([term, desc], i) => (
+        <div class:list={['py-3', i < voice.length - 1 && 'border-b border-outline-variant']}>
+          <dt class="font-display text-headline-md text-ink">{term}</dt>
+          <dd class="mt-1 text-body-md text-charcoal">{desc}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+</BaseLayout>

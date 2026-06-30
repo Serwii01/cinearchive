@@ -5,7 +5,7 @@
  *
  * Cambia CONTACT_EMAIL por tu dirección de contacto real.
  */
-export const CONTACT_EMAIL = 'sfmrbb@gmail.com';
+export const CONTACT_EMAIL = 'sfmrbb@gmail.com / contacto@cinearchive.es';
 
 export interface LegalSection {
   heading: string;
