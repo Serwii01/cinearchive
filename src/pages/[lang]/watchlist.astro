@@ -2,8 +2,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { db } from '../../db/client';
-import { userFilms } from '../../db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { userFilms, userLists, userListFilms } from '../../db/schema';
+import { eq, desc, count, inArray } from 'drizzle-orm';
 import { getFilmsBrief } from '../../lib/films';
 
 const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
@@ -26,10 +26,29 @@ const groups: { key: 'want' | 'seen' | 'favorite'; label: string }[] = [
   { key: 'seen', label: t('watchlist.seen') },
 ];
 const byStatus = (s: string) => rows.filter((r) => r.status === s);
+
+// Listas personalizadas del usuario (junto a las de estado).
+const lists = await db
+  .select()
+  .from(userLists)
+  .where(eq(userLists.userId, userId))
+  .orderBy(userLists.createdAt);
+const listIds = lists.map((l) => l.id);
+const countMap = new Map<string, number>();
+if (listIds.length) {
+  const counts = await db
+    .select({ listId: userListFilms.listId, c: count() })
+    .from(userListFilms)
+    .where(inArray(userListFilms.listId, listIds))
+    .groupBy(userListFilms.listId);
+  for (const r of counts) countMap.set(r.listId, Number(r.c));
+}
+const detailBase = localizePath(lang, 'lists');
+const isEmpty = rows.length === 0 && lists.length === 0;
 ---
 
 <BaseLayout title={t('watchlist.title')}>
-  <section class="frame py-12">
+  <section class="frame py-12" data-confirm={t('lists.confirmDelete')} data-rename={t('lists.rename')}>
     <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
     <header class="mt-6 border-b border-ink pb-6">
       <span class="label">{t('nav.watchlist')} · {rows.length}</span>
@@ -37,37 +56,114 @@ const byStatus = (s: string) => rows.filter((r) => r.status === s);
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('watchlist.intro')}</p>
     </header>
 
-    {rows.length === 0 ? (
+    {isEmpty && (
       <p class="mt-10 font-mono text-body-md text-muted">
         {t('watchlist.empty')} <a href={localizePath(lang, 'films')} class="text-ink underline decoration-ochre">{t('nav.films')}</a>
       </p>
-    ) : (
-      groups.map((g) => {
-        const items = byStatus(g.key);
-        return items.length > 0 ? (
-          <div class="mt-10">
-            <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{g.label} <span class="label">· {items.length}</span></h2>
-            <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
-              {items.map((r) => {
-                const b = briefs.get(r.tmdbId);
-                return (
-                  <a href={localizePath(lang, `film/${r.tmdbId}`)} class="flex gap-3 bg-surface p-3 no-underline hover:bg-film-white">
-                    <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
-                      {b?.poster && <img src={b.poster} alt={b.title} class="h-full w-full object-cover" />}
-                    </div>
-                    <div class="min-w-0">
-                      <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${r.tmdbId}`}</p>
-                      <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
-                      {r.rating && <p class="mt-1 font-mono text-meta-data text-ink">{'★'.repeat(r.rating)}<span class="text-outline-variant">{'★'.repeat(5 - r.rating)}</span></p>}
-                      {r.note && <p class="mt-1 line-clamp-2 text-body-md text-charcoal/80">{r.note}</p>}
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-        ) : null;
-      })
     )}
+
+    {/* Listas por estado (favorita / pendiente / vista) */}
+    {groups.map((g) => {
+      const items = byStatus(g.key);
+      return items.length > 0 ? (
+        <div class="mt-10">
+          <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{g.label} <span class="label">· {items.length}</span></h2>
+          <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((r) => {
+              const b = briefs.get(r.tmdbId);
+              return (
+                <a href={localizePath(lang, `film/${r.tmdbId}`)} class="flex gap-3 bg-surface p-3 no-underline hover:bg-film-white">
+                  <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
+                    {b?.poster && <img src={b.poster} alt={b.title} class="h-full w-full object-cover" />}
+                  </div>
+                  <div class="min-w-0">
+                    <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${r.tmdbId}`}</p>
+                    <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
+                    {r.rating && <p class="mt-1 font-mono text-meta-data text-ink">{'★'.repeat(r.rating)}<span class="text-outline-variant">{'★'.repeat(5 - r.rating)}</span></p>}
+                    {r.note && <p class="mt-1 line-clamp-2 text-body-md text-charcoal/80">{r.note}</p>}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      ) : null;
+    })}
+
+    {/* Listas personalizadas */}
+    <div class="mt-12">
+      <div class="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-2">
+        <h2 class="text-headline-lg text-ink">{t('lists.title')} <span class="label">· {lists.length}</span></h2>
+        <form id="create-list" class="flex flex-wrap items-center gap-2">
+          <input
+            name="name"
+            required
+            maxlength="80"
+            autocomplete="off"
+            placeholder={t('lists.namePlaceholder')}
+            class="w-full max-w-xs border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
+          />
+          <button type="submit" class="btn btn-primary">{t('lists.create')}</button>
+        </form>
+      </div>
+
+      {lists.length === 0 ? (
+        <p class="mt-4 font-mono text-body-md text-muted">{t('lists.empty')}</p>
+      ) : (
+        <ul id="lists" class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2" data-base={detailBase}>
+          {lists.map((l) => (
+            <li class="flex items-center justify-between gap-3 bg-surface p-4" data-id={l.id}>
+              <a href={`${detailBase}/${l.id}`} class="min-w-0 flex-1 no-underline">
+                <span class="block truncate font-display text-headline-md text-ink hover:text-muted" data-name>{l.name}</span>
+                <span class="font-mono text-meta-data text-muted">{countMap.get(l.id) ?? 0} {t('lists.count')}</span>
+              </a>
+              <div class="flex shrink-0 gap-2">
+                <button type="button" data-rename-btn class="label border border-ink px-2 py-1 transition-colors hover:bg-ink hover:text-white">{t('lists.rename')}</button>
+                <button type="button" data-delete-btn class="label border border-ink px-2 py-1 transition-colors hover:bg-error hover:text-white">{t('lists.delete')}</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   </section>
 </BaseLayout>
+
+<script>
+  const root = document.querySelector('[data-confirm]') as HTMLElement | null;
+  const confirmMsg = root?.dataset.confirm || 'Delete?';
+  const renameMsg = root?.dataset.rename || 'Rename';
+
+  const form = document.getElementById('create-list') as HTMLFormElement | null;
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = String(new FormData(form).get('name') || '').trim();
+    if (!name) return;
+    const res = await fetch('/api/me/lists', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
+    if (res.ok) location.reload();
+  });
+
+  document.querySelectorAll<HTMLLIElement>('#lists > li').forEach((li) => {
+    const id = li.dataset.id;
+    li.querySelector('[data-rename-btn]')?.addEventListener('click', async () => {
+      const current = li.querySelector('[data-name]')?.textContent ?? '';
+      const name = prompt(renameMsg, current)?.trim();
+      if (!name || name === current) return;
+      const res = await fetch(`/api/me/lists/${id}`, {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+      if (res.ok) location.reload();
+    });
+    li.querySelector('[data-delete-btn]')?.addEventListener('click', async () => {
+      if (!confirm(confirmMsg)) return;
+      const res = await fetch(`/api/me/lists/${id}`, { method: 'DELETE' });
+      if (res.ok) location.reload();
+    });
+  });
+</script>

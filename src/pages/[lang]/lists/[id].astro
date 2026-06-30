@@ -29,8 +29,8 @@ const films = ids.map((i) => briefs.get(i)).filter((f) => f != null);
 ---
 
 <BaseLayout title={list.name}>
-  <section class="frame py-12" data-list={id} data-confirm={t('lists.confirmDelete')} data-rename={t('lists.rename')} data-lists={localizePath(lang, 'lists')}>
-    <a href={localizePath(lang, 'lists')} class="label no-underline hover:text-ink">← {t('lists.backToLists')}</a>
+  <section class="frame py-12" data-list={id} data-confirm={t('lists.confirmDelete')} data-rename={t('lists.rename')} data-lists={localizePath(lang, 'watchlist')}>
+    <a href={localizePath(lang, 'watchlist')} class="label no-underline hover:text-ink">← {t('lists.backToLists')}</a>
     <header class="mt-6 flex flex-col gap-4 border-b border-ink pb-6 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <span class="label">{t('lists.title')} · {films.length} {t('lists.count')}</span>
