@@ -1,6 +1,7 @@
 ---
 export const prerender = false; // la película del día se obtiene en cada visita (cacheada por día)
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import TmdbSearch from '../../components/TmdbSearch.astro';
 import IssueCard from '../../components/IssueCard.astro';
 import JournalCard from '../../components/JournalCard.astro';
 import { periodicals, journals } from '../../lib/periodicals';
@@ -92,6 +93,11 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
       </section>
     )
   }
+
+  {/* BUSCADOR TMDB */}
+  <section class="frame py-12">
+    <TmdbSearch lang={lang} />
+  </section>
 
   {/* ÚLTIMOS NÚMEROS (hemeroteca) */}
   <section class="frame py-12">
