@@ -48,6 +48,54 @@
       "blurb_es": "Hong Kong, Corea, Taiwán, Tailandia, Irán: las voces que han definido el cine de autor de las últimas décadas.",
       "blurb_en": "Hong Kong, Korea, Taiwan, Thailand, Iran: the voices that have defined arthouse cinema in recent decades.",
       "tmdbIds": [843, 11104, 670, 496243, 60243, 11534, 30020]
+    },
+    {
+      "slug": "el-cine-de-bergman",
+      "title_es": "El alma según Bergman",
+      "title_en": "The Soul According to Bergman",
+      "blurb_es": "Fe, muerte y silencio: el cine de cámara de Ingmar Bergman como introspección sin red.",
+      "blurb_en": "Faith, death and silence: Ingmar Bergman's chamber cinema as introspection without a net.",
+      "tmdbIds": [797, 614, 490, 10238, 5961]
+    },
+    {
+      "slug": "tarkovski",
+      "title_es": "El tiempo de Tarkovski",
+      "title_en": "Tarkovsky's Time",
+      "blurb_es": "Planos largos, agua y memoria: el cine como esculpido del tiempo de Andrei Tarkovski.",
+      "blurb_en": "Long takes, water and memory: cinema as sculpting in time, by Andrei Tarkovsky.",
+      "tmdbIds": [1398, 895, 593, 1396]
+    },
+    {
+      "slug": "cine-espanol",
+      "title_es": "Cine español esencial",
+      "title_en": "Essential Spanish Cinema",
+      "blurb_es": "De Buñuel a Almodóvar: el cine español que mira a España con ironía, deseo y memoria.",
+      "blurb_en": "From Buñuel to Almodóvar: Spanish cinema looking at Spain with irony, desire and memory.",
+      "tmdbIds": [4495, 4497, 29264, 1417, 99, 64]
+    },
+    {
+      "slug": "cine-italiano",
+      "title_es": "La gran tradición italiana",
+      "title_en": "The Great Italian Tradition",
+      "blurb_es": "Del neorrealismo a la modernidad de Antonioni y Fellini: medio siglo de cine italiano.",
+      "blurb_en": "From neorealism to the modernity of Antonioni and Fellini: half a century of Italian cinema.",
+      "tmdbIds": [5156, 307, 405, 439, 422, 5165, 1040, 8416]
+    },
+    {
+      "slug": "europa-del-este",
+      "title_es": "Voces de Europa del Este",
+      "title_en": "Voices from Eastern Europe",
+      "blurb_es": "Del montaje soviético al rigor de Béla Tarr: el cine que pensó la historia desde el otro lado.",
+      "blurb_en": "From Soviet montage to Béla Tarr's rigor: the cinema that thought history from the other side.",
+      "tmdbIds": [643, 895, 25237, 31414, 23160, 46919, 789, 5055]
+    },
+    {
+      "slug": "animacion",
+      "title_es": "Animación que es arte",
+      "title_en": "Animation as Art",
+      "blurb_es": "Ghibli y más allá: la animación como cumbre poética y emocional del cine, no como género menor.",
+      "blurb_en": "Ghibli and beyond: animation as a poetic and emotional peak of cinema, not a minor genre.",
+      "tmdbIds": [129, 8392, 12477, 149]
     }
   ]
 }
