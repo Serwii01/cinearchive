@@ -6,6 +6,11 @@
 	order rate_limit before basic_auth
 }
 
+# Redirige www al dominio sin www (requiere que www apunte por A al VPS).
+www.{$DOMAIN} {
+	redir https://{$DOMAIN}{uri} permanent
+}
+
 {$DOMAIN} {
 	encode gzip zstd
 
