@@ -5,7 +5,10 @@
  * día). Garantiza:
  *   - La MISMA película en español y en inglés: el id del día se fija una sola vez
  *     (compartido entre idiomas) y luego se localiza por idioma.
- *   - SIN películas infantiles: se descartan los géneros Animación y Familia.
+ *   - SIN películas infantiles: se descartan las comedias familiares (Familia +
+ *     Comedia: Minions, Mi villano favorito…), pero SÍ pasa la animación de autor
+ *     (El viaje de Chihiro es Familia + Fantasía, sin comedia; el anime adulto ni
+ *     lleva Familia).
  * Se cachea en memoria por idioma para no repetir la llamada en cada visita.
  */
 import { trendingDay, getMovie, backdropUrl, posterUrl, type TmdbTrending } from './tmdb';
@@ -20,9 +23,14 @@ export interface FilmOfDay {
   voteAverage: number;
 }
 
-// Géneros que consideramos "infantiles": 16 = Animación, 10751 = Familia.
-const KIDS_GENRES = new Set([16, 10751]);
-const isKids = (r: { genre_ids?: number[] }) => (r.genre_ids ?? []).some((g) => KIDS_GENRES.has(g));
+// "Infantil" = comedia familiar (10751 Familia + 35 Comedia). Así caen Minions y
+// compañía, pero NO la animación de autor (Chihiro = Familia + Fantasía, sin comedia).
+const FAMILY = 10751;
+const COMEDY = 35;
+const isKids = (r: { genre_ids?: number[] }) => {
+  const g = r.genre_ids ?? [];
+  return g.includes(FAMILY) && g.includes(COMEDY);
+};
 
 type PickLike = {
   id: number;
