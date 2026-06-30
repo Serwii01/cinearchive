@@ -37,7 +37,7 @@ const theme = prefs?.theme ?? 'light';
       <h2 class="label mb-3">{t('account.sections')}</h2>
       <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
         {[
-          { href: localizePath(lang, 'watchlist'), label: t('nav.watchlist') },
+          { href: localizePath(lang, 'watchlist'), label: t('nav.lists') },
           { href: localizePath(lang, 'stats'), label: t('nav.stats') },
           { href: localizePath(lang, 'recommendations'), label: t('nav.recommendations') },
           ...(admin ? [{ href: localizePath(lang, 'admin'), label: t('nav.admin') }] : []),
