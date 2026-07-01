@@ -112,15 +112,15 @@ const isEmpty = rows.length === 0 && lists.length === 0;
       ) : (
         <ul id="lists" class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2" data-base={detailBase} data-public={t('lists.public')} data-private={t('lists.private')}>
           {lists.map((l) => (
-            <li class="flex items-center justify-between gap-3 bg-surface p-4" data-id={l.id} data-is-public={l.isPublic ? '1' : '0'}>
+            <li class="flex flex-col gap-3 bg-surface p-4 sm:flex-row sm:items-center sm:justify-between" data-id={l.id} data-is-public={l.isPublic ? '1' : '0'}>
               <a href={`${detailBase}/${l.id}`} class="min-w-0 flex-1 no-underline">
                 <span class="block truncate font-display text-headline-md text-ink hover:text-muted" data-name>{l.name}</span>
                 <span class="font-mono text-meta-data text-muted">{countMap.get(l.id) ?? 0} {t('lists.count')}</span>
               </a>
-              <div class="flex shrink-0 flex-wrap justify-end gap-2">
-                <button type="button" data-public-btn class:list={['label border border-ink px-2 py-1 transition-colors', l.isPublic ? 'bg-ochre text-on-accent hover:bg-ink hover:text-white' : 'hover:bg-ink hover:text-white']}>{l.isPublic ? t('lists.public') : t('lists.private')}</button>
-                <button type="button" data-rename-btn class="label border border-ink px-2 py-1 transition-colors hover:bg-ink hover:text-white">{t('lists.rename')}</button>
-                <button type="button" data-delete-btn class="label border border-ink px-2 py-1 transition-colors hover:bg-error hover:text-white">{t('lists.delete')}</button>
+              <div class="flex flex-wrap gap-2 sm:shrink-0 sm:justify-end">
+                <button type="button" data-public-btn class:list={['label border border-ink px-3 py-2 transition-colors sm:px-2 sm:py-1', l.isPublic ? 'bg-ochre text-on-accent hover:bg-ink hover:text-white' : 'hover:bg-ink hover:text-white']}>{l.isPublic ? t('lists.public') : t('lists.private')}</button>
+                <button type="button" data-rename-btn class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white sm:px-2 sm:py-1">{t('lists.rename')}</button>
+                <button type="button" data-delete-btn class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white sm:px-2 sm:py-1">{t('lists.delete')}</button>
               </div>
             </li>
           ))}

@@ -94,6 +94,13 @@ const pending = await db
             <button id="avatar-upload" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white" disabled={!myProfile}>{t('profile.uploadAvatar')}</button>
             <button id="avatar-remove" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white" disabled={!myProfile?.avatarType}>{t('profile.removeAvatar')}</button>
           </div>
+          <p class="text-center font-mono text-meta-data text-muted">{t('profile.avatarHint')}</p>
+
+          {/* Alerta con estilo si la foto no se puede subir */}
+          <div id="avatar-alert" role="alert" hidden class="w-full max-w-xs border-2 border-error bg-surface p-3" data-title={t('profile.avatarErrorTitle')}>
+            <p class="label flex items-center gap-2 text-error"><span aria-hidden="true">▲</span> {t('profile.avatarErrorTitle')}</p>
+            <p id="avatar-alert-msg" class="mt-1 font-mono text-meta-data text-charcoal"></p>
+          </div>
         </div>
 
         {/* Datos */}
@@ -293,26 +300,50 @@ const pending = await db
       }
     });
 
-    // Avatar: subir y quitar.
+    // Avatar: subir y quitar. Los errores se muestran en una alerta con estilo.
     const fileInput = document.getElementById('avatar-input') as HTMLInputElement;
-    document.getElementById('avatar-upload')?.addEventListener('click', () => fileInput.click());
+    const alertBox = document.getElementById('avatar-alert') as HTMLElement;
+    const alertMsg = document.getElementById('avatar-alert-msg') as HTMLElement;
+    const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
+
+    const showAlert = (msg: string) => {
+      alertMsg.textContent = msg;
+      alertBox.hidden = false;
+    };
+    const clearAlert = () => {
+      alertBox.hidden = true;
+    };
+
+    document.getElementById('avatar-upload')?.addEventListener('click', () => {
+      clearAlert();
+      fileInput.click();
+    });
     fileInput.addEventListener('change', async () => {
+      clearAlert();
       const file = fileInput.files?.[0];
       if (!file) return;
+      // Validación en el cliente (mensajes inmediatos y con estilo).
+      if (file.type && !ALLOWED.includes(file.type)) {
+        showAlert(errors.bad_type || 'Invalid format');
+        fileInput.value = '';
+        return;
+      }
       if (file.size > 512 * 1024) {
-        pmsg.classList.add('text-error');
-        pmsg.textContent = errors.too_large || 'Too large';
+        showAlert(errors.too_large || 'Too large');
+        fileInput.value = '';
         return;
       }
       const res = await fetch('/api/me/avatar', { method: 'POST', body: file });
-      if (res.ok) location.reload();
-      else {
+      if (res.ok) {
+        location.reload();
+      } else {
         const data = await res.json().catch(() => ({}));
-        pmsg.classList.add('text-error');
-        pmsg.textContent = errors[data.error] || 'Error';
+        showAlert(errors[data.error] || errors.bad_type || 'Error');
+        fileInput.value = '';
       }
     });
     document.getElementById('avatar-remove')?.addEventListener('click', async () => {
+      clearAlert();
       const res = await fetch('/api/me/avatar', { method: 'DELETE' });
       if (res.ok) location.reload();
     });
