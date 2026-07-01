@@ -1,0 +1,211 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Avatar from '../../../components/Avatar.astro';
+import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { db } from '../../../db/client';
+import { userFilms, userLists, userListFilms } from '../../../db/schema';
+import { and, desc, eq, isNotNull, or, count, inArray } from 'drizzle-orm';
+import { getFilmsBrief, type FilmBrief } from '../../../lib/films';
+import {
+  getProfileByUsername,
+  followState,
+  canViewActivity,
+  followCounts,
+} from '../../../lib/social';
+
+export const prerender = false;
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+const viewer = Astro.locals.user;
+
+const target = await getProfileByUsername(Astro.params.username ?? '');
+
+if (!target) {
+  return new Response(null, { status: 404 });
+}
+
+const state = await followState(viewer?.id ?? null, target.userId);
+const isSelf = state === 'self';
+const canView = canViewActivity(viewer?.id ?? null, target, state);
+const counts = await followCounts(target.userId);
+
+// Actividad visible: reseñas (películas con nota o valoración) y listas públicas.
+let reviews: { tmdbId: number; rating: number | null; note: string | null }[] = [];
+let lists: { id: string; name: string; count: number; films: number[] }[] = [];
+let briefs = new Map<number, FilmBrief>();
+
+if (canView) {
+  const reviewRows = await db
+    .select({ tmdbId: userFilms.tmdbId, rating: userFilms.rating, note: userFilms.note })
+    .from(userFilms)
+    .where(and(eq(userFilms.userId, target.userId), or(isNotNull(userFilms.rating), isNotNull(userFilms.note))))
+    .orderBy(desc(userFilms.updatedAt))
+    .limit(60);
+  reviews = reviewRows;
+
+  const publicLists = await db
+    .select({ id: userLists.id, name: userLists.name })
+    .from(userLists)
+    .where(and(eq(userLists.userId, target.userId), eq(userLists.isPublic, true)))
+    .orderBy(userLists.createdAt);
+
+  const listFilmMap = new Map<string, number[]>();
+  if (publicLists.length) {
+    const rows = await db
+      .select({ listId: userListFilms.listId, tmdbId: userListFilms.tmdbId })
+      .from(userListFilms)
+      .where(inArray(userListFilms.listId, publicLists.map((l) => l.id)))
+      .orderBy(desc(userListFilms.addedAt));
+    for (const r of rows) {
+      const arr = listFilmMap.get(r.listId) ?? [];
+      arr.push(r.tmdbId);
+      listFilmMap.set(r.listId, arr);
+    }
+  }
+  lists = publicLists.map((l) => ({ id: l.id, name: l.name, films: listFilmMap.get(l.id) ?? [], count: (listFilmMap.get(l.id) ?? []).length }));
+
+  const allIds = [...new Set([...reviews.map((r) => r.tmdbId), ...lists.flatMap((l) => l.films)])];
+  briefs = await getFilmsBrief(allIds, lang);
+}
+
+const title = `@${target.username}`;
+---
+
+<BaseLayout title={title}>
+  <section class="frame py-12">
+    {/* Cabecera del perfil */}
+    <header class="flex flex-col gap-6 border-b border-ink pb-8 sm:flex-row sm:items-start sm:justify-between">
+      <div class="flex items-start gap-5">
+        <Avatar userId={target.userId} name={target.name} hasAvatar={!!target.avatarType} size={96} class="h-20 w-20 sm:h-24 sm:w-24" />
+        <div class="min-w-0">
+          <h1 class="text-display-mobile md:text-display-lg">{target.name}</h1>
+          <p class="mt-1 font-mono text-body-md text-muted">@{target.username}</p>
+          {target.isPrivate && <p class="label mt-2 inline-block border border-ink px-2 py-1">{t('profile.private')}</p>}
+          {target.bio && <p class="mt-3 max-w-prose text-body-md text-charcoal">{target.bio}</p>}
+          <div class="mt-4 flex gap-6 font-mono text-meta-data text-ink">
+            <span><strong class="text-headline-md">{counts.followers}</strong> {t('profile.followers')}</span>
+            <span><strong class="text-headline-md">{counts.following}</strong> {t('profile.following')}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Acción: seguir / editar / iniciar sesión */}
+      <div class="shrink-0">
+        {isSelf ? (
+          <a href={localizePath(lang, 'account')} class="btn btn-secondary">{t('profile.editProfile')}</a>
+        ) : viewer ? (
+          <button
+            id="follow-btn"
+            type="button"
+            data-username={target.username}
+            data-state={state}
+            data-follow={t('profile.follow')}
+            data-requested={t('profile.requested')}
+            data-following={t('profile.followingBtn')}
+            class="btn btn-primary"
+          >{state === 'accepted' ? t('profile.followingBtn') : state === 'pending' ? t('profile.requested') : t('profile.follow')}</button>
+        ) : (
+          <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`} class="btn btn-secondary">{t('profile.loginToFollow')}</a>
+        )}
+      </div>
+    </header>
+
+    {!canView ? (
+      <div class="mt-12 border border-ink bg-surface p-8 text-center">
+        <p class="font-display text-headline-lg text-ink">{t('profile.private')}</p>
+        <p class="mt-2 font-mono text-body-md text-muted">{t('profile.privateLocked')}</p>
+      </div>
+    ) : (
+      <>
+        {/* Reseñas */}
+        <div class="mt-12">
+          <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.reviews')} <span class="label">· {reviews.length}</span></h2>
+          {reviews.length === 0 ? (
+            <p class="mt-4 font-mono text-body-md text-muted">{t('profile.noReviews')}</p>
+          ) : (
+            <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+              {reviews.map((r) => {
+                const b = briefs.get(r.tmdbId);
+                return (
+                  <a href={localizePath(lang, `film/${r.tmdbId}`)} class="flex gap-3 bg-surface p-3 no-underline hover:bg-film-white">
+                    <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
+                      {b?.poster && <img src={b.poster} alt={b.title} class="h-full w-full object-cover" />}
+                    </div>
+                    <div class="min-w-0">
+                      <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${r.tmdbId}`}</p>
+                      <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
+                      {r.rating && <p class="mt-1 font-mono text-meta-data text-ink">{'★'.repeat(r.rating)}<span class="text-outline-variant">{'★'.repeat(5 - r.rating)}</span></p>}
+                      {r.note && <p class="mt-1 line-clamp-3 text-body-md text-charcoal/80">{r.note}</p>}
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Listas públicas */}
+        <div class="mt-12">
+          <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.publicLists')} <span class="label">· {lists.length}</span></h2>
+          {lists.length === 0 ? (
+            <p class="mt-4 font-mono text-body-md text-muted">{t('profile.noLists')}</p>
+          ) : (
+            lists.map((l) => (
+              <div class="mt-6">
+                <h3 class="font-display text-headline-md text-ink">{l.name} <span class="label">· {l.count}</span></h3>
+                <div class="mt-3 flex flex-wrap gap-3">
+                  {l.films.slice(0, 18).map((id) => {
+                    const b = briefs.get(id);
+                    return (
+                      <a href={localizePath(lang, `film/${id}`)} class="block w-16 no-underline" title={b?.title}>
+                        <div class="h-24 w-16 border border-ink bg-charcoal">
+                          {b?.poster && <img src={b.poster} alt={b?.title ?? ''} class="h-full w-full object-cover" />}
+                        </div>
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </>
+    )}
+  </section>
+</BaseLayout>
+
+<script>
+  const btn = document.getElementById('follow-btn') as HTMLButtonElement | null;
+  if (btn) {
+    const labels = {
+      none: btn.dataset.follow!,
+      pending: btn.dataset.requested!,
+      accepted: btn.dataset.following!,
+    };
+    const render = (state: string) => {
+      btn.textContent = labels[state as keyof typeof labels] ?? labels.none;
+      btn.dataset.state = state;
+    };
+    btn.addEventListener('click', async () => {
+      const current = btn.dataset.state || 'none';
+      const username = btn.dataset.username;
+      btn.disabled = true;
+      try {
+        // Si ya sigue o solicitó, el clic deja de seguir / cancela; si no, sigue.
+        const method = current === 'none' ? 'POST' : 'DELETE';
+        const res = await fetch('/api/follow', {
+          method,
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ username }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          render(data.status ?? 'none');
+        }
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+</script>

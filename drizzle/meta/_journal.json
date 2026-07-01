@@ -43,6 +43,13 @@
       "when": 1782846077560,
       "tag": "0005_lazy_jocasta",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1782939818793,
+      "tag": "0006_social",
+      "breakpoints": true
     }
   ]
 }

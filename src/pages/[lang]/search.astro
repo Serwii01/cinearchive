@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+
+export const prerender = false;
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+
+// Buscar usuarios requiere sesión (privacidad: no directorio abierto a bots).
+if (!Astro.locals.user) {
+  return Astro.redirect(`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`);
+}
+
+const q = (Astro.url.searchParams.get('q') ?? '').trim();
+---
+
+<BaseLayout title={t('search.title')}>
+  <section class="frame py-12" data-base={localizePath(lang, 'u')} data-noresults={t('search.noResults')}>
+    <header class="border-b border-ink pb-6">
+      <span class="label">{t('search.title')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('search.title')}</h1>
+    </header>
+
+    <form id="search-form" class="mt-8 flex flex-wrap items-center gap-2" role="search">
+      <input
+        id="q"
+        name="q"
+        type="search"
+        value={q}
+        autocomplete="off"
+        autofocus
+        placeholder={t('search.placeholder')}
+        class="w-full max-w-md border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
+      />
+      <button type="submit" class="btn btn-primary">{t('search.title')}</button>
+    </form>
+
+    <p id="hint" class="mt-4 font-mono text-meta-data text-muted">{t('search.hint')}</p>
+    <ul id="results" class="mt-6 grid grid-cols-1 gap-px border-ink bg-ink sm:grid-cols-2"></ul>
+  </section>
+</BaseLayout>
+
+<script>
+  const root = document.querySelector('[data-base]') as HTMLElement;
+  const base = root.dataset.base!;
+  const noResults = root.dataset.noresults!;
+  const form = document.getElementById('search-form') as HTMLFormElement;
+  const input = document.getElementById('q') as HTMLInputElement;
+  const results = document.getElementById('results') as HTMLUListElement;
+  const hint = document.getElementById('hint') as HTMLElement;
+
+  const esc = (s: string) =>
+    s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+
+  let timer: ReturnType<typeof setTimeout>;
+
+  async function run(q: string) {
+    q = q.trim();
+    results.innerHTML = '';
+    if (q.length < 2) {
+      hint.hidden = false;
+      return;
+    }
+    try {
+      const res = await fetch(`/api/users/search?q=${encodeURIComponent(q)}`, { headers: { accept: 'application/json' } });
+      const data = res.ok ? await res.json() : { results: [] };
+      const rows = data.results as { id: string; username: string; name: string; isPrivate: boolean; hasAvatar: boolean }[];
+      if (!rows.length) {
+        hint.hidden = false;
+        hint.textContent = noResults;
+        return;
+      }
+      hint.hidden = true;
+      results.className = 'mt-6 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2';
+      results.innerHTML = rows
+        .map((r) => {
+          const avatar = r.hasAvatar
+            ? `<img src="/api/avatar/${encodeURIComponent(r.id)}" alt="" class="h-full w-full object-cover" loading="lazy">`
+            : `<span class="font-display text-body-md leading-none">${esc((r.name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join(''))}</span>`;
+          return `<li class="bg-surface"><a href="${base}/${encodeURIComponent(r.username)}" class="flex items-center gap-3 p-4 no-underline hover:bg-film-white">
+            <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink text-white">${avatar}</span>
+            <span class="min-w-0"><span class="block truncate font-display text-headline-md text-ink">${esc(r.name)}</span>
+            <span class="block font-mono text-meta-data text-muted">@${esc(r.username)}${r.isPrivate ? ' · 🔒' : ''}</span></span>
+          </a></li>`;
+        })
+        .join('');
+    } catch {
+      /* silencio */
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    run(input.value);
+    const url = new URL(location.href);
+    url.searchParams.set('q', input.value.trim());
+    history.replaceState(null, '', url);
+  });
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => run(input.value), 250);
+  });
+
+  if (input.value.trim().length >= 2) run(input.value);
+</script>

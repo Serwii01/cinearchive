@@ -8,7 +8,15 @@ import {
   jsonb,
   primaryKey,
   pgEnum,
+  customType,
 } from 'drizzle-orm/pg-core';
+
+/** Tipo `bytea` de Postgres (Drizzle no lo trae de serie). Guarda/lee Buffer. */
+const bytea = customType<{ data: Buffer; notNull: false; default: false }>({
+  dataType() {
+    return 'bytea';
+  },
+});
 
 /* ------------------------------------------------------------------ *
  * Tablas de Better Auth (email+contraseña y OAuth Google/GitHub).
@@ -137,6 +145,8 @@ export const userLists = pgTable('user_lists', {
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
+  // Opt-in: solo las listas marcadas como públicas aparecen en el perfil público.
+  isPublic: boolean('is_public').notNull().default(false),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
@@ -168,6 +178,49 @@ export const userPreferences = pgTable('user_preferences', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
+/* ------------------------------------------------------------------ *
+ * Capa social: perfiles públicos, seguidores y solicitudes.
+ * ------------------------------------------------------------------ */
+
+/** Perfil público del usuario (username, bio, privacidad, avatar). */
+export const profile = pgTable('profile', {
+  userId: text('user_id')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  /** Username canónico en minúsculas (único, sin distinguir mayúsculas). Se muestra con @. */
+  username: text('username').notNull().unique(),
+  bio: text('bio'),
+  /** Privado por defecto: solo seguidores aceptados ven la actividad. */
+  isPrivate: boolean('is_private').notNull().default(true),
+  /** Foto de perfil guardada como bytes (validada y limitada en tamaño). */
+  avatar: bytea('avatar'),
+  avatarType: text('avatar_type'), // image/jpeg | image/png | image/webp
+  avatarUpdatedAt: timestamp('avatar_updated_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+/** Estado de una relación de seguimiento. */
+export const followStatus = pgEnum('follow_status', ['pending', 'accepted']);
+
+/** Seguimiento entre usuarios. En perfiles públicos nace 'accepted'; en privados 'pending'. */
+export const follows = pgTable(
+  'follows',
+  {
+    followerId: text('follower_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    followingId: text('following_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    status: followStatus('status').notNull().default('pending'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.followerId, t.followingId] }),
+  }),
+);
+
 export type User = typeof user.$inferSelect;
 export type UserFilm = typeof userFilms.$inferSelect;
 export type UserPreferences = typeof userPreferences.$inferSelect;
@@ -176,3 +229,5 @@ export type WatchCache = typeof watchCache.$inferSelect;
 export type ExtraFilm = typeof extraFilms.$inferSelect;
 export type UserList = typeof userLists.$inferSelect;
 export type UserListFilm = typeof userListFilms.$inferSelect;
+export type Profile = typeof profile.$inferSelect;
+export type Follow = typeof follows.$inferSelect;

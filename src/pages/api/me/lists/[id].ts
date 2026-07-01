@@ -19,16 +19,24 @@ async function ownedList(userId: string, id: string) {
   return list ?? null;
 }
 
-const renameSchema = z.object({ name: z.string().trim().min(1).max(80) });
+const patchSchema = z
+  .object({
+    name: z.string().trim().min(1).max(80).optional(),
+    isPublic: z.boolean().optional(),
+  })
+  .refine((d) => d.name !== undefined || d.isPublic !== undefined, { message: 'empty' });
 
-/** PATCH — renombrar la lista. */
+/** PATCH — renombrar la lista y/o cambiar su visibilidad (pública/privada). */
 export const PATCH: APIRoute = async ({ locals, request, params }) => {
   if (!locals.user) return unauthorized();
   const id = params.id!;
   if (!(await ownedList(locals.user.id, id))) return notFound();
-  const parsed = renameSchema.safeParse(await request.json().catch(() => null));
+  const parsed = patchSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return new Response(JSON.stringify({ error: 'invalid' }), { status: 400 });
-  await db.update(userLists).set({ name: parsed.data.name }).where(eq(userLists.id, id));
+  const patch: { name?: string; isPublic?: boolean } = {};
+  if (parsed.data.name !== undefined) patch.name = parsed.data.name;
+  if (parsed.data.isPublic !== undefined) patch.isPublic = parsed.data.isPublic;
+  await db.update(userLists).set(patch).where(eq(userLists.id, id));
   return Response.json({ ok: true });
 };
 

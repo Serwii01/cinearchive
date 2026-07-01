@@ -1,11 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Avatar from '../../components/Avatar.astro';
 import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { GENRES } from '../../data/genres';
 import { db } from '../../db/client';
-import { userPreferences } from '../../db/schema';
-import { eq } from 'drizzle-orm';
+import { userPreferences, follows, user as userTable, profile } from '../../db/schema';
+import { and, eq, desc } from 'drizzle-orm';
 import { isAdmin } from '../../lib/admin';
+import { getMyProfile } from '../../lib/social';
 
 const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
 const t = useTranslations(lang);
@@ -21,6 +23,16 @@ const [prefs] = await db
 const favGenres = new Set(prefs?.favoriteGenres ?? []);
 const favDirectors = (prefs?.favoriteDirectors ?? []).join(', ');
 const theme = prefs?.theme ?? 'light';
+
+// Perfil público del usuario y solicitudes de seguimiento pendientes.
+const myProfile = await getMyProfile(user.id);
+const pending = await db
+  .select({ id: userTable.id, name: userTable.name, username: profile.username, hasAvatar: profile.avatarType })
+  .from(follows)
+  .innerJoin(userTable, eq(userTable.id, follows.followerId))
+  .leftJoin(profile, eq(profile.userId, follows.followerId))
+  .where(and(eq(follows.followingId, user.id), eq(follows.status, 'pending')))
+  .orderBy(desc(follows.createdAt));
 ---
 
 <BaseLayout title={t('account.title')}>
@@ -37,9 +49,11 @@ const theme = prefs?.theme ?? 'light';
       <h2 class="label mb-3">{t('account.sections')}</h2>
       <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
         {[
+          ...(myProfile ? [{ href: localizePath(lang, `u/${myProfile.username}`), label: t('profile.viewProfile') }] : []),
           { href: localizePath(lang, 'watchlist'), label: t('nav.lists') },
           { href: localizePath(lang, 'stats'), label: t('nav.stats') },
           { href: localizePath(lang, 'recommendations'), label: t('nav.recommendations') },
+          { href: localizePath(lang, 'search'), label: t('search.title') },
           ...(admin ? [{ href: localizePath(lang, 'admin'), label: t('nav.admin') }] : []),
         ].map((s) => (
           <a
@@ -52,6 +66,107 @@ const theme = prefs?.theme ?? 'light';
         ))}
       </div>
     </nav>
+
+    {/* Perfil público (username, avatar, bio, privacidad) */}
+    <section
+      class="mt-12 max-w-3xl"
+      id="profile-editor"
+      data-has-profile={myProfile ? '1' : '0'}
+      data-errors={JSON.stringify({
+        format: t('profile.errFormat'),
+        reserved: t('profile.errReserved'),
+        taken: t('profile.errTaken'),
+        username_required: t('profile.errRequired'),
+        too_large: t('profile.errTooLarge'),
+        bad_type: t('profile.errBadType'),
+      })}
+    >
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.yours')}</h2>
+
+      {!myProfile && <p class="mt-3 font-mono text-body-md text-muted">{t('profile.setUsernameFirst')}</p>}
+
+      <div class="mt-6 flex flex-col gap-6 sm:flex-row sm:items-start">
+        {/* Avatar */}
+        <div class="flex flex-col items-center gap-3">
+          <Avatar userId={user.id} name={user.name} hasAvatar={!!myProfile?.avatarType} size={112} class="h-28 w-28" />
+          <input id="avatar-input" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" />
+          <div class="flex gap-2">
+            <button id="avatar-upload" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white" disabled={!myProfile}>{t('profile.uploadAvatar')}</button>
+            <button id="avatar-remove" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white" disabled={!myProfile?.avatarType}>{t('profile.removeAvatar')}</button>
+          </div>
+        </div>
+
+        {/* Datos */}
+        <form id="profile-form" class="min-w-0 flex-1">
+          <label class="block">
+            <span class="label mb-2 block">{t('profile.username')}</span>
+            <div class="flex items-center border border-ink bg-white focus-within:bg-film-white">
+              <span class="px-3 font-mono text-body-md text-muted">@</span>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                value={myProfile?.username ?? ''}
+                maxlength="20"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="usuario"
+                class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
+              />
+            </div>
+            <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.usernameHint')}</span>
+          </label>
+
+          <label class="mt-5 block">
+            <span class="label mb-2 block">{t('profile.bio')}</span>
+            <textarea id="bio" name="bio" rows="3" maxlength="300" placeholder={t('profile.bioPlaceholder')} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none">{myProfile?.bio ?? ''}</textarea>
+          </label>
+
+          <fieldset class="mt-5">
+            <legend class="label mb-2">{t('profile.privacy')}</legend>
+            <label class="flex items-start gap-3">
+              <input id="is-private" type="checkbox" checked={myProfile?.isPrivate ?? true} class="mt-1" />
+              <span>
+                <span class="block font-body text-body-md text-ink">{t('profile.makePrivate')}</span>
+                <span class="block font-mono text-meta-data text-muted">{t('profile.privacyHint')}</span>
+              </span>
+            </label>
+          </fieldset>
+
+          <div class="mt-6 flex flex-wrap items-center gap-4">
+            <button type="submit" class="btn btn-primary">{t('profile.save')}</button>
+            {myProfile && <a href={localizePath(lang, `u/${myProfile.username}`)} class="label no-underline hover:text-ink">{t('profile.viewProfile')} →</a>}
+            <span id="profile-msg" class="font-mono text-meta-data text-muted"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    {/* Solicitudes de seguimiento */}
+    <section class="mt-12 max-w-3xl" id="requests">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.requests')} <span class="label">· {pending.length}</span></h2>
+      {pending.length === 0 ? (
+        <p class="mt-3 font-mono text-body-md text-muted">{t('profile.noRequests')}</p>
+      ) : (
+        <ul class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink">
+          {pending.map((r) => (
+            <li class="flex items-center justify-between gap-3 bg-surface p-3" data-requester={r.id}>
+              <a href={r.username ? localizePath(lang, `u/${r.username}`) : '#'} class="flex min-w-0 items-center gap-3 no-underline">
+                <Avatar userId={r.id} name={r.name} hasAvatar={!!r.hasAvatar} size={40} class="h-10 w-10" />
+                <span class="min-w-0">
+                  <span class="block truncate font-display text-headline-md text-ink">{r.name}</span>
+                  {r.username && <span class="block font-mono text-meta-data text-muted">@{r.username}</span>}
+                </span>
+              </a>
+              <div class="flex shrink-0 gap-2">
+                <button type="button" data-accept class="label border border-ink px-3 py-1 transition-colors hover:bg-ink hover:text-white">{t('profile.accept')}</button>
+                <button type="button" data-reject class="label border border-ink px-3 py-1 transition-colors hover:bg-error hover:text-white">{t('profile.reject')}</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
 
     <form id="prefs-form" class="mt-12 max-w-3xl" data-saved={t('account.saved')}>
       <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('account.preferences')}</h2>
@@ -141,5 +256,80 @@ const theme = prefs?.theme ?? 'light';
       msg.textContent = form.dataset.saved || 'OK';
       setTimeout(() => (msg.textContent = ''), 1800);
     }
+  });
+</script>
+
+<script>
+  // --- Perfil público: username, bio, privacidad, avatar ---
+  const editor = document.getElementById('profile-editor') as HTMLElement | null;
+  if (editor) {
+    const errors = JSON.parse(editor.dataset.errors || '{}') as Record<string, string>;
+    const pmsg = document.getElementById('profile-msg') as HTMLElement;
+    const savedText = (document.getElementById('prefs-form') as HTMLElement)?.dataset.saved || 'OK';
+
+    const profileForm = document.getElementById('profile-form') as HTMLFormElement;
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      pmsg.classList.remove('text-error');
+      const body = {
+        username: (document.getElementById('username') as HTMLInputElement).value.trim(),
+        bio: (document.getElementById('bio') as HTMLTextAreaElement).value.trim(),
+        isPrivate: (document.getElementById('is-private') as HTMLInputElement).checked,
+      };
+      const res = await fetch('/api/me/profile', {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        pmsg.textContent = savedText;
+        // Si acabamos de crear el perfil, recargar para habilitar avatar y enlace.
+        if (editor.dataset.hasProfile === '0') { location.reload(); return; }
+        setTimeout(() => (pmsg.textContent = ''), 1800);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        pmsg.classList.add('text-error');
+        pmsg.textContent = errors[data.error] || 'Error';
+      }
+    });
+
+    // Avatar: subir y quitar.
+    const fileInput = document.getElementById('avatar-input') as HTMLInputElement;
+    document.getElementById('avatar-upload')?.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      if (file.size > 512 * 1024) {
+        pmsg.classList.add('text-error');
+        pmsg.textContent = errors.too_large || 'Too large';
+        return;
+      }
+      const res = await fetch('/api/me/avatar', { method: 'POST', body: file });
+      if (res.ok) location.reload();
+      else {
+        const data = await res.json().catch(() => ({}));
+        pmsg.classList.add('text-error');
+        pmsg.textContent = errors[data.error] || 'Error';
+      }
+    });
+    document.getElementById('avatar-remove')?.addEventListener('click', async () => {
+      const res = await fetch('/api/me/avatar', { method: 'DELETE' });
+      if (res.ok) location.reload();
+    });
+  }
+
+  // --- Solicitudes de seguimiento: aceptar / rechazar ---
+  document.querySelectorAll<HTMLLIElement>('#requests li[data-requester]').forEach((li) => {
+    const requesterId = li.dataset.requester!;
+    const act = async (action: 'accept' | 'reject') => {
+      const res = await fetch('/api/follow/requests', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ requesterId, action }),
+      });
+      if (res.ok) li.remove();
+    };
+    li.querySelector('[data-accept]')?.addEventListener('click', () => act('accept'));
+    li.querySelector('[data-reject]')?.addEventListener('click', () => act('reject'));
   });
 </script>
