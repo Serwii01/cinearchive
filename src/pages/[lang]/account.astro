@@ -79,6 +79,7 @@ const pending = await db
         username_required: t('profile.errRequired'),
         too_large: t('profile.errTooLarge'),
         bad_type: t('profile.errBadType'),
+        heic: t('profile.errHeic'),
       })}
     >
       <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.yours')}</h2>
@@ -116,7 +117,11 @@ const pending = await db
                 value={myProfile?.username ?? ''}
                 maxlength="20"
                 autocomplete="off"
+                autocapitalize="off"
+                autocorrect="off"
                 spellcheck="false"
+                inputmode="text"
+                enterkeyhint="done"
                 placeholder="usuario"
                 class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
               />
@@ -275,28 +280,55 @@ const pending = await db
     const savedText = (document.getElementById('prefs-form') as HTMLElement)?.dataset.saved || 'OK';
 
     const profileForm = document.getElementById('profile-form') as HTMLFormElement;
+    const usernameInput = document.getElementById('username') as HTMLInputElement;
+    const saveBtn = profileForm.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+    // Saneado en vivo: en móvil el teclado capitaliza/autocorrige. Forzamos el
+    // juego de caracteres válido (minúsculas, dígitos y _) mientras se escribe.
+    usernameInput.addEventListener('input', () => {
+      const clean = usernameInput.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+      if (clean !== usernameInput.value) {
+        const pos = usernameInput.selectionStart ?? clean.length;
+        usernameInput.value = clean;
+        try { usernameInput.setSelectionRange(pos - 1 < 0 ? 0 : pos, pos - 1 < 0 ? 0 : pos); } catch {}
+      }
+    });
+
+    let saving = false;
     profileForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (saving) return;
+      saving = true;
+      saveBtn.disabled = true;
       pmsg.classList.remove('text-error');
+      pmsg.textContent = '…';
       const body = {
-        username: (document.getElementById('username') as HTMLInputElement).value.trim(),
+        username: usernameInput.value.trim().toLowerCase(),
         bio: (document.getElementById('bio') as HTMLTextAreaElement).value.trim(),
         isPrivate: (document.getElementById('is-private') as HTMLInputElement).checked,
       };
-      const res = await fetch('/api/me/profile', {
-        method: 'PUT',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      if (res.ok) {
-        pmsg.textContent = savedText;
-        // Si acabamos de crear el perfil, recargar para habilitar avatar y enlace.
-        if (editor.dataset.hasProfile === '0') { location.reload(); return; }
-        setTimeout(() => (pmsg.textContent = ''), 1800);
-      } else {
-        const data = await res.json().catch(() => ({}));
+      try {
+        const res = await fetch('/api/me/profile', {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (res.ok) {
+          pmsg.textContent = savedText;
+          // Si acabamos de crear el perfil, recargar para habilitar avatar y enlace.
+          if (editor.dataset.hasProfile === '0') { location.reload(); return; }
+          setTimeout(() => (pmsg.textContent = ''), 2200);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          pmsg.classList.add('text-error');
+          pmsg.textContent = errors[data.error] || 'Error';
+        }
+      } catch {
         pmsg.classList.add('text-error');
-        pmsg.textContent = errors[data.error] || 'Error';
+        pmsg.textContent = 'Error';
+      } finally {
+        saving = false;
+        saveBtn.disabled = false;
       }
     });
 
@@ -304,7 +336,6 @@ const pending = await db
     const fileInput = document.getElementById('avatar-input') as HTMLInputElement;
     const alertBox = document.getElementById('avatar-alert') as HTMLElement;
     const alertMsg = document.getElementById('avatar-alert-msg') as HTMLElement;
-    const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
 
     const showAlert = (msg: string) => {
       alertMsg.textContent = msg;
@@ -322,9 +353,9 @@ const pending = await db
       clearAlert();
       const file = fileInput.files?.[0];
       if (!file) return;
-      // Validación en el cliente (mensajes inmediatos y con estilo).
-      if (file.type && !ALLOWED.includes(file.type)) {
-        showAlert(errors.bad_type || 'Invalid format');
+      // Caso típico de móvil: fotos de iPhone en HEIC/HEIF. Aviso claro y específico.
+      if (/heic|heif/i.test(file.type) || /\.(heic|heif)$/i.test(file.name)) {
+        showAlert(errors.heic || errors.bad_type || 'Invalid format');
         fileInput.value = '';
         return;
       }
@@ -333,12 +364,19 @@ const pending = await db
         fileInput.value = '';
         return;
       }
-      const res = await fetch('/api/me/avatar', { method: 'POST', body: file });
-      if (res.ok) {
-        location.reload();
-      } else {
-        const data = await res.json().catch(() => ({}));
-        showAlert(errors[data.error] || errors.bad_type || 'Error');
+      // El tipo real lo valida el servidor por magic bytes (no bloqueamos aquí:
+      // así una foto de móvil que llega como JPEG se acepta sin fricción).
+      try {
+        const res = await fetch('/api/me/avatar', { method: 'POST', body: file });
+        if (res.ok) {
+          location.reload();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          showAlert(errors[data.error] || errors.bad_type || 'Error');
+          fileInput.value = '';
+        }
+      } catch {
+        showAlert(errors.bad_type || 'Error');
         fileInput.value = '';
       }
     });
