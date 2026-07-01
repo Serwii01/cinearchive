@@ -11,6 +11,7 @@ import {
   followState,
   canViewActivity,
   followCounts,
+  getMyProfile,
 } from '../../../lib/social';
 
 export const prerender = false;
@@ -29,6 +30,8 @@ const state = await followState(viewer?.id ?? null, target.userId);
 const isSelf = state === 'self';
 const canView = canViewActivity(viewer?.id ?? null, target, state);
 const counts = await followCounts(target.userId);
+// Para seguir hace falta tener perfil propio (username).
+const viewerHasProfile = viewer ? !!(await getMyProfile(viewer.id)) : false;
 
 // Actividad visible: reseñas (películas con nota o valoración) y listas públicas.
 let reviews: { tmdbId: number; rating: number | null; note: string | null }[] = [];
@@ -84,8 +87,17 @@ const title = `@${target.username}`;
           {target.isPrivate && <p class="label mt-2 inline-block border border-ink px-2 py-1">{t('profile.private')}</p>}
           {target.bio && <p class="mt-3 max-w-prose text-body-md text-charcoal">{target.bio}</p>}
           <div class="mt-4 flex gap-6 font-mono text-meta-data text-ink">
-            <span><strong class="text-headline-md">{counts.followers}</strong> {t('profile.followers')}</span>
-            <span><strong class="text-headline-md">{counts.following}</strong> {t('profile.following')}</span>
+            {canView ? (
+              <>
+                <button type="button" data-conn="followers" class="text-left no-underline hover:text-muted"><strong class="text-headline-md">{counts.followers}</strong> {t('profile.followers')}</button>
+                <button type="button" data-conn="following" class="text-left no-underline hover:text-muted"><strong class="text-headline-md">{counts.following}</strong> {t('profile.following')}</button>
+              </>
+            ) : (
+              <>
+                <span><strong class="text-headline-md">{counts.followers}</strong> {t('profile.followers')}</span>
+                <span><strong class="text-headline-md">{counts.following}</strong> {t('profile.following')}</span>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -94,6 +106,8 @@ const title = `@${target.username}`;
       <div class="shrink-0">
         {isSelf ? (
           <a href={localizePath(lang, 'account')} class="btn btn-secondary">{t('profile.editProfile')}</a>
+        ) : viewer && !viewerHasProfile ? (
+          <a href={localizePath(lang, 'account')} class="btn btn-secondary">{t('profile.createToFollow')}</a>
         ) : viewer ? (
           <button
             id="follow-btn"
@@ -173,6 +187,29 @@ const title = `@${target.username}`;
       </>
     )}
   </section>
+
+  {/* Modal de seguidores / seguidos */}
+  <div
+    id="conn-modal"
+    hidden
+    class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink/60 p-4 sm:p-8"
+    data-username={target.username}
+    data-base={localizePath(lang, 'u')}
+    data-followers={t('profile.followers')}
+    data-following={t('profile.following')}
+    data-empty-followers={t('profile.noFollowers')}
+    data-empty-following={t('profile.noFollowing')}
+    data-close={t('profile.close')}
+    data-private={t('profile.private')}
+  >
+    <div class="mt-8 w-full max-w-md border-2 border-ink bg-surface" role="dialog" aria-modal="true" aria-labelledby="conn-title">
+      <header class="flex items-center justify-between border-b-2 border-ink px-4 py-3">
+        <h2 id="conn-title" class="font-display text-headline-md text-ink">—</h2>
+        <button id="conn-close" type="button" aria-label={t('profile.close')} class="flex h-8 w-8 items-center justify-center border border-ink font-mono text-headline-md leading-none transition-colors hover:bg-ink hover:text-white">✕</button>
+      </header>
+      <ul id="conn-list" class="max-h-[60vh] divide-y divide-outline overflow-y-auto"></ul>
+    </div>
+  </div>
 </BaseLayout>
 
 <script>
@@ -206,6 +243,72 @@ const title = `@${target.username}`;
       } finally {
         btn.disabled = false;
       }
+    });
+  }
+
+  // --- Modal de seguidores / seguidos ---
+  const modal = document.getElementById('conn-modal') as HTMLElement | null;
+  if (modal) {
+    const title = document.getElementById('conn-title') as HTMLElement;
+    const list = document.getElementById('conn-list') as HTMLElement;
+    const username = modal.dataset.username!;
+    const base = modal.dataset.base!;
+    const esc = (s: string) =>
+      s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+
+    let lastFocus: HTMLElement | null = null;
+
+    const close = () => {
+      modal.hidden = true;
+      document.body.style.overflow = '';
+      lastFocus?.focus();
+    };
+    const open = async (type: 'followers' | 'following') => {
+      lastFocus = document.activeElement as HTMLElement;
+      title.textContent = type === 'followers' ? modal.dataset.followers! : modal.dataset.following!;
+      list.innerHTML = '';
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      (document.getElementById('conn-close') as HTMLElement)?.focus();
+      try {
+        const res = await fetch(`/api/users/${encodeURIComponent(username)}/connections?type=${type}`, {
+          headers: { accept: 'application/json' },
+        });
+        const data = res.ok ? await res.json() : { results: [] };
+        const rows = data.results as { id: string; username: string; name: string; isPrivate: boolean; hasAvatar: boolean }[];
+        if (!rows.length) {
+          const emptyMsg = type === 'followers' ? modal.dataset.emptyFollowers! : modal.dataset.emptyFollowing!;
+          list.innerHTML = `<li class="px-4 py-6 text-center font-mono text-meta-data text-muted">${esc(emptyMsg)}</li>`;
+          return;
+        }
+        list.innerHTML = rows
+          .map((r) => {
+            const initials = (r.name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('');
+            const avatar = r.hasAvatar
+              ? `<img src="/api/avatar/${encodeURIComponent(r.id)}" alt="" class="h-full w-full object-cover" loading="lazy">`
+              : `<span class="font-display text-body-md leading-none">${esc(initials)}</span>`;
+            const lock = r.isPrivate ? ' · 🔒' : '';
+            return `<li><a href="${base}/${encodeURIComponent(r.username)}" class="flex items-center gap-3 px-4 py-3 no-underline hover:bg-film-white">
+              <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink text-white">${avatar}</span>
+              <span class="min-w-0"><span class="block truncate font-display text-headline-md text-ink">${esc(r.name)}</span>
+              <span class="block font-mono text-meta-data text-muted">@${esc(r.username)}${lock}</span></span>
+            </a></li>`;
+          })
+          .join('');
+      } catch {
+        close();
+      }
+    };
+
+    document.querySelectorAll<HTMLElement>('[data-conn]').forEach((el) => {
+      el.addEventListener('click', () => open(el.dataset.conn as 'followers' | 'following'));
+    });
+    document.getElementById('conn-close')?.addEventListener('click', close);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) close(); // clic en el fondo cierra
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.hidden) close();
     });
   }
 </script>

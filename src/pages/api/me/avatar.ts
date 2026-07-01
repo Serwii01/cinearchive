@@ -4,6 +4,7 @@ import { db } from '../../../db/client';
 import { profile } from '../../../db/schema';
 import { MAX_AVATAR_BYTES, sniffImageType } from '../../../lib/avatar';
 import { getMyProfile } from '../../../lib/social';
+import { check, tooMany } from '../../../lib/ratelimit';
 
 export const prerender = false;
 
@@ -13,6 +14,8 @@ const bad = (error: string, status = 400) => new Response(JSON.stringify({ error
 /** POST — sube la foto de perfil (cuerpo = bytes de la imagen). */
 export const POST: APIRoute = async ({ locals, request }) => {
   if (!locals.user) return unauthorized();
+  const rl = check(`avatar:${locals.user.id}`, 10, 60_000);
+  if (!rl.ok) return tooMany(rl.retryAfter);
   if (!(await getMyProfile(locals.user.id))) return bad('no_profile');
 
   // Rechaza pronto por cabecera antes de bufferizar el cuerpo entero.

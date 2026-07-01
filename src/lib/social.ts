@@ -1,4 +1,4 @@
-import { and, count, eq, or } from 'drizzle-orm';
+import { and, count, desc, eq, or } from 'drizzle-orm';
 import { db } from '../db/client';
 import { profile, follows, user } from '../db/schema';
 import type { Profile } from '../db/schema';
@@ -131,6 +131,45 @@ export async function followCounts(userId: string): Promise<{ followers: number;
       .where(and(eq(follows.followerId, userId), eq(follows.status, 'accepted'))),
   ]);
   return { followers: Number(f1?.c ?? 0), following: Number(f2?.c ?? 0) };
+}
+
+export interface Connection {
+  id: string;
+  username: string;
+  name: string;
+  isPrivate: boolean;
+  hasAvatar: boolean;
+}
+
+/**
+ * Lista de seguidores (quienes le siguen) o seguidos (a quienes sigue), aceptados.
+ * Solo incluye usuarios con perfil público (username); ordenados por más reciente.
+ */
+export async function getConnections(
+  userId: string,
+  type: 'followers' | 'following',
+  limit = 100,
+): Promise<Connection[]> {
+  // followers: la otra persona es el follower; following: la otra persona es el followed.
+  const otherCol = type === 'followers' ? follows.followerId : follows.followingId;
+  const selfCol = type === 'followers' ? follows.followingId : follows.followerId;
+
+  const rows = await db
+    .select({
+      id: profile.userId,
+      username: profile.username,
+      name: user.name,
+      isPrivate: profile.isPrivate,
+      hasAvatar: profile.avatarType,
+    })
+    .from(follows)
+    .innerJoin(profile, eq(profile.userId, otherCol))
+    .innerJoin(user, eq(user.id, otherCol))
+    .where(and(eq(selfCol, userId), eq(follows.status, 'accepted')))
+    .orderBy(desc(follows.createdAt))
+    .limit(limit);
+
+  return rows.map((r) => ({ ...r, hasAvatar: !!r.hasAvatar }));
 }
 
 /** Nº de solicitudes de seguimiento pendientes que ha recibido el usuario. */

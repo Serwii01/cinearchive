@@ -53,6 +53,32 @@ export const onRequest = defineMiddleware(async (context, next) => {
     if (!ok) return harden(tooMany(retryAfter));
   }
 
+  // CSRF (defensa en profundidad): en escrituras a la API, si llega cabecera
+  // Origin y no es del propio sitio, se rechaza. Las cookies son SameSite=Lax
+  // (que ya impide su envío entre sitios en POST/fetch); esto es una capa extra.
+  // Se excluye /api/auth/* porque Better Auth valida sus propios orígenes.
+  const method = request.method;
+  const isWrite = method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE';
+  if (isWrite && path.startsWith('/api/') && !path.startsWith('/api/auth/')) {
+    const origin = request.headers.get('origin');
+    if (origin) {
+      let sameOrigin = false;
+      try {
+        sameOrigin = new URL(origin).host === url.host;
+      } catch {
+        sameOrigin = false;
+      }
+      if (!sameOrigin) {
+        return harden(
+          new Response(JSON.stringify({ error: 'bad_origin' }), {
+            status: 403,
+            headers: { 'content-type': 'application/json' },
+          }),
+        );
+      }
+    }
+  }
+
   // Las páginas prerenderizadas (editoriales) no tienen sesión de servidor: su
   // cabecera resuelve el estado de login en el cliente vía /api/auth/get-session.
   if (context.isPrerendered) {

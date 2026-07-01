@@ -3,7 +3,8 @@ import { z } from 'zod';
 import { and, eq } from 'drizzle-orm';
 import { db } from '../../db/client';
 import { follows } from '../../db/schema';
-import { getProfileByUsername } from '../../lib/social';
+import { getProfileByUsername, getMyProfile } from '../../lib/social';
+import { check, tooMany } from '../../lib/ratelimit';
 
 export const prerender = false;
 
@@ -12,9 +13,19 @@ const bad = (error: string) => new Response(JSON.stringify({ error }), { status:
 
 const schema = z.object({ username: z.string().trim().min(1) });
 
+/** Límite antiabuso por usuario para acciones de seguir/dejar de seguir. */
+function limited(userId: string): Response | null {
+  const rl = check(`follow:${userId}`, 30, 60_000);
+  return rl.ok ? null : tooMany(rl.retryAfter);
+}
+
 /** POST — seguir a un usuario (público: aceptado; privado: solicitud pendiente). */
 export const POST: APIRoute = async ({ locals, request }) => {
   if (!locals.user) return unauthorized();
+  const capped = limited(locals.user.id);
+  if (capped) return capped;
+  // Para seguir hay que tener perfil (username): así la red social es coherente.
+  if (!(await getMyProfile(locals.user.id))) return bad('need_profile');
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return bad('invalid');
 
@@ -40,6 +51,8 @@ export const POST: APIRoute = async ({ locals, request }) => {
 /** DELETE — dejar de seguir o cancelar la solicitud. */
 export const DELETE: APIRoute = async ({ locals, request }) => {
   if (!locals.user) return unauthorized();
+  const capped = limited(locals.user.id);
+  if (capped) return capped;
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return bad('invalid');
 

@@ -4,6 +4,7 @@ import { and, eq, ne } from 'drizzle-orm';
 import { db } from '../../../db/client';
 import { profile, follows } from '../../../db/schema';
 import { normalizeUsername, usernameError, getMyProfile } from '../../../lib/social';
+import { check, tooMany } from '../../../lib/ratelimit';
 
 export const prerender = false;
 
@@ -27,6 +28,8 @@ export const GET: APIRoute = async ({ locals }) => {
 export const PUT: APIRoute = async ({ locals, request }) => {
   if (!locals.user) return unauthorized();
   const userId = locals.user.id;
+  const rl = check(`profile:${userId}`, 20, 60_000);
+  if (!rl.ok) return tooMany(rl.retryAfter);
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return bad('invalid');
 
