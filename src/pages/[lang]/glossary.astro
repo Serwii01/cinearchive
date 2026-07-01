@@ -1,40 +1,6 @@
 ---
-export const prerender = true;
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { sortedGlossary, glossaryTerm, glossaryDef } from '../../lib/reference';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
-
-export function getStaticPaths() {
-  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
-}
-
-const lang = Astro.params.lang as Lang;
-const t = useTranslations(lang);
-const terms = sortedGlossary(lang);
+// El glosario vive ahora dentro de /archivo (sección plegable).
+import { localizePath, type Lang } from '../../i18n/ui';
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+return Astro.redirect(localizePath(lang, 'archive') + '#glosario');
 ---
-
-<BaseLayout
-  title={t('glossary.title')}
-  description={t('glossary.intro')}
-  altPath={localizePath(lang === 'es' ? 'en' : 'es', 'glossary')}
->
-  <section class="frame py-12">
-    <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">← {t('nav.archive')}</a>
-    <header class="mt-6 border-b border-ink pb-6">
-      <span class="label">{t('glossary.title')} · {terms.length} {t('glossary.count')}</span>
-      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('glossary.title')}</h1>
-      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('glossary.intro')}</p>
-    </header>
-
-    <dl class="mt-10 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
-      {
-        terms.map((g) => (
-          <div class="bg-surface p-4">
-            <dt class="font-display text-headline-md text-ink">{glossaryTerm(g, lang)}</dt>
-            <dd class="mt-1 text-body-md text-charcoal">{glossaryDef(g, lang)}</dd>
-          </div>
-        ))
-      }
-    </dl>
-  </section>
-</BaseLayout>

@@ -12,6 +12,7 @@ const SECTION_LABEL: Record<string, UIKey> = {
   '': 'back.home',
   films: 'back.films',
   film: 'back.film',
+  archive: 'back.archive',
   awards: 'back.awards',
   discover: 'back.discover',
   recommendations: 'back.recs',

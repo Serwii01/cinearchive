@@ -1,127 +1,234 @@
 ---
-export const prerender = true;
+export const prerender = false; // la cronología resuelve títulos vía getFilmsBrief
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import IssueCard from '../../../components/IssueCard.astro';
 import JournalCard from '../../../components/JournalCard.astro';
 import { periodicals, journals } from '../../../lib/periodicals';
+import { books, bookCoverUrl } from '../../../lib/library';
+import { sortedGlossary, glossaryTerm, glossaryDef, timeline, movementName, movementDesc } from '../../../lib/reference';
+import { awards, awardName, awardNote } from '../../../lib/awards';
+import { getFilmsBrief } from '../../../lib/films';
 import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 
-export function getStaticPaths() {
-  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
-}
-
-const lang = Astro.params.lang as Lang;
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
 const t = useTranslations(lang);
 
-const items = periodicals
-  .slice()
-  .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
+const issues = periodicals.slice().sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
+const decades = [...new Set(issues.map((i) => Math.floor(i.year / 10) * 10))].sort((a, b) => b - a);
+const libItems = books.slice().sort((a, b) => a.year - b.year || a.title.localeCompare(b.title));
+const terms = sortedGlossary(lang);
 
-const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sort((a, b) => b - a);
+const allIds = [...new Set(timeline.flatMap((m) => m.keyFilms))];
+const briefs = await getFilmsBrief(allIds, lang);
+
+const sections = [
+  { id: 'hemeroteca', label: t('archive.title') },
+  { id: 'biblioteca', label: t('nav.library') },
+  { id: 'glosario', label: t('nav.glossary') },
+  { id: 'cronologia', label: t('nav.timeline') },
+  { id: 'palmares', label: t('nav.awards') },
+];
 ---
 
-<BaseLayout
-  title={t('archive.title')}
-  description={t('archive.intro')}
-  altPath={localizePath(lang === 'es' ? 'en' : 'es', 'archive')}
->
+<BaseLayout title={t('nav.archive')} description={t('archive.umbrella')} altPath={localizePath(lang === 'es' ? 'en' : 'es', 'archive')}>
   <section class="frame py-12">
     <header class="border-b border-ink pb-6">
-      <span class="label">{t('nav.archive')} · {items.length}</span>
-      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('archive.title')}</h1>
-      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('archive.intro')}</p>
-
-      <nav class="mt-6 flex flex-wrap gap-2" aria-label={t('films.sections')}>
-        <span class="label flex items-center pr-1">{t('films.sections')}:</span>
-        <a href={localizePath(lang, 'library')} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{t('nav.library')}</a>
-        <a href={localizePath(lang, 'glossary')} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{t('nav.glossary')}</a>
-        <a href={localizePath(lang, 'timeline')} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{t('nav.timeline')}</a>
-        <a href={localizePath(lang, 'awards')} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{t('nav.awards')}</a>
+      <span class="label">{t('nav.archive')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('nav.archive')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('archive.umbrella')}</p>
+      <nav class="mt-6 flex flex-wrap gap-2" aria-label={t('nav.archive')}>
+        {sections.map((s) => (
+          <a href={`#${s.id}`} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{s.label}</a>
+        ))}
       </nav>
-
-      {/* Filtros */}
-      <div class="mt-6 flex flex-wrap gap-3">
-        <label class="flex items-center gap-2">
-          <span class="label">{t('archive.filterType')}</span>
-          <select id="filter-type" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none">
-            <option value="">{t('archive.all')}</option>
-            <option value="magazine">{t('archive.type.magazine')}</option>
-            <option value="newspaper">{t('archive.type.newspaper')}</option>
-          </select>
-        </label>
-        <label class="flex items-center gap-2">
-          <span class="label">{t('archive.filterDecade')}</span>
-          <select id="filter-decade" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none">
-            <option value="">{t('archive.all')}</option>
-            {decades.map((d) => <option value={d}>{d}s</option>)}
-          </select>
-        </label>
-        <label class="flex items-center gap-2">
-          <span class="label">{t('archive.filterLang')}</span>
-          <select id="filter-lang" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none">
-            <option value="">{t('archive.all')}</option>
-            <option value="es">Español</option>
-            <option value="en">English</option>
-          </select>
-        </label>
-      </div>
     </header>
 
-    <div
-      id="issue-grid"
-      class="mt-10 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4"
-    >
-      {
-        items.map((item) => (
-          <div data-type={item.type} data-decade={Math.floor(item.year / 10) * 10} data-lang={item.lang}>
-            <IssueCard item={item} lang={lang} />
+    {/* ── HEMEROTECA ── */}
+    <details open id="hemeroteca" class="arch border-t-2 border-ink">
+      <summary class="arch-sum"><span class="arch-arrow">▸</span><h2 class="text-headline-lg text-ink">{t('archive.title')} <span class="label">· {issues.length}</span></h2></summary>
+      <div class="pb-10">
+        <div class="flex flex-wrap gap-3">
+          <label class="flex items-center gap-2"><span class="label">{t('archive.filterType')}</span>
+            <select id="f-type" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none">
+              <option value="">{t('archive.all')}</option><option value="magazine">{t('archive.type.magazine')}</option><option value="newspaper">{t('archive.type.newspaper')}</option>
+            </select></label>
+          <label class="flex items-center gap-2"><span class="label">{t('archive.filterDecade')}</span>
+            <select id="f-decade" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none">
+              <option value="">{t('archive.all')}</option>{decades.map((d) => <option value={d}>{d}s</option>)}
+            </select></label>
+          <label class="flex items-center gap-2"><span class="label">{t('archive.filterLang')}</span>
+            <select id="f-lang" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none">
+              <option value="">{t('archive.all')}</option><option value="es">Español</option><option value="en">English</option>
+            </select></label>
+        </div>
+        <div id="issue-grid" class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+          {issues.map((item) => (
+            <div data-type={item.type} data-decade={Math.floor(item.year / 10) * 10} data-lang={item.lang}><IssueCard item={item} lang={lang} /></div>
+          ))}
+        </div>
+        <p id="issue-empty" class="mt-8 hidden font-mono text-body-md text-muted">{t('archive.empty')}</p>
+        <p class="mt-6 font-mono text-meta-data text-muted">{t('archive.credit')}</p>
+
+        <div class="mt-12 border-t border-ink pt-8">
+          <h3 class="text-headline-md text-ink">{t('archive.current')} <span class="label">· {journals.length}</span></h3>
+          <p class="mt-2 max-w-2xl text-body-md text-charcoal">{t('archive.currentIntro')}</p>
+          <div class="mt-6 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+            {journals.map((j) => <JournalCard item={j} lang={lang} />)}
           </div>
-        ))
-      }
-    </div>
-    <p id="issue-empty" class="mt-10 hidden font-mono text-body-md text-muted">{t('archive.empty')}</p>
-
-    <p class="mt-10 border-t border-ink pt-4 font-mono text-meta-data text-muted">{t('archive.credit')}</p>
-
-    {/* Revistas actuales de acceso abierto (enlazadas a su web oficial) */}
-    <div class="mt-16 border-t-2 border-ink pt-10">
-      <span class="label">{t('archive.current')} · {journals.length}</span>
-      <h2 class="mt-3 text-headline-lg md:text-display-mobile">{t('archive.current')}</h2>
-      <p class="mt-3 max-w-2xl text-body-md text-charcoal">{t('archive.currentIntro')}</p>
-
-      <div class="mt-8 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
-        {journals.map((j) => <JournalCard item={j} lang={lang} />)}
+          <p class="mt-4 font-mono text-meta-data text-muted">{t('archive.currentCredit')}</p>
+        </div>
       </div>
+    </details>
 
-      <p class="mt-6 border-t border-ink pt-4 font-mono text-meta-data text-muted">{t('archive.currentCredit')}</p>
-    </div>
+    {/* ── BIBLIOTECA ── */}
+    <details open id="biblioteca" class="arch border-t-2 border-ink">
+      <summary class="arch-sum"><span class="arch-arrow">▸</span><h2 class="text-headline-lg text-ink">{t('nav.library')} <span class="label">· {libItems.length}</span></h2></summary>
+      <div class="pb-10">
+        <p class="max-w-2xl text-body-md text-charcoal">{t('library.intro')}</p>
+        <input id="lib-filter" type="search" autocomplete="off" placeholder={t('archive.searchLib')} class="mt-4 w-full max-w-xs border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none" />
+        <div id="lib-grid" class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+          {libItems.map((b) => (
+            <article class="group flex h-full flex-col bg-surface" data-search={`${b.title} ${b.author}`.toLowerCase()}>
+              <a href={localizePath(lang, `library/${b.id}`)} class="flex h-full flex-col no-underline">
+                <div class="flex items-center justify-between border-b border-ink px-3 py-2"><span class="label">{t('cinema.publicDomain')}</span><span class="font-mono text-meta-data text-muted">{b.year}</span></div>
+                <div class="aspect-[3/4] overflow-hidden border-b border-ink bg-charcoal"><img src={bookCoverUrl(b.id)} alt={b.title} loading="lazy" decoding="async" class="h-full w-full object-cover object-top" /></div>
+                <div class="flex flex-1 flex-col p-3"><h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{b.title}</h3><p class="mt-1 font-mono text-meta-data text-muted">{b.author}</p></div>
+              </a>
+            </article>
+          ))}
+        </div>
+        <p id="lib-empty" class="mt-8 hidden font-mono text-body-md text-muted">{t('films.noResults')}</p>
+      </div>
+    </details>
+
+    {/* ── GLOSARIO ── */}
+    <details open id="glosario" class="arch border-t-2 border-ink">
+      <summary class="arch-sum"><span class="arch-arrow">▸</span><h2 class="text-headline-lg text-ink">{t('nav.glossary')} <span class="label">· {terms.length}</span></h2></summary>
+      <div class="pb-10">
+        <input id="gloss-filter" type="search" autocomplete="off" placeholder={t('archive.searchGloss')} class="w-full max-w-xs border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none" />
+        <dl id="gloss-list" class="mt-6 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+          {terms.map((g) => (
+            <div class="bg-surface p-4" data-term={`${glossaryTerm(g, lang)} ${g.term_es} ${g.term_en}`.toLowerCase()}>
+              <dt class="font-display text-headline-md text-ink">{glossaryTerm(g, lang)}</dt>
+              <dd class="mt-1 text-body-md text-charcoal">{glossaryDef(g, lang)}</dd>
+            </div>
+          ))}
+        </dl>
+        <p id="gloss-empty" class="mt-8 hidden font-mono text-body-md text-muted">{t('films.noResults')}</p>
+      </div>
+    </details>
+
+    {/* ── CRONOLOGÍA ── */}
+    <details open id="cronologia" class="arch border-t-2 border-ink">
+      <summary class="arch-sum"><span class="arch-arrow">▸</span><h2 class="text-headline-lg text-ink">{t('nav.timeline')}</h2></summary>
+      <div class="pb-10">
+        <p class="max-w-2xl text-body-md text-charcoal">{t('timeline.intro')}</p>
+        <ol class="mt-8 border-l-2 border-ink">
+          {timeline.map((m) => (
+            <li class="relative pb-10 pl-6 last:pb-0">
+              <span class="absolute -left-[7px] top-1.5 h-3 w-3 border-2 border-ink bg-ochre"></span>
+              <span class="label text-muted">{m.period}</span>
+              <h3 class="mt-1 font-display text-headline-md text-ink">{movementName(m, lang)}</h3>
+              <p class="mt-2 max-w-2xl text-body-md text-charcoal">{movementDesc(m, lang)}</p>
+              {m.keyFilms.length > 0 && (
+                <div class="mt-3 flex flex-wrap gap-2">
+                  {m.keyFilms.map((id) => {
+                    const f = briefs.get(id);
+                    return f ? (
+                      <a href={localizePath(lang, `film/${id}`)} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{f.title}{f.year && ` (${f.year})`}</a>
+                    ) : null;
+                  })}
+                </div>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </details>
+
+    {/* ── PALMARÉS ── */}
+    <details open id="palmares" class="arch border-t-2 border-ink">
+      <summary class="arch-sum"><span class="arch-arrow">▸</span><h2 class="text-headline-lg text-ink">{t('nav.awards')}</h2></summary>
+      <div class="pb-10">
+        <p class="max-w-2xl text-body-md text-charcoal">{t('awards.intro')}</p>
+        <input id="aw-filter" type="search" autocomplete="off" placeholder={t('archive.searchAwards')} class="mt-4 w-full max-w-xs border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none" />
+        {awards.map((a) => (
+          <section class="mt-8">
+            <h3 class="border-b border-ink pb-2 text-headline-md text-ink">{awardName(a, lang)}</h3>
+            <p class="mt-2 font-mono text-meta-data text-muted">{awardNote(a, lang)}</p>
+            <div class="mt-4 overflow-x-auto border border-ink">
+              <table class="w-full border-collapse text-left">
+                <thead><tr class="border-b border-ink bg-ink text-background">
+                  <th class="label px-3 py-2 font-medium text-background">{t('awards.year')}</th>
+                  <th class="label px-3 py-2 font-medium text-background">{t('awards.film')}</th>
+                  <th class="label hidden px-3 py-2 font-medium text-background sm:table-cell">{t('awards.director')}</th>
+                </tr></thead>
+                <tbody>
+                  {a.winners.map((w) => (
+                    <tr class="award-row border-b border-outline-variant last:border-b-0 hover:bg-film-white" data-search={`${w.title} ${w.year} ${w.director ?? ''}`.toLowerCase()}>
+                      <td class="px-3 py-2 font-mono text-meta-data text-muted">{w.year}</td>
+                      <td class="px-3 py-2">
+                        {w.tmdbId ? (
+                          <a href={localizePath(lang, `film/${w.tmdbId}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{w.title}</a>
+                        ) : (<span class="font-display text-headline-md leading-tight text-ink">{w.title}</span>)}
+                        {w.director && <span class="mt-0.5 block font-mono text-meta-data text-muted sm:hidden">{w.director}</span>}
+                      </td>
+                      <td class="hidden px-3 py-2 font-mono text-meta-data text-charcoal sm:table-cell">{w.director}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        ))}
+        <p id="aw-empty" class="mt-8 hidden font-mono text-body-md text-muted">{t('films.noResults')}</p>
+      </div>
+    </details>
   </section>
 </BaseLayout>
 
+<style>
+  details.arch > summary { list-style: none; cursor: pointer; }
+  details.arch > summary::-webkit-details-marker { display: none; }
+  .arch-sum { display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem 0; }
+  .arch-arrow { font-family: 'Space Mono', monospace; line-height: 1; color: var(--c-muted); transition: transform 0.15s ease; }
+  details.arch[open] > summary .arch-arrow { transform: rotate(90deg); }
+</style>
+
 <script>
-  const typeSel = document.getElementById('filter-type') as HTMLSelectElement | null;
-  const decadeSel = document.getElementById('filter-decade') as HTMLSelectElement | null;
-  const langSel = document.getElementById('filter-lang') as HTMLSelectElement | null;
-  const cells = Array.from(document.querySelectorAll<HTMLElement>('#issue-grid > [data-type]'));
-  const empty = document.getElementById('issue-empty');
-
-  const apply = () => {
-    const ty = typeSel?.value ?? '';
-    const de = decadeSel?.value ?? '';
-    const lg = langSel?.value ?? '';
-    let visible = 0;
-    for (const cell of cells) {
-      const ok =
-        (!ty || cell.dataset.type === ty) &&
-        (!de || cell.dataset.decade === de) &&
-        (!lg || cell.dataset.lang === lg);
-      cell.hidden = !ok;
-      if (ok) visible++;
+  // Hemeroteca: filtros tipo / década / idioma
+  const fType = document.getElementById('f-type') as HTMLSelectElement | null;
+  const fDecade = document.getElementById('f-decade') as HTMLSelectElement | null;
+  const fLang = document.getElementById('f-lang') as HTMLSelectElement | null;
+  const issueCells = Array.from(document.querySelectorAll<HTMLElement>('#issue-grid > [data-type]'));
+  const issueEmpty = document.getElementById('issue-empty');
+  const applyIssues = () => {
+    const ty = fType?.value ?? '', de = fDecade?.value ?? '', lg = fLang?.value ?? '';
+    let n = 0;
+    for (const c of issueCells) {
+      const ok = (!ty || c.dataset.type === ty) && (!de || c.dataset.decade === de) && (!lg || c.dataset.lang === lg);
+      c.hidden = !ok; if (ok) n++;
     }
-    empty?.classList.toggle('hidden', visible !== 0);
+    issueEmpty?.classList.toggle('hidden', n !== 0);
   };
+  [fType, fDecade, fLang].forEach((s) => s?.addEventListener('change', applyIssues));
 
-  typeSel?.addEventListener('change', apply);
-  decadeSel?.addEventListener('change', apply);
-  langSel?.addEventListener('change', apply);
+  // Filtro de texto genérico (biblioteca, glosario, palmarés)
+  const textFilter = (inputId: string, sel: string, attr: string, emptyId: string) => {
+    const input = document.getElementById(inputId) as HTMLInputElement | null;
+    const cells = Array.from(document.querySelectorAll<HTMLElement>(sel));
+    const empty = document.getElementById(emptyId);
+    input?.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      let n = 0;
+      for (const c of cells) {
+        const ok = !q || (c.dataset[attr] ?? '').includes(q);
+        c.hidden = !ok; if (ok) n++;
+      }
+      empty?.classList.toggle('hidden', n !== 0);
+    });
+  };
+  textFilter('lib-filter', '#lib-grid > [data-search]', 'search', 'lib-empty');
+  textFilter('gloss-filter', '#gloss-list > [data-term]', 'term', 'gloss-empty');
+  textFilter('aw-filter', '.award-row', 'search', 'aw-empty');
 </script>
