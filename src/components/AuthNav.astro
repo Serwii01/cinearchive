@@ -21,6 +21,7 @@ const config = {
     watchlist: localizePath(lang, 'watchlist'),
     recs: localizePath(lang, 'recommendations'),
     stats: localizePath(lang, 'stats'),
+    notifications: localizePath(lang, 'notifications'),
     home: localizePath(lang),
   },
   labels: {
@@ -30,6 +31,7 @@ const config = {
     watchlist: t('nav.watchlist'),
     recs: t('nav.recommendations'),
     stats: t('nav.stats'),
+    notifications: t('nav.notifications'),
     logout: t('nav.logout'),
   },
 };
@@ -60,6 +62,9 @@ const config = {
           ? 'label block w-full border-b border-ink px-4 py-4 text-left transition-colors hover:bg-ink hover:text-white'
           : 'label flex items-center border-l border-ink px-4 transition-colors hover:bg-ink hover:text-white';
         this.innerHTML =
+          // La campana de notificaciones vive en la barra en escritorio; en móvil,
+          // como enlace dentro del menú desplegable.
+          (m ? link(cfg.links.notifications, cfg.labels.notifications) : '') +
           link(cfg.links.recs, cfg.labels.recs) +
           link(cfg.links.account, cfg.labels.account, true) +
           `<button type="button" data-logout class="${btnClass}">${cfg.labels.logout}</button>`;

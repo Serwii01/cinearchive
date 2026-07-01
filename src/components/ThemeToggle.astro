@@ -4,8 +4,8 @@ const t = useTranslations(getLangFromUrl(Astro.url));
 ---
 
 <button
-  id="theme-toggle"
   type="button"
+  data-theme-toggle
   aria-label={t('theme.toggle')}
   title={t('theme.toggle')}
   class="flex items-center border-l border-ink px-4 font-mono text-meta-data transition-colors hover:bg-ink hover:text-white"
@@ -14,29 +14,35 @@ const t = useTranslations(getLangFromUrl(Astro.url));
 </button>
 
 <script>
+  // Apto para varias instancias (una en la barra de escritorio, otra en el menú móvil).
   const root = document.documentElement;
-  const btn = document.getElementById('theme-toggle');
-  const icon = btn?.querySelector('[data-icon]');
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]'));
 
   const sync = () => {
-    if (icon) icon.textContent = root.getAttribute('data-theme') === 'dark' ? '☀' : '☾';
+    const glyph = root.getAttribute('data-theme') === 'dark' ? '☀' : '☾';
+    for (const b of buttons) {
+      const icon = b.querySelector('[data-icon]');
+      if (icon) icon.textContent = glyph;
+    }
   };
   sync();
   document.addEventListener('themechange', sync);
 
-  btn?.addEventListener('click', () => {
-    const dark = root.getAttribute('data-theme') !== 'dark';
-    if (dark) root.setAttribute('data-theme', 'dark');
-    else root.removeAttribute('data-theme');
-    try {
-      localStorage.setItem('theme', dark ? 'dark' : 'light');
-    } catch (e) {}
-    sync();
-    // Persiste la preferencia si hay sesión (silencioso si no la hay → 401).
-    fetch('/api/me/preferences', {
-      method: 'PATCH',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ theme: dark ? 'dark' : 'light' }),
-    }).catch(() => {});
-  });
+  for (const btn of buttons) {
+    btn.addEventListener('click', () => {
+      const dark = root.getAttribute('data-theme') !== 'dark';
+      if (dark) root.setAttribute('data-theme', 'dark');
+      else root.removeAttribute('data-theme');
+      try {
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+      } catch (e) {}
+      sync();
+      // Persiste la preferencia si hay sesión (silencioso si no la hay → 401).
+      fetch('/api/me/preferences', {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ theme: dark ? 'dark' : 'light' }),
+      }).catch(() => {});
+    });
+  }
 </script>

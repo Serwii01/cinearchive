@@ -73,8 +73,9 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
         data-notif-label={t('nav.notifications')}
       ></social-nav>
 
-      <ThemeToggle />
-      <div class="flex items-center border-l border-ink px-3 sm:px-4">
+      {/* Idioma y modo oscuro: solo en escritorio; en móvil van en el menú desplegable */}
+      <div class="hidden lg:flex"><ThemeToggle /></div>
+      <div class="hidden items-center border-l border-ink px-3 sm:px-4 lg:flex">
         <LanguageSwitcher altPath={altPath} />
       </div>
 
@@ -108,6 +109,13 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
       ))
     }
     <AuthNav mobile />
+
+    {/* Controles que en escritorio van sueltos en la barra */}
+    <div class="flex items-center gap-4 px-4 py-4">
+      <span class="label text-muted">{t('lang.switch')}</span>
+      <LanguageSwitcher altPath={altPath} />
+      <span class="ml-auto"><ThemeToggle /></span>
+    </div>
   </nav>
 </header>
 
@@ -153,7 +161,7 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
           : `<span class="inline-flex h-7 w-7 items-center justify-center border border-ink bg-ink font-display text-[11px] leading-none text-white">${initials}</span>`;
 
         this.innerHTML =
-          `<a href="${notifUrl}" aria-label="${label}" title="${label}" class="relative flex items-center border-l border-ink px-4 transition-colors hover:bg-ink hover:text-white">` +
+          `<a href="${notifUrl}" aria-label="${label}" title="${label}" class="relative hidden items-center border-l border-ink px-4 transition-colors hover:bg-ink hover:text-white lg:flex">` +
           `<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>` +
           badge +
           `</a>` +
