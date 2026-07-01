@@ -191,8 +191,7 @@ const title = `@${target.username}`;
   {/* Modal de seguidores / seguidos */}
   <div
     id="conn-modal"
-    hidden
-    class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink/60 p-4 sm:p-8"
+    class="fixed inset-0 z-50 hidden items-start justify-center overflow-y-auto bg-ink/60 p-4 sm:p-8"
     data-username={target.username}
     data-base={localizePath(lang, 'u')}
     data-followers={t('profile.followers')}
@@ -257,9 +256,11 @@ const title = `@${target.username}`;
       s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
     let lastFocus: HTMLElement | null = null;
+    const isOpen = () => modal.classList.contains('flex');
 
     const close = () => {
-      modal.hidden = true;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
       document.body.style.overflow = '';
       lastFocus?.focus();
     };
@@ -267,7 +268,8 @@ const title = `@${target.username}`;
       lastFocus = document.activeElement as HTMLElement;
       title.textContent = type === 'followers' ? modal.dataset.followers! : modal.dataset.following!;
       list.innerHTML = '';
-      modal.hidden = false;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
       (document.getElementById('conn-close') as HTMLElement)?.focus();
       try {
@@ -308,7 +310,7 @@ const title = `@${target.username}`;
       if (e.target === modal) close(); // clic en el fondo cierra
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !modal.hidden) close();
+      if (e.key === 'Escape' && isOpen()) close();
     });
   }
 </script>
