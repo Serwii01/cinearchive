@@ -1,4 +1,4 @@
-import { and, count, desc, eq, or } from 'drizzle-orm';
+import { and, count, desc, eq, gt, or } from 'drizzle-orm';
 import { db } from '../db/client';
 import { profile, follows, user } from '../db/schema';
 import type { Profile } from '../db/schema';
@@ -179,4 +179,36 @@ export async function pendingRequestCount(userId: string): Promise<number> {
     .from(follows)
     .where(and(eq(follows.followingId, userId), eq(follows.status, 'pending')));
   return Number(row?.c ?? 0);
+}
+
+/**
+ * Nº de notificaciones sin ver: solicitudes pendientes (siempre) + seguidores
+ * nuevos aceptados desde la última vez que abrió las notificaciones.
+ */
+export async function notificationCount(userId: string): Promise<number> {
+  const [p] = await db
+    .select({ seen: profile.notificationsSeenAt })
+    .from(profile)
+    .where(eq(profile.userId, userId))
+    .limit(1);
+  if (!p) return 0; // sin perfil no participa en la red social
+
+  const [pend] = await db
+    .select({ c: count() })
+    .from(follows)
+    .where(and(eq(follows.followingId, userId), eq(follows.status, 'pending')));
+
+  const conds = [eq(follows.followingId, userId), eq(follows.status, 'accepted')];
+  if (p.seen) conds.push(gt(follows.createdAt, p.seen));
+  const [nf] = await db
+    .select({ c: count() })
+    .from(follows)
+    .where(and(...conds));
+
+  return Number(pend?.c ?? 0) + Number(nf?.c ?? 0);
+}
+
+/** Marca las notificaciones como vistas (limpia el "nuevo" de los seguidores). */
+export async function markNotificationsSeen(userId: string): Promise<void> {
+  await db.update(profile).set({ notificationsSeenAt: new Date() }).where(eq(profile.userId, userId));
 }

@@ -64,6 +64,15 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
           <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
         </svg>
       </a>
+
+      {/* Avatar + notificaciones (se rellenan en cliente si hay sesión con perfil) */}
+      <social-nav
+        class="contents"
+        data-notif={localizePath(lang, 'notifications')}
+        data-profile-base={localizePath(lang, 'u')}
+        data-notif-label={t('nav.notifications')}
+      ></social-nav>
+
       <ThemeToggle />
       <div class="flex items-center border-l border-ink px-3 sm:px-4">
         <LanguageSwitcher altPath={altPath} />
@@ -112,4 +121,47 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
     btn.setAttribute('aria-expanded', String(isOpen));
     if (icon) icon.textContent = isOpen ? '✕' : '☰';
   });
+</script>
+
+<script>
+  // Avatar + campana de notificaciones en el navbar. Solo aparece si hay sesión
+  // con perfil (username). Una sola llamada alimenta ambos.
+  class SocialNav extends HTMLElement {
+    async connectedCallback() {
+      try {
+        const res = await fetch('/api/me/social-summary', { headers: { accept: 'application/json' } });
+        if (!res.ok) return;
+        const d = await res.json();
+        if (!d.authenticated || !d.username) return; // sin sesión o sin perfil: nada
+
+        const esc = (s: string) =>
+          String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+        const notifUrl = this.dataset.notif!;
+        const profileUrl = `${this.dataset.profileBase}/${encodeURIComponent(d.username)}`;
+        const label = esc(this.dataset.notifLabel || 'Notifications');
+        const n = Number(d.notifications) || 0;
+        const badge =
+          n > 0
+            ? `<span aria-hidden="true" class="absolute right-1.5 top-2 min-w-[16px] border border-ink bg-error px-1 text-center font-mono text-[10px] leading-4 text-white">${n > 99 ? '99+' : n}</span>`
+            : '';
+
+        const initials = esc(
+          (d.name || d.username || '?').trim().split(/\s+/).slice(0, 2).map((w: string) => w[0]?.toUpperCase() ?? '').join(''),
+        );
+        const avatarInner = d.hasAvatar
+          ? `<img src="/api/avatar/${encodeURIComponent(d.userId)}" alt="" class="h-7 w-7 border border-ink object-cover">`
+          : `<span class="inline-flex h-7 w-7 items-center justify-center border border-ink bg-ink font-display text-[11px] leading-none text-white">${initials}</span>`;
+
+        this.innerHTML =
+          `<a href="${notifUrl}" aria-label="${label}" title="${label}" class="relative flex items-center border-l border-ink px-4 transition-colors hover:bg-ink hover:text-white">` +
+          `<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>` +
+          badge +
+          `</a>` +
+          `<a href="${profileUrl}" aria-label="@${esc(d.username)}" class="flex items-center border-l border-ink px-3 transition-colors hover:bg-ink hover:text-white">${avatarInner}</a>`;
+      } catch {
+        /* silencio: si falla, el navbar sigue funcionando sin avatar/campana */
+      }
+    }
+  }
+  if (!customElements.get('social-nav')) customElements.define('social-nav', SocialNav);
 </script>

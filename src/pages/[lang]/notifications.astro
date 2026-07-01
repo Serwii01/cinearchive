@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Avatar from '../../components/Avatar.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { db } from '../../db/client';
+import { follows, user as userTable, profile } from '../../db/schema';
+import { and, eq, desc } from 'drizzle-orm';
+import { getMyProfile, getConnections, markNotificationsSeen } from '../../lib/social';
+
+export const prerender = false;
+
+const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const t = useTranslations(lang);
+const user = Astro.locals.user!; // middleware garantiza sesión
+const userId = user.id;
+
+const myProfile = await getMyProfile(userId);
+
+// Solicitudes pendientes (accionables) y seguidores recientes.
+const pending = myProfile
+  ? await db
+      .select({ id: userTable.id, name: userTable.name, username: profile.username, hasAvatar: profile.avatarType })
+      .from(follows)
+      .innerJoin(userTable, eq(userTable.id, follows.followerId))
+      .leftJoin(profile, eq(profile.userId, follows.followerId))
+      .where(and(eq(follows.followingId, userId), eq(follows.status, 'pending')))
+      .orderBy(desc(follows.createdAt))
+  : [];
+
+const followers = myProfile ? await getConnections(userId, 'followers') : [];
+
+// Al abrir esta página, lo "nuevo" queda visto (limpia el badge de seguidores).
+if (myProfile) await markNotificationsSeen(userId);
+---
+
+<BaseLayout title={t('notifications.title')}>
+  <section class="frame py-12">
+    <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('nav.notifications')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('notifications.title')}</h1>
+    </header>
+
+    {!myProfile ? (
+      <p class="mt-10 font-mono text-body-md text-muted">
+        {t('notifications.setup')} <a href={localizePath(lang, 'account')} class="text-ink underline decoration-ochre">{t('nav.account')}</a>
+      </p>
+    ) : (
+      <>
+        {/* Solicitudes de seguimiento */}
+        <div class="mt-10" id="requests">
+          <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.requests')} <span class="label">· {pending.length}</span></h2>
+          {pending.length === 0 ? (
+            <p class="mt-3 font-mono text-body-md text-muted">{t('profile.noRequests')}</p>
+          ) : (
+            <ul class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink">
+              {pending.map((r) => (
+                <li class="flex items-center justify-between gap-3 bg-surface p-3" data-requester={r.id}>
+                  <a href={r.username ? localizePath(lang, `u/${r.username}`) : '#'} class="flex min-w-0 items-center gap-3 no-underline">
+                    <Avatar userId={r.id} name={r.name} hasAvatar={!!r.hasAvatar} size={40} class="h-10 w-10" />
+                    <span class="min-w-0">
+                      <span class="block truncate font-display text-headline-md text-ink">{r.name}</span>
+                      {r.username && <span class="block font-mono text-meta-data text-muted">@{r.username}</span>}
+                    </span>
+                  </a>
+                  <div class="flex shrink-0 gap-2">
+                    <button type="button" data-accept class="label border border-ink px-3 py-1 transition-colors hover:bg-ink hover:text-white">{t('profile.accept')}</button>
+                    <button type="button" data-reject class="label border border-ink px-3 py-1 transition-colors hover:bg-error hover:text-white">{t('profile.reject')}</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Seguidores */}
+        <div class="mt-12">
+          <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.followers')} <span class="label">· {followers.length}</span></h2>
+          {followers.length === 0 ? (
+            <p class="mt-3 font-mono text-body-md text-muted">{t('profile.noFollowers')}</p>
+          ) : (
+            <ul class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2">
+              {followers.map((r) => (
+                <li class="bg-surface">
+                  <a href={localizePath(lang, `u/${r.username}`)} class="flex items-center gap-3 p-3 no-underline hover:bg-film-white">
+                    <Avatar userId={r.id} name={r.name} hasAvatar={r.hasAvatar} size={40} class="h-10 w-10" />
+                    <span class="min-w-0">
+                      <span class="block truncate font-display text-headline-md text-ink">{r.name}</span>
+                      <span class="block font-mono text-meta-data text-muted">@{r.username}{r.isPrivate ? ' · 🔒' : ''}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </>
+    )}
+  </section>
+</BaseLayout>
+
+<script>
+  // Aceptar / rechazar solicitudes (igual que en Mi cuenta).
+  document.querySelectorAll<HTMLLIElement>('#requests li[data-requester]').forEach((li) => {
+    const requesterId = li.dataset.requester!;
+    const act = async (action: 'accept' | 'reject') => {
+      const res = await fetch('/api/follow/requests', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ requesterId, action }),
+      });
+      if (res.ok) li.remove();
+    };
+    li.querySelector('[data-accept]')?.addEventListener('click', () => act('accept'));
+    li.querySelector('[data-reject]')?.addEventListener('click', () => act('reject'));
+  });
+</script>

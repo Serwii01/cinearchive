@@ -50,6 +50,7 @@ const pending = await db
       <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
         {[
           ...(myProfile ? [{ href: localizePath(lang, `u/${myProfile.username}`), label: t('profile.viewProfile') }] : []),
+          { href: localizePath(lang, 'notifications'), label: t('nav.notifications') },
           { href: localizePath(lang, 'watchlist'), label: t('nav.lists') },
           { href: localizePath(lang, 'stats'), label: t('nav.stats') },
           { href: localizePath(lang, 'recommendations'), label: t('nav.recommendations') },

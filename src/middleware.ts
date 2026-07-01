@@ -10,7 +10,7 @@ import { isAdmin } from './lib/admin';
  *   en producción Caddy añade además CSP y HSTS).
  */
 
-const PROTECTED = ['/account', '/watchlist', '/recommendations', '/stats', '/lists'];
+const PROTECTED = ['/account', '/watchlist', '/recommendations', '/stats', '/lists', '/notifications'];
 
 // Recursos baratos (assets, portadas cacheadas): no se cuentan en el límite por IP
 // para no penalizar una carga de página normal (que dispara muchas imágenes).

@@ -9,6 +9,7 @@ import {
   primaryKey,
   pgEnum,
   customType,
+  index,
 } from 'drizzle-orm/pg-core';
 
 /** Tipo `bytea` de Postgres (Drizzle no lo trae de serie). Guarda/lee Buffer. */
@@ -196,6 +197,8 @@ export const profile = pgTable('profile', {
   avatar: bytea('avatar'),
   avatarType: text('avatar_type'), // image/jpeg | image/png | image/webp
   avatarUpdatedAt: timestamp('avatar_updated_at'),
+  /** Última vez que el usuario abrió sus notificaciones (para marcar lo "nuevo"). */
+  notificationsSeenAt: timestamp('notifications_seen_at'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
@@ -218,6 +221,10 @@ export const follows = pgTable(
   },
   (t) => ({
     pk: primaryKey({ columns: [t.followerId, t.followingId] }),
+    // Búsquedas por "a quién sigo yo" y "quién me sigue" (+estado): sin estos
+    // índices la PK compuesta no cubre los filtros por una sola columna.
+    followingIdx: index('follows_following_idx').on(t.followingId, t.status),
+    followerIdx: index('follows_follower_idx').on(t.followerId, t.status),
   }),
 );
 
