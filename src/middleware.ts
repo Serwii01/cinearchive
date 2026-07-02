@@ -62,13 +62,27 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (isWrite && path.startsWith('/api/') && !path.startsWith('/api/auth/')) {
     const origin = request.headers.get('origin');
     if (origin) {
-      let sameOrigin = false;
+      let originHost = '';
       try {
-        sameOrigin = new URL(origin).host === url.host;
+        originHost = new URL(origin).host;
       } catch {
-        sameOrigin = false;
+        originHost = '\0'; // origin ilegible → nunca coincide
       }
-      if (!sameOrigin) {
+      // Hosts admitidos como "propios". Detrás del proxy (Caddy) el host que ve
+      // Astro (url.host) puede no ser el público, así que aceptamos también la
+      // cabecera Host de la propia petición y el dominio configurado (SITE).
+      const allowed = new Set<string>([url.host]);
+      const hostHeader = request.headers.get('host');
+      if (hostHeader) allowed.add(hostHeader);
+      const siteUrl = import.meta.env.SITE as string | undefined;
+      if (siteUrl) {
+        try {
+          allowed.add(new URL(siteUrl).host);
+        } catch {
+          /* SITE mal formado: se ignora */
+        }
+      }
+      if (!allowed.has(originHost)) {
         return harden(
           new Response(JSON.stringify({ error: 'bad_origin' }), {
             status: 403,
