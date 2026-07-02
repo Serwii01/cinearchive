@@ -318,6 +318,18 @@ const pending = await db
       }
     });
 
+    // Instagram: mismo saneado en vivo (minúsculas, dígitos, punto y guion bajo)
+    // para que no se pueda enviar un handle no válido y falle al guardar.
+    const igInput = document.getElementById('instagram') as HTMLInputElement | null;
+    igInput?.addEventListener('input', () => {
+      const clean = igInput.value.toLowerCase().replace(/[^a-z0-9._]/g, '');
+      if (clean !== igInput.value) {
+        const pos = igInput.selectionStart ?? clean.length;
+        igInput.value = clean;
+        try { igInput.setSelectionRange(pos - 1 < 0 ? 0 : pos, pos - 1 < 0 ? 0 : pos); } catch {}
+      }
+    });
+
     let saving = false;
     profileForm.addEventListener('submit', async (e) => {
       e.preventDefault();

@@ -225,6 +225,7 @@ const title = `@${target.username}`;
     data-empty-following={t('profile.noFollowing')}
     data-close={t('profile.close')}
     data-private={t('profile.private')}
+    data-loading={t('profile.loading')}
     data-self={isSelf ? '1' : '0'}
     data-remove={t('profile.removeFollower')}
     data-unfollow={t('profile.unfollow')}
@@ -317,49 +318,92 @@ const title = `@${target.username}`;
       }
     };
 
+    type Conn = { id: string; username: string; name: string; isPrivate: boolean; hasAvatar: boolean };
+    // Caché en memoria + peticiones en vuelo, para que reabrir sea instantáneo y
+    // el prefetch (al pasar el ratón / en reposo) adelante la carga.
+    const cache: Partial<Record<'followers' | 'following', Conn[]>> = {};
+    const inflight: Partial<Record<'followers' | 'following', Promise<Conn[]>>> = {};
+
+    const load = (type: 'followers' | 'following'): Promise<Conn[]> => {
+      if (cache[type]) return Promise.resolve(cache[type]!);
+      if (inflight[type]) return inflight[type]!;
+      const p = fetch(`/api/users/${encodeURIComponent(username)}/connections?type=${type}`, {
+        headers: { accept: 'application/json' },
+      })
+        .then((res) => (res.ok ? res.json() : { results: [] }))
+        .then((data) => {
+          const rows = (data.results ?? []) as Conn[];
+          cache[type] = rows;
+          delete inflight[type];
+          return rows;
+        })
+        .catch(() => {
+          delete inflight[type];
+          return [] as Conn[];
+        });
+      inflight[type] = p;
+      return p;
+    };
+
+    const renderRows = (type: 'followers' | 'following', rows: Conn[]) => {
+      if (!rows.length) {
+        const emptyMsg = type === 'followers' ? modal.dataset.emptyFollowers! : modal.dataset.emptyFollowing!;
+        list.innerHTML = `<li class="px-4 py-6 text-center font-mono text-meta-data text-muted">${esc(emptyMsg)}</li>`;
+        return;
+      }
+      const actionLabel = type === 'followers' ? modal.dataset.remove! : modal.dataset.unfollow!;
+      list.innerHTML = rows
+        .map((r) => {
+          const initials = (r.name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('');
+          const avatar = r.hasAvatar
+            ? `<img src="/api/avatar/${encodeURIComponent(r.id)}" alt="" class="h-full w-full object-cover" loading="lazy">`
+            : `<span class="font-display text-body-md leading-none">${esc(initials)}</span>`;
+          const lock = r.isPrivate ? ' · 🔒' : '';
+          // Solo el propietario ve la acción (y nunca sobre sí mismo, que no aparece aquí).
+          const action = self
+            ? `<span class="flex shrink-0 items-center gap-1 pr-3" data-actbox data-uid="${esc(r.id)}" data-uname="${esc(r.username)}" data-type="${type}" data-label="${esc(actionLabel)}">${actBtn(actionLabel)}</span>`
+            : '';
+          return `<li class="flex items-center" data-row><a href="${base}/${encodeURIComponent(r.username)}" class="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 no-underline hover:bg-film-white">
+            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink text-white">${avatar}</span>
+            <span class="min-w-0"><span class="block truncate font-display text-headline-md text-ink">${esc(r.name)}</span>
+            <span class="block font-mono text-meta-data text-muted">@${esc(r.username)}${lock}</span></span>
+          </a>${action}</li>`;
+        })
+        .join('');
+    };
+
     const open = async (type: 'followers' | 'following') => {
       currentType = type;
       lastFocus = document.activeElement as HTMLElement;
       title.textContent = type === 'followers' ? modal.dataset.followers! : modal.dataset.following!;
-      list.innerHTML = '';
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
       (document.getElementById('conn-close') as HTMLElement)?.focus();
-      try {
-        const res = await fetch(`/api/users/${encodeURIComponent(username)}/connections?type=${type}`, {
-          headers: { accept: 'application/json' },
-        });
-        const data = res.ok ? await res.json() : { results: [] };
-        const rows = data.results as { id: string; username: string; name: string; isPrivate: boolean; hasAvatar: boolean }[];
-        if (!rows.length) {
-          const emptyMsg = type === 'followers' ? modal.dataset.emptyFollowers! : modal.dataset.emptyFollowing!;
-          list.innerHTML = `<li class="px-4 py-6 text-center font-mono text-meta-data text-muted">${esc(emptyMsg)}</li>`;
-          return;
-        }
-        const actionLabel = type === 'followers' ? modal.dataset.remove! : modal.dataset.unfollow!;
-        list.innerHTML = rows
-          .map((r) => {
-            const initials = (r.name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('');
-            const avatar = r.hasAvatar
-              ? `<img src="/api/avatar/${encodeURIComponent(r.id)}" alt="" class="h-full w-full object-cover" loading="lazy">`
-              : `<span class="font-display text-body-md leading-none">${esc(initials)}</span>`;
-            const lock = r.isPrivate ? ' · 🔒' : '';
-            // Solo el propietario ve la acción (y nunca sobre sí mismo, que no aparece aquí).
-            const action = self
-              ? `<span class="flex shrink-0 items-center gap-1 pr-3" data-actbox data-uid="${esc(r.id)}" data-uname="${esc(r.username)}" data-type="${type}" data-label="${esc(actionLabel)}">${actBtn(actionLabel)}</span>`
-              : '';
-            return `<li class="flex items-center" data-row><a href="${base}/${encodeURIComponent(r.username)}" class="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 no-underline hover:bg-film-white">
-              <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink text-white">${avatar}</span>
-              <span class="min-w-0"><span class="block truncate font-display text-headline-md text-ink">${esc(r.name)}</span>
-              <span class="block font-mono text-meta-data text-muted">@${esc(r.username)}${lock}</span></span>
-            </a>${action}</li>`;
-          })
-          .join('');
-      } catch {
-        close();
+      // Si ya está en caché, pinta al instante; si no, muestra "cargando" y espera.
+      if (cache[type]) {
+        renderRows(type, cache[type]!);
+        return;
       }
+      list.innerHTML = `<li class="px-4 py-6 text-center font-mono text-meta-data text-muted">${esc(modal.dataset.loading!)}</li>`;
+      const rows = await load(type);
+      if (currentType === type && isOpen()) renderRows(type, rows);
     };
+
+    // Prefetch: al pasar el ratón/enfocar los contadores, y en reposo tras cargar.
+    // Solo cuando los contadores son abribles (perfil visible), para no pedir de más.
+    const connBtns = document.querySelectorAll<HTMLElement>('[data-conn]');
+    connBtns.forEach((el) => {
+      const type = el.dataset.conn as 'followers' | 'following';
+      const warm = () => { load(type); };
+      el.addEventListener('mouseenter', warm, { once: true });
+      el.addEventListener('focus', warm, { once: true });
+    });
+    if (connBtns.length) {
+      const idle = (cb: () => void) =>
+        'requestIdleCallback' in window ? (window as any).requestIdleCallback(cb) : setTimeout(cb, 1200);
+      idle(() => { load('followers'); load('following'); });
+    }
 
     // Ejecuta la baja según el tipo (eliminar seguidor o dejar de seguir).
     const perform = async (type: string, uid: string, uname: string): Promise<boolean> => {
@@ -402,8 +446,10 @@ const title = `@${target.username}`;
         box.querySelectorAll('button').forEach((b) => ((b as HTMLButtonElement).disabled = true));
         const ok = await perform(box.dataset.type!, box.dataset.uid!, box.dataset.uname!);
         if (ok) {
+          const type = box.dataset.type as 'followers' | 'following';
+          if (cache[type]) cache[type] = cache[type]!.filter((c) => c.id !== box.dataset.uid);
           box.closest('[data-row]')?.remove();
-          updateCount(box.dataset.type as 'followers' | 'following', -1);
+          updateCount(type, -1);
           if (!list.querySelector('[data-row]')) {
             const emptyMsg = currentType === 'followers' ? modal.dataset.emptyFollowers! : modal.dataset.emptyFollowing!;
             list.innerHTML = `<li class="px-4 py-6 text-center font-mono text-meta-data text-muted">${esc(emptyMsg)}</li>`;
