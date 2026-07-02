@@ -12,6 +12,7 @@ import {
   canViewActivity,
   followCounts,
   getMyProfile,
+  instagramUrl,
 } from '../../../lib/social';
 
 export const prerender = false;
@@ -80,12 +81,36 @@ const title = `@${target.username}`;
     {/* Cabecera del perfil */}
     <header class="flex flex-col gap-6 border-b border-ink pb-8 sm:flex-row sm:items-start sm:justify-between">
       <div class="flex items-start gap-5">
-        <Avatar userId={target.userId} name={target.name} hasAvatar={!!target.avatarType} size={96} class="h-20 w-20 sm:h-24 sm:w-24" />
+        {target.avatarType ? (
+          <button
+            type="button"
+            id="avatar-view"
+            class="shrink-0 cursor-zoom-in border-0 bg-transparent p-0"
+            aria-label={t('profile.viewPhoto')}
+          >
+            <Avatar userId={target.userId} name={target.name} hasAvatar size={96} class="h-20 w-20 sm:h-24 sm:w-24" />
+          </button>
+        ) : (
+          <Avatar userId={target.userId} name={target.name} hasAvatar={false} size={96} class="h-20 w-20 sm:h-24 sm:w-24" />
+        )}
         <div class="min-w-0">
           <h1 class="text-display-mobile md:text-display-lg">{target.name}</h1>
           <p class="mt-1 font-mono text-body-md text-muted">@{target.username}</p>
           {target.isPrivate && <p class="label mt-2 inline-block border border-ink px-2 py-1">{t('profile.private')}</p>}
           {target.bio && <p class="mt-3 max-w-prose text-body-md text-charcoal">{target.bio}</p>}
+          {target.instagram && (
+            <p class="mt-3">
+              <a
+                href={instagramUrl(target.instagram)}
+                target="_blank"
+                rel="me noopener noreferrer"
+                class="inline-flex items-center gap-2 font-mono text-meta-data text-ink no-underline hover:text-ochre"
+              >
+                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
+                @{target.instagram}
+              </a>
+            </p>
+          )}
           <div class="mt-4 flex gap-6 font-mono text-meta-data text-ink">
             {canView ? (
               <>
@@ -191,7 +216,7 @@ const title = `@${target.username}`;
   {/* Modal de seguidores / seguidos */}
   <div
     id="conn-modal"
-    class="fixed inset-0 z-50 hidden items-start justify-center overflow-y-auto bg-ink/60 p-4 sm:p-8"
+    class="fixed inset-0 z-50 hidden items-center justify-center overflow-y-auto bg-ink/60 p-4 sm:p-8"
     data-username={target.username}
     data-base={localizePath(lang, 'u')}
     data-followers={t('profile.followers')}
@@ -200,8 +225,13 @@ const title = `@${target.username}`;
     data-empty-following={t('profile.noFollowing')}
     data-close={t('profile.close')}
     data-private={t('profile.private')}
+    data-self={isSelf ? '1' : '0'}
+    data-remove={t('profile.removeFollower')}
+    data-unfollow={t('profile.unfollow')}
+    data-confirm={t('profile.confirm')}
+    data-cancel={t('profile.cancel')}
   >
-    <div class="mt-8 w-full max-w-md border-2 border-ink bg-surface" role="dialog" aria-modal="true" aria-labelledby="conn-title">
+    <div class="w-full max-w-md border-2 border-ink bg-surface" role="dialog" aria-modal="true" aria-labelledby="conn-title">
       <header class="flex items-center justify-between border-b-2 border-ink px-4 py-3">
         <h2 id="conn-title" class="font-display text-headline-md text-ink">—</h2>
         <button id="conn-close" type="button" aria-label={t('profile.close')} class="flex h-8 w-8 items-center justify-center border border-ink font-mono text-headline-md leading-none transition-colors hover:bg-ink hover:text-white">✕</button>
@@ -209,6 +239,14 @@ const title = `@${target.username}`;
       <ul id="conn-list" class="max-h-[60vh] divide-y divide-outline overflow-y-auto"></ul>
     </div>
   </div>
+
+  {/* Visor de la foto de perfil en grande */}
+  {target.avatarType && (
+    <div id="photo-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-ink/80 p-4" data-close={t('profile.close')}>
+      <button id="photo-close" type="button" aria-label={t('profile.close')} class="absolute right-4 top-4 flex h-10 w-10 items-center justify-center border-2 border-white font-mono text-headline-md leading-none text-white transition-colors hover:bg-white hover:text-ink">✕</button>
+      <img src={`/api/avatar/${target.userId}`} alt={target.name} class="max-h-[85vh] max-w-full border-2 border-white object-contain" />
+    </div>
+  )}
 </BaseLayout>
 
 <script>
@@ -255,7 +293,9 @@ const title = `@${target.username}`;
     const esc = (s: string) =>
       s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
+    const self = modal.dataset.self === '1';
     let lastFocus: HTMLElement | null = null;
+    let currentType: 'followers' | 'following' = 'followers';
     const isOpen = () => modal.classList.contains('flex');
 
     const close = () => {
@@ -264,7 +304,21 @@ const title = `@${target.username}`;
       document.body.style.overflow = '';
       lastFocus?.focus();
     };
+
+    // Botón de acción del propietario (eliminar seguidor / dejar de seguir).
+    const actBtn = (label: string) =>
+      `<button type="button" data-act class="label border border-ink px-2 py-1 transition-colors hover:bg-error hover:text-white">${esc(label)}</button>`;
+
+    const updateCount = (type: 'followers' | 'following', delta: number) => {
+      const el = document.querySelector(`[data-conn="${type}"] strong`);
+      if (el) {
+        const n = Math.max(0, (parseInt(el.textContent || '0', 10) || 0) + delta);
+        el.textContent = String(n);
+      }
+    };
+
     const open = async (type: 'followers' | 'following') => {
+      currentType = type;
       lastFocus = document.activeElement as HTMLElement;
       title.textContent = type === 'followers' ? modal.dataset.followers! : modal.dataset.following!;
       list.innerHTML = '';
@@ -283,6 +337,7 @@ const title = `@${target.username}`;
           list.innerHTML = `<li class="px-4 py-6 text-center font-mono text-meta-data text-muted">${esc(emptyMsg)}</li>`;
           return;
         }
+        const actionLabel = type === 'followers' ? modal.dataset.remove! : modal.dataset.unfollow!;
         list.innerHTML = rows
           .map((r) => {
             const initials = (r.name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('');
@@ -290,17 +345,74 @@ const title = `@${target.username}`;
               ? `<img src="/api/avatar/${encodeURIComponent(r.id)}" alt="" class="h-full w-full object-cover" loading="lazy">`
               : `<span class="font-display text-body-md leading-none">${esc(initials)}</span>`;
             const lock = r.isPrivate ? ' · 🔒' : '';
-            return `<li><a href="${base}/${encodeURIComponent(r.username)}" class="flex items-center gap-3 px-4 py-3 no-underline hover:bg-film-white">
+            // Solo el propietario ve la acción (y nunca sobre sí mismo, que no aparece aquí).
+            const action = self
+              ? `<span class="flex shrink-0 items-center gap-1 pr-3" data-actbox data-uid="${esc(r.id)}" data-uname="${esc(r.username)}" data-type="${type}" data-label="${esc(actionLabel)}">${actBtn(actionLabel)}</span>`
+              : '';
+            return `<li class="flex items-center" data-row><a href="${base}/${encodeURIComponent(r.username)}" class="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 no-underline hover:bg-film-white">
               <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink text-white">${avatar}</span>
               <span class="min-w-0"><span class="block truncate font-display text-headline-md text-ink">${esc(r.name)}</span>
               <span class="block font-mono text-meta-data text-muted">@${esc(r.username)}${lock}</span></span>
-            </a></li>`;
+            </a>${action}</li>`;
           })
           .join('');
       } catch {
         close();
       }
     };
+
+    // Ejecuta la baja según el tipo (eliminar seguidor o dejar de seguir).
+    const perform = async (type: string, uid: string, uname: string): Promise<boolean> => {
+      try {
+        const res =
+          type === 'followers'
+            ? await fetch('/api/follow/remove', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ followerId: uid }),
+              })
+            : await fetch('/api/follow', {
+                method: 'DELETE',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ username: uname }),
+              });
+        return res.ok;
+      } catch {
+        return false;
+      }
+    };
+
+    // Confirmación en dos pasos dentro de la propia fila (sin diálogos nativos).
+    list.addEventListener('click', async (e) => {
+      const el = e.target as HTMLElement;
+      const box = el.closest('[data-actbox]') as HTMLElement | null;
+      if (!box) return;
+      e.preventDefault();
+      if (el.closest('[data-act]')) {
+        box.innerHTML =
+          `<button type="button" data-yes class="label border border-error bg-error px-2 py-1 text-white">${esc(modal.dataset.confirm!)}</button>` +
+          `<button type="button" data-no class="label border border-ink px-2 py-1 transition-colors hover:bg-ink hover:text-white">${esc(modal.dataset.cancel!)}</button>`;
+        return;
+      }
+      if (el.closest('[data-no]')) {
+        box.innerHTML = actBtn(box.dataset.label!);
+        return;
+      }
+      if (el.closest('[data-yes]')) {
+        box.querySelectorAll('button').forEach((b) => ((b as HTMLButtonElement).disabled = true));
+        const ok = await perform(box.dataset.type!, box.dataset.uid!, box.dataset.uname!);
+        if (ok) {
+          box.closest('[data-row]')?.remove();
+          updateCount(box.dataset.type as 'followers' | 'following', -1);
+          if (!list.querySelector('[data-row]')) {
+            const emptyMsg = currentType === 'followers' ? modal.dataset.emptyFollowers! : modal.dataset.emptyFollowing!;
+            list.innerHTML = `<li class="px-4 py-6 text-center font-mono text-meta-data text-muted">${esc(emptyMsg)}</li>`;
+          }
+        } else {
+          box.innerHTML = actBtn(box.dataset.label!);
+        }
+      }
+    });
 
     document.querySelectorAll<HTMLElement>('[data-conn]').forEach((el) => {
       el.addEventListener('click', () => open(el.dataset.conn as 'followers' | 'following'));
@@ -311,6 +423,31 @@ const title = `@${target.username}`;
     });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && isOpen()) close();
+    });
+  }
+
+  // --- Visor de la foto de perfil en grande ---
+  const photoModal = document.getElementById('photo-modal') as HTMLElement | null;
+  const photoTrigger = document.getElementById('avatar-view');
+  if (photoModal && photoTrigger) {
+    const openPhoto = () => {
+      photoModal.classList.remove('hidden');
+      photoModal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      (document.getElementById('photo-close') as HTMLElement)?.focus();
+    };
+    const closePhoto = () => {
+      photoModal.classList.add('hidden');
+      photoModal.classList.remove('flex');
+      document.body.style.overflow = '';
+    };
+    photoTrigger.addEventListener('click', openPhoto);
+    document.getElementById('photo-close')?.addEventListener('click', closePhoto);
+    photoModal.addEventListener('click', (e) => {
+      if (e.target === photoModal) closePhoto();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && photoModal.classList.contains('flex')) closePhoto();
     });
   }
 </script>

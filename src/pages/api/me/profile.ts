@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { and, eq, ne } from 'drizzle-orm';
 import { db } from '../../../db/client';
 import { profile, follows } from '../../../db/schema';
-import { normalizeUsername, usernameError, getMyProfile } from '../../../lib/social';
+import { normalizeUsername, usernameError, normalizeInstagram, getMyProfile } from '../../../lib/social';
 import { check, tooMany } from '../../../lib/ratelimit';
 
 export const prerender = false;
@@ -14,6 +14,7 @@ const bad = (error: string) => new Response(JSON.stringify({ error }), { status:
 const schema = z.object({
   username: z.string().trim().optional(),
   bio: z.string().trim().max(300).optional(),
+  instagram: z.string().trim().max(120).optional(),
   isPrivate: z.boolean().optional(),
 });
 
@@ -54,6 +55,13 @@ export const PUT: APIRoute = async ({ locals, request }) => {
   }
 
   if (parsed.data.bio !== undefined) patch.bio = parsed.data.bio || null;
+  if (parsed.data.instagram !== undefined) {
+    try {
+      patch.instagram = normalizeInstagram(parsed.data.instagram);
+    } catch {
+      return bad('bad_instagram');
+    }
+  }
   if (parsed.data.isPrivate !== undefined) patch.isPrivate = parsed.data.isPrivate;
 
   try {
@@ -64,6 +72,7 @@ export const PUT: APIRoute = async ({ locals, request }) => {
         userId,
         username: patch.username!,
         bio: patch.bio ?? null,
+        instagram: patch.instagram ?? null,
         isPrivate: patch.isPrivate ?? true,
       });
     }

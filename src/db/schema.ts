@@ -191,6 +191,8 @@ export const profile = pgTable('profile', {
   /** Username canónico en minúsculas (único, sin distinguir mayúsculas). Se muestra con @. */
   username: text('username').notNull().unique(),
   bio: text('bio'),
+  /** Username de Instagram (sin @); la URL se construye al mostrarlo. */
+  instagram: text('instagram'),
   /** Privado por defecto: solo seguidores aceptados ven la actividad. */
   isPrivate: boolean('is_private').notNull().default(true),
   /** Foto de perfil guardada como bytes (validada y limitada en tamaño). */

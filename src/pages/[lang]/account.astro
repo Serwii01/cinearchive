@@ -78,6 +78,7 @@ const pending = await db
         reserved: t('profile.errReserved'),
         taken: t('profile.errTaken'),
         username_required: t('profile.errRequired'),
+        bad_instagram: t('profile.errInstagram'),
         too_large: t('profile.errTooLarge'),
         bad_type: t('profile.errBadType'),
         heic: t('profile.errHeic'),
@@ -133,6 +134,28 @@ const pending = await db
           <label class="mt-5 block">
             <span class="label mb-2 block">{t('profile.bio')}</span>
             <textarea id="bio" name="bio" rows="3" maxlength="300" placeholder={t('profile.bioPlaceholder')} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none">{myProfile?.bio ?? ''}</textarea>
+          </label>
+
+          <label class="mt-5 block">
+            <span class="label mb-2 block">{t('profile.instagram')}</span>
+            <div class="flex items-center border border-ink bg-white focus-within:bg-film-white">
+              <span class="px-3 font-mono text-body-md text-muted">@</span>
+              <input
+                id="instagram"
+                name="instagram"
+                type="text"
+                value={myProfile?.instagram ?? ''}
+                maxlength="30"
+                autocomplete="off"
+                autocapitalize="off"
+                autocorrect="off"
+                spellcheck="false"
+                inputmode="text"
+                placeholder="tu_usuario"
+                class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
+              />
+            </div>
+            <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.instagramHint')}</span>
           </label>
 
           <fieldset class="mt-5">
@@ -306,6 +329,7 @@ const pending = await db
       const body = {
         username: usernameInput.value.trim().toLowerCase(),
         bio: (document.getElementById('bio') as HTMLTextAreaElement).value.trim(),
+        instagram: (document.getElementById('instagram') as HTMLInputElement).value.trim(),
         isPrivate: (document.getElementById('is-private') as HTMLInputElement).checked,
       };
       try {

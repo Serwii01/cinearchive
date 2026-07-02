@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, useTranslations, localizePath, type Lang } from '../i18n/ui';
+import { CURRENT_VERSION } from '../data/changelog';
 
 const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -31,6 +32,7 @@ const year = new Date().getFullYear();
       <a href={localizePath(lang, 'terms')} class="label text-background no-underline hover:text-ochre">{t('nav.terms')}</a>
       <a href={localizePath(lang, 'accessibility')} class="label text-background no-underline hover:text-ochre">{t('nav.accessibility')}</a>
       <a href={localizePath(lang, 'style')} class="label text-background no-underline hover:text-ochre">{t('nav.style')}</a>
+      <a href={localizePath(lang, 'changelog')} class="label text-background no-underline hover:text-ochre">{t('nav.changelog')} · v{CURRENT_VERSION}</a>
     </nav>
   </div>
 </footer>

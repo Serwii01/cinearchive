@@ -57,6 +57,13 @@
       "when": 1782944524936,
       "tag": "0007_social_notifs",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1782971321006,
+      "tag": "0008_profile_instagram",
+      "breakpoints": true
     }
   ]
 }

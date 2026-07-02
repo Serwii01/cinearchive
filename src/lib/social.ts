@@ -37,6 +37,35 @@ export function usernameError(raw: string): UsernameError | null {
 }
 
 /* ------------------------------------------------------------------ *
+ * Instagram: normalización de handle (se guarda sin @, la URL se arma al mostrar).
+ * ------------------------------------------------------------------ */
+
+/** Reglas de Instagram: letras, dígitos, punto y guion bajo; 1–30 caracteres. */
+const INSTAGRAM_RE = /^[a-zA-Z0-9._]{1,30}$/;
+
+/**
+ * Normaliza un handle de Instagram: acepta @handle o una URL de instagram.com y
+ * devuelve solo el username en minúsculas. Devuelve null si queda vacío; lanza
+ * error de rango si no cumple el formato (para responder 'bad_instagram').
+ */
+export function normalizeInstagram(raw: string): string | null {
+  let v = raw.trim();
+  if (!v) return null;
+  // Si pegan una URL, quedarse con el primer segmento del path.
+  const urlMatch = v.match(/instagram\.com\/([^/?#]+)/i);
+  if (urlMatch) v = urlMatch[1];
+  v = v.replace(/^@+/, '').replace(/\/+$/, '').toLowerCase();
+  if (!v) return null;
+  if (!INSTAGRAM_RE.test(v)) throw new RangeError('bad_instagram');
+  return v;
+}
+
+/** URL pública de un handle de Instagram (para mostrar en el perfil). */
+export function instagramUrl(handle: string): string {
+  return `https://instagram.com/${handle}`;
+}
+
+/* ------------------------------------------------------------------ *
  * Consultas de perfil y seguimiento.
  * ------------------------------------------------------------------ */
 
@@ -45,6 +74,7 @@ export interface PublicProfile {
   username: string;
   name: string;
   bio: string | null;
+  instagram: string | null;
   isPrivate: boolean;
   avatarType: string | null;
 }
@@ -58,6 +88,7 @@ export async function getProfileByUsername(username: string): Promise<PublicProf
       username: profile.username,
       name: user.name,
       bio: profile.bio,
+      instagram: profile.instagram,
       isPrivate: profile.isPrivate,
       avatarType: profile.avatarType,
     })
@@ -72,6 +103,7 @@ export interface MyProfile {
   userId: string;
   username: string;
   bio: string | null;
+  instagram: string | null;
   isPrivate: boolean;
   avatarType: string | null;
 }
@@ -83,6 +115,7 @@ export async function getMyProfile(userId: string): Promise<MyProfile | null> {
       userId: profile.userId,
       username: profile.username,
       bio: profile.bio,
+      instagram: profile.instagram,
       isPrivate: profile.isPrivate,
       avatarType: profile.avatarType,
     })

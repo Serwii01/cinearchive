@@ -117,6 +117,7 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
 
   const candidates = new Map<number, TmdbSearchResult>();
   const fromDirector = new Map<number, string>(); // tmdbId -> nombre del director
+  const fromGenre = new Map<number, number>(); // tmdbId -> id del género que lo trajo
 
   // Candidatos a partir de lo valorado alto (recomendaciones + similares de TMDB).
   for (const row of liked.slice(0, 8)) {
@@ -141,8 +142,10 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
     }
   }
 
-  // --- Candidatos de los directores favoritos (señal que antes no se usaba). ---
-  for (const name of (prefs?.favoriteDirectors ?? []).slice(0, 3)) {
+  // --- Candidatos de TODOS los directores favoritos (cada uno con su motivo). ---
+  // Antes se usaban solo 3; ahora se recorren todos (con un tope de seguridad) para
+  // que cada director del usuario aporte películas y aparezca como motivo.
+  for (const name of (prefs?.favoriteDirectors ?? []).slice(0, 8)) {
     try {
       const personId = await searchPerson(name, locale);
       if (!personId) continue;
@@ -156,22 +159,24 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
     }
   }
 
-  // --- Discover por los géneros con más peso (clásicos + populares, 2 páginas). ---
+  // --- Discover género a género (no combinados) para que CADA género favorito
+  // aporte candidatos y salga como motivo. Antes solo se consultaban los 3 mejores
+  // en un único OR, y casi todo terminaba etiquetado con 2 géneros. ---
   const topGenres = [...genreWeights.entries()]
     .filter(([, w]) => w > 0)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
+    .slice(0, 8)
     .map(([id]) => id);
-  if (topGenres.length > 0) {
+  for (const genreId of topGenres) {
     for (const sort of ['vote_average.desc', 'popularity.desc'] as const) {
-      for (const page of [1, 2]) {
-        try {
-          for (const r of await discoverByGenres(topGenres, locale, sort, page)) {
-            if (!exclude.has(r.id)) candidates.set(r.id, r);
-          }
-        } catch {
-          /* ignorar */
+      try {
+        for (const r of await discoverByGenres([genreId], locale, sort)) {
+          if (exclude.has(r.id)) continue;
+          if (!candidates.has(r.id)) candidates.set(r.id, r);
+          if (!fromDirector.has(r.id) && !fromGenre.has(r.id)) fromGenre.set(r.id, genreId);
         }
+      } catch {
+        /* ignorar */
       }
     }
   }
@@ -189,13 +194,16 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
 
   // Construye una recomendación a partir de un candidato (motivo = director o género).
   const toRec = (c: TmdbSearchResult, directorName?: string): Recommendation => {
-    let topGenre: number | null = null;
-    let topW = 0;
-    for (const g of c.genre_ids ?? []) {
-      const w = genreWeights.get(g) ?? 0;
-      if (w > topW) {
-        topW = w;
-        topGenre = g;
+    // Género que trajo al candidato (discover género a género); si no, el de más peso.
+    let topGenre: number | null = fromGenre.get(c.id) ?? null;
+    if (topGenre === null) {
+      let topW = 0;
+      for (const g of c.genre_ids ?? []) {
+        const w = genreWeights.get(g) ?? 0;
+        if (w > topW) {
+          topW = w;
+          topGenre = g;
+        }
       }
     }
     return {
