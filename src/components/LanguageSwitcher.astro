@@ -1,6 +1,12 @@
 ---
 import { getLangFromUrl, languages, localizePath, useTranslations, type Lang } from '../i18n/ui';
 
+interface Props {
+  /** Lado hacia el que se alinea el desplegable (según dónde viva el botón). */
+  align?: 'left' | 'right';
+}
+
+const { align = 'right' } = Astro.props;
 const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const langs = Object.keys(languages) as Lang[];
@@ -14,21 +20,53 @@ const pathFor = (target: Lang) =>
     : localizePath(target);
 ---
 
-<nav aria-label={t('lang.switch')} class="flex items-stretch">
-  {
-    langs.map((code) => (
-      <a
-        href={pathFor(code)}
-        hreflang={code}
-        title={languages[code]}
-        aria-current={code === lang ? 'true' : undefined}
-        class:list={[
-          'label -ml-px border border-ink px-2 py-2 no-underline transition-colors first:ml-0 hover:bg-ink hover:text-white',
-          code === lang && 'bg-ink text-white',
-        ]}
-      >
-        {code.toUpperCase()}
-      </a>
-    ))
-  }
-</nav>
+<details data-lang-menu class="relative">
+  <summary
+    class="label flex cursor-pointer select-none items-center gap-1.5 border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white [&::-webkit-details-marker]:hidden"
+    style="list-style: none"
+    aria-label={t('lang.switch')}
+    title={t('lang.switch')}
+  >
+    {lang.toUpperCase()}
+    <span aria-hidden="true" class="text-[10px] leading-none">▾</span>
+  </summary>
+
+  <ul
+    class:list={[
+      'absolute z-50 mt-1 min-w-[11rem] border border-ink bg-background shadow-none',
+      align === 'right' ? 'right-0' : 'left-0',
+    ]}
+  >
+    {
+      langs.map((code) => (
+        <li>
+          <a
+            href={pathFor(code)}
+            hreflang={code}
+            aria-current={code === lang ? 'true' : undefined}
+            class:list={[
+              'label flex items-center justify-between gap-4 border-b border-ink px-3 py-2.5 no-underline transition-colors last:border-b-0 hover:bg-ink hover:text-white',
+              code === lang && 'bg-ink text-white',
+            ]}
+          >
+            <span>{languages[code]}</span>
+            <span class="font-mono text-[10px]">{code.toUpperCase()}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</details>
+
+<script>
+  // Cierra el desplegable de idioma al pulsar fuera o con Escape.
+  const menus = document.querySelectorAll<HTMLDetailsElement>('details[data-lang-menu]');
+  document.addEventListener('click', (e) => {
+    for (const menu of menus) {
+      if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') for (const menu of menus) menu.open = false;
+  });
+</script>

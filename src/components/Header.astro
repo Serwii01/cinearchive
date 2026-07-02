@@ -109,7 +109,7 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
     {/* Controles que en escritorio van sueltos en la barra */}
     <div class="flex items-center gap-4 px-4 py-4">
       <span class="label text-muted">{t('lang.switch')}</span>
-      <LanguageSwitcher />
+      <LanguageSwitcher align="left" />
       <span class="ml-auto"><ThemeToggle /></span>
     </div>
   </nav>
