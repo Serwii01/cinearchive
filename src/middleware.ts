@@ -10,7 +10,10 @@ import { isAdmin } from './lib/admin';
  *   en producción Caddy añade además CSP y HSTS).
  */
 
-const PROTECTED = ['/account', '/watchlist', '/recommendations', '/stats', '/lists', '/notifications'];
+// '/lists' NO va aquí: el detalle de lista (/lists/[id]) es accesible si la lista
+// es pública (con comprobación de permisos dentro de la página). '/lists' (índice)
+// redirige a /watchlist, que sí está protegido.
+const PROTECTED = ['/account', '/watchlist', '/recommendations', '/stats', '/notifications'];
 
 // Recursos baratos (assets, portadas cacheadas): no se cuentan en el límite por IP
 // para no penalizar una carga de página normal (que dispara muchas imágenes).

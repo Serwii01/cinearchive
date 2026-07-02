@@ -192,7 +192,10 @@ const title = `@${target.username}`;
           ) : (
             lists.map((l) => (
               <div class="mt-6">
-                <h3 class="font-display text-headline-md text-ink">{l.name} <span class="label">· {l.count}</span></h3>
+                <h3 class="font-display text-headline-md text-ink">
+                  <a href={localizePath(lang, `lists/${l.id}`)} class="no-underline hover:text-ochre">{l.name}</a>
+                  <span class="label">· {l.count}</span>
+                </h3>
                 <div class="mt-3 flex flex-wrap gap-3">
                   {l.films.slice(0, 18).map((id) => {
                     const b = briefs.get(id);
@@ -205,6 +208,7 @@ const title = `@${target.username}`;
                     );
                   })}
                 </div>
+                <a href={localizePath(lang, `lists/${l.id}`)} class="mt-2 inline-block font-mono text-meta-data text-ink no-underline hover:text-ochre">{t('lists.viewList')} →</a>
               </div>
             ))
           )}

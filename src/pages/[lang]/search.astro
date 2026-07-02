@@ -7,16 +7,26 @@ export const prerender = false;
 const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
 const t = useTranslations(lang);
 
-// Buscar usuarios requiere sesión (privacidad: no directorio abierto a bots).
-if (!Astro.locals.user) {
-  return Astro.redirect(`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`);
-}
-
+// Buscar películas es público; buscar usuarios requiere sesión (sin directorio
+// abierto a bots). La página es accesible para todos; la sección de usuarios se
+// habilita solo con sesión.
+const loggedIn = !!Astro.locals.user;
 const q = (Astro.url.searchParams.get('q') ?? '').trim();
 ---
 
 <BaseLayout title={t('search.title')}>
-  <section class="frame py-12" data-base={localizePath(lang, 'u')} data-noresults={t('search.noResults')}>
+  <section
+    class="frame py-12"
+    data-user-base={localizePath(lang, 'u')}
+    data-film-base={localizePath(lang, 'film')}
+    data-lang={lang}
+    data-logged-in={loggedIn ? '1' : '0'}
+    data-noresults={t('search.noResults')}
+    data-users={t('search.sectionUsers')}
+    data-films={t('search.sectionFilms')}
+    data-login-users={t('search.loginForUsers')}
+    data-login-url={`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`}
+  >
     <header class="border-b border-ink pb-6">
       <span class="label">{t('search.title')}</span>
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('search.title')}</h1>
@@ -37,56 +47,128 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
     </form>
 
     <p id="hint" class="mt-4 font-mono text-meta-data text-muted">{t('search.hint')}</p>
-    <ul id="results" class="mt-6 grid grid-cols-1 gap-px border-ink bg-ink sm:grid-cols-2"></ul>
+
+    {/* Usuarios */}
+    <div id="users-block" class="mt-8 hidden">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('search.sectionUsers')}</h2>
+      <ul id="results-users" class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2"></ul>
+    </div>
+
+    {/* Películas */}
+    <div id="films-block" class="mt-10 hidden">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('search.sectionFilms')}</h2>
+      <div id="results-films" class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6"></div>
+    </div>
   </section>
 </BaseLayout>
 
 <script>
-  const root = document.querySelector('[data-base]') as HTMLElement;
-  const base = root.dataset.base!;
+  const root = document.querySelector('[data-user-base]') as HTMLElement;
+  const userBase = root.dataset.userBase!;
+  const filmBase = root.dataset.filmBase!;
+  const lang = root.dataset.lang!;
+  const loggedIn = root.dataset.loggedIn === '1';
   const noResults = root.dataset.noresults!;
+  const loginUsers = root.dataset.loginUsers!;
+  const loginUrl = root.dataset.loginUrl!;
+
   const form = document.getElementById('search-form') as HTMLFormElement;
   const input = document.getElementById('q') as HTMLInputElement;
-  const results = document.getElementById('results') as HTMLUListElement;
   const hint = document.getElementById('hint') as HTMLElement;
+  const usersBlock = document.getElementById('users-block') as HTMLElement;
+  const filmsBlock = document.getElementById('films-block') as HTMLElement;
+  const usersList = document.getElementById('results-users') as HTMLElement;
+  const filmsGrid = document.getElementById('results-films') as HTMLElement;
 
   const esc = (s: string) =>
-    s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+    String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
   let timer: ReturnType<typeof setTimeout>;
+  let controller: AbortController | null = null;
 
-  async function run(q: string) {
-    q = q.trim();
-    results.innerHTML = '';
+  const renderUsers = (rows: { id: string; username: string; name: string; isPrivate: boolean; hasAvatar: boolean }[]) => {
+    usersBlock.classList.remove('hidden');
+    if (!loggedIn) {
+      usersList.innerHTML = `<li class="bg-surface px-4 py-4 font-mono text-meta-data text-muted"><a href="${loginUrl}" class="text-ink underline decoration-ochre">${esc(loginUsers)}</a></li>`;
+      return;
+    }
+    if (!rows.length) {
+      usersList.innerHTML = `<li class="bg-surface px-4 py-4 font-mono text-meta-data text-muted">${esc(noResults)}</li>`;
+      return;
+    }
+    usersList.innerHTML = rows
+      .map((r) => {
+        const avatar = r.hasAvatar
+          ? `<img src="/api/avatar/${encodeURIComponent(r.id)}" alt="" class="h-full w-full object-cover" loading="lazy">`
+          : `<span class="font-display text-body-md leading-none">${esc((r.name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join(''))}</span>`;
+        return `<li class="bg-surface"><a href="${userBase}/${encodeURIComponent(r.username)}" class="flex items-center gap-3 p-4 no-underline hover:bg-film-white">
+          <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink text-white">${avatar}</span>
+          <span class="min-w-0"><span class="block truncate font-display text-headline-md text-ink">${esc(r.name)}</span>
+          <span class="block font-mono text-meta-data text-muted">@${esc(r.username)}${r.isPrivate ? ' · 🔒' : ''}</span></span>
+        </a></li>`;
+      })
+      .join('');
+  };
+
+  const renderFilms = (rows: { tmdbId: number; title: string; originalTitle?: string; year: number | null; poster: string | null; posterSrcset?: string | null }[]) => {
+    filmsBlock.classList.remove('hidden');
+    if (!rows.length) {
+      filmsGrid.className = 'mt-4';
+      filmsGrid.innerHTML = `<p class="font-mono text-meta-data text-muted">${esc(noResults)}</p>`;
+      return;
+    }
+    filmsGrid.className = 'mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6';
+    filmsGrid.innerHTML = rows
+      .map((r) => {
+        const meta = [r.originalTitle && r.originalTitle !== r.title ? esc(r.originalTitle) : '', r.year ?? '']
+          .filter(Boolean)
+          .join(' · ');
+        const img = r.poster
+          ? `<img src="${esc(r.poster)}" ${r.posterSrcset ? `srcset="${esc(r.posterSrcset)}"` : ''} sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw" alt="${esc(r.title)}" loading="lazy" decoding="async" class="h-full w-full object-cover" />`
+          : `<div class="film-grain h-full w-full"></div>`;
+        return `<a href="${filmBase}/${r.tmdbId}" class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+          <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">${img}</div>
+          <div class="flex flex-1 flex-col p-2">
+            <p class="font-display text-body-lg leading-tight text-ink">${esc(r.title)}</p>
+            <p class="font-mono text-meta-data text-muted">${meta}</p>
+          </div>
+        </a>`;
+      })
+      .join('');
+  };
+
+  async function run(raw: string) {
+    const q = raw.trim();
     if (q.length < 2) {
+      controller?.abort();
+      usersBlock.classList.add('hidden');
+      filmsBlock.classList.add('hidden');
       hint.hidden = false;
       return;
     }
-    try {
-      const res = await fetch(`/api/users/search?q=${encodeURIComponent(q)}`, { headers: { accept: 'application/json' } });
-      const data = res.ok ? await res.json() : { results: [] };
-      const rows = data.results as { id: string; username: string; name: string; isPrivate: boolean; hasAvatar: boolean }[];
-      if (!rows.length) {
-        hint.hidden = false;
-        hint.textContent = noResults;
-        return;
-      }
-      hint.hidden = true;
-      results.className = 'mt-6 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2';
-      results.innerHTML = rows
-        .map((r) => {
-          const avatar = r.hasAvatar
-            ? `<img src="/api/avatar/${encodeURIComponent(r.id)}" alt="" class="h-full w-full object-cover" loading="lazy">`
-            : `<span class="font-display text-body-md leading-none">${esc((r.name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join(''))}</span>`;
-          return `<li class="bg-surface"><a href="${base}/${encodeURIComponent(r.username)}" class="flex items-center gap-3 p-4 no-underline hover:bg-film-white">
-            <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink text-white">${avatar}</span>
-            <span class="min-w-0"><span class="block truncate font-display text-headline-md text-ink">${esc(r.name)}</span>
-            <span class="block font-mono text-meta-data text-muted">@${esc(r.username)}${r.isPrivate ? ' · 🔒' : ''}</span></span>
-          </a></li>`;
-        })
-        .join('');
-    } catch {
-      /* silencio */
+    hint.hidden = true;
+    controller?.abort();
+    controller = new AbortController();
+    const signal = controller.signal;
+
+    // Películas: siempre (búsqueda pública). Usuarios: solo con sesión.
+    const filmsP = fetch(`/api/films/search?q=${encodeURIComponent(q)}&lang=${lang}`, { signal, headers: { accept: 'application/json' } })
+      .then((r) => (r.ok ? r.json() : { results: [] }))
+      .catch(() => ({ results: [] }));
+
+    if (loggedIn) {
+      const usersP = fetch(`/api/users/search?q=${encodeURIComponent(q)}`, { signal, headers: { accept: 'application/json' } })
+        .then((r) => (r.ok ? r.json() : { results: [] }))
+        .catch(() => ({ results: [] }));
+      const [users, films] = await Promise.all([usersP, filmsP]);
+      if (signal.aborted) return;
+      renderUsers(users.results ?? []);
+      renderFilms(films.results ?? []);
+    } else {
+      renderUsers([]); // muestra el aviso de inicio de sesión
+      const films = await filmsP;
+      if (signal.aborted) return;
+      renderFilms(films.results ?? []);
     }
   }
 
@@ -99,7 +181,7 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
   });
   input.addEventListener('input', () => {
     clearTimeout(timer);
-    timer = setTimeout(() => run(input.value), 250);
+    timer = setTimeout(() => run(input.value), 300);
   });
 
   if (input.value.trim().length >= 2) run(input.value);
