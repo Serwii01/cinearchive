@@ -29,6 +29,10 @@ COPY --from=build /app/dist ./dist
 COPY drizzle ./drizzle
 COPY scripts ./scripts
 
+# Proceso sin privilegios: si alguien comprometiera la app, no sería root
+# dentro del contenedor. El puerto 4321 no requiere privilegios.
+USER node
+
 EXPOSE 4321
 
 # Aplica migraciones y arranca el servidor.

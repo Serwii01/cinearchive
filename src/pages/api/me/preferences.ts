@@ -33,7 +33,7 @@ export const GET: APIRoute = async ({ locals }) => {
 };
 
 const patchSchema = z.object({
-  locale: z.enum(['es', 'en']).optional(),
+  locale: z.enum(['es', 'en', 'gl', 'eu', 'ca']).optional(),
   favoriteGenres: z.array(z.number().int()).max(40).optional(),
   favoriteDirectors: z.array(z.string().max(120)).max(50).optional(),
   theme: z.enum(['light', 'dark']).optional(),

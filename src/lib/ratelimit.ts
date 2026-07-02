@@ -52,11 +52,16 @@ export function rateLimit(key: string, limit: number, windowMs: number): boolean
 }
 
 export function clientIp(request: Request): string {
-  return (
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    request.headers.get('x-real-ip') ||
-    'unknown'
-  );
+  // X-Forwarded-For puede traer varias IPs ("cliente, proxy1, …"). El cliente
+  // puede falsificar las primeras; la ÚLTIMA la añade nuestro proxy (Caddy) y es
+  // la única de confianza. (Caddy además sobrescribe la cabecera, ver Caddyfile.)
+  const xff = request.headers.get('x-forwarded-for');
+  if (xff) {
+    const hops = xff.split(',');
+    const real = hops[hops.length - 1]?.trim();
+    if (real) return real;
+  }
+  return request.headers.get('x-real-ip') || 'unknown';
 }
 
 /** Respuesta 429 estándar con cabecera Retry-After. */

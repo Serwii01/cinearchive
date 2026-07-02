@@ -1,6 +1,6 @@
 # Cine Archive
 
-**Archivo de cine abierto y bilingüe (ES/EN).** Cine, prensa y memoria de **dominio público**,
+**Archivo de cine abierto y multilingüe (ES/EN/GL/EU/CA).** Cine, prensa y memoria de **dominio público**,
 reunidos en una aplicación editorial con estética *Cinematic Archival Brutalism*. Sin muros, sin
 publicidad, sin rastreadores. Pensado para autoalojarse pagando solo **VPS + dominio**.
 
@@ -28,7 +28,7 @@ publicidad, sin rastreadores. Pensado para autoalojarse pagando solo **VPS + dom
 - **Cuenta de usuario** — lista (guardadas/vistas/favoritas), valoraciones y notas, preferencias,
   **recomendaciones** personalizadas y **estadísticas** ("Tu cine en números").
 - **Panel de administración** cifrado por lista de correos (`ADMIN_EMAILS`).
-- Bilingüe ES/EN, **totalmente responsive**, accesibilidad declarada, 404, sitemap, OG.
+- Multilingüe ES/EN/GL/EU/CA (interfaz completa; el contenido editorial existe en ES/EN), **totalmente responsive**, accesibilidad declarada, 404, sitemap, OG.
 
 ## Principio de seguridad
 
@@ -70,7 +70,7 @@ src/
   lib/                 tmdb, omdb, watchmode, wikidata, films(cache), people, recs, stats,
                        ratelimit, backlink, pdfilms, library, collections, awards, atlas…
   data/                *.json + *.ts (catálogo, géneros, países, contenido curado)
-  db/                  schema.ts, client.ts        i18n/ui.ts (diccionario ES/EN)
+  db/                  schema.ts, client.ts        i18n/ui.ts (diccionario ES/EN/GL/EU/CA)
   middleware.ts        carga sesión y protege rutas privadas
 scripts/               generadores de datos/marca (ver abajo)
 Dockerfile · Dockerfile.caddy · docker-compose.yml · Caddyfile · drizzle/ · tests/

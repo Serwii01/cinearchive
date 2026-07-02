@@ -1,6 +1,6 @@
 ---
 // Las listas personalizadas se gestionan dentro de "Mi lista" (watchlist).
-import { localizePath, type Lang } from '../../../i18n/ui';
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+import { normalizeLang, localizePath, type Lang } from '../../../i18n/ui';
+const lang = normalizeLang(Astro.params.lang);
 return Astro.redirect(localizePath(lang, 'watchlist'));
 ---

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Avatar from '../../../components/Avatar.astro';
-import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { db } from '../../../db/client';
 import { userFilms, userLists, userListFilms } from '../../../db/schema';
 import { and, desc, eq, isNotNull, or, count, inArray } from 'drizzle-orm';
@@ -17,7 +17,7 @@ import {
 
 export const prerender = false;
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const viewer = Astro.locals.user;
 

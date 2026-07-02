@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import FilmControls from '../../../components/FilmControls.astro';
 import ListPicker from '../../../components/ListPicker.astro';
-import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { resolveBackLink } from '../../../lib/backlink';
 import { getFilm } from '../../../lib/films';
 import { director, directorPerson, posterUrl, posterSrcset, profileUrl, backdropUrl, trailerKey, type TmdbSearchResult } from '../../../lib/tmdb';
@@ -12,7 +12,7 @@ import { db } from '../../../db/client';
 import { userFilms } from '../../../db/schema';
 import { and, eq } from 'drizzle-orm';
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const tmdbId = Number(Astro.params.tmdbId);
 
@@ -81,7 +81,7 @@ const watchLabels = { sub: t('film.sub'), free: t('film.free'), rent: t('film.re
 // Datos curiosos: finanzas (TMDB), taquilla y premios (OMDb), productoras.
 const fmtMoney = (n?: number) =>
   n && n > 0
-    ? new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-US', {
+    ? new Intl.NumberFormat(locales[lang], {
         style: 'currency',
         currency: 'USD',
         maximumFractionDigits: 0,
@@ -107,7 +107,7 @@ const tagline = cleanOmdb(tmdb.tagline);
 const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t);
 ---
 
-<BaseLayout title={tmdb.title} description={tmdb.overview} altPath={localizePath(lang === 'es' ? 'en' : 'es', `film/${tmdbId}`)}>
+<BaseLayout title={tmdb.title} description={tmdb.overview}>
   <article class="frame py-12">
     <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>
 

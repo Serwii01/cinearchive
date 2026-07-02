@@ -1,9 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import SocialButtons from '../../components/SocialButtons.astro';
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
 if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
@@ -57,7 +57,7 @@ if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
   const errMsg = form.dataset.errmsg || 'Error';
   const acceptMsg = form.dataset.acceptmsg || 'You must accept the terms.';
   const accept = form.querySelector('[name="accept"]') as HTMLInputElement;
-  const lang = window.location.pathname.startsWith('/en') ? 'en' : 'es';
+  const lang = window.location.pathname.match(/^\/(es|en|gl|eu|ca)(?=\/|$)/)?.[1] ?? 'es';
   const home = `/${lang}/account`;
 
   form.addEventListener('submit', async (e) => {

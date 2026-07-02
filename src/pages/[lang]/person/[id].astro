@@ -3,9 +3,9 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getPersonCached, directedFilms, actedFilms, type FilmographyEntry } from '../../../lib/people';
 import { profileUrl } from '../../../lib/tmdb';
 import { resolveBackLink } from '../../../lib/backlink';
-import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const id = Number(Astro.params.id);
 
@@ -37,17 +37,16 @@ const sections: { label: string; films: FilmographyEntry[] }[] = isDirector
 const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t);
 
 const fmtDate = (s: string | null) =>
-  s ? new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en-GB', { dateStyle: 'long' }).format(new Date(s)) : null;
+  s ? new Intl.DateTimeFormat(locales[lang], { dateStyle: 'long' }).format(new Date(s)) : null;
 
 const facts = [
   { label: t('person.born'), value: fmtDate(person.birthday) },
   { label: t('person.died'), value: fmtDate(person.deathday) },
   { label: t('person.place'), value: person.place_of_birth },
 ].filter((f) => f.value);
-const altPath = localizePath(lang === 'es' ? 'en' : 'es', `person/${id}`);
 ---
 
-<BaseLayout title={person.name} description={person.biography?.slice(0, 200)} altPath={altPath}>
+<BaseLayout title={person.name} description={person.biography?.slice(0, 200)}>
   <article class="frame py-12">
     <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>
 

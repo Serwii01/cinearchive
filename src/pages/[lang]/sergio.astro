@@ -1,10 +1,10 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { languages, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
 export function getStaticPaths() {
-  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+  return Object.keys(languages).map((lang) => ({ params: { lang } }));
 }
 
 const lang = Astro.params.lang as Lang;
@@ -35,7 +35,7 @@ const links: { name: string; url: string; path: string }[] = [
 ];
 ---
 
-<BaseLayout title="Sergio Fernández Morales" description={t('sergio.bio')} altPath={localizePath(lang === 'es' ? 'en' : 'es', 'sergio')}>
+<BaseLayout title="Sergio Fernández Morales" description={t('sergio.bio')}>
   <section class="frame py-12">
     <header class="border-b border-ink pb-6">
       <span class="label">{t('sergio.role')}</span>

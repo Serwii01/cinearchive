@@ -12,9 +12,9 @@ import { figures } from '../../lib/figures';
 import { profileUrl } from '../../lib/tmdb';
 import { getFilmOfDay } from '../../lib/featured';
 import { manifesto } from '../../data/manifesto';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
 // Últimos números: el más reciente de 4 publicaciones DISTINTAS (sin repetir título).
@@ -48,7 +48,7 @@ const film = await getFilmOfDay(lang);
 const overview = film?.overview && film.overview.length > 320 ? film.overview.slice(0, 317) + '…' : film?.overview;
 ---
 
-<BaseLayout altPath={localizePath(lang === 'es' ? 'en' : 'es')}>
+<BaseLayout>
   {/* HERO — PELÍCULA DEL DÍA (TMDB) */}
   {
     film ? (

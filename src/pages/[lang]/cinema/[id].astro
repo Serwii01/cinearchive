@@ -2,11 +2,11 @@
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { pdFilms, pdEmbedUrl, pdIaUrl, type PdFilm } from '../../../lib/pdfilms';
-import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { languages, contentLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 
 export function getStaticPaths() {
   const paths: { params: { lang: string; id: string }; props: { item: PdFilm } }[] = [];
-  for (const lang of ['es', 'en']) {
+  for (const lang of Object.keys(languages)) {
     for (const item of pdFilms) {
       paths.push({ params: { lang, id: item.id }, props: { item } });
     }
@@ -18,12 +18,11 @@ const lang = Astro.params.lang as Lang;
 const t = useTranslations(lang);
 const { item } = Astro.props as { item: PdFilm };
 
-const blurb = lang === 'es' ? item.blurb_es : item.blurb_en;
-const altPath = localizePath(lang === 'es' ? 'en' : 'es', `cinema/${item.id}`);
+const blurb = contentLang(lang) === 'es' ? item.blurb_es : item.blurb_en;
 const meta = [item.director, item.country, item.year, `${item.runtime}′`].filter(Boolean).join(' · ');
 ---
 
-<BaseLayout title={item.title} description={blurb} altPath={altPath}>
+<BaseLayout title={item.title} description={blurb}>
   <article class="frame py-12">
     <a href={localizePath(lang, 'cinema')} class="label no-underline hover:text-ink">← {t('cinema.backToCinema')}</a>
 

@@ -22,7 +22,7 @@ export default defineConfig({
     '/': '/es',
   },
   i18n: {
-    locales: ['es', 'en'],
+    locales: ['es', 'en', 'gl', 'eu', 'ca'],
     defaultLocale: 'es',
     routing: {
       prefixDefaultLocale: true,
@@ -39,7 +39,7 @@ export default defineConfig({
     sitemap({
       i18n: {
         defaultLocale: 'es',
-        locales: { es: 'es-ES', en: 'en-US' },
+        locales: { es: 'es-ES', en: 'en-US', gl: 'gl-ES', eu: 'eu-ES', ca: 'ca-ES' },
       },
     }),
   ],

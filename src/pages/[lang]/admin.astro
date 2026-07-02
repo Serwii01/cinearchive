@@ -1,13 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { db } from '../../db/client';
 import { user, userFilms, filmsCache, watchCache, extraFilms } from '../../db/schema';
 import { count, desc } from 'drizzle-orm';
 import { getWatchmodeStatus } from '../../lib/watchmode';
 
 // El middleware garantiza que solo entran cuentas de ADMIN_EMAILS.
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const me = Astro.locals.user!;
 
@@ -22,7 +22,7 @@ const [wm, users, filmCounts, fc, wc, uf, extras] = await Promise.all([
 ]);
 
 const filmCountMap = new Map(filmCounts.map((r) => [r.userId, r.c]));
-const fmtDate = (d: Date) => new Date(d).toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-GB');
+const fmtDate = (d: Date) => new Date(d).toLocaleDateString(locales[lang]);
 
 const apiCards = [
   {

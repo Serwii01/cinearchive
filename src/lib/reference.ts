@@ -1,6 +1,6 @@
 import glossaryData from '../data/glossary.json';
 import timelineData from '../data/timeline.json';
-import type { Lang } from '../i18n/ui';
+import { contentLang, type Lang } from '../i18n/ui';
 
 /** Entrada del glosario de términos de cine. */
 export interface GlossaryTerm {
@@ -12,8 +12,8 @@ export interface GlossaryTerm {
 
 export const glossary = glossaryData.items as GlossaryTerm[];
 
-export const glossaryTerm = (g: GlossaryTerm, lang: Lang) => (lang === 'es' ? g.term_es : g.term_en);
-export const glossaryDef = (g: GlossaryTerm, lang: Lang) => (lang === 'es' ? g.def_es : g.def_en);
+export const glossaryTerm = (g: GlossaryTerm, lang: Lang) => (contentLang(lang) === 'es' ? g.term_es : g.term_en);
+export const glossaryDef = (g: GlossaryTerm, lang: Lang) => (contentLang(lang) === 'es' ? g.def_es : g.def_en);
 
 /** Lista ordenada alfabéticamente por el término en el idioma dado. */
 export function sortedGlossary(lang: Lang): GlossaryTerm[] {
@@ -34,5 +34,5 @@ export interface Movement {
 
 export const timeline = timelineData.items as Movement[];
 
-export const movementName = (m: Movement, lang: Lang) => (lang === 'es' ? m.name_es : m.name_en);
-export const movementDesc = (m: Movement, lang: Lang) => (lang === 'es' ? m.desc_es : m.desc_en);
+export const movementName = (m: Movement, lang: Lang) => (contentLang(lang) === 'es' ? m.name_es : m.name_en);
+export const movementDesc = (m: Movement, lang: Lang) => (contentLang(lang) === 'es' ? m.desc_es : m.desc_en);

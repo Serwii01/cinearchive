@@ -30,11 +30,20 @@ describe('rate limiter', () => {
 });
 
 describe('clientIp', () => {
-  it('toma la primera IP de x-forwarded-for', () => {
+  it('toma la ÚLTIMA IP de x-forwarded-for (la que añade el proxy de confianza)', () => {
+    // Un cliente puede falsificar las primeras entradas; la última la escribe
+    // Caddy y es la única fiable. "1.2.3.4" sería aquí la IP inventada.
     const req = new Request('https://x.test', {
       headers: { 'x-forwarded-for': '1.2.3.4, 5.6.7.8' },
     });
-    expect(clientIp(req)).toBe('1.2.3.4');
+    expect(clientIp(req)).toBe('5.6.7.8');
+  });
+
+  it('con una sola IP en x-forwarded-for, la devuelve tal cual', () => {
+    const req = new Request('https://x.test', {
+      headers: { 'x-forwarded-for': '5.6.7.8' },
+    });
+    expect(clientIp(req)).toBe('5.6.7.8');
   });
 
   it('cae a x-real-ip y luego a "unknown"', () => {

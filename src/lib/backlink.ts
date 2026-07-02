@@ -6,7 +6,7 @@
  * envían la ruta completa y las externas solo el origen (ruta "/"), así que basta
  * comprobar que el primer segmento sea el idioma para saber que es interna.
  */
-import { localizePath, type Lang, type UIKey } from '../i18n/ui';
+import { languages, localizePath, type Lang, type UIKey } from '../i18n/ui';
 
 const SECTION_LABEL: Record<string, UIKey> = {
   '': 'back.home',
@@ -40,7 +40,7 @@ export function resolveBackLink(
     return fallback;
   }
   const segs = url.pathname.split('/').filter(Boolean);
-  if (segs[0] !== 'es' && segs[0] !== 'en') return fallback; // externo o no localizado
+  if (!segs[0] || !(segs[0] in languages)) return fallback; // externo o no localizado
   const section = segs[1] ?? '';
   const key = SECTION_LABEL[section];
   if (!key) return fallback; // sección que no es origen natural de una ficha

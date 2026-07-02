@@ -1,5 +1,5 @@
 import data from '../data/ephemerides.json';
-import type { Lang } from '../i18n/ui';
+import { contentLang, locales, type Lang } from '../i18n/ui';
 
 /** Efeméride del cine. */
 export interface Ephemeris {
@@ -13,12 +13,12 @@ export interface Ephemeris {
 
 export const ephemerides = data.items as Ephemeris[];
 
-export const ephemerisText = (e: Ephemeris, lang: Lang) => (lang === 'es' ? e.text_es : e.text_en);
+export const ephemerisText = (e: Ephemeris, lang: Lang) => (contentLang(lang) === 'es' ? e.text_es : e.text_en);
 
 /** Fecha formateada del evento, p. ej. "13 de agosto de 1899" / "13 August 1899". */
 export function ephemerisDate(e: Ephemeris, lang: Lang): string {
   const d = new Date(Date.UTC(e.year, e.month - 1, e.day));
-  return new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en-GB', {
+  return new Intl.DateTimeFormat(locales[lang], {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

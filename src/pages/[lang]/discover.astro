@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { discoverMovies, posterUrl, posterSrcset, type DiscoverParams } from '../../lib/tmdb';
 import { GENRES } from '../../data/genres';
 import { COUNTRIES } from '../../data/countries';
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const sp = Astro.url.searchParams;
 
@@ -48,7 +48,7 @@ const selectCls =
   'border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none';
 ---
 
-<BaseLayout title={t('discover.title')} description={t('discover.intro')} altPath={localizePath(lang === 'es' ? 'en' : 'es', 'discover')}>
+<BaseLayout title={t('discover.title')} description={t('discover.intro')}>
   <section class="frame py-12">
     <header class="border-b border-ink pb-6">
       <span class="label">{t('discover.title')}</span>

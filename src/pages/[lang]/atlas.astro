@@ -3,10 +3,10 @@ export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAtlas, project } from '../../lib/atlas';
 import worldmap from '../../data/worldmap.json';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { languages, contentLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
 export function getStaticPaths() {
-  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+  return Object.keys(languages).map((lang) => ({ params: { lang } }));
 }
 
 const lang = Astro.params.lang as Lang;
@@ -19,7 +19,7 @@ const total = entries.reduce((n, e) => n + e.count, 0);
 const maxCount = entries[0]?.count ?? 1;
 const markers = entries.map((e) => {
   const { x, y } = project(e.lon, e.lat, W, H);
-  return { ...e, x, y, r: 3 + Math.sqrt(e.count) * 1.6, name: lang === 'es' ? e.es : e.en };
+  return { ...e, x, y, r: 3 + Math.sqrt(e.count) * 1.6, name: contentLang(lang) === 'es' ? e.es : e.en };
 });
 const discover = (iso: string) => `${localizePath(lang, 'discover')}?country=${iso}`;
 ---
@@ -27,7 +27,6 @@ const discover = (iso: string) => `${localizePath(lang, 'discover')}?country=${i
 <BaseLayout
   title={t('atlas.title')}
   description={t('atlas.intro')}
-  altPath={localizePath(lang === 'es' ? 'en' : 'es', 'atlas')}
 >
   <section class="frame py-12">
     <a href={localizePath(lang, 'films')} class="label no-underline hover:text-ink">← {t('nav.films')}</a>

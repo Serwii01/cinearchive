@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { db } from '../../../db/client';
 import { userLists, userListFilms, profile, user as userTable } from '../../../db/schema';
 import { eq } from 'drizzle-orm';
@@ -9,7 +9,7 @@ import { followState, canViewActivity } from '../../../lib/social';
 
 export const prerender = false;
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const viewer = Astro.locals.user; // puede ser null (no logueado)
 const id = Astro.params.id!;

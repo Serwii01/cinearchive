@@ -1,5 +1,5 @@
 import data from '../data/collections.json';
-import type { Lang } from '../i18n/ui';
+import { contentLang, type Lang } from '../i18n/ui';
 
 /** Dosier / colección temática curada. */
 export interface Collection {
@@ -16,5 +16,5 @@ export const collections = data.items as Collection[];
 export const collectionBySlug = (slug: string): Collection | undefined =>
   collections.find((c) => c.slug === slug);
 
-export const collectionTitle = (c: Collection, lang: Lang) => (lang === 'es' ? c.title_es : c.title_en);
-export const collectionBlurb = (c: Collection, lang: Lang) => (lang === 'es' ? c.blurb_es : c.blurb_en);
+export const collectionTitle = (c: Collection, lang: Lang) => (contentLang(lang) === 'es' ? c.title_es : c.title_en);
+export const collectionBlurb = (c: Collection, lang: Lang) => (contentLang(lang) === 'es' ? c.blurb_es : c.blurb_en);

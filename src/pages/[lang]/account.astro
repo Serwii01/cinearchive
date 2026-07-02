@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Avatar from '../../components/Avatar.astro';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { GENRES } from '../../data/genres';
 import { db } from '../../db/client';
 import { userPreferences, follows, user as userTable, profile } from '../../db/schema';
@@ -9,7 +9,7 @@ import { and, eq, desc } from 'drizzle-orm';
 import { isAdmin } from '../../lib/admin';
 import { getMyProfile } from '../../lib/social';
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const user = Astro.locals.user!; // middleware garantiza sesión
 const admin = isAdmin(user);
@@ -254,7 +254,7 @@ const pending = await db
 <script>
   import { signOut } from '../../lib/auth-client';
 
-  const lang = window.location.pathname.startsWith('/en') ? 'en' : 'es';
+  const lang = window.location.pathname.match(/^\/(es|en|gl|eu|ca)(?=\/|$)/)?.[1] ?? 'es';
 
   document.getElementById('logout')?.addEventListener('click', async () => {
     await signOut();

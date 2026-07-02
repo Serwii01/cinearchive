@@ -1,25 +1,34 @@
 ---
-import { getLangFromUrl, localizePath, type Lang } from '../i18n/ui';
-
-interface Props {
-  /** Ruta completa del idioma alterno. Si no se pasa, se calcula desde la URL actual. */
-  altPath?: string;
-}
+import { getLangFromUrl, languages, localizePath, useTranslations, type Lang } from '../i18n/ui';
 
 const lang: Lang = getLangFromUrl(Astro.url);
-const altLang: Lang = lang === 'es' ? 'en' : 'es';
+const t = useTranslations(lang);
+const langs = Object.keys(languages) as Lang[];
 
-// Si no nos dan una ruta concreta del equivalente, intercambiamos el prefijo de idioma.
-const { altPath } = Astro.props;
-const fallback = Astro.url.pathname.replace(/^\/(es|en)/, `/${altLang}`);
-const target = altPath ?? (fallback === Astro.url.pathname ? localizePath(altLang) : fallback);
+// Las rutas son simétricas entre idiomas: la equivalente se obtiene
+// intercambiando el prefijo de la URL actual.
+const prefix = new RegExp(`^/(${langs.join('|')})(?=/|$)`);
+const pathFor = (target: Lang) =>
+  prefix.test(Astro.url.pathname)
+    ? Astro.url.pathname.replace(prefix, `/${target}`)
+    : localizePath(target);
 ---
 
-<a
-  href={target}
-  hreflang={altLang}
-  class="label border border-ink px-3 py-2 no-underline transition-colors hover:bg-ink hover:text-white"
-  aria-label={`Cambiar idioma a ${altLang === 'es' ? 'Español' : 'English'}`}
->
-  {altLang === 'es' ? 'ES' : 'EN'}
-</a>
+<nav aria-label={t('lang.switch')} class="flex items-stretch">
+  {
+    langs.map((code) => (
+      <a
+        href={pathFor(code)}
+        hreflang={code}
+        title={languages[code]}
+        aria-current={code === lang ? 'true' : undefined}
+        class:list={[
+          'label -ml-px border border-ink px-2 py-2 no-underline transition-colors first:ml-0 hover:bg-ink hover:text-white',
+          code === lang && 'bg-ink text-white',
+        ]}
+      >
+        {code.toUpperCase()}
+      </a>
+    ))
+  }
+</nav>

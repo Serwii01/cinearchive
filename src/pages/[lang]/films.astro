@@ -2,9 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TmdbSearch from '../../components/TmdbSearch.astro';
 import { getCatalog } from '../../lib/catalog';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
 const films = (await getCatalog()).sort((a, b) => a.year - b.year || a.title.localeCompare(b.title));
@@ -14,7 +14,6 @@ const intro = t('films.intro').replace('{count}', String(films.length));
 <BaseLayout
   title={t('films.title')}
   description={intro}
-  altPath={localizePath(lang === 'es' ? 'en' : 'es', 'films')}
 >
   <section class="frame py-12">
     <header class="border-b border-ink pb-6">

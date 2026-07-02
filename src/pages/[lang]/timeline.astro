@@ -1,6 +1,6 @@
 ---
 // La cronología vive ahora dentro de /archivo (sección plegable).
-import { localizePath, type Lang } from '../../i18n/ui';
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+import { normalizeLang, localizePath, type Lang } from '../../i18n/ui';
+const lang = normalizeLang(Astro.params.lang);
 return Astro.redirect(localizePath(lang, 'archive') + '#cronologia');
 ---

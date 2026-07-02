@@ -2,6 +2,10 @@ import { defineMiddleware } from 'astro:middleware';
 import { auth } from './lib/auth';
 import { check, clientIp, tooMany } from './lib/ratelimit';
 import { isAdmin } from './lib/admin';
+import { languages, defaultLang } from './i18n/ui';
+
+// Prefijo de idioma de la ruta: /es, /en, /gl, /eu, /ca.
+const LANG_PREFIX = new RegExp(`^/(${Object.keys(languages).join('|')})(?=/|$)`);
 
 /**
  * - Carga la sesión (si existe) en Astro.locals para las rutas SSR.
@@ -111,8 +115,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
   context.locals.session = session?.session ?? null;
 
   // Protección de rutas privadas (solo páginas, no assets ni API).
-  const lang = path.startsWith('/en') ? 'en' : 'es';
-  const stripped = path.replace(/^\/(es|en)/, '');
+  const lang = path.match(LANG_PREFIX)?.[1] ?? defaultLang;
+  const stripped = path.replace(LANG_PREFIX, '');
   const isProtected = PROTECTED.some((p) => stripped === p || stripped.startsWith(p + '/'));
 
   if (isProtected && !context.locals.user) {

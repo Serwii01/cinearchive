@@ -57,5 +57,11 @@ www.{$DOMAIN} {
 	@assets path /_astro/*
 	header @assets Cache-Control "public, max-age=31536000, immutable"
 
-	reverse_proxy app:4321
+	reverse_proxy app:4321 {
+		# Sobrescribe (no anexa) las cabeceras de IP: si el cliente envía un
+		# X-Forwarded-For falso, aquí se descarta. Así el rate limiting de la app
+		# y el anti fuerza-bruta del login cuentan siempre por la IP real.
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Real-IP {remote_host}
+	}
 }

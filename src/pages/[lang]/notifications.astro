@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Avatar from '../../components/Avatar.astro';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { db } from '../../db/client';
 import { follows, user as userTable, profile } from '../../db/schema';
 import { and, eq, desc } from 'drizzle-orm';
@@ -9,7 +9,7 @@ import { getMyProfile, getConnections, markNotificationsSeen } from '../../lib/s
 
 export const prerender = false;
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const user = Astro.locals.user!; // middleware garantiza sesión
 const userId = user.id;

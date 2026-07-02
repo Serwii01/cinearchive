@@ -1,5 +1,5 @@
 import data from '../data/awards.json';
-import type { Lang } from '../i18n/ui';
+import { contentLang, type Lang } from '../i18n/ui';
 
 export interface AwardWinner {
   year: number;
@@ -19,5 +19,5 @@ export interface Award {
 
 export const awards = data.awards as Award[];
 
-export const awardName = (a: Award, lang: Lang) => (lang === 'es' ? a.name_es : a.name_en);
-export const awardNote = (a: Award, lang: Lang) => (lang === 'es' ? a.note_es : a.note_en);
+export const awardName = (a: Award, lang: Lang) => (contentLang(lang) === 'es' ? a.name_es : a.name_en);
+export const awardNote = (a: Award, lang: Lang) => (contentLang(lang) === 'es' ? a.note_es : a.note_en);

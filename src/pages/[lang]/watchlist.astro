@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { db } from '../../db/client';
 import { userFilms, userLists, userListFilms } from '../../db/schema';
 import { eq, desc, count, inArray } from 'drizzle-orm';
 import { getFilmsBrief } from '../../lib/films';
 
-const lang = (Astro.params.lang === 'en' ? 'en' : 'es') as Lang;
+const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
 // El middleware ya garantiza sesión en /watchlist.

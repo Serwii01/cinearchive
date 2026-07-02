@@ -1,17 +1,17 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { languages, contentLang, locales, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { CHANGELOG } from '../../data/changelog';
 
 export function getStaticPaths() {
-  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+  return Object.keys(languages).map((lang) => ({ params: { lang } }));
 }
 
 const lang = Astro.params.lang as Lang;
 const t = useTranslations(lang);
 
-const dateFmt = new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en-GB', {
+const dateFmt = new Intl.DateTimeFormat(locales[lang], {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
@@ -20,12 +20,12 @@ const dateFmt = new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en-GB', {
 const releases = CHANGELOG.map((r) => ({
   version: r.version,
   date: dateFmt.format(new Date(r.date + 'T00:00:00')),
-  title: lang === 'es' ? r.title_es : r.title_en,
-  changes: lang === 'es' ? r.changes_es : r.changes_en,
+  title: contentLang(lang) === 'es' ? r.title_es : r.title_en,
+  changes: contentLang(lang) === 'es' ? r.changes_es : r.changes_en,
 }));
 ---
 
-<BaseLayout title={t('changelog.title')} description={t('changelog.intro')} altPath={localizePath(lang === 'es' ? 'en' : 'es', 'changelog')}>
+<BaseLayout title={t('changelog.title')} description={t('changelog.intro')}>
   <section class="frame py-12">
     <header class="border-b border-ink pb-6">
       <span class="label">v{releases[0].version}</span>

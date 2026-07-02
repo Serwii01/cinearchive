@@ -2,10 +2,10 @@
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { collections, collectionTitle, collectionBlurb } from '../../../lib/collections';
-import { useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { languages, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 
 export function getStaticPaths() {
-  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+  return Object.keys(languages).map((lang) => ({ params: { lang } }));
 }
 
 const lang = Astro.params.lang as Lang;
@@ -15,7 +15,6 @@ const t = useTranslations(lang);
 <BaseLayout
   title={t('collections.title')}
   description={t('collections.intro')}
-  altPath={localizePath(lang === 'es' ? 'en' : 'es', 'collections')}
 >
   <section class="frame py-12">
     <a href={localizePath(lang, 'films')} class="label no-underline hover:text-ink">← {t('nav.films')}</a>
