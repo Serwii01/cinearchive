@@ -196,13 +196,17 @@ const title = `@${target.username}`;
                   <a href={localizePath(lang, `lists/${l.id}`)} class="no-underline hover:text-ochre">{l.name}</a>
                   <span class="label">· {l.count}</span>
                 </h3>
-                <div class="mt-3 flex flex-wrap gap-3">
+                <div class="mt-3 grid grid-cols-4 gap-px border border-ink bg-ink sm:grid-cols-6 lg:grid-cols-9">
                   {l.films.slice(0, 18).map((id) => {
                     const b = briefs.get(id);
                     return (
-                      <a href={localizePath(lang, `film/${id}`)} class="block w-16 no-underline" title={b?.title}>
-                        <div class="h-24 w-16 border border-ink bg-charcoal">
-                          {b?.poster && <img src={b.poster} alt={b?.title ?? ''} class="h-full w-full object-cover" />}
+                      <a href={localizePath(lang, `film/${id}`)} class="block bg-surface no-underline" title={b?.title}>
+                        <div class="aspect-[2/3] w-full bg-charcoal">
+                          {b?.poster ? (
+                            <img src={b.poster} alt={b?.title ?? ''} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                          ) : (
+                            <div class="film-grain h-full w-full"></div>
+                          )}
                         </div>
                       </a>
                     );
