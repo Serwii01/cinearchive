@@ -70,6 +70,7 @@ const config = {
           `<button type="button" data-logout class="${btnClass}">${cfg.labels.logout}</button>`;
         this.querySelector('[data-logout]')?.addEventListener('click', async () => {
           await signOut();
+          try { sessionStorage.removeItem('cine:social-summary'); } catch {}
           window.location.href = cfg.links.home;
         });
       };

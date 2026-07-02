@@ -30,8 +30,10 @@ export const GET: APIRoute = async ({ params, request }) => {
     headers: {
       'Content-Type': row.avatarType,
       ETag: etag,
-      // Privada por dispositivo; revalida con ETag para reflejar cambios pronto.
-      'Cache-Control': 'private, max-age=0, must-revalidate',
+      // Privada por dispositivo. Cache corta (60 s) para que al navegar entre
+      // páginas el avatar se sirva al instante sin revalidar (evita el parpadeo);
+      // pasado ese minuto revalida con ETag para reflejar cambios.
+      'Cache-Control': 'private, max-age=60',
     },
   });
 };

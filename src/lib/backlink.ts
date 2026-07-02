@@ -17,10 +17,13 @@ const SECTION_LABEL: Record<string, UIKey> = {
   discover: 'back.discover',
   recommendations: 'back.recs',
   watchlist: 'back.list',
+  lists: 'back.publicList',
   collections: 'back.collections',
   timeline: 'back.timeline',
   person: 'back.person',
   figures: 'back.figures',
+  u: 'back.profile',
+  search: 'back.search',
 };
 
 export function resolveBackLink(
