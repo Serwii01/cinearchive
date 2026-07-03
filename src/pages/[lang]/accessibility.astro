@@ -3,14 +3,14 @@ export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LegalDoc from '../../components/LegalDoc.astro';
 import { accessibility } from '../../data/legal';
-import { languages, contentLang, localizePath, type Lang } from '../../i18n/ui';
+import { languages, localizePath, type Lang } from '../../i18n/ui';
 
 export function getStaticPaths() {
   return Object.keys(languages).map((lang) => ({ params: { lang } }));
 }
 
 const lang = Astro.params.lang as Lang;
-const doc = accessibility[contentLang(lang)];
+const doc = accessibility[lang];
 ---
 
 <BaseLayout title={doc.title} description={doc.intro}>

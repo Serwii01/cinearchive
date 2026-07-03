@@ -1,7 +1,7 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { languages, contentLang, locales, useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { languages, locales, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { CHANGELOG } from '../../data/changelog';
 
 export function getStaticPaths() {
@@ -20,8 +20,8 @@ const dateFmt = new Intl.DateTimeFormat(locales[lang], {
 const releases = CHANGELOG.map((r) => ({
   version: r.version,
   date: dateFmt.format(new Date(r.date + 'T00:00:00')),
-  title: contentLang(lang) === 'es' ? r.title_es : r.title_en,
-  changes: contentLang(lang) === 'es' ? r.changes_es : r.changes_en,
+  title: r.title[lang],
+  changes: r.changes[lang],
 }));
 ---
 
