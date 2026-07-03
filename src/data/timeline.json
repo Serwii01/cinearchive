@@ -7,7 +7,16 @@
       "period": "1895–1927",
       "desc_es": "Del nacimiento del cine a la llegada del sonido: el lenguaje visual se inventa casi por completo en estas tres décadas.",
       "desc_en": "From cinema's birth to the arrival of sound: the visual language is almost entirely invented in these three decades.",
-      "keyFilms": [780, 626]
+      "keyFilms": [
+        780,
+        626
+      ],
+      "name_gl": "Cine mudo",
+      "name_eu": "Zinema mutua",
+      "name_ca": "Cinema mut",
+      "desc_gl": "Do nacemento do cine á chegada do son: a linguaxe visual invéntase case por completo nestas tres décadas.",
+      "desc_eu": "Zinemaren jaiotzatik soinuaren etorrerara: hizkuntza bisuala ia erabat asmatzen da hiru hamarkada hauetan.",
+      "desc_ca": "Del naixement del cinema a l'arribada del so: el llenguatge visual s'inventa gairebé del tot en aquestes tres dècades."
     },
     {
       "name_es": "Expresionismo alemán",
@@ -15,7 +24,18 @@
       "period": "1919–1931",
       "desc_es": "Sombras pintadas, decorados deformes y almas atormentadas: el cine como pintura del subconsciente.",
       "desc_en": "Painted shadows, warped sets and tormented souls: cinema as a painting of the subconscious.",
-      "keyFilms": [234, 653, 19, 832]
+      "keyFilms": [
+        234,
+        653,
+        19,
+        832
+      ],
+      "name_gl": "Expresionismo alemán",
+      "name_eu": "Espresionismo alemana",
+      "name_ca": "Expressionisme alemany",
+      "desc_gl": "Sombras pintadas, decorados deformes e almas atormentadas: o cine como pintura do subconsciente.",
+      "desc_eu": "Itzal margotuak, dekoratu deformatuak eta arima oinazetuak: zinema subkontzientearen margolan gisa.",
+      "desc_ca": "Ombres pintades, decorats deformes i ànimes turmentades: el cinema com a pintura del subconscient."
     },
     {
       "name_es": "Montaje soviético",
@@ -23,7 +43,15 @@
       "period": "1924–1930",
       "desc_es": "Eisenstein y sus contemporáneos convierten el corte en arma ideológica y emocional.",
       "desc_en": "Eisenstein and his contemporaries turn the cut into an ideological and emotional weapon.",
-      "keyFilms": [643]
+      "keyFilms": [
+        643
+      ],
+      "name_gl": "Montaxe soviética",
+      "name_eu": "Muntaia sobietarra",
+      "name_ca": "Muntatge soviètic",
+      "desc_gl": "Eisenstein e os seus contemporáneos converten o corte en arma ideolóxica e emocional.",
+      "desc_eu": "Eisensteinek eta bere garaikideek mozketa arma ideologiko eta emozional bihurtzen dute.",
+      "desc_ca": "Eisenstein i els seus contemporanis converteixen el tall en arma ideològica i emocional."
     },
     {
       "name_es": "Hollywood clásico",
@@ -31,7 +59,18 @@
       "period": "1930–1960",
       "desc_es": "El sistema de estudios y los géneros perfeccionan un cine narrativo de relojería que aún domina la cultura popular.",
       "desc_en": "The studio system and its genres perfect a clockwork narrative cinema that still dominates popular culture.",
-      "keyFilms": [15, 289, 599, 426]
+      "keyFilms": [
+        15,
+        289,
+        599,
+        426
+      ],
+      "name_gl": "Hollywood clásico",
+      "name_eu": "Hollywood klasikoa",
+      "name_ca": "Hollywood clàssic",
+      "desc_gl": "O sistema de estudos e os xéneros perfeccionan un cine narrativo de reloxaría que aínda domina a cultura popular.",
+      "desc_eu": "Estudio-sistemak eta generoek erlojutegi-mekanika bezalako zinema narratiboa perfekzionatzen dute, oraindik kultura popularra menderatzen duena.",
+      "desc_ca": "El sistema d'estudis i els gèneres perfeccionen un cinema narratiu de rellotgeria que encara domina la cultura popular."
     },
     {
       "name_es": "Neorrealismo italiano",
@@ -39,7 +78,16 @@
       "period": "1945–1952",
       "desc_es": "Cámara a la calle, actores no profesionales y la posguerra como tema: la realidad irrumpe en la ficción.",
       "desc_en": "Camera to the street, non-professional actors and the postwar as subject: reality bursts into fiction.",
-      "keyFilms": [5156, 307]
+      "keyFilms": [
+        5156,
+        307
+      ],
+      "name_gl": "Neorrealismo italiano",
+      "name_eu": "Italiar neorrealismoa",
+      "name_ca": "Neorealisme italià",
+      "desc_gl": "Cámara á rúa, actores non profesionais e a posguerra como tema: a realidade irrompe na ficción.",
+      "desc_eu": "Kamera kalera, aktore ez-profesionalak eta gerraostea gai gisa: errealitatea fikzioan sartzen da.",
+      "desc_ca": "Càmera al carrer, actors no professionals i la postguerra com a tema: la realitat irromp en la ficció."
     },
     {
       "name_es": "Nouvelle Vague",
@@ -47,7 +95,17 @@
       "period": "1958–1968",
       "desc_es": "Jóvenes críticos toman la cámara y reinventan la gramática del cine con libertad e ironía.",
       "desc_en": "Young critics pick up the camera and reinvent cinema's grammar with freedom and irony.",
-      "keyFilms": [147, 269, 1628]
+      "keyFilms": [
+        147,
+        269,
+        1628
+      ],
+      "name_gl": "Nouvelle Vague",
+      "name_eu": "Nouvelle Vague",
+      "name_ca": "Nouvelle Vague",
+      "desc_gl": "Xoves críticos toman a cámara e reinventan a gramática do cine con liberdade e ironía.",
+      "desc_eu": "Kritikari gazteek kamera hartu eta zinemaren gramatika berrasmatzen dute askatasunez eta ironiaz.",
+      "desc_ca": "Joves crítics agafen la càmera i reinventen la gramàtica del cinema amb llibertat i ironia."
     },
     {
       "name_es": "Nuevo cine alemán",
@@ -55,7 +113,17 @@
       "period": "1962–1982",
       "desc_es": "Fassbinder, Herzog y Wenders reconstruyen un cine de autor sobre las ruinas morales de la posguerra.",
       "desc_en": "Fassbinder, Herzog and Wenders rebuild an auteur cinema on the moral ruins of the postwar.",
-      "keyFilms": [2000, 661, 144]
+      "keyFilms": [
+        2000,
+        661,
+        144
+      ],
+      "name_gl": "Novo cine alemán",
+      "name_eu": "Zinema aleman berria",
+      "name_ca": "Nou cinema alemany",
+      "desc_gl": "Fassbinder, Herzog e Wenders reconstrúen un cine de autor sobre as ruínas morais da posguerra.",
+      "desc_eu": "Fassbinderrek, Herzogek eta Wendersek egile-zinema berreraikitzen dute gerraosteko hondakin moralen gainean.",
+      "desc_ca": "Fassbinder, Herzog i Wenders reconstrueixen un cinema d'autor sobre les ruïnes morals de la postguerra."
     },
     {
       "name_es": "Nuevo Hollywood",
@@ -63,7 +131,17 @@
       "period": "1967–1980",
       "desc_es": "Una generación influida por Europa renueva el cine norteamericano con ambición autoral y temas adultos.",
       "desc_en": "A Europe-influenced generation renews American cinema with authorial ambition and adult themes.",
-      "keyFilms": [238, 103, 28]
+      "keyFilms": [
+        238,
+        103,
+        28
+      ],
+      "name_gl": "Novo Hollywood",
+      "name_eu": "Hollywood berria",
+      "name_ca": "Nou Hollywood",
+      "desc_gl": "Unha xeración influída por Europa renova o cine norteamericano con ambición autoral e temas adultos.",
+      "desc_eu": "Europak eragindako belaunaldi batek zinema estatubatuarra berritzen du egile-anbizioaz eta gai helduez.",
+      "desc_ca": "Una generació influïda per Europa renova el cinema nord-americà amb ambició autoral i temes adults."
     },
     {
       "name_es": "Nuevo cine asiático",
@@ -71,7 +149,18 @@
       "period": "1990–presente",
       "desc_es": "Hong Kong, Taiwán, Corea, Irán o Tailandia: las cinematografías que han redefinido el cine de autor contemporáneo.",
       "desc_en": "Hong Kong, Taiwan, Korea, Iran or Thailand: the cinemas that have redefined contemporary arthouse film.",
-      "keyFilms": [843, 670, 496243, 60243]
+      "keyFilms": [
+        843,
+        670,
+        496243,
+        60243
+      ],
+      "name_gl": "Novo cine asiático",
+      "name_eu": "Zinema asiatiko berria",
+      "name_ca": "Nou cinema asiàtic",
+      "desc_gl": "Hong Kong, Taiwán, Corea, Irán ou Tailandia: as cinematografías que redefiniron o cine de autor contemporáneo.",
+      "desc_eu": "Hong Kong, Taiwan, Korea, Iran edo Thailandia: egungo egile-zinema birdefinitu duten zinematografiak.",
+      "desc_ca": "Hong Kong, Taiwan, Corea, Iran o Tailàndia: les cinematografies que han redefinit el cinema d'autor contemporani."
     }
   ]
 }

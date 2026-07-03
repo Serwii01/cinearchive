@@ -2,7 +2,7 @@
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { periodicals, embedUrl, iaUrl, type Periodical } from '../../../lib/periodicals';
-import { languages, contentLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { languages, localizedField, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 
 export function getStaticPaths() {
   const paths: { params: { lang: string; id: string }; props: { item: Periodical } }[] = [];
@@ -18,7 +18,7 @@ const lang = Astro.params.lang as Lang;
 const t = useTranslations(lang);
 const { item } = Astro.props as { item: Periodical };
 
-const blurb = contentLang(lang) === 'es' ? item.blurb_es : item.blurb_en;
+const blurb = localizedField(item, 'blurb', lang);
 const typeLabel = t(item.type === 'magazine' ? 'archive.type.magazine' : 'archive.type.newspaper');
 ---
 

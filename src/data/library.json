@@ -8,7 +8,10 @@
       "year": 1915,
       "lang": "en",
       "blurb_es": "El primer libro de teoría del cine escrito en inglés: Vachel Lindsay reivindica el cine como un arte nuevo y popular.",
-      "blurb_en": "The first book of film theory written in English: Vachel Lindsay claims cinema as a new, popular art."
+      "blurb_en": "The first book of film theory written in English: Vachel Lindsay claims cinema as a new, popular art.",
+      "blurb_gl": "O primeiro libro de teoría do cine escrito en inglés: Vachel Lindsay reivindica o cine como unha arte nova e popular.",
+      "blurb_eu": "Ingelesez idatzitako zinema-teoriaren lehen liburua: Vachel Lindsayk zinema arte berri eta popular gisa aldarrikatzen du.",
+      "blurb_ca": "El primer llibre de teoria del cinema escrit en anglès: Vachel Lindsay reivindica el cinema com un art nou i popular."
     },
     {
       "id": "photoplaypsychol00mnrich",
@@ -17,7 +20,10 @@
       "year": 1916,
       "lang": "en",
       "blurb_es": "Münsterberg estudia cómo la mente del espectador construye el espacio, el tiempo y la emoción del cine. Estética y psicología pioneras.",
-      "blurb_en": "Münsterberg studies how the spectator's mind builds cinematic space, time and emotion. Pioneering aesthetics and psychology."
+      "blurb_en": "Münsterberg studies how the spectator's mind builds cinematic space, time and emotion. Pioneering aesthetics and psychology.",
+      "blurb_gl": "Münsterberg estuda como a mente do espectador constrúe o espazo, o tempo e a emoción do cine. Estética e psicoloxía pioneiras.",
+      "blurb_eu": "Münsterbergek aztertzen du ikuslearen adimenak nola eraikitzen dituen zinemaren espazioa, denbora eta emozioa. Estetika eta psikologia aitzindariak.",
+      "blurb_ca": "Münsterberg estudia com la ment de l'espectador construeix l'espai, el temps i l'emoció del cinema. Estètica i psicologia pioneres."
     },
     {
       "id": "milliononenights00rams",
@@ -26,7 +32,10 @@
       "year": 1926,
       "lang": "en",
       "blurb_es": "Historia monumental de los orígenes del cine hasta 1925, llena de anécdotas de los pioneros de la industria.",
-      "blurb_en": "A monumental history of cinema's origins up to 1925, full of anecdotes from the industry's pioneers."
+      "blurb_en": "A monumental history of cinema's origins up to 1925, full of anecdotes from the industry's pioneers.",
+      "blurb_gl": "Historia monumental das orixes do cine ata 1925, chea de anécdotas dos pioneiros da industria.",
+      "blurb_eu": "Zinemaren jatorrien historia monumentala 1925era arte, industriaren aitzindarien pasadizoz betea.",
+      "blurb_ca": "Història monumental dels orígens del cinema fins al 1925, plena d'anècdotes dels pioners de la indústria."
     },
     {
       "id": "behindmotionpict00lescrich",
@@ -35,7 +44,10 @@
       "year": 1919,
       "lang": "en",
       "blurb_es": "Cómo se hacía una película en el cine mudo: guionistas, cámaras, decorados, laboratorio y proyección, paso a paso.",
-      "blurb_en": "How a film was made in the silent era: writers, cameras, sets, lab and projection, step by step."
+      "blurb_en": "How a film was made in the silent era: writers, cameras, sets, lab and projection, step by step.",
+      "blurb_gl": "Como se facía unha película no cine mudo: guionistas, cámaras, decorados, laboratorio e proxección, paso a paso.",
+      "blurb_eu": "Nola egiten zen film bat zinema mutuan: gidoilariak, kamerak, dekoratuak, laborategia eta proiekzioa, urratsez urrats.",
+      "blurb_ca": "Com es feia una pel·lícula en el cinema mut: guionistes, càmeres, decorats, laboratori i projecció, pas a pas."
     },
     {
       "id": "howmotionpictur00croygoog",
@@ -44,7 +56,10 @@
       "year": 1918,
       "lang": "en",
       "blurb_es": "Recorrido divulgativo por los estudios de la época muda y por todos los oficios que intervienen en una película.",
-      "blurb_en": "A popular tour of silent-era studios and of every craft involved in making a film."
+      "blurb_en": "A popular tour of silent-era studios and of every craft involved in making a film.",
+      "blurb_gl": "Percorrido divulgativo polos estudos da época muda e por todos os oficios que interveñen nunha película.",
+      "blurb_eu": "Zinema mutuaren garaiko estudioetatik eta film batean parte hartzen duten lanbide guztietatik egindako ibilbide dibulgatiboa.",
+      "blurb_ca": "Recorregut divulgatiu pels estudis de l'època muda i per tots els oficis que intervenen en una pel·lícula."
     },
     {
       "id": "writingthephotop17903gut",
@@ -53,7 +68,10 @@
       "year": 1913,
       "lang": "en",
       "blurb_es": "Manual clásico de escritura de guion en los inicios del cine: estructura, ideas y mercado del 'photoplay'.",
-      "blurb_en": "A classic manual of early screenwriting: structure, ideas and the market of the 'photoplay'."
+      "blurb_en": "A classic manual of early screenwriting: structure, ideas and the market of the 'photoplay'.",
+      "blurb_gl": "Manual clásico de escritura de guion nos inicios do cine: estrutura, ideas e mercado do 'photoplay'.",
+      "blurb_eu": "Zinemaren hasierako gidoi-idazketaren eskuliburu klasikoa: 'photoplay'-aren egitura, ideiak eta merkatua.",
+      "blurb_ca": "Manual clàssic d'escriptura de guió als inicis del cinema: estructura, idees i mercat del 'photoplay'."
     },
     {
       "id": "motionpicturemak00rathiala",
@@ -62,7 +80,10 @@
       "year": 1914,
       "lang": "en",
       "blurb_es": "Tratado técnico temprano: principios de la fotografía en movimiento, la sala, el proyector y la exhibición.",
-      "blurb_en": "An early technical treatise: principles of motion photography, the theater, the projector and exhibition."
+      "blurb_en": "An early technical treatise: principles of motion photography, the theater, the projector and exhibition.",
+      "blurb_gl": "Tratado técnico temperán: principios da fotografía en movemento, a sala, o proxector e a exhibición.",
+      "blurb_eu": "Tratatu tekniko goiztiarra: mugimenduzko argazkigintzaren printzipioak, aretoa, proiektorea eta erakusketa.",
+      "blurb_ca": "Tractat tècnic primerenc: principis de la fotografia en moviment, la sala, el projector i l'exhibició."
     },
     {
       "id": "opportunitiesinm01photiala",
@@ -71,7 +92,10 @@
       "year": 1922,
       "lang": "en",
       "blurb_es": "Retrato de la industria del cine de los años 20 desde dentro: sus oficios, sus salarios y cómo entrar en ellos.",
-      "blurb_en": "An inside portrait of the 1920s film industry: its trades, its wages and how to break into them."
+      "blurb_en": "An inside portrait of the 1920s film industry: its trades, its wages and how to break into them.",
+      "blurb_gl": "Retrato da industria do cine dos anos 20 desde dentro: os seus oficios, os seus salarios e como entrar neles.",
+      "blurb_eu": "20ko hamarkadako zinema-industriaren erretratua barrutik: bere lanbideak, bere soldatak eta haietan nola sartu.",
+      "blurb_ca": "Retrat de la indústria del cinema dels anys 20 des de dins: els seus oficis, els seus salaris i com entrar-hi."
     }
   ]
 }

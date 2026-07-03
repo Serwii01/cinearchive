@@ -2298,6 +2298,18 @@ export function useTranslations(lang: Lang) {
   };
 }
 
+/**
+ * Devuelve el campo localizado `<base>_<lang>` de un objeto de datos propio
+ * (JSON del repo), con reserva al español si ese idioma aún no está traducido.
+ * Permite ir traduciendo el contenido a gl/eu/ca sin romper nada por el camino.
+ * p.ej. localizedField(item, 'blurb', 'gl') -> item.blurb_gl ?? item.blurb_es
+ */
+export function localizedField<T>(obj: T, base: string, lang: Lang): string {
+  const rec = obj as Record<string, unknown>;
+  const v = rec[`${base}_${lang}`] ?? rec[`${base}_es`];
+  return typeof v === 'string' ? v : '';
+}
+
 /** Construye una ruta con prefijo de idioma. p.ej. localizePath('es', 'archive') -> '/es/archive' */
 export function localizePath(lang: Lang, path = ''): string {
   const clean = path.replace(/^\/+|\/+$/g, '');

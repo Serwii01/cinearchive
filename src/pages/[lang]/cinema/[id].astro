@@ -2,7 +2,7 @@
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { pdFilms, pdEmbedUrl, pdIaUrl, type PdFilm } from '../../../lib/pdfilms';
-import { languages, contentLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { languages, localizedField, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 
 export function getStaticPaths() {
   const paths: { params: { lang: string; id: string }; props: { item: PdFilm } }[] = [];
@@ -18,7 +18,7 @@ const lang = Astro.params.lang as Lang;
 const t = useTranslations(lang);
 const { item } = Astro.props as { item: PdFilm };
 
-const blurb = contentLang(lang) === 'es' ? item.blurb_es : item.blurb_en;
+const blurb = localizedField(item, 'blurb', lang);
 const meta = [item.director, item.country, item.year, `${item.runtime}′`].filter(Boolean).join(' · ');
 ---
 

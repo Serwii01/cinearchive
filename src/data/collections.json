@@ -7,7 +7,23 @@
       "title_en": "Peaks of Japanese Cinema",
       "blurb_es": "De la quietud de Ozu al estruendo épico de Kurosawa: el clasicismo japonés que enseñó al mundo a mirar.",
       "blurb_en": "From Ozu's stillness to Kurosawa's epic thunder: the Japanese classicism that taught the world how to look.",
-      "tmdbIds": [18148, 20530, 346, 548, 3782, 11645, 14696, 20532, 16672]
+      "tmdbIds": [
+        18148,
+        20530,
+        346,
+        548,
+        3782,
+        11645,
+        14696,
+        20532,
+        16672
+      ],
+      "title_gl": "Cumes do cine xaponés",
+      "title_eu": "Japoniar zinemaren gailurrak",
+      "title_ca": "Cims del cinema japonès",
+      "blurb_gl": "Da quietude de Ozu ao estrondo épico de Kurosawa: o clasicismo xaponés que ensinou o mundo a mirar.",
+      "blurb_eu": "Ozuren geldotasunetik Kurosawaren trumoi epikora: mundua begiratzen irakatsi zuen japoniar klasizismoa.",
+      "blurb_ca": "De la quietud d'Ozu al tro èpic de Kurosawa: el classicisme japonès que va ensenyar el món a mirar."
     },
     {
       "slug": "nouvelle-vague",
@@ -15,7 +31,20 @@
       "title_en": "The French New Wave",
       "blurb_es": "Cámara en mano, montaje insolente y amor por el cine: la generación que rompió las reglas a finales de los cincuenta.",
       "blurb_en": "Handheld cameras, insolent editing and a love of cinema: the generation that broke the rules in the late fifties.",
-      "tmdbIds": [147, 269, 1628, 2786, 266, 499]
+      "tmdbIds": [
+        147,
+        269,
+        1628,
+        2786,
+        266,
+        499
+      ],
+      "title_gl": "A Nouvelle Vague",
+      "title_eu": "Nouvelle Vague-a",
+      "title_ca": "La Nouvelle Vague",
+      "blurb_gl": "Cámara na man, montaxe insolente e amor polo cine: a xeración que rompeu as regras a finais dos cincuenta.",
+      "blurb_eu": "Kamera eskuan, muntaia lotsagabea eta zinemarako maitasuna: berrogeita hamarreko hamarkadaren amaieran arauak hautsi zituen belaunaldia.",
+      "blurb_ca": "Càmera a la mà, muntatge insolent i amor pel cinema: la generació que va trencar les regles a finals dels cinquanta."
     },
     {
       "slug": "mudo-y-vanguardias",
@@ -23,7 +52,20 @@
       "title_en": "Silent Cinema & the Avant-Garde",
       "blurb_es": "Expresionismo, montaje soviético y surrealismo: cuando el cine inventaba su propio lenguaje sin palabras.",
       "blurb_en": "Expressionism, Soviet montage and surrealism: when cinema invented its own wordless language.",
-      "tmdbIds": [234, 653, 19, 643, 780, 626]
+      "tmdbIds": [
+        234,
+        653,
+        19,
+        643,
+        780,
+        626
+      ],
+      "title_gl": "Cine mudo e vangardas",
+      "title_eu": "Zinema mutua eta abangoardiak",
+      "title_ca": "Cinema mut i avantguardes",
+      "blurb_gl": "Expresionismo, montaxe soviética e surrealismo: cando o cine inventaba a súa propia linguaxe sen palabras.",
+      "blurb_eu": "Espresionismoa, muntaia sobietarra eta surrealismoa: zinemak bere hizkuntza propioa hitzik gabe asmatzen zuenean.",
+      "blurb_ca": "Expressionisme, muntatge soviètic i surrealisme: quan el cinema inventava el seu propi llenguatge sense paraules."
     },
     {
       "slug": "negro-y-suspense",
@@ -31,7 +73,20 @@
       "title_en": "Shadows: Film Noir & Suspense",
       "blurb_es": "Claroscuros, fatalismo y tensión: el lado oscuro de Hollywood y sus herederos.",
       "blurb_en": "Chiaroscuro, fatalism and tension: Hollywood's dark side and its heirs.",
-      "tmdbIds": [426, 539, 567, 599, 3112, 103]
+      "tmdbIds": [
+        426,
+        539,
+        567,
+        599,
+        3112,
+        103
+      ],
+      "title_gl": "Sombras: cine negro e suspense",
+      "title_eu": "Itzalak: zinema beltza eta suspensea",
+      "title_ca": "Ombres: cinema negre i suspens",
+      "blurb_gl": "Claroscuros, fatalismo e tensión: o lado escuro de Hollywood e os seus herdeiros.",
+      "blurb_eu": "Klaroskuroak, fatalismoa eta tentsioa: Hollywooden alde iluna eta haren oinordekoak.",
+      "blurb_ca": "Clarobscurs, fatalisme i tensió: el costat fosc de Hollywood i els seus hereus."
     },
     {
       "slug": "ciencia-ficcion",
@@ -39,7 +94,20 @@
       "title_en": "Thinking Science Fiction",
       "blurb_es": "Futuros y otros mundos como espejo de lo humano: la ciencia ficción cuando es, sobre todo, filosofía.",
       "blurb_en": "Futures and other worlds as a mirror of the human: science fiction when it is, above all, philosophy.",
-      "tmdbIds": [62, 1398, 593, 78, 19, 38368]
+      "tmdbIds": [
+        62,
+        1398,
+        593,
+        78,
+        19,
+        38368
+      ],
+      "title_gl": "Ciencia ficción que pensa",
+      "title_eu": "Pentsatzen duen zientzia-fikzioa",
+      "title_ca": "Ciència-ficció que pensa",
+      "blurb_gl": "Futuros e outros mundos como espello do humano: a ciencia ficción cando é, sobre todo, filosofía.",
+      "blurb_eu": "Etorkizunak eta beste mundu batzuk gizakiaren ispilu gisa: zientzia-fikzioa, batez ere, filosofia denean.",
+      "blurb_ca": "Futurs i altres mons com a mirall d'allò humà: la ciència-ficció quan és, sobretot, filosofia."
     },
     {
       "slug": "nuevo-cine-asiatico",
@@ -47,7 +115,21 @@
       "title_en": "Contemporary Asian Auteurs",
       "blurb_es": "Hong Kong, Corea, Taiwán, Tailandia, Irán: las voces que han definido el cine de autor de las últimas décadas.",
       "blurb_en": "Hong Kong, Korea, Taiwan, Thailand, Iran: the voices that have defined arthouse cinema in recent decades.",
-      "tmdbIds": [843, 11104, 670, 496243, 60243, 11534, 30020]
+      "tmdbIds": [
+        843,
+        11104,
+        670,
+        496243,
+        60243,
+        11534,
+        30020
+      ],
+      "title_gl": "Novo cine asiático",
+      "title_eu": "Zinema asiatiko berria",
+      "title_ca": "Nou cinema asiàtic",
+      "blurb_gl": "Hong Kong, Corea, Taiwán, Tailandia, Irán: as voces que definiron o cine de autor das últimas décadas.",
+      "blurb_eu": "Hong Kong, Korea, Taiwan, Thailandia, Iran: azken hamarkadetako egile-zinema definitu duten ahotsak.",
+      "blurb_ca": "Hong Kong, Corea, Taiwan, Tailàndia, Iran: les veus que han definit el cinema d'autor de les darreres dècades."
     },
     {
       "slug": "el-cine-de-bergman",
@@ -55,7 +137,19 @@
       "title_en": "The Soul According to Bergman",
       "blurb_es": "Fe, muerte y silencio: el cine de cámara de Ingmar Bergman como introspección sin red.",
       "blurb_en": "Faith, death and silence: Ingmar Bergman's chamber cinema as introspection without a net.",
-      "tmdbIds": [797, 614, 490, 10238, 5961]
+      "tmdbIds": [
+        797,
+        614,
+        490,
+        10238,
+        5961
+      ],
+      "title_gl": "A alma segundo Bergman",
+      "title_eu": "Arima Bergmanen arabera",
+      "title_ca": "L'ànima segons Bergman",
+      "blurb_gl": "Fe, morte e silencio: o cine de cámara de Ingmar Bergman como introspección sen rede.",
+      "blurb_eu": "Fedea, heriotza eta isiltasuna: Ingmar Bergmanen ganbera-zinema, saretik gabeko barne-azterketa gisa.",
+      "blurb_ca": "Fe, mort i silenci: el cinema de cambra d'Ingmar Bergman com a introspecció sense xarxa."
     },
     {
       "slug": "tarkovski",
@@ -63,7 +157,18 @@
       "title_en": "Tarkovsky's Time",
       "blurb_es": "Planos largos, agua y memoria: el cine como esculpido del tiempo de Andrei Tarkovski.",
       "blurb_en": "Long takes, water and memory: cinema as sculpting in time, by Andrei Tarkovsky.",
-      "tmdbIds": [1398, 895, 593, 1396]
+      "tmdbIds": [
+        1398,
+        895,
+        593,
+        1396
+      ],
+      "title_gl": "O tempo de Tarkovski",
+      "title_eu": "Tarkovskiren denbora",
+      "title_ca": "El temps de Tarkovski",
+      "blurb_gl": "Planos longos, auga e memoria: o cine como esculpido do tempo de Andrei Tarkovski.",
+      "blurb_eu": "Plano luzeak, ura eta memoria: zinema denboraren zizelkatze gisa, Andrei Tarkovskiren eskutik.",
+      "blurb_ca": "Plans llargs, aigua i memòria: el cinema com a esculpit del temps d'Andrei Tarkovski."
     },
     {
       "slug": "cine-espanol",
@@ -71,7 +176,20 @@
       "title_en": "Essential Spanish Cinema",
       "blurb_es": "De Buñuel a Almodóvar: el cine español que mira a España con ironía, deseo y memoria.",
       "blurb_en": "From Buñuel to Almodóvar: Spanish cinema looking at Spain with irony, desire and memory.",
-      "tmdbIds": [4495, 4497, 29264, 1417, 99, 64]
+      "tmdbIds": [
+        4495,
+        4497,
+        29264,
+        1417,
+        99,
+        64
+      ],
+      "title_gl": "Cine español esencial",
+      "title_eu": "Espainiar zinema funtsezkoa",
+      "title_ca": "Cinema espanyol essencial",
+      "blurb_gl": "De Buñuel a Almodóvar: o cine español que mira a España con ironía, desexo e memoria.",
+      "blurb_eu": "Buñuelengandik Almodóvarrengana: Espainia ironiaz, desiraz eta memoriaz begiratzen duen espainiar zinema.",
+      "blurb_ca": "De Buñuel a Almodóvar: el cinema espanyol que mira Espanya amb ironia, desig i memòria."
     },
     {
       "slug": "cine-italiano",
@@ -79,7 +197,22 @@
       "title_en": "The Great Italian Tradition",
       "blurb_es": "Del neorrealismo a la modernidad de Antonioni y Fellini: medio siglo de cine italiano.",
       "blurb_en": "From neorealism to the modernity of Antonioni and Fellini: half a century of Italian cinema.",
-      "tmdbIds": [5156, 307, 405, 439, 422, 5165, 1040, 8416]
+      "tmdbIds": [
+        5156,
+        307,
+        405,
+        439,
+        422,
+        5165,
+        1040,
+        8416
+      ],
+      "title_gl": "A gran tradición italiana",
+      "title_eu": "Italiar tradizio handia",
+      "title_ca": "La gran tradició italiana",
+      "blurb_gl": "Do neorrealismo á modernidade de Antonioni e Fellini: medio século de cine italiano.",
+      "blurb_eu": "Neorrealismotik Antonioniren eta Felliniren modernitatera: mende erdiko italiar zinema.",
+      "blurb_ca": "Del neorealisme a la modernitat d'Antonioni i Fellini: mig segle de cinema italià."
     },
     {
       "slug": "europa-del-este",
@@ -87,7 +220,22 @@
       "title_en": "Voices from Eastern Europe",
       "blurb_es": "Del montaje soviético al rigor de Béla Tarr: el cine que pensó la historia desde el otro lado.",
       "blurb_en": "From Soviet montage to Béla Tarr's rigor: the cinema that thought history from the other side.",
-      "tmdbIds": [643, 895, 25237, 31414, 23160, 46919, 789, 5055]
+      "tmdbIds": [
+        643,
+        895,
+        25237,
+        31414,
+        23160,
+        46919,
+        789,
+        5055
+      ],
+      "title_gl": "Voces de Europa do Leste",
+      "title_eu": "Ekialdeko Europako ahotsak",
+      "title_ca": "Veus de l'Europa de l'Est",
+      "blurb_gl": "Da montaxe soviética ao rigor de Béla Tarr: o cine que pensou a historia desde o outro lado.",
+      "blurb_eu": "Muntaia sobietarretik Béla Tarren zorroztasunera: historia beste aldetik pentsatu zuen zinema.",
+      "blurb_ca": "Del muntatge soviètic al rigor de Béla Tarr: el cinema que va pensar la història des de l'altra banda."
     },
     {
       "slug": "animacion",
@@ -95,7 +243,18 @@
       "title_en": "Animation as Art",
       "blurb_es": "Ghibli y más allá: la animación como cumbre poética y emocional del cine, no como género menor.",
       "blurb_en": "Ghibli and beyond: animation as a poetic and emotional peak of cinema, not a minor genre.",
-      "tmdbIds": [129, 8392, 12477, 149]
+      "tmdbIds": [
+        129,
+        8392,
+        12477,
+        149
+      ],
+      "title_gl": "Animación que é arte",
+      "title_eu": "Arte den animazioa",
+      "title_ca": "Animació que és art",
+      "blurb_gl": "Ghibli e máis alá: a animación como cumbre poética e emocional do cine, non como xénero menor.",
+      "blurb_eu": "Ghibli eta harago: animazioa zinemaren gailur poetiko eta emozional gisa, ez genero txiki gisa.",
+      "blurb_ca": "Ghibli i més enllà: l'animació com a cim poètic i emocional del cinema, no com a gènere menor."
     }
   ]
 }

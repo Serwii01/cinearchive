@@ -2,7 +2,7 @@
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { pdFilms, pdThumbUrl } from '../../../lib/pdfilms';
-import { languages, contentLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { languages, localizedField, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 
 export function getStaticPaths() {
   return Object.keys(languages).map((lang) => ({ params: { lang } }));
@@ -61,7 +61,7 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
               <div class="flex flex-1 flex-col p-3">
                 <h2 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{f.title}</h2>
                 <p class="mt-1 font-mono text-meta-data text-muted">{f.director} · {f.country} · {f.runtime}′</p>
-                <p class="mt-2 text-body-md text-charcoal">{contentLang(lang) === 'es' ? f.blurb_es : f.blurb_en}</p>
+                <p class="mt-2 text-body-md text-charcoal">{localizedField(f, 'blurb', lang)}</p>
               </div>
             </a>
           </article>

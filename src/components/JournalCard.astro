@@ -1,5 +1,5 @@
 ---
-import { contentLang, useTranslations, type Lang } from '../i18n/ui';
+import { localizedField, useTranslations, type Lang } from '../i18n/ui';
 import type { Journal } from '../lib/periodicals';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 
 const { item, lang } = Astro.props;
 const t = useTranslations(lang);
-const blurb = contentLang(lang) === 'es' ? item.blurb_es : item.blurb_en;
+const blurb = localizedField(item, 'blurb', lang);
 const langLabel = item.lang === 'es' ? 'Español' : 'English';
 ---
 

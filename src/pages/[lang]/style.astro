@@ -1,7 +1,7 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { languages, contentLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { languages, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 
 export function getStaticPaths() {
   return Object.keys(languages).map((lang) => ({ params: { lang } }));
@@ -27,22 +27,44 @@ const palette: [string, string, string, string][] = [
   ['Dark ochre', '#f2be1d', '--c-ochre (dark)', '#1a1a1a'],
 ];
 
-const voice =
-  contentLang(lang) === 'es'
-    ? [
-        ['Esquinas rectas.', 'Sin redondeos en ningún elemento.'],
-        ['Alto contraste y retícula.', 'Líneas de 1–2 px que conectan de borde a borde.'],
-        ['El ocre es el único acento.', 'Con moderación y siempre con texto oscuro encima.'],
-        ['La tipografía es la estructura.', 'Serif para titulares, sans para leer, mono para datos.'],
-        ['Tono.', 'Sobrio, editorial, al servicio de lo público y de dominio público.'],
-      ]
-    : [
-        ['Straight corners.', 'No rounding on any element.'],
-        ['High contrast and grid.', '1–2 px lines that connect edge to edge.'],
-        ['Ochre is the only accent.', 'Used sparingly, always with dark text on top.'],
-        ['Type is the structure.', 'Serif for headlines, sans to read, mono for data.'],
-        ['Tone.', 'Sober, editorial, in service of the public and the public domain.'],
-      ];
+const voiceByLang: Record<Lang, [string, string][]> = {
+  es: [
+    ['Esquinas rectas.', 'Sin redondeos en ningún elemento.'],
+    ['Alto contraste y retícula.', 'Líneas de 1–2 px que conectan de borde a borde.'],
+    ['El ocre es el único acento.', 'Con moderación y siempre con texto oscuro encima.'],
+    ['La tipografía es la estructura.', 'Serif para titulares, sans para leer, mono para datos.'],
+    ['Tono.', 'Sobrio, editorial, al servicio de lo público y de dominio público.'],
+  ],
+  en: [
+    ['Straight corners.', 'No rounding on any element.'],
+    ['High contrast and grid.', '1–2 px lines that connect edge to edge.'],
+    ['Ochre is the only accent.', 'Used sparingly, always with dark text on top.'],
+    ['Type is the structure.', 'Serif for headlines, sans to read, mono for data.'],
+    ['Tone.', 'Sober, editorial, in service of the public and the public domain.'],
+  ],
+  gl: [
+    ['Esquinas rectas.', 'Sen redondeos en ningún elemento.'],
+    ['Alto contraste e retícula.', 'Liñas de 1–2 px que conectan de bordo a bordo.'],
+    ['O ocre é o único acento.', 'Con moderación e sempre con texto escuro enriba.'],
+    ['A tipografía é a estrutura.', 'Serif para titulares, sans para ler, mono para datos.'],
+    ['Ton.', 'Sobrio, editorial, ao servizo do público e de dominio público.'],
+  ],
+  eu: [
+    ['Izkina zuzenak.', 'Biribiltzerik gabe elementu bakar batean ere.'],
+    ['Kontraste handia eta sareta.', '1–2 px-ko lerroak, ertzetik ertzera lotzen dutenak.'],
+    ['Okrea da azentu bakarra.', 'Neurriz eta beti testu ilunarekin gainean.'],
+    ['Tipografia da egitura.', 'Serif izenburuetarako, sans irakurtzeko, mono datuetarako.'],
+    ['Tonua.', 'Soila, editoriala, publikoaren eta domeinu publikoaren zerbitzura.'],
+  ],
+  ca: [
+    ['Cantonades rectes.', 'Sense arrodoniments en cap element.'],
+    ['Alt contrast i retícula.', 'Línies d’1–2 px que connecten de vora a vora.'],
+    ["L'ocre és l'únic accent.", 'Amb moderació i sempre amb text fosc a sobre.'],
+    ['La tipografia és l’estructura.', 'Serif per a titulars, sans per llegir, mono per a dades.'],
+    ['To.', 'Sobri, editorial, al servei d’allò públic i de domini públic.'],
+  ],
+};
+const voice = voiceByLang[lang];
 ---
 
 <BaseLayout title={t('style.title')} description={t('style.intro')}>

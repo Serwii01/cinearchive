@@ -11,7 +11,10 @@
       "runtime": 13,
       "lang": "es",
       "blurb_es": "El primer gran relato de ciencia ficción del cine: la cápsula que se clava en el ojo de la Luna, de Georges Méliès.",
-      "blurb_en": "Cinema's first great science-fiction tale: Georges Méliès's capsule lodging in the eye of the Moon."
+      "blurb_en": "Cinema's first great science-fiction tale: Georges Méliès's capsule lodging in the eye of the Moon.",
+      "blurb_gl": "O primeiro gran relato de ciencia ficción do cine: a cápsula que se crava no ollo da Lúa, de Georges Méliès.",
+      "blurb_eu": "Zinemaren lehen zientzia-fikziozko kontakizun handia: Ilargiaren begian iltzatzen den kapsula, Georges Mélièsena.",
+      "blurb_ca": "El primer gran relat de ciència-ficció del cinema: la càpsula que es clava a l'ull de la Lluna, de Georges Méliès."
     },
     {
       "id": "TheGreatTrainRobbery1903",
@@ -23,7 +26,10 @@
       "runtime": 12,
       "lang": "en",
       "blurb_es": "Western fundacional de Edwin S. Porter, pionero del montaje narrativo y del célebre disparo a cámara.",
-      "blurb_en": "Edwin S. Porter's founding Western, a pioneer of narrative editing and the famous shot straight at the camera."
+      "blurb_en": "Edwin S. Porter's founding Western, a pioneer of narrative editing and the famous shot straight at the camera.",
+      "blurb_gl": "Western fundacional de Edwin S. Porter, pioneiro da montaxe narrativa e do célebre disparo á cámara.",
+      "blurb_eu": "Edwin S. Porterren western sortzailea, muntaia narratiboaren eta kamerari egindako tiro ospetsuaren aitzindaria.",
+      "blurb_ca": "Western fundacional d'Edwin S. Porter, pioner del muntatge narratiu i del cèlebre tret a càmera."
     },
     {
       "id": "20000LeaguesUndertheSea",
@@ -35,7 +41,10 @@
       "runtime": 85,
       "lang": "en",
       "blurb_es": "Adaptación de Julio Verne con las primeras grandes secuencias submarinas rodadas en cine.",
-      "blurb_en": "A Jules Verne adaptation featuring some of the earliest large-scale underwater photography in cinema."
+      "blurb_en": "A Jules Verne adaptation featuring some of the earliest large-scale underwater photography in cinema.",
+      "blurb_gl": "Adaptación de Julio Verne coas primeiras grandes secuencias submarinas rodadas no cine.",
+      "blurb_eu": "Jules Verneren egokitzapena, zineman filmatutako lehen sekuentzia submarino handiekin.",
+      "blurb_ca": "Adaptació de Jules Verne amb les primeres grans seqüències submarines rodades al cinema."
     },
     {
       "id": "Intolerance1916",
@@ -47,7 +56,10 @@
       "runtime": 163,
       "lang": "en",
       "blurb_es": "El monumental fresco de D. W. Griffith: cuatro épocas entrelazadas sobre la intolerancia humana.",
-      "blurb_en": "D. W. Griffith's monumental fresco: four interwoven eras on human intolerance."
+      "blurb_en": "D. W. Griffith's monumental fresco: four interwoven eras on human intolerance.",
+      "blurb_gl": "O monumental fresco de D. W. Griffith: catro épocas entrelazadas sobre a intolerancia humana.",
+      "blurb_eu": "D. W. Griffithen fresko monumentala: giza intolerantziari buruzko lau garai gurutzatuak.",
+      "blurb_ca": "El monumental fresc de D. W. Griffith: quatre èpoques entrellaçades sobre la intolerància humana."
     },
     {
       "id": "BrokenBlossoms",
@@ -59,7 +71,10 @@
       "runtime": 90,
       "lang": "en",
       "blurb_es": "Melodrama íntimo de Griffith, de una delicadeza visual que anticipa el cine de cámara.",
-      "blurb_en": "An intimate Griffith melodrama of visual delicacy that anticipates chamber cinema."
+      "blurb_en": "An intimate Griffith melodrama of visual delicacy that anticipates chamber cinema.",
+      "blurb_gl": "Melodrama íntimo de Griffith, dunha delicadeza visual que anticipa o cine de cámara.",
+      "blurb_eu": "Griffithen melodrama intimoa, ganbera-zinema aurreratzen duen fintasun bisualekoa.",
+      "blurb_ca": "Melodrama íntim de Griffith, d'una delicadesa visual que anticipa el cinema de cambra."
     },
     {
       "id": "DasKabinettdesDoktorCaligariTheCabinetofDrCaligari",
@@ -71,7 +86,10 @@
       "runtime": 76,
       "lang": "es",
       "blurb_es": "Manifiesto del expresionismo alemán: decorados deformes y sombras pintadas para una pesadilla sin centro.",
-      "blurb_en": "The manifesto of German Expressionism: warped sets and painted shadows for a nightmare with no center."
+      "blurb_en": "The manifesto of German Expressionism: warped sets and painted shadows for a nightmare with no center.",
+      "blurb_gl": "Manifesto do expresionismo alemán: decorados deformes e sombras pintadas para un pesadelo sen centro.",
+      "blurb_eu": "Espresionismo alemanaren manifestua: dekoratu deformatuak eta itzal margotuak, zentrorik gabeko amesgaizto baterako.",
+      "blurb_ca": "Manifest de l'expressionisme alemany: decorats deformes i ombres pintades per a un malson sense centre."
     },
     {
       "id": "markofzorro-1920",
@@ -83,7 +101,10 @@
       "runtime": 90,
       "lang": "en",
       "blurb_es": "Douglas Fairbanks funda el cine de capa y espada con su Zorro acrobático y burlón.",
-      "blurb_en": "Douglas Fairbanks founds the swashbuckler with his acrobatic, mocking Zorro."
+      "blurb_en": "Douglas Fairbanks founds the swashbuckler with his acrobatic, mocking Zorro.",
+      "blurb_gl": "Douglas Fairbanks funda o cine de capa e espada co seu Zorro acrobático e burlón.",
+      "blurb_eu": "Douglas Fairbanksek kapa eta ezpatako zinema sortzen du bere Zorro akrobatiko eta isekariarekin.",
+      "blurb_ca": "Douglas Fairbanks funda el cinema de capa i espasa amb el seu Zorro acrobàtic i burleta."
     },
     {
       "id": "Nosferatu_most_complete_version_93_mins.",
@@ -95,7 +116,10 @@
       "runtime": 94,
       "lang": "es",
       "blurb_es": "La sinfonía del horror de Murnau: el conde Orlok y su sombra siguen siendo la imagen del vampiro en el cine.",
-      "blurb_en": "Murnau's symphony of horror: Count Orlok and his shadow remain cinema's defining image of the vampire."
+      "blurb_en": "Murnau's symphony of horror: Count Orlok and his shadow remain cinema's defining image of the vampire.",
+      "blurb_gl": "A sinfonía do horror de Murnau: o conde Orlok e a súa sombra seguen sendo a imaxe do vampiro no cine.",
+      "blurb_eu": "Murnauren izuaren sinfonia: Orlok kondea eta haren itzala zinemako banpiroaren irudi izaten jarraitzen dute.",
+      "blurb_ca": "La simfonia de l'horror de Murnau: el comte Orlok i la seva ombra continuen sent la imatge del vampir al cinema."
     },
     {
       "id": "Haxan_tinted_and_subtitled",
@@ -107,7 +131,10 @@
       "runtime": 105,
       "lang": "es",
       "blurb_es": "Ensayo-documental sobre la brujería de Benjamin Christensen, entre el tratado y la alucinación.",
-      "blurb_en": "Benjamin Christensen's documentary-essay on witchcraft, poised between treatise and hallucination."
+      "blurb_en": "Benjamin Christensen's documentary-essay on witchcraft, poised between treatise and hallucination.",
+      "blurb_gl": "Ensaio-documental sobre a bruxería de Benjamin Christensen, entre o tratado e a alucinación.",
+      "blurb_eu": "Benjamin Christensenen sorginkeriari buruzko saiakera-dokumentala, tratatuaren eta haluzinazioaren artean.",
+      "blurb_ca": "Assaig-documental sobre la bruixeria de Benjamin Christensen, entre el tractat i l'al·lucinació."
     },
     {
       "id": "sherlock-jr-buster-keaton-1924",
@@ -119,7 +146,10 @@
       "runtime": 45,
       "lang": "en",
       "blurb_es": "Buster Keaton se mete literalmente dentro de la pantalla: una de las cumbres del cine cómico y metacinematográfico.",
-      "blurb_en": "Buster Keaton literally steps into the screen: a peak of slapstick and self-reflexive cinema."
+      "blurb_en": "Buster Keaton literally steps into the screen: a peak of slapstick and self-reflexive cinema.",
+      "blurb_gl": "Buster Keaton métese literalmente dentro da pantalla: unha das cumes do cine cómico e metacinematográfico.",
+      "blurb_eu": "Buster Keaton pantailaren barruan sartzen da literalki: zinema komiko eta metazinematografikoaren gailurretako bat.",
+      "blurb_ca": "Buster Keaton s'endinsa literalment dins la pantalla: un dels cims del cinema còmic i metacinematogràfic."
     },
     {
       "id": "BattleshipPotemkin",
@@ -131,7 +161,10 @@
       "runtime": 75,
       "lang": "es",
       "blurb_es": "El montaje de atracciones de Eisenstein y la escena de la escalinata de Odessa, lección viva de cine.",
-      "blurb_en": "Eisenstein's montage of attractions and the Odessa Steps sequence: a living lesson in cinema."
+      "blurb_en": "Eisenstein's montage of attractions and the Odessa Steps sequence: a living lesson in cinema.",
+      "blurb_gl": "A montaxe de atraccións de Eisenstein e a escena da escalinata de Odesa, lección viva de cine.",
+      "blurb_eu": "Eisensteinen erakarpen-muntaia eta Odessako eskaileren eszena, zinemaren ikasgai bizia.",
+      "blurb_ca": "El muntatge d'atraccions d'Eisenstein i l'escena de l'escalinata d'Odessa, lliçó viva de cinema."
     },
     {
       "id": "ThePhantomoftheOpera",
@@ -143,7 +176,10 @@
       "runtime": 93,
       "lang": "en",
       "blurb_es": "Lon Chaney y su rostro descubierto: el terror gótico de Hollywood en estado puro.",
-      "blurb_en": "Lon Chaney and his unmasking: Hollywood gothic horror at its purest."
+      "blurb_en": "Lon Chaney and his unmasking: Hollywood gothic horror at its purest.",
+      "blurb_gl": "Lon Chaney e o seu rostro descuberto: o terror gótico de Hollywood en estado puro.",
+      "blurb_eu": "Lon Chaney eta haren aurpegi agerian: Hollywoodeko izu gotikoa egoera puruan.",
+      "blurb_ca": "Lon Chaney i el seu rostre descobert: el terror gòtic de Hollywood en estat pur."
     },
     {
       "id": "TheLostWorld1925",
@@ -155,7 +191,10 @@
       "runtime": 100,
       "lang": "en",
       "blurb_es": "Los dinosaurios animados de Willis O'Brien, antecedente directo de King Kong.",
-      "blurb_en": "Willis O'Brien's animated dinosaurs, the direct ancestor of King Kong."
+      "blurb_en": "Willis O'Brien's animated dinosaurs, the direct ancestor of King Kong.",
+      "blurb_gl": "Os dinosauros animados de Willis O'Brien, antecedente directo de King Kong.",
+      "blurb_eu": "Willis O'Brienen dinosauro animatuak, King Kongen aurrekari zuzena.",
+      "blurb_ca": "Els dinosaures animats de Willis O'Brien, antecedent directe de King Kong."
     },
     {
       "id": "white_zombie",
@@ -167,7 +206,10 @@
       "runtime": 67,
       "lang": "en",
       "blurb_es": "El primer largometraje de zombis, con Bela Lugosi como amo de un ingenio azucarero de muertos vivientes.",
-      "blurb_en": "The first feature-length zombie film, with Bela Lugosi as master of a sugar mill of the undead."
+      "blurb_en": "The first feature-length zombie film, with Bela Lugosi as master of a sugar mill of the undead.",
+      "blurb_gl": "A primeira longametraxe de zombis, con Bela Lugosi como amo dun enxeño azucreiro de mortos viventes.",
+      "blurb_eu": "Zonbien lehen film luzea, Bela Lugosi hilotz bizidunez osatutako azukre-lantegi baten jabe gisa.",
+      "blurb_ca": "El primer llargmetratge de zombis, amb Bela Lugosi com a amo d'un enginy sucrer de morts vivents."
     },
     {
       "id": "his_girl_friday",
@@ -179,7 +221,10 @@
       "runtime": 92,
       "lang": "en",
       "blurb_es": "La screwball comedy a su máxima velocidad: Hawks y un duelo de diálogos solapados sin respiro.",
-      "blurb_en": "Screwball comedy at top speed: Hawks and a relentless duel of overlapping dialogue."
+      "blurb_en": "Screwball comedy at top speed: Hawks and a relentless duel of overlapping dialogue.",
+      "blurb_gl": "A screwball comedy á súa máxima velocidade: Hawks e un duelo de diálogos solapados sen respiro.",
+      "blurb_eu": "Screwball komedia bere abiadura gorenean: Hawks eta arnasarik gabeko elkarrizketa gainjarrien dueloa.",
+      "blurb_ca": "La screwball comedy a la seva màxima velocitat: Hawks i un duel de diàlegs encavalcats sense respir."
     },
     {
       "id": "Detour",
@@ -191,7 +236,10 @@
       "runtime": 68,
       "lang": "en",
       "blurb_es": "Cine negro de serie B llevado al mito: fatalismo, carretera y un destino que se cierra como una trampa.",
-      "blurb_en": "B-movie film noir turned myth: fatalism, the open road, and a destiny that snaps shut like a trap."
+      "blurb_en": "B-movie film noir turned myth: fatalism, the open road, and a destiny that snaps shut like a trap.",
+      "blurb_gl": "Cine negro de serie B levado ao mito: fatalismo, estrada e un destino que se pecha como unha trampa.",
+      "blurb_eu": "B serieko zinema beltza mito bihurtua: fatalismoa, errepidea eta tranpa baten gisa ixten den patua.",
+      "blurb_ca": "Cinema negre de sèrie B convertit en mite: fatalisme, carretera i un destí que es tanca com un parany."
     },
     {
       "id": "ScarletStreet",
@@ -203,7 +251,10 @@
       "runtime": 102,
       "lang": "en",
       "blurb_es": "Fritz Lang y Edward G. Robinson en un negro amargo sobre el deseo, la pintura y la condena.",
-      "blurb_en": "Fritz Lang and Edward G. Robinson in a bitter noir of desire, painting and damnation."
+      "blurb_en": "Fritz Lang and Edward G. Robinson in a bitter noir of desire, painting and damnation.",
+      "blurb_gl": "Fritz Lang e Edward G. Robinson nun negro amargo sobre o desexo, a pintura e a condena.",
+      "blurb_eu": "Fritz Lang eta Edward G. Robinson desira, pintura eta kondenari buruzko zinema beltz mingots batean.",
+      "blurb_ca": "Fritz Lang i Edward G. Robinson en un negre amarg sobre el desig, la pintura i la condemna."
     },
     {
       "id": "the-stranger-1946_202404",
@@ -215,7 +266,10 @@
       "runtime": 95,
       "lang": "en",
       "blurb_es": "Orson Welles dirige y protagoniza la caza de un criminal nazi oculto en un pueblo de Connecticut.",
-      "blurb_en": "Orson Welles directs and stars in the hunt for a Nazi criminal hiding in a Connecticut town."
+      "blurb_en": "Orson Welles directs and stars in the hunt for a Nazi criminal hiding in a Connecticut town.",
+      "blurb_gl": "Orson Welles dirixe e protagoniza a caza dun criminal nazi oculto nunha vila de Connecticut.",
+      "blurb_eu": "Orson Wellesek Connecticuteko herri batean ezkutatutako nazizko kriminal baten ehiza zuzendu eta protagonizatzen du.",
+      "blurb_ca": "Orson Welles dirigeix i protagonitza la caça d’un criminal nazi ocult en un poble de Connecticut."
     },
     {
       "id": "He_Walked_by_Night_1948",
@@ -227,7 +281,10 @@
       "runtime": 79,
       "lang": "en",
       "blurb_es": "Negro semidocumental de fotografía deslumbrante (John Alton) que inspiró la serie Dragnet.",
-      "blurb_en": "A semi-documentary noir with dazzling John Alton photography that inspired the series Dragnet."
+      "blurb_en": "A semi-documentary noir with dazzling John Alton photography that inspired the series Dragnet.",
+      "blurb_gl": "Negro semidocumental de fotografía deslumbrante (John Alton) que inspirou a serie Dragnet.",
+      "blurb_eu": "Argazkigintza liluragarriko zinema beltz erdi-dokumentala (John Alton), Dragnet telesaila inspiratu zuena.",
+      "blurb_ca": "Negre semidocumental de fotografia enlluernadora (John Alton) que va inspirar la sèrie Dragnet."
     },
     {
       "id": "doa_ipod",
@@ -239,7 +296,10 @@
       "runtime": 83,
       "lang": "en",
       "blurb_es": "Un hombre envenenado investiga su propio asesinato antes de morir: el negro como cuenta atrás.",
-      "blurb_en": "A poisoned man investigates his own murder before he dies: noir as a countdown."
+      "blurb_en": "A poisoned man investigates his own murder before he dies: noir as a countdown.",
+      "blurb_gl": "Un home envelenado investiga o seu propio asasinato antes de morrer: o negro como conta atrás.",
+      "blurb_eu": "Gizon pozoitu batek bere hilketa ikertzen du hil aurretik: zinema beltza atzerako kontaketa gisa.",
+      "blurb_ca": "Un home enverinat investiga el seu propi assassinat abans de morir: el negre com a compte enrere."
     },
     {
       "id": "Hitch_Hiker",
@@ -251,7 +311,10 @@
       "runtime": 71,
       "lang": "en",
       "blurb_es": "Ida Lupino, única mujer que dirigió un cine negro clásico de estudio: tensión seca en pleno desierto.",
-      "blurb_en": "Ida Lupino, the only woman to direct a classic studio noir: dry tension out in the desert."
+      "blurb_en": "Ida Lupino, the only woman to direct a classic studio noir: dry tension out in the desert.",
+      "blurb_gl": "Ida Lupino, única muller que dirixiu un cine negro clásico de estudo: tensión seca en pleno deserto.",
+      "blurb_eu": "Ida Lupino, estudioko zinema beltz klasiko bat zuzendu zuen emakume bakarra: tentsio lehorra basamortuaren erdian.",
+      "blurb_ca": "Ida Lupino, única dona que va dirigir un cinema negre clàssic d'estudi: tensió seca en ple desert."
     },
     {
       "id": "TheLittleShopOfHorrors1960",
@@ -263,7 +326,10 @@
       "runtime": 72,
       "lang": "en",
       "blurb_es": "La comedia de terror que Corman rodó en dos días: una planta carnívora con apetito y sentido del humor.",
-      "blurb_en": "The horror comedy Corman shot in two days: a carnivorous plant with appetite and a sense of humor."
+      "blurb_en": "The horror comedy Corman shot in two days: a carnivorous plant with appetite and a sense of humor.",
+      "blurb_gl": "A comedia de terror que Corman rodou en dous días: unha planta carnívora con apetito e sentido do humor.",
+      "blurb_eu": "Cormanek bi egunetan filmatu zuen izu-komedia: janari-gogoa eta umore-sena dituen landare haragijalea.",
+      "blurb_ca": "La comèdia de terror que Corman va rodar en dos dies: una planta carnívora amb gana i sentit de l'humor."
     },
     {
       "id": "carnival_of_souls",
@@ -275,7 +341,10 @@
       "runtime": 78,
       "lang": "en",
       "blurb_es": "Pesadilla independiente de atmósfera hipnótica que influyó en todo el cine de terror posterior.",
-      "blurb_en": "An independent nightmare of hypnotic atmosphere that influenced all later horror cinema."
+      "blurb_en": "An independent nightmare of hypnotic atmosphere that influenced all later horror cinema.",
+      "blurb_gl": "Pesadelo independente de atmosfera hipnótica que influíu en todo o cine de terror posterior.",
+      "blurb_eu": "Giro hipnotikoko amesgaizto independentea, ondorengo izu-zinema guztian eragina izan zuena.",
+      "blurb_ca": "Malson independent d'atmosfera hipnòtica que va influir en tot el cinema de terror posterior."
     },
     {
       "id": "TheTerror1963",
@@ -287,7 +356,10 @@
       "runtime": 81,
       "lang": "en",
       "blurb_es": "Gótico de Corman con Boris Karloff y un jovencísimo Jack Nicholson en un castillo de brumas.",
-      "blurb_en": "Corman gothic with Boris Karloff and a very young Jack Nicholson in a fog-bound castle."
+      "blurb_en": "Corman gothic with Boris Karloff and a very young Jack Nicholson in a fog-bound castle.",
+      "blurb_gl": "Gótico de Corman con Boris Karloff e un xovencísimo Jack Nicholson nun castelo de brétemas.",
+      "blurb_eu": "Cormanen gotikoa, Boris Karloff eta Jack Nicholson oso gazte batekin, lainopeko gaztelu batean.",
+      "blurb_ca": "Gòtic de Corman amb Boris Karloff i un joveníssim Jack Nicholson en un castell de boires."
     }
   ]
 }

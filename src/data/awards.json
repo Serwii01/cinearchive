@@ -590,7 +590,13 @@
           "director": "Harry d'Abbadie d'Arrast",
           "tmdbId": 28966
         }
-      ]
+      ],
+      "name_gl": "Óscar á mellor película",
+      "name_eu": "Film onenaren Oscarra",
+      "name_ca": "Oscar a la millor pel·lícula",
+      "note_gl": "Por ano de cerimonia, desde a primeira edición (1929). A película adoita ser do ano anterior.",
+      "note_eu": "Zeremonia-urteka, lehen ediziotik (1929). Filma normalean aurreko urtekoa izaten da.",
+      "note_ca": "Per any de cerimònia, des de la primera edició (1929). La pel·lícula sol ser de l'any anterior."
     },
     {
       "key": "cannes",
@@ -1091,7 +1097,13 @@
           "director": "Alf Sjöberg",
           "tmdbId": 18650
         }
-      ]
+      ],
+      "name_gl": "Palma de Ouro · Festival de Cannes",
+      "name_eu": "Urrezko Palma · Cannesko Zinema Jaialdia",
+      "name_ca": "Palma d'Or · Festival de Canes",
+      "note_gl": "Máximo galardón do Festival de Cannes, por ano. Algúns anos non se concedeu.",
+      "note_eu": "Cannesko Zinema Jaialdiaren sari nagusia, urteka. Zenbait urtetan ez zen eman.",
+      "note_ca": "Màxim guardó del Festival de Canes, per any. Alguns anys no es va concedir."
     },
     {
       "key": "goya",
@@ -1346,7 +1358,13 @@
           "director": "Fernando Fernán Gómez",
           "tmdbId": 156453
         }
-      ]
+      ],
+      "name_gl": "Goya á mellor película",
+      "name_eu": "Film onenaren Goya",
+      "name_ca": "Goya a la millor pel·lícula",
+      "note_gl": "Por ano de cerimonia, desde a primeira edición (1987). Premia o cine español do ano anterior.",
+      "note_eu": "Zeremonia-urteka, lehen ediziotik (1987). Aurreko urteko espainiar zinema saritzen du.",
+      "note_ca": "Per any de cerimònia, des de la primera edició (1987). Premia el cinema espanyol de l'any anterior."
     }
   ]
 }

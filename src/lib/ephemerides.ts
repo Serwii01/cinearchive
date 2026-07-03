@@ -1,19 +1,22 @@
 import data from '../data/ephemerides.json';
-import { contentLang, locales, type Lang } from '../i18n/ui';
+import { localizedField, locales, type Lang } from '../i18n/ui';
 
-/** Efeméride del cine. */
+/** Efeméride del cine. Campos gl/eu/ca opcionales (reserva a es). */
 export interface Ephemeris {
   month: number; // 1-12
   day: number; // 1-31
   year: number;
   text_es: string;
   text_en: string;
+  text_gl?: string;
+  text_eu?: string;
+  text_ca?: string;
   tmdbId?: number;
 }
 
 export const ephemerides = data.items as Ephemeris[];
 
-export const ephemerisText = (e: Ephemeris, lang: Lang) => (contentLang(lang) === 'es' ? e.text_es : e.text_en);
+export const ephemerisText = (e: Ephemeris, lang: Lang) => localizedField(e, 'text', lang);
 
 /** Fecha formateada del evento, p. ej. "13 de agosto de 1899" / "13 August 1899". */
 export function ephemerisDate(e: Ephemeris, lang: Lang): string {
