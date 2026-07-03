@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../../../../../layouts/BaseLayout.astro';
+import Avatar from '../../../../../components/Avatar.astro';
+import { normalizeLang, useTranslations, localizePath, formatDate } from '../../../../../i18n/ui';
+import { db } from '../../../../../db/client';
+import { userFilms } from '../../../../../db/schema';
+import { and, eq } from 'drizzle-orm';
+import { getFilmsBrief } from '../../../../../lib/films';
+import { getProfileByUsername, followState, canViewActivity } from '../../../../../lib/social';
+
+export const prerender = false;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const viewer = Astro.locals.user;
+
+const target = await getProfileByUsername(Astro.params.username ?? '');
+if (!target) return new Response(null, { status: 404 });
+
+const tmdbId = Number(Astro.params.tmdbId);
+if (!Number.isInteger(tmdbId) || tmdbId <= 0) return new Response(null, { status: 404 });
+
+// Mismo muro de privacidad que el perfil: si no se puede ver la actividad,
+// no se revela la existencia de la reseña (404, no 403).
+const state = await followState(viewer?.id ?? null, target.userId);
+if (!canViewActivity(viewer?.id ?? null, target, state)) return new Response(null, { status: 404 });
+
+const [row] = await db
+  .select({
+    status: userFilms.status,
+    rating: userFilms.rating,
+    note: userFilms.note,
+    reviewedAt: userFilms.reviewedAt,
+    updatedAt: userFilms.updatedAt,
+  })
+  .from(userFilms)
+  .where(and(eq(userFilms.userId, target.userId), eq(userFilms.tmdbId, tmdbId)))
+  .limit(1);
+
+// Solo hay "reseña" si hay nota o valoración; si no, la página no existe.
+if (!row || (row.rating == null && !row.note)) return new Response(null, { status: 404 });
+
+const brief = (await getFilmsBrief([tmdbId], lang)).get(tmdbId);
+const filmHref = localizePath(lang, `film/${tmdbId}`);
+const profileHref = localizePath(lang, `u/${target.username}`);
+const reviewedAt = row.reviewedAt ?? row.updatedAt;
+const title = `${t('profile.review')} · ${brief?.title ?? `#${tmdbId}`} · @${target.username}`;
+---
+
+<BaseLayout title={title}>
+  <section class="frame py-12">
+    <a href={profileHref} class="label no-underline hover:text-ink">← @{target.username}</a>
+
+    <article class="mt-6 grid grid-cols-1 gap-8 border-t border-ink pt-8 sm:grid-cols-[minmax(0,200px)_1fr]">
+      {/* Póster (clic → ficha) */}
+      <a href={filmHref} class="block no-underline">
+        <div class="aspect-[2/3] w-full border border-ink bg-charcoal">
+          {brief?.poster ? (
+            <img src={brief.poster} alt={brief.title} class="h-full w-full object-cover" />
+          ) : (
+            <div class="film-grain h-full w-full"></div>
+          )}
+        </div>
+      </a>
+
+      <div class="min-w-0">
+        <span class="label">{t('profile.review')}</span>
+        {/* Título (clic → ficha) */}
+        <h1 class="mt-2 text-display-mobile md:text-display-lg">
+          <a href={filmHref} class="no-underline hover:text-ochre">{brief?.title ?? `#${tmdbId}`}</a>
+        </h1>
+        <p class="mt-2 font-mono text-meta-data text-muted">
+          {[brief?.director, brief?.year].filter(Boolean).join(' · ')}
+        </p>
+
+        {/* Autoría y fecha */}
+        <div class="mt-5 flex flex-wrap items-center gap-3 border-y border-ink py-3">
+          <a href={profileHref} class="flex items-center gap-2 no-underline">
+            <Avatar userId={target.userId} name={target.name} hasAvatar={!!target.avatarType} size={40} class="h-8 w-8" />
+            <span class="font-mono text-meta-data text-ink hover:text-ochre">@{target.username}</span>
+          </a>
+          <span class="font-mono text-meta-data text-muted">·</span>
+          <time class="font-mono text-meta-data text-muted">{formatDate(reviewedAt, lang)}</time>
+        </div>
+
+        {row.rating && (
+          <p class="mt-5 font-mono text-headline-md text-ink">
+            {'★'.repeat(row.rating)}<span class="text-outline-variant">{'★'.repeat(5 - row.rating)}</span>
+          </p>
+        )}
+
+        {row.note && <p class="mt-4 max-w-prose whitespace-pre-line text-body-lg text-charcoal">{row.note}</p>}
+
+        <a href={filmHref} class="btn btn-secondary mt-8 no-underline">{t('profile.openFilm')} →</a>
+      </div>
+    </article>
+  </section>
+</BaseLayout>

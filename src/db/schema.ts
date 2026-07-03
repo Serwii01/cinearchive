@@ -132,6 +132,10 @@ export const userFilms = pgTable(
     status: filmStatus('status').notNull().default('want'),
     rating: smallint('rating'), // 1-5, nullable
     note: text('note'),
+    // Fecha en que se escribió la reseña (nota o valoración) por última vez.
+    // Null si la película nunca ha tenido reseña (solo estado). Distinta de
+    // updatedAt, que también cambia al mover la película entre listas.
+    reviewedAt: timestamp('reviewed_at'),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },
   (t) => ({

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Avatar from '../../../components/Avatar.astro';
-import { normalizeLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../../i18n/ui';
 import { db } from '../../../db/client';
 import { userFilms, userLists, userListFilms } from '../../../db/schema';
 import { and, desc, eq, isNotNull, or, count, inArray } from 'drizzle-orm';
@@ -34,19 +34,37 @@ const counts = await followCounts(target.userId);
 // Para seguir hace falta tener perfil propio (username).
 const viewerHasProfile = viewer ? !!(await getMyProfile(viewer.id)) : false;
 
-// Actividad visible: reseñas (películas con nota o valoración) y listas públicas.
-let reviews: { tmdbId: number; rating: number | null; note: string | null }[] = [];
+// Actividad visible: reseñas (películas con nota o valoración), colecciones por
+// estado (favoritas y pendientes, públicas por defecto) y listas públicas.
+let reviews: { tmdbId: number; rating: number | null; note: string | null; reviewedAt: Date }[] = [];
+let favorites: number[] = [];
+let watchlist: number[] = [];
 let lists: { id: string; name: string; count: number; films: number[] }[] = [];
 let briefs = new Map<number, FilmBrief>();
 
 if (canView) {
   const reviewRows = await db
-    .select({ tmdbId: userFilms.tmdbId, rating: userFilms.rating, note: userFilms.note })
+    .select({
+      tmdbId: userFilms.tmdbId,
+      rating: userFilms.rating,
+      note: userFilms.note,
+      reviewedAt: userFilms.reviewedAt,
+      updatedAt: userFilms.updatedAt,
+    })
     .from(userFilms)
     .where(and(eq(userFilms.userId, target.userId), or(isNotNull(userFilms.rating), isNotNull(userFilms.note))))
     .orderBy(desc(userFilms.updatedAt))
     .limit(60);
-  reviews = reviewRows;
+  reviews = reviewRows.map((r) => ({ ...r, reviewedAt: r.reviewedAt ?? r.updatedAt }));
+
+  // Favoritas y pendientes (por estado). Públicas por defecto dentro del perfil visible.
+  const statusRows = await db
+    .select({ tmdbId: userFilms.tmdbId, status: userFilms.status })
+    .from(userFilms)
+    .where(and(eq(userFilms.userId, target.userId), inArray(userFilms.status, ['favorite', 'want'])))
+    .orderBy(desc(userFilms.updatedAt));
+  favorites = statusRows.filter((r) => r.status === 'favorite').map((r) => r.tmdbId);
+  watchlist = statusRows.filter((r) => r.status === 'want').map((r) => r.tmdbId);
 
   const publicLists = await db
     .select({ id: userLists.id, name: userLists.name })
@@ -69,7 +87,9 @@ if (canView) {
   }
   lists = publicLists.map((l) => ({ id: l.id, name: l.name, films: listFilmMap.get(l.id) ?? [], count: (listFilmMap.get(l.id) ?? []).length }));
 
-  const allIds = [...new Set([...reviews.map((r) => r.tmdbId), ...lists.flatMap((l) => l.films)])];
+  const allIds = [
+    ...new Set([...reviews.map((r) => r.tmdbId), ...favorites, ...watchlist, ...lists.flatMap((l) => l.films)]),
+  ];
   briefs = await getFilmsBrief(allIds, lang);
 }
 
@@ -167,7 +187,7 @@ const title = `@${target.username}`;
               {reviews.map((r) => {
                 const b = briefs.get(r.tmdbId);
                 return (
-                  <a href={localizePath(lang, `film/${r.tmdbId}`)} class="flex gap-3 bg-surface p-3 no-underline hover:bg-film-white">
+                  <a href={localizePath(lang, `u/${target.username}/review/${r.tmdbId}`)} class="flex gap-3 bg-surface p-3 no-underline hover:bg-film-white">
                     <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
                       {b?.poster && <img src={b.poster} alt={b.title} class="h-full w-full object-cover" />}
                     </div>
@@ -176,6 +196,7 @@ const title = `@${target.username}`;
                       <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
                       {r.rating && <p class="mt-1 font-mono text-meta-data text-ink">{'★'.repeat(r.rating)}<span class="text-outline-variant">{'★'.repeat(5 - r.rating)}</span></p>}
                       {r.note && <p class="mt-1 line-clamp-3 text-body-md text-charcoal/80">{r.note}</p>}
+                      <p class="mt-1 font-mono text-meta-data text-outline">{formatDate(r.reviewedAt, lang)}</p>
                     </div>
                   </a>
                 );
@@ -183,6 +204,34 @@ const title = `@${target.username}`;
             </div>
           )}
         </div>
+
+        {/* Colecciones por estado: favoritas y pendientes (públicas por defecto) */}
+        {([
+          { key: 'fav', label: t('watchlist.favorite'), ids: favorites },
+          { key: 'want', label: t('watchlist.want'), ids: watchlist },
+        ] as const).map((col) =>
+          col.ids.length > 0 ? (
+            <div class="mt-12">
+              <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{col.label} <span class="label">· {col.ids.length}</span></h2>
+              <div class="mt-4 grid grid-cols-4 gap-px border border-ink bg-ink sm:grid-cols-6 lg:grid-cols-9">
+                {col.ids.slice(0, 27).map((id) => {
+                  const b = briefs.get(id);
+                  return (
+                    <a href={localizePath(lang, `film/${id}`)} class="block bg-surface no-underline" title={b?.title}>
+                      <div class="aspect-[2/3] w-full bg-charcoal">
+                        {b?.poster ? (
+                          <img src={b.poster} alt={b?.title ?? ''} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                        ) : (
+                          <div class="film-grain h-full w-full"></div>
+                        )}
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null,
+        )}
 
         {/* Listas públicas */}
         <div class="mt-12">
@@ -193,7 +242,7 @@ const title = `@${target.username}`;
             lists.map((l) => (
               <div class="mt-6">
                 <h3 class="font-display text-headline-md text-ink">
-                  <a href={localizePath(lang, `lists/${l.id}`)} class="no-underline hover:text-ochre">{l.name}</a>
+                  <a href={`${localizePath(lang, `lists/${l.id}`)}?from=profile`} class="no-underline hover:text-ochre">{l.name}</a>
                   <span class="label">· {l.count}</span>
                 </h3>
                 <div class="mt-3 grid grid-cols-4 gap-px border border-ink bg-ink sm:grid-cols-6 lg:grid-cols-9">
@@ -212,7 +261,7 @@ const title = `@${target.username}`;
                     );
                   })}
                 </div>
-                <a href={localizePath(lang, `lists/${l.id}`)} class="mt-2 inline-block font-mono text-meta-data text-ink no-underline hover:text-ochre">{t('lists.viewList')} →</a>
+                <a href={`${localizePath(lang, `lists/${l.id}`)}?from=profile`} class="mt-2 inline-block font-mono text-meta-data text-ink no-underline hover:text-ochre">{t('lists.viewList')} →</a>
               </div>
             ))
           )}

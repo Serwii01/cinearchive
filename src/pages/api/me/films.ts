@@ -37,6 +37,11 @@ export const POST: APIRoute = async ({ locals, request }) => {
   }
   const { tmdbId, status, rating, note } = parsed.data;
 
+  // La reseña se "sella" con la fecha actual cuando llega nota o valoración
+  // (en la creación o en cada edición). Los cambios de solo estado no la tocan.
+  const now = new Date();
+  const touchesReview = rating !== undefined || note !== undefined;
+
   await db
     .insert(userFilms)
     .values({
@@ -45,7 +50,8 @@ export const POST: APIRoute = async ({ locals, request }) => {
       status: status ?? 'want',
       rating: rating ?? null,
       note: note ?? null,
-      updatedAt: new Date(),
+      reviewedAt: touchesReview && (rating != null || note != null) ? now : null,
+      updatedAt: now,
     })
     .onConflictDoUpdate({
       target: [userFilms.userId, userFilms.tmdbId],
@@ -54,7 +60,8 @@ export const POST: APIRoute = async ({ locals, request }) => {
         ...(status !== undefined ? { status } : {}),
         ...(rating !== undefined ? { rating } : {}),
         ...(note !== undefined ? { note } : {}),
-        updatedAt: new Date(),
+        ...(touchesReview ? { reviewedAt: now } : {}),
+        updatedAt: now,
       },
     });
 

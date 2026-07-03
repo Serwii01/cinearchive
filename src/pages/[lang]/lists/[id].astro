@@ -47,13 +47,26 @@ const ids = rows.map((r) => r.tmdbId);
 const briefs = await getFilmsBrief(ids, lang);
 const films = ids.map((i) => briefs.get(i)).filter((f) => f != null);
 
-// Enlace de vuelta: el dueño a sus listas; un visitante al perfil del dueño.
-const backHref = isOwner
-  ? localizePath(lang, 'watchlist')
-  : owner
-    ? localizePath(lang, `u/${owner.username}`)
-    : localizePath(lang);
-const backLabel = isOwner ? t('lists.backToLists') : owner ? `@${owner.username}` : t('nav.home');
+// Enlace de vuelta contextual:
+//  · si se llegó desde un perfil (?from=profile), se vuelve a ese perfil —
+//    incluido el propio, para no mandar al dueño a "mis listas" sin quererlo;
+//  · el dueño (acceso directo) vuelve a sus listas;
+//  · un visitante vuelve al perfil del dueño.
+const fromProfile = Astro.url.searchParams.get('from') === 'profile' && !!owner;
+const backHref = fromProfile
+  ? localizePath(lang, `u/${owner!.username}`)
+  : isOwner
+    ? localizePath(lang, 'watchlist')
+    : owner
+      ? localizePath(lang, `u/${owner.username}`)
+      : localizePath(lang);
+const backLabel = fromProfile
+  ? `@${owner!.username}`
+  : isOwner
+    ? t('lists.backToLists')
+    : owner
+      ? `@${owner.username}`
+      : t('nav.home');
 ---
 
 <BaseLayout title={list.name}>

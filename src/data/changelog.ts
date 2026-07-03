@@ -14,6 +14,26 @@ export interface Release {
 
 export const CHANGELOG: Release[] = [
   {
+    version: '1.3',
+    date: '2026-07-03',
+    title_es: 'Reseñas con vida propia',
+    title_en: 'Reviews come into their own',
+    changes_es: [
+      'Cada reseña tiene ahora su propia página, con la fecha en que la escribiste, accesible desde tu perfil o el de cualquier persona.',
+      'Desde una reseña puedes saltar directamente a la ficha de la película.',
+      'Tus películas favoritas y tu lista de pendientes se muestran en tu perfil público.',
+      'La interfaz está disponible en cinco idiomas —español, inglés, gallego, euskera y catalán— con un nuevo selector de idioma.',
+      'Al abrir una lista desde un perfil, el enlace de vuelta te devuelve a ese perfil.',
+    ],
+    changes_en: [
+      'Every review now has its own page, showing the date you wrote it, reachable from your profile or anyone else’s.',
+      'From a review you can jump straight to the film’s page.',
+      'Your favourite films and your watchlist now appear on your public profile.',
+      'The interface is available in five languages —Spanish, English, Galician, Basque and Catalan— with a new language switcher.',
+      'Opening a list from a profile now takes you back to that profile.',
+    ],
+  },
+  {
     version: '1.2.1',
     date: '2026-07-02',
     title_es: 'Perfiles y comunidad, afinados',
