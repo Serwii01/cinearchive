@@ -94,7 +94,9 @@ if (canView) {
 }
 
 const title = `@${target.username}`;
-const shareUrl = new URL(localizePath(lang, `u/${target.username}`), Astro.url).href;
+// Enlace canónico (dominio real). Astro.url tras el proxy da localhost, por eso
+// se usa Astro.site (SITE_URL / cinearchive.es).
+const shareUrl = new URL(localizePath(lang, `u/${target.username}`), Astro.site ?? Astro.url).href;
 ---
 
 <BaseLayout title={title}>

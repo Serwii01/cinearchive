@@ -84,52 +84,172 @@ const title = `${t('profile.review')} · ${brief?.title ?? `#${tmdbId}`} · @${t
           <time class="font-mono text-meta-data text-muted">{formatDate(reviewedAt, lang)}</time>
         </div>
 
-        {row.rating && (
-          <p class="mt-5 font-mono text-headline-md text-ink">
-            {'★'.repeat(row.rating)}<span class="text-outline-variant">{'★'.repeat(5 - row.rating)}</span>
-          </p>
+        {/* Vista de la reseña (con ids estables para el dueño, actualizables al editar) */}
+        {isOwner ? (
+          <div id="review-view">
+            <p id="view-stars" class:list={['mt-5 font-mono text-headline-md text-ink', !row.rating && 'hidden']}>
+              {row.rating ? (
+                <Fragment>{'★'.repeat(row.rating)}<span class="text-outline-variant">{'★'.repeat(5 - row.rating)}</span></Fragment>
+              ) : ''}
+            </p>
+            <p id="view-note" class:list={['mt-4 max-w-prose whitespace-pre-line text-body-lg text-charcoal', !row.note && 'hidden']}>{row.note}</p>
+          </div>
+        ) : (
+          <Fragment>
+            {row.rating && (
+              <p class="mt-5 font-mono text-headline-md text-ink">
+                {'★'.repeat(row.rating)}<span class="text-outline-variant">{'★'.repeat(5 - row.rating)}</span>
+              </p>
+            )}
+            {row.note && <p class="mt-4 max-w-prose whitespace-pre-line text-body-lg text-charcoal">{row.note}</p>}
+          </Fragment>
         )}
 
-        {row.note && <p class="mt-4 max-w-prose whitespace-pre-line text-body-lg text-charcoal">{row.note}</p>}
+        {/* Editor inline (solo el dueño), oculto hasta pulsar "Editar" */}
+        {isOwner && (
+          <div id="review-editor" class="mt-6 hidden border border-ink bg-film-white p-4" data-tmdb={tmdbId} data-rating={row.rating ?? 0} data-redirect={profileHref}>
+            <span class="label">{t('controls.rating')}</span>
+            <div id="star-row" class="mt-1 flex w-max border border-ink">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button type="button" data-star={n} aria-label={String(n)} class="h-8 w-8 border-r border-ink font-mono text-meta-data transition-colors last:border-r-0 hover:bg-ochre hover:text-on-accent">{n}</button>
+              ))}
+            </div>
+            <label class="label mt-4 block" for="edit-note">{t('controls.note')}</label>
+            <textarea id="edit-note" rows="4" class="w-full border border-ink bg-white px-2 py-1 font-body text-body-md focus:bg-film-white focus:outline-none">{row.note}</textarea>
+            <div class="mt-3 flex items-center gap-2">
+              <button type="button" id="edit-save" class="btn btn-primary">{t('controls.save')}</button>
+              <button type="button" id="edit-cancel" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white">{t('profile.cancel')}</button>
+            </div>
+          </div>
+        )}
 
         <div class="mt-8 flex flex-wrap items-center gap-3">
           <a href={filmHref} class="btn btn-secondary no-underline">{t('profile.openFilm')} →</a>
           {isOwner && (
-            <>
-              <a href={filmHref} class="label border border-ink px-3 py-2 no-underline transition-colors hover:bg-ink hover:text-white">{t('review.edit')}</a>
-              <button
-                type="button"
-                id="review-delete"
-                data-tmdb={tmdbId}
-                data-confirm={t('review.deleteConfirm')}
-                data-redirect={profileHref}
-                class="label border border-error px-3 py-2 text-error transition-colors hover:bg-error hover:text-white"
-              >{t('review.delete')}</button>
-            </>
+            <Fragment>
+              <button type="button" id="edit-toggle" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white">{t('review.edit')}</button>
+              <button type="button" id="del-open" class="label border border-error px-3 py-2 text-error transition-colors hover:bg-error hover:text-white">{t('review.delete')}</button>
+            </Fragment>
           )}
         </div>
       </div>
     </article>
+
+    {/* Modal de confirmación propio (sustituye al confirm() del navegador) */}
+    {isOwner && (
+      <div id="del-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-ink/60 p-4" data-tmdb={tmdbId} data-redirect={profileHref}>
+        <div class="w-full max-w-sm border-2 border-ink bg-surface" role="dialog" aria-modal="true" aria-labelledby="del-title">
+          <div class="border-b-2 border-ink px-4 py-3">
+            <h2 id="del-title" class="font-display text-headline-md text-ink">{t('review.delete')}</h2>
+          </div>
+          <div class="p-4">
+            <p class="text-body-md text-charcoal">{t('review.deleteConfirm')}</p>
+            <div class="mt-4 flex justify-end gap-2">
+              <button type="button" id="del-cancel" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white">{t('profile.cancel')}</button>
+              <button type="button" id="del-confirm" class="label border border-error bg-error px-3 py-2 text-white transition-colors hover:bg-ink">{t('review.delete')}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
   </section>
 
   <script>
-    // Eliminar reseña: borra nota y valoración (la película sigue en tu lista).
-    // Solo actúa si el botón existe (es decir, si la reseña es del propio usuario).
-    const del = document.getElementById('review-delete') as HTMLButtonElement | null;
-    del?.addEventListener('click', async () => {
-      if (!confirm(del.dataset.confirm || '')) return;
-      del.disabled = true;
-      try {
-        const res = await fetch('/api/me/films', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ tmdbId: Number(del.dataset.tmdb), rating: null, note: null }),
+    const byId = (id: string) => document.getElementById(id);
+    const post = (tmdbId: number, rating: number | null, note: string | null) =>
+      fetch('/api/me/films', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ tmdbId, rating, note }),
+      });
+
+    // --- Edición inline de la reseña (sin ir a la ficha) ---
+    const editor = byId('review-editor');
+    const view = byId('review-view');
+    if (editor && view) {
+      const tmdbId = Number(editor.dataset.tmdb);
+      const redirect = editor.dataset.redirect || '/';
+      const noteEl = byId('edit-note') as HTMLTextAreaElement;
+      const saveBtn = byId('edit-save') as HTMLButtonElement | null;
+      const stars = Array.from(editor.querySelectorAll<HTMLButtonElement>('[data-star]'));
+      const viewStars = byId('view-stars');
+      const viewNote = byId('view-note');
+      let rating = Number(editor.dataset.rating) || 0;
+
+      const paint = () =>
+        stars.forEach((b) => {
+          const on = Number(b.dataset.star) <= rating;
+          b.classList.toggle('bg-ochre', on);
+          b.classList.toggle('text-on-accent', on);
         });
-        if (res.ok) window.location.href = del.dataset.redirect || '/';
-        else del.disabled = false;
-      } catch {
-        del.disabled = false;
-      }
-    });
+      stars.forEach((b) =>
+        b.addEventListener('click', () => {
+          const n = Number(b.dataset.star);
+          rating = rating === n ? 0 : n; // volver a pulsar la misma quita la estrella
+          paint();
+        }),
+      );
+
+      const open = () => { view.classList.add('hidden'); editor.classList.remove('hidden'); paint(); };
+      const close = () => { editor.classList.add('hidden'); view.classList.remove('hidden'); };
+      byId('edit-toggle')?.addEventListener('click', open);
+      byId('edit-cancel')?.addEventListener('click', close);
+
+      const updateView = (r: number, note: string) => {
+        if (viewStars) {
+          viewStars.classList.toggle('hidden', r === 0);
+          viewStars.innerHTML = r
+            ? '★'.repeat(r) + '<span class="text-outline-variant">' + '★'.repeat(5 - r) + '</span>'
+            : '';
+        }
+        if (viewNote) {
+          viewNote.classList.toggle('hidden', !note);
+          viewNote.textContent = note;
+        }
+      };
+
+      saveBtn?.addEventListener('click', async () => {
+        const note = noteEl.value.trim();
+        saveBtn.disabled = true;
+        try {
+          // Reseña vacía (sin nota ni valoración) = eliminarla y volver al perfil.
+          if (rating === 0 && !note) {
+            const res = await post(tmdbId, null, null);
+            if (res.ok) { window.location.href = redirect; return; }
+            saveBtn.disabled = false;
+            return;
+          }
+          const res = await post(tmdbId, rating || null, note || null);
+          if (res.ok) { updateView(rating, note); close(); }
+          saveBtn.disabled = false;
+        } catch {
+          saveBtn.disabled = false;
+        }
+      });
+    }
+
+    // --- Borrado con confirmación propia (modal, no confirm() del navegador) ---
+    const modal = byId('del-modal');
+    if (modal) {
+      const tmdbId = Number(modal.dataset.tmdb);
+      const redirect = modal.dataset.redirect || '/';
+      const confirmBtn = byId('del-confirm') as HTMLButtonElement | null;
+      const show = () => { modal.classList.remove('hidden'); modal.classList.add('flex'); };
+      const hide = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); };
+      byId('del-open')?.addEventListener('click', show);
+      byId('del-cancel')?.addEventListener('click', hide);
+      modal.addEventListener('click', (e) => { if (e.target === modal) hide(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hide(); });
+      confirmBtn?.addEventListener('click', async () => {
+        confirmBtn.disabled = true;
+        try {
+          const res = await post(tmdbId, null, null);
+          if (res.ok) window.location.href = redirect;
+          else confirmBtn.disabled = false;
+        } catch {
+          confirmBtn.disabled = false;
+        }
+      });
+    }
   </script>
 </BaseLayout>
