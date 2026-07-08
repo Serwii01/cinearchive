@@ -118,7 +118,12 @@ export const extraFilms = pgTable('extra_films', {
   addedAt: timestamp('added_at').notNull().defaultNow(),
 });
 
-/** Estado de una película en la lista del usuario. */
+/**
+ * Estado de visionado de una película. 'favorite' se conserva en el enum por
+ * compatibilidad histórica, pero ya no se usa: favorita es un flag propio
+ * (columna `favorite`), independiente del estado, para poder tener una película
+ * a la vez vista/pendiente y favorita.
+ */
 export const filmStatus = pgEnum('film_status', ['want', 'seen', 'favorite']);
 
 /** Watchlist + favoritos + valoraciones + notas (una fila por usuario y película). */
@@ -130,6 +135,8 @@ export const userFilms = pgTable(
       .references(() => user.id, { onDelete: 'cascade' }),
     tmdbId: integer('tmdb_id').notNull(),
     status: filmStatus('status').notNull().default('want'),
+    /** Favorita: flag independiente del estado (una película valorada puede ser favorita a la vez). */
+    favorite: boolean('favorite').notNull().default(false),
     rating: smallint('rating'), // 1-5, nullable
     note: text('note'),
     // Fecha en que se escribió la reseña (nota o valoración) por última vez.

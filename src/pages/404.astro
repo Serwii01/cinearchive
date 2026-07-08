@@ -4,13 +4,64 @@ import { getLangFromUrl, useTranslations, localizePath } from '../i18n/ui';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+// Rostros sueltos (recortados del dibujo original) esparcidos por la ventana.
+// Cada uno: posición (%), ancho máx (px), proporción, giro (deg) y opacidad.
+// Se rellenan por máscara con --c-ink, así viran solos a claro en modo oscuro.
+const faces = [
+  { n: '01', l: 5, t: 5, w: 120, ar: '165 / 195', r: -8, o: 0.72 },
+  { n: '02', l: 42, t: 3, w: 115, ar: '165 / 205', r: 6, o: 0.66 },
+  { n: '03', l: 80, t: 6, w: 125, ar: '175 / 190', r: 9, o: 0.72 },
+  { n: '04', l: 15, t: 26, w: 120, ar: '175 / 175', r: -12, o: 0.6 },
+  { n: '05', l: 73, t: 23, w: 115, ar: '175 / 185', r: 8, o: 0.6 },
+  { n: '06', l: 3, t: 50, w: 100, ar: '110 / 175', r: -6, o: 0.55 },
+  { n: '07', l: 86, t: 48, w: 105, ar: '150 / 200', r: 11, o: 0.58 },
+  { n: '08', l: 12, t: 72, w: 125, ar: '185 / 205', r: 7, o: 0.66 },
+  { n: '09', l: 75, t: 74, w: 120, ar: '170 / 190', r: -9, o: 0.66 },
+  { n: '10', l: 46, t: 87, w: 110, ar: '165 / 190', r: 5, o: 0.62 },
+  { n: '11', l: 27, t: 80, w: 105, ar: '120 / 185', r: -5, o: 0.55 },
+];
 ---
 
 <BaseLayout title={t('error.title')}>
-  <section class="frame py-24 text-center">
-    <p class="font-display text-display-lg text-ink">404</p>
-    <h1 class="mt-4 text-headline-lg text-ink">{t('error.title')}</h1>
-    <p class="mt-3 text-body-lg text-charcoal">{t('error.text')}</p>
-    <a href={localizePath(lang)} class="btn btn-primary mt-8 no-underline">{t('error.home')}</a>
+  <section class="frame relative flex min-h-[82vh] flex-col items-center justify-center overflow-hidden py-16 text-center">
+    {/* Constelación de rostros: capa decorativa detrás del texto. */}
+    <div class="scatter" aria-hidden="true">
+      {faces.map((f) => (
+        <span
+          class="face"
+          style={`left:${f.l}%;top:${f.t}%;width:min(${f.w}px,24vw);aspect-ratio:${f.ar};opacity:${f.o};transform:translate(-50%,-50%) rotate(${f.r}deg);-webkit-mask-image:url(/faces/face-${f.n}.png);mask-image:url(/faces/face-${f.n}.png)`}
+        />
+      ))}
+    </div>
+
+    <div class="relative z-10">
+      <p class="font-display text-display-lg text-ink">404</p>
+      <h1 class="mt-4 text-headline-lg text-ink">{t('error.title')}</h1>
+      <p class="mt-3 text-body-lg text-charcoal">{t('error.text')}</p>
+      <a href={localizePath(lang)} class="btn btn-primary mt-8 no-underline">{t('error.home')}</a>
+    </div>
   </section>
 </BaseLayout>
+
+<style>
+  /* Capa de rostros: ocupa toda la sección; no captura clics. */
+  .scatter {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  /* Cada rostro es una máscara rellenada con la tinta del tema (negro en claro,
+     #ececec en oscuro), sin fondos ni recuadros: encaja en el brutalismo. */
+  .face {
+    position: absolute;
+    background-color: var(--c-ink);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+</style>

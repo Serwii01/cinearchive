@@ -1,8 +1,12 @@
 /**
  * "Película del día" para la portada (SOLO SERVIDOR).
  *
- * Se elige de las tendencias de TMDB de forma determinista por fecha (cambia cada
- * día). Garantiza:
+ * Se elige de forma determinista por fecha (cambia cada día) y con VARIEDAD DE
+ * ÉPOCAS: cada día rota a una década distinta (1930s → 2020s) y se toma una
+ * película solvente de esa década. Así la portada no queda anclada a los estrenos
+ * del año en curso (antes salía de "tendencias de hoy", casi siempre del año actual).
+ *
+ * Garantiza además:
  *   - La MISMA película en español y en inglés: el id del día se fija una sola vez
  *     (compartido entre idiomas) y luego se localiza por idioma.
  *   - SIN películas infantiles: se descartan las comedias familiares (Familia +
@@ -11,7 +15,7 @@
  *     lleva Familia).
  * Se cachea en memoria por idioma para no repetir la llamada en cada visita.
  */
-import { trendingDay, getMovie, backdropUrl, posterUrl, type TmdbTrending } from './tmdb';
+import { discoverMovies, getMovie, backdropUrl, posterUrl, type TmdbSearchResult } from './tmdb';
 
 export interface FilmOfDay {
   tmdbId: number;
@@ -31,6 +35,10 @@ const isKids = (r: { genre_ids?: number[] }) => {
   const g = r.genre_ids ?? [];
   return g.includes(FAMILY) && g.includes(COMEDY);
 };
+
+// Décadas por las que rota la película del día. Cubren desde el cine clásico hasta
+// hoy, para que la recomendación no se limite al año en curso.
+const DECADES = [1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020];
 
 type PickLike = {
   id: number;
@@ -63,26 +71,44 @@ function toFilmOfDay(p: PickLike): FilmOfDay {
   };
 }
 
+/**
+ * Reúne las candidatas del día: una década (rotando) y una página (rotando cada
+ * vez que se completa una vuelta de décadas), ordenadas por nota con un mínimo de
+ * votos para asegurar calidad. Con imagen y sin infantiles. Si esa combinación
+ * viene vacía (décadas antiguas con pocas fichas), cae a popularidad, página 1.
+ */
+async function buildPool(locale: string, day: number): Promise<TmdbSearchResult[]> {
+  const decade = DECADES[day % DECADES.length];
+  const page = 1 + (Math.floor(day / DECADES.length) % 5); // 1..5
+
+  const primary = await discoverMovies({ decade, sort: 'vote_average.desc', page }, locale);
+  let candidates = primary.results.filter((r) => r.backdrop_path && !isKids(r));
+
+  if (candidates.length === 0) {
+    const alt = await discoverMovies({ decade, sort: 'popularity.desc', page: 1 }, locale);
+    candidates = alt.results.filter((r) => r.backdrop_path && !isKids(r));
+  }
+  return candidates;
+}
+
 export async function getFilmOfDay(locale: string): Promise<FilmOfDay | null> {
   const day = dayNumber();
   const cached = cache.get(locale);
   if (cached && cached.day === day) return cached.data;
 
   try {
-    const results = await trendingDay(locale);
-    // Con imagen y sin infantiles.
-    const candidates = results.filter((r: TmdbTrending) => r.backdrop_path && !isKids(r));
+    const candidates = await buildPool(locale, day);
     if (candidates.length === 0) return null;
 
-    // Fija el id del día UNA sola vez. Orden por id (estable) en lugar del ranking
-    // volátil del trending, para que la elección no dependa del momento de la llamada.
+    // Fija el id del día UNA sola vez. Orden por id (estable) para que la elección
+    // no dependa del orden con que TMDB devuelva los resultados.
     if (!chosen || chosen.day !== day) {
       const sorted = [...candidates].sort((a, b) => a.id - b.id);
       chosen = { day, id: sorted[day % sorted.length].id };
     }
 
     // Localiza la película elegida en el idioma pedido. Si no aparece en este
-    // trending (el conjunto pudo variar), pide su ficha para localizarla igual.
+    // conjunto (pudo variar entre idiomas), pide su ficha para localizarla igual.
     const inList = candidates.find((r) => r.id === chosen!.id);
     const data = inList ? toFilmOfDay(inList) : toFilmOfDay(await getMovie(chosen.id, locale));
 

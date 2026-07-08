@@ -44,6 +44,7 @@ const brief = (await getFilmsBrief([tmdbId], lang)).get(tmdbId);
 const filmHref = localizePath(lang, `film/${tmdbId}`);
 const profileHref = localizePath(lang, `u/${target.username}`);
 const reviewedAt = row.reviewedAt ?? row.updatedAt;
+const isOwner = viewer?.id === target.userId;
 const title = `${t('profile.review')} · ${brief?.title ?? `#${tmdbId}`} · @${target.username}`;
 ---
 
@@ -91,8 +92,44 @@ const title = `${t('profile.review')} · ${brief?.title ?? `#${tmdbId}`} · @${t
 
         {row.note && <p class="mt-4 max-w-prose whitespace-pre-line text-body-lg text-charcoal">{row.note}</p>}
 
-        <a href={filmHref} class="btn btn-secondary mt-8 no-underline">{t('profile.openFilm')} →</a>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a href={filmHref} class="btn btn-secondary no-underline">{t('profile.openFilm')} →</a>
+          {isOwner && (
+            <>
+              <a href={filmHref} class="label border border-ink px-3 py-2 no-underline transition-colors hover:bg-ink hover:text-white">{t('review.edit')}</a>
+              <button
+                type="button"
+                id="review-delete"
+                data-tmdb={tmdbId}
+                data-confirm={t('review.deleteConfirm')}
+                data-redirect={profileHref}
+                class="label border border-error px-3 py-2 text-error transition-colors hover:bg-error hover:text-white"
+              >{t('review.delete')}</button>
+            </>
+          )}
+        </div>
       </div>
     </article>
   </section>
+
+  <script>
+    // Eliminar reseña: borra nota y valoración (la película sigue en tu lista).
+    // Solo actúa si el botón existe (es decir, si la reseña es del propio usuario).
+    const del = document.getElementById('review-delete') as HTMLButtonElement | null;
+    del?.addEventListener('click', async () => {
+      if (!confirm(del.dataset.confirm || '')) return;
+      del.disabled = true;
+      try {
+        const res = await fetch('/api/me/films', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ tmdbId: Number(del.dataset.tmdb), rating: null, note: null }),
+        });
+        if (res.ok) window.location.href = del.dataset.redirect || '/';
+        else del.disabled = false;
+      } catch {
+        del.disabled = false;
+      }
+    });
+  </script>
 </BaseLayout>

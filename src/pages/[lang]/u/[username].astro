@@ -94,6 +94,7 @@ if (canView) {
 }
 
 const title = `@${target.username}`;
+const shareUrl = new URL(localizePath(lang, `u/${target.username}`), Astro.url).href;
 ---
 
 <BaseLayout title={title}>
@@ -147,8 +148,8 @@ const title = `@${target.username}`;
         </div>
       </div>
 
-      {/* Acción: seguir / editar / iniciar sesión */}
-      <div class="shrink-0">
+      {/* Acción: seguir / editar / iniciar sesión + compartir */}
+      <div class="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
         {isSelf ? (
           <a href={localizePath(lang, 'account')} class="btn btn-secondary">{t('profile.editProfile')}</a>
         ) : viewer && !viewerHasProfile ? (
@@ -167,6 +168,17 @@ const title = `@${target.username}`;
         ) : (
           <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`} class="btn btn-secondary">{t('profile.loginToFollow')}</a>
         )}
+        <button
+          id="share-profile"
+          type="button"
+          data-url={shareUrl}
+          data-share-title={title}
+          data-copied={t('profile.linkCopied')}
+          class="btn btn-secondary inline-flex items-center justify-center gap-2"
+        >
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg>
+          {t('profile.share')}
+        </button>
       </div>
     </header>
 
@@ -551,6 +563,34 @@ const title = `@${target.username}`;
     });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && photoModal.classList.contains('flex')) closePhoto();
+    });
+  }
+
+  // --- Compartir perfil ---
+  const shareBtn = document.getElementById('share-profile') as HTMLButtonElement | null;
+  if (shareBtn) {
+    shareBtn.addEventListener('click', async () => {
+      const url = shareBtn.dataset.url || window.location.href;
+      // En móvil, hoja de compartir nativa (incluye "copiar enlace"); en escritorio,
+      // copia directa al portapapeles con aviso.
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: shareBtn.dataset.shareTitle || document.title, url });
+        } catch {
+          /* cancelado por el usuario: sin acción */
+        }
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        return;
+      }
+      const original = shareBtn.innerHTML;
+      shareBtn.textContent = shareBtn.dataset.copied || 'OK';
+      window.setTimeout(() => {
+        shareBtn.innerHTML = original;
+      }, 1500);
     });
   }
 </script>

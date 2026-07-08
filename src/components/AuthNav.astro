@@ -10,10 +10,12 @@ const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const user = Astro.locals.user;
 const { mobile = false } = Astro.props;
+const current = Astro.url.pathname.replace(/\/$/, '');
 
 const config = {
   initial: user ? 'user' : 'guest',
   mobile,
+  current,
   links: {
     login: localizePath(lang, 'login'),
     register: localizePath(lang, 'register'),
@@ -51,8 +53,20 @@ const config = {
       const base = m
         ? 'label block border-b border-ink px-4 py-4 no-underline transition-colors'
         : 'label flex items-center border-l border-ink px-4 no-underline transition-colors';
-      const link = (href: string, label: string, accent = false) =>
-        `<a href="${href}" class="${base} ${accent ? 'bg-ochre text-on-accent hover:bg-ink hover:text-white' : 'hover:bg-ink hover:text-white'}">${label}</a>`;
+      const link = (href: string, label: string, accent = false) => {
+        const active = !accent && href.replace(/\/$/, '') === cfg.current;
+        const state = accent
+          ? 'bg-ochre text-on-accent hover:bg-ink hover:text-white'
+          : active
+            ? 'bg-ink text-white'
+            : 'hover:bg-ink hover:text-white';
+        return `<a href="${href}" class="${base} ${state}">${label}</a>`;
+      };
+
+      // Icono de salir (mismo trazo que la lupa y la campana). En el menú móvil,
+      // que es textual, se conserva la etiqueta.
+      const exitIcon =
+        '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>';
 
       const renderGuest = () => {
         this.innerHTML = link(cfg.links.login, cfg.labels.login) + link(cfg.links.register, cfg.labels.register, true);
@@ -67,7 +81,7 @@ const config = {
           (m ? link(cfg.links.notifications, cfg.labels.notifications) : '') +
           link(cfg.links.recs, cfg.labels.recs) +
           link(cfg.links.account, cfg.labels.account, true) +
-          `<button type="button" data-logout class="${btnClass}">${cfg.labels.logout}</button>`;
+          `<button type="button" data-logout aria-label="${cfg.labels.logout}" title="${cfg.labels.logout}" class="${btnClass}">${m ? cfg.labels.logout : exitIcon}</button>`;
         this.querySelector('[data-logout]')?.addEventListener('click', async () => {
           await signOut();
           try { sessionStorage.removeItem('cine:social-summary'); } catch {}
