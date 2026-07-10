@@ -18,6 +18,12 @@ export const GET: APIRoute = async ({ request, url }) => {
   const latRaw = url.searchParams.get('lat');
   const lonRaw = url.searchParams.get('lon');
 
+  // Radio opcional (para "ampliar la zona" desde el mapa). Acotado por seguridad.
+  const radiusRaw = Number(url.searchParams.get('radius'));
+  const radius = Number.isFinite(radiusRaw)
+    ? Math.min(50000, Math.max(1000, radiusRaw))
+    : 25000;
+
   let center: GeoPoint | null = null;
 
   if (latRaw != null && lonRaw != null) {
@@ -37,6 +43,6 @@ export const GET: APIRoute = async ({ request, url }) => {
     return Response.json({ error: 'invalid' }, { status: 400 });
   }
 
-  const cinemas = await findCinemas(center.lat, center.lon);
+  const cinemas = await findCinemas(center.lat, center.lon, radius);
   return Response.json({ center, cinemas });
 };

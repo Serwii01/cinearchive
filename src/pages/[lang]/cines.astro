@@ -17,7 +17,10 @@ const t = useTranslations(lang);
     data-l-error={t('cines.error')}
     data-l-distance={t('cines.distance')}
     data-l-directions={t('cines.directions')}
+    data-l-cartelera={t('cines.cartelera')}
     data-l-geoerror={t('cines.geoError')}
+    data-l-maparia={t('cines.mapAria')}
+    data-l-you={t('cines.youAreHere')}
   >
     <header class="border-b border-ink pb-6">
       <span class="label">{t('nav.cines')}</span>
@@ -45,6 +48,9 @@ const t = useTranslations(lang);
 
     <p id="cines-status" role="status" class="mt-6 font-mono text-meta-data text-muted" hidden></p>
 
+    {/* Mapa (Leaflet). Oculto hasta la primera búsqueda. */}
+    <div id="cines-map" class="mt-6 hidden h-[24rem] border border-ink" aria-label={t('cines.mapAria')}></div>
+
     <div id="cines-results" class="mt-6 grid grid-cols-1 gap-px border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3"></div>
 
     <p class="mt-8 border-t border-outline-variant pt-4 font-mono text-meta-data text-muted">
@@ -54,23 +60,40 @@ const t = useTranslations(lang);
 </BaseLayout>
 
 <script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+
+  interface Cinema {
+    id: string;
+    name: string;
+    lat: number;
+    lon: number;
+    address: string | null;
+    operator: string | null;
+    website: string | null;
+    distanceKm: number;
+  }
+
   const root = document.querySelector('[data-cines]') as HTMLElement | null;
   if (root) {
     const API = '/api/cinemas';
-    const L = {
+    const L_ = {
       loading: root.dataset.lLoading!,
       empty: root.dataset.lEmpty!,
       out: root.dataset.lOut!,
       error: root.dataset.lError!,
       distance: root.dataset.lDistance!,
       directions: root.dataset.lDirections!,
+      cartelera: root.dataset.lCartelera!,
       geoError: root.dataset.lGeoerror!,
+      you: root.dataset.lYou!,
     };
     const form = document.getElementById('cines-form') as HTMLFormElement;
     const input = document.getElementById('cines-q') as HTMLInputElement;
     const geoBtn = document.getElementById('cines-geo') as HTMLButtonElement;
     const statusEl = document.getElementById('cines-status') as HTMLElement;
     const results = document.getElementById('cines-results') as HTMLElement;
+    const mapEl = document.getElementById('cines-map') as HTMLElement;
 
     const esc = (s: string) =>
       String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -80,16 +103,81 @@ const t = useTranslations(lang);
       statusEl.hidden = !msg;
     };
 
-    const render = (cinemas: Array<{ id: string; name: string; lat: number; lon: number; address: string | null; distanceKm: number }>) => {
+    const directionsUrl = (c: Cinema) => `https://www.openstreetmap.org/directions?to=${c.lat}%2C${c.lon}`;
+    // Cartelera: la web oficial si OSM la conoce; si no, una búsqueda de cartelera.
+    const carteleraUrl = (c: Cinema) =>
+      c.website ??
+      `https://www.google.com/search?q=${encodeURIComponent(`${c.name} ${c.address ?? ''} cartelera`)}`;
+
+    // --- Mapa (Leaflet) ---
+    let map: L.Map | null = null;
+    let layer: L.LayerGroup | null = null;
+
+    const ensureMap = () => {
+      if (map) return map;
+      mapEl.classList.remove('hidden');
+      map = L.map(mapEl, { scrollWheelZoom: false });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap',
+      }).addTo(map);
+      layer = L.layerGroup().addTo(map);
+      return map;
+    };
+
+    const drawMap = (center: { lat: number; lon: number }, cinemas: Cinema[]) => {
+      const m = ensureMap();
+      layer!.clearLayers();
+      // Tu ubicación (tinta) y cada cine (ocre).
+      L.circleMarker([center.lat, center.lon], {
+        radius: 7,
+        color: '#1a1a1a',
+        weight: 2,
+        fillColor: '#1a1a1a',
+        fillOpacity: 0.85,
+      })
+        .bindPopup(esc(L_.you))
+        .addTo(layer!);
+
+      const points: [number, number][] = [[center.lat, center.lon]];
+      for (const c of cinemas) {
+        points.push([c.lat, c.lon]);
+        const popup =
+          `<strong>${esc(c.name)}</strong><br>` +
+          (c.address ? `${esc(c.address)}<br>` : '') +
+          `<a href="${directionsUrl(c)}" target="_blank" rel="noopener noreferrer">${esc(L_.directions)}</a> · ` +
+          `<a href="${carteleraUrl(c)}" target="_blank" rel="noopener noreferrer">${esc(L_.cartelera)}</a>`;
+        L.circleMarker([c.lat, c.lon], {
+          radius: 6,
+          color: '#8a5a2b',
+          weight: 2,
+          fillColor: '#c8862f',
+          fillOpacity: 0.85,
+        })
+          .bindPopup(popup)
+          .addTo(layer!);
+      }
+      // Ajusta el encuadre a todos los puntos.
+      m.fitBounds(points as L.LatLngBoundsExpression, { padding: [30, 30], maxZoom: 15 });
+      // El contenedor estaba oculto al crearse: recalcula tamaño.
+      setTimeout(() => m.invalidateSize(), 0);
+    };
+
+    const render = (cinemas: Cinema[]) => {
       results.innerHTML = cinemas
         .map((c) => {
-          const maps = `https://www.openstreetmap.org/directions?to=${c.lat}%2C${c.lon}`;
           const addr = c.address ? `<p class="mt-1 font-mono text-meta-data text-muted">${esc(c.address)}</p>` : '';
+          const chain = c.operator
+            ? `<p class="mt-1 font-mono text-meta-data text-muted">${esc(c.operator)}</p>`
+            : '';
           return (
             `<div class="flex flex-col justify-between gap-2 bg-surface p-4">` +
-            `<div><h3 class="font-display text-headline-md leading-tight text-ink">${esc(c.name)}</h3>${addr}` +
-            `<p class="mt-1 font-mono text-meta-data text-ink">${c.distanceKm} ${esc(L.distance)}</p></div>` +
-            `<a href="${maps}" target="_blank" rel="noopener noreferrer" class="label mt-1 no-underline text-ink hover:text-muted">${esc(L.directions)} →</a>` +
+            `<div><h3 class="font-display text-headline-md leading-tight text-ink">${esc(c.name)}</h3>${chain}${addr}` +
+            `<p class="mt-1 font-mono text-meta-data text-ink">${c.distanceKm} ${esc(L_.distance)}</p></div>` +
+            `<div class="mt-1 flex flex-wrap gap-x-4 gap-y-1">` +
+            `<a href="${directionsUrl(c)}" target="_blank" rel="noopener noreferrer" class="label no-underline text-ink hover:text-muted">${esc(L_.directions)} →</a>` +
+            `<a href="${carteleraUrl(c)}" target="_blank" rel="noopener noreferrer" class="label no-underline text-ink hover:text-muted">${esc(L_.cartelera)} →</a>` +
+            `</div>` +
             `</div>`
           );
         })
@@ -98,21 +186,22 @@ const t = useTranslations(lang);
 
     const query = async (params: string) => {
       results.innerHTML = '';
-      setStatus(L.loading);
+      setStatus(L_.loading);
       try {
         const res = await fetch(`${API}?${params}`, { headers: { accept: 'application/json' } });
         const data = await res.json().catch(() => null);
         if (!res.ok || !data) {
-          setStatus(data?.error === 'out_of_area' ? L.out : L.error);
+          setStatus(data?.error === 'out_of_area' ? L_.out : L_.error);
           return;
         }
-        if (data.error === 'out_of_area') return setStatus(L.out);
-        if (data.error) return setStatus(L.error);
-        if (!data.cinemas || data.cinemas.length === 0) return setStatus(L.empty);
+        if (data.error === 'out_of_area') return setStatus(L_.out);
+        if (data.error) return setStatus(L_.error);
+        if (!data.cinemas || data.cinemas.length === 0) return setStatus(L_.empty);
         setStatus('');
-        render(data.cinemas);
+        render(data.cinemas as Cinema[]);
+        drawMap(data.center, data.cinemas as Cinema[]);
       } catch {
-        setStatus(L.error);
+        setStatus(L_.error);
       }
     };
 
@@ -124,11 +213,11 @@ const t = useTranslations(lang);
     });
 
     geoBtn.addEventListener('click', () => {
-      if (!navigator.geolocation) return setStatus(L.geoError);
-      setStatus(L.loading);
+      if (!navigator.geolocation) return setStatus(L_.geoError);
+      setStatus(L_.loading);
       navigator.geolocation.getCurrentPosition(
         (pos) => query(`lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`),
-        () => setStatus(L.geoError),
+        () => setStatus(L_.geoError),
         { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 },
       );
     });

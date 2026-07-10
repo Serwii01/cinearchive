@@ -42,6 +42,10 @@ export interface Cinema {
   lat: number;
   lon: number;
   address: string | null;
+  /** Cadena/marca (Cinesa, Yelmo, Ocine…) si OSM la registra. */
+  operator: string | null;
+  /** Web oficial de la sala (para la cartelera), si OSM la registra. */
+  website: string | null;
   distanceKm: number;
 }
 
@@ -112,7 +116,7 @@ export async function geocode(query: string): Promise<GeoPoint | null> {
 }
 
 /** Salas de cine (amenity=cinema) alrededor de un punto, ordenadas por distancia. */
-export async function findCinemas(lat: number, lon: number, radius = 15000): Promise<Cinema[]> {
+export async function findCinemas(lat: number, lon: number, radius = 25000): Promise<Cinema[]> {
   const key = `${lat.toFixed(3)},${lon.toFixed(3)},${radius}`;
   const cached = cinemaCache.get(key);
   if (fresh(cached)) return cached.data;
@@ -144,24 +148,30 @@ export async function findCinemas(lat: number, lon: number, radius = 15000): Pro
         .map((el) => {
           const p = el.center ?? (el.lat != null && el.lon != null ? { lat: el.lat, lon: el.lon } : null);
           const tags = el.tags ?? {};
-          if (!p || !tags.name) return null;
+          // Nombre con respaldo en la marca/cadena: recupera salas sin `name` pero
+          // con `brand`/`operator` (multiplex de cadena, que antes se descartaban).
+          const name = tags.name ?? tags.brand ?? tags.operator;
+          if (!p || !name) return null;
           const street = [tags['addr:street'], tags['addr:housenumber']].filter(Boolean).join(' ');
+          const city = tags['addr:city'] ?? tags['addr:town'] ?? tags['addr:village'];
           const address =
-            [street, tags['addr:city'] ?? tags['addr:town'] ?? tags['addr:village']]
-              .filter(Boolean)
-              .join(', ') || null;
+            [street, tags['addr:postcode'], city].filter(Boolean).join(', ') || null;
+          const operator = tags.brand ?? tags.operator ?? null;
+          const website = tags.website ?? tags['contact:website'] ?? null;
           return {
             id: `${el.type}/${el.id}`,
-            name: tags.name,
+            name,
             lat: p.lat,
             lon: p.lon,
             address,
+            operator: operator && operator !== name ? operator : null,
+            website,
             distanceKm: Math.round(haversineKm(lat, lon, p.lat, p.lon) * 10) / 10,
           } satisfies Cinema;
         })
         .filter((c): c is Cinema => c !== null)
         .sort((a, b) => a.distanceKm - b.distanceKm)
-        .slice(0, 30);
+        .slice(0, 60);
     }
   } catch {
     /* red/timeout: se devuelve lista vacía */

@@ -49,7 +49,7 @@ www.{$DOMAIN} {
 		# CSP estricta: scripts y estilos propios; imágenes desde TMDB e Internet
 		# Archive; el visor de la hemeroteca se incrusta desde archive.org (frame-src).
 		# (No se necesita 'unsafe-inline' en scripts: no hay scripts inline.)
-		Content-Security-Policy "default-src 'self'; img-src 'self' https://image.tmdb.org https://archive.org https://*.archive.org data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src https://archive.org https://*.archive.org https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+		Content-Security-Policy "default-src 'self'; img-src 'self' https://image.tmdb.org https://archive.org https://*.archive.org https://*.tile.openstreetmap.org data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src https://archive.org https://*.archive.org https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 		-Server
 	}
 

@@ -244,6 +244,23 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
     </div>
   </section>
 
+  {/* ¿NECESITAS AYUDA? — acceso a la guía de secciones (Info) */}
+  <section class="frame py-12">
+    <a
+      href={localizePath(lang, 'info')}
+      class="group flex flex-col justify-between gap-6 border border-ink bg-surface p-6 no-underline transition-colors hover:bg-film-white md:flex-row md:items-center md:p-8"
+    >
+      <div class="max-w-2xl">
+        <span class="label">{t('nav.info')}</span>
+        <h2 class="mt-2 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">
+          {t('home.helpTitle')}
+        </h2>
+        <p class="mt-2 text-body-md text-charcoal">{t('home.helpBody')}</p>
+      </div>
+      <span class="label shrink-0 text-ink group-hover:text-muted">{t('nav.info')} →</span>
+    </a>
+  </section>
+
   {/* MANIFIESTO (antes en el navbar) */}
   <section class="frame border-t border-ink py-12">
     <header class="border-b border-ink pb-6">
