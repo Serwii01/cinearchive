@@ -57,7 +57,12 @@ export async function getUserStats(userId: string, locale: string): Promise<User
   const counts = { want: 0, seen: 0, favorite: 0 };
 
   for (const row of rows) {
-    counts[row.status]++;
+    // 'favorite' era un estado histórico; hoy es un flag propio. Se normaliza al
+    // vuelo para que las filas antiguas cuenten como vistas + favoritas.
+    const seenOrFav = row.status === 'seen' || row.status === 'favorite';
+    if (row.status === 'want') counts.want++;
+    else counts.seen++;
+    if (row.favorite || row.status === 'favorite') counts.favorite++;
     if (row.rating && row.rating >= 1 && row.rating <= 5) {
       histogram[row.rating - 1]++;
       ratingSum += row.rating;
@@ -65,7 +70,7 @@ export async function getUserStats(userId: string, locale: string): Promise<User
     }
     const b = briefs.get(row.tmdbId);
     if (!b) continue;
-    const watched = row.status === 'seen' || row.status === 'favorite';
+    const watched = seenOrFav;
     if (watched) hoursMin += b.runtime;
     for (const g of b.genreIds) genres.set(g, (genres.get(g) ?? 0) + 1);
     if (b.director) directors.set(b.director, (directors.get(b.director) ?? 0) + 1);

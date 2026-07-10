@@ -57,13 +57,19 @@ if (canView) {
     .limit(60);
   reviews = reviewRows.map((r) => ({ ...r, reviewedAt: r.reviewedAt ?? r.updatedAt }));
 
-  // Favoritas y pendientes (por estado). Públicas por defecto dentro del perfil visible.
+  // Favoritas (flag propio) y pendientes (estado). Públicas por defecto dentro
+  // del perfil visible. Las filas antiguas con status='favorite' se normalizan.
   const statusRows = await db
-    .select({ tmdbId: userFilms.tmdbId, status: userFilms.status })
+    .select({ tmdbId: userFilms.tmdbId, status: userFilms.status, favorite: userFilms.favorite })
     .from(userFilms)
-    .where(and(eq(userFilms.userId, target.userId), inArray(userFilms.status, ['favorite', 'want'])))
+    .where(
+      and(
+        eq(userFilms.userId, target.userId),
+        or(eq(userFilms.favorite, true), inArray(userFilms.status, ['favorite', 'want'])),
+      ),
+    )
     .orderBy(desc(userFilms.updatedAt));
-  favorites = statusRows.filter((r) => r.status === 'favorite').map((r) => r.tmdbId);
+  favorites = statusRows.filter((r) => r.favorite || r.status === 'favorite').map((r) => r.tmdbId);
   watchlist = statusRows.filter((r) => r.status === 'want').map((r) => r.tmdbId);
 
   const publicLists = await db

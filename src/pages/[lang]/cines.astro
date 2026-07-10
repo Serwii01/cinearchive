@@ -1,0 +1,136 @@
+---
+export const prerender = false; // resultados en vivo desde /api/cinemas
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { normalizeLang, useTranslations } from '../../i18n/ui';
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={t('cines.title')} description={t('cines.intro')}>
+  <section
+    class="frame py-12"
+    data-cines
+    data-l-loading={t('cines.loading')}
+    data-l-empty={t('cines.empty')}
+    data-l-out={t('cines.outOfArea')}
+    data-l-error={t('cines.error')}
+    data-l-distance={t('cines.distance')}
+    data-l-directions={t('cines.directions')}
+    data-l-geoerror={t('cines.geoError')}
+  >
+    <header class="border-b border-ink pb-6">
+      <span class="label">{t('nav.cines')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('cines.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('cines.intro')}</p>
+    </header>
+
+    {/* Buscador: por ciudad/CP o por geolocalización */}
+    <form id="cines-form" class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-end">
+      <label class="flex-1">
+        <span class="label mb-1 block">{t('cines.searchLabel')}</span>
+        <input
+          id="cines-q"
+          name="q"
+          type="text"
+          autocomplete="off"
+          required
+          placeholder={t('cines.searchPlaceholder')}
+          class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
+        />
+      </label>
+      <button type="submit" class="btn btn-primary">{t('cines.searchBtn')}</button>
+      <button type="button" id="cines-geo" class="btn">{t('cines.useLocation')}</button>
+    </form>
+
+    <p id="cines-status" role="status" class="mt-6 font-mono text-meta-data text-muted" hidden></p>
+
+    <div id="cines-results" class="mt-6 grid grid-cols-1 gap-px border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3"></div>
+
+    <p class="mt-8 border-t border-outline-variant pt-4 font-mono text-meta-data text-muted">
+      {t('cines.attribution')}
+    </p>
+  </section>
+</BaseLayout>
+
+<script>
+  const root = document.querySelector('[data-cines]') as HTMLElement | null;
+  if (root) {
+    const API = '/api/cinemas';
+    const L = {
+      loading: root.dataset.lLoading!,
+      empty: root.dataset.lEmpty!,
+      out: root.dataset.lOut!,
+      error: root.dataset.lError!,
+      distance: root.dataset.lDistance!,
+      directions: root.dataset.lDirections!,
+      geoError: root.dataset.lGeoerror!,
+    };
+    const form = document.getElementById('cines-form') as HTMLFormElement;
+    const input = document.getElementById('cines-q') as HTMLInputElement;
+    const geoBtn = document.getElementById('cines-geo') as HTMLButtonElement;
+    const statusEl = document.getElementById('cines-status') as HTMLElement;
+    const results = document.getElementById('cines-results') as HTMLElement;
+
+    const esc = (s: string) =>
+      String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+
+    const setStatus = (msg: string) => {
+      statusEl.textContent = msg;
+      statusEl.hidden = !msg;
+    };
+
+    const render = (cinemas: Array<{ id: string; name: string; lat: number; lon: number; address: string | null; distanceKm: number }>) => {
+      results.innerHTML = cinemas
+        .map((c) => {
+          const maps = `https://www.openstreetmap.org/directions?to=${c.lat}%2C${c.lon}`;
+          const addr = c.address ? `<p class="mt-1 font-mono text-meta-data text-muted">${esc(c.address)}</p>` : '';
+          return (
+            `<div class="flex flex-col justify-between gap-2 bg-surface p-4">` +
+            `<div><h3 class="font-display text-headline-md leading-tight text-ink">${esc(c.name)}</h3>${addr}` +
+            `<p class="mt-1 font-mono text-meta-data text-ink">${c.distanceKm} ${esc(L.distance)}</p></div>` +
+            `<a href="${maps}" target="_blank" rel="noopener noreferrer" class="label mt-1 no-underline text-ink hover:text-muted">${esc(L.directions)} →</a>` +
+            `</div>`
+          );
+        })
+        .join('');
+    };
+
+    const query = async (params: string) => {
+      results.innerHTML = '';
+      setStatus(L.loading);
+      try {
+        const res = await fetch(`${API}?${params}`, { headers: { accept: 'application/json' } });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data) {
+          setStatus(data?.error === 'out_of_area' ? L.out : L.error);
+          return;
+        }
+        if (data.error === 'out_of_area') return setStatus(L.out);
+        if (data.error) return setStatus(L.error);
+        if (!data.cinemas || data.cinemas.length === 0) return setStatus(L.empty);
+        setStatus('');
+        render(data.cinemas);
+      } catch {
+        setStatus(L.error);
+      }
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (q.length < 2) return;
+      query(`q=${encodeURIComponent(q)}`);
+    });
+
+    geoBtn.addEventListener('click', () => {
+      if (!navigator.geolocation) return setStatus(L.geoError);
+      setStatus(L.loading);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => query(`lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`),
+        () => setStatus(L.geoError),
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 },
+      );
+    });
+  }
+</script>

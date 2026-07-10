@@ -4,12 +4,13 @@ import { useTranslations, type Lang } from '../i18n/ui';
 interface Props {
   tmdbId: number;
   lang: Lang;
-  status?: 'want' | 'seen' | 'favorite' | null;
+  status?: 'want' | 'seen' | null;
+  favorite?: boolean;
   rating?: number | null;
   note?: string | null;
 }
 
-const { tmdbId, lang, status = null, rating = null, note = null } = Astro.props;
+const { tmdbId, lang, status = null, favorite = false, rating = null, note = null } = Astro.props;
 const t = useTranslations(lang);
 ---
 
@@ -17,6 +18,7 @@ const t = useTranslations(lang);
   data-tmdb-id={tmdbId}
   data-lang={lang}
   data-status={status ?? ''}
+  data-favorite={favorite ? '1' : ''}
   data-rating={rating ?? ''}
   data-note={note ?? ''}
   data-l-want={t('controls.want')}
@@ -40,6 +42,7 @@ const t = useTranslations(lang);
       const tmdbId = Number(d.tmdbId);
       const lang = d.lang || 'es';
       let status = d.status || '';
+      let favorite = d.favorite === '1';
       let rating = d.rating ? Number(d.rating) : 0;
       let note = d.note || '';
 
@@ -66,8 +69,8 @@ const t = useTranslations(lang);
         this.innerHTML = `
           <div class="flex border-b border-ink">
             ${statusBtn('want', L.want)}${statusBtn('seen', L.seen)}
-            <button type="button" data-status="favorite" class="label flex-1 px-2 py-2 transition-colors ${
-              status === 'favorite' ? 'bg-ochre text-on-accent' : 'hover:bg-ochre hover:text-on-accent'
+            <button type="button" data-fav class="label flex-1 px-2 py-2 transition-colors ${
+              favorite ? 'bg-ochre text-on-accent' : 'hover:bg-ochre hover:text-on-accent'
             }">${L.fav}</button>
           </div>
           <div class="flex items-center gap-2 border-b border-ink px-3 py-2">
@@ -79,7 +82,7 @@ const t = useTranslations(lang);
             <textarea data-note rows="2" class="w-full border border-ink bg-white px-2 py-1 font-body text-body-md focus:bg-film-white focus:outline-none">${esc(note)}</textarea>
             <div class="mt-2 flex items-center justify-between">
               <button type="button" data-save class="btn btn-primary">${L.save}</button>
-              ${status ? `<button type="button" data-remove class="label text-error hover:underline">${L.remove}</button>` : ''}
+              ${status || favorite ? `<button type="button" data-remove class="label text-error hover:underline">${L.remove}</button>` : ''}
               <span data-msg class="font-mono text-meta-data text-muted"></span>
             </div>
           </div>`;
@@ -114,6 +117,11 @@ const t = useTranslations(lang);
             if (await post({ status })) { render(); flash(); }
           }),
         );
+        // Favorita: flag independiente del estado (toggle). No toca want/seen.
+        this.querySelector<HTMLButtonElement>('[data-fav]')?.addEventListener('click', async () => {
+          const next = !favorite;
+          if (await post({ favorite: next })) { favorite = next; render(); flash(); }
+        });
         this.querySelectorAll<HTMLButtonElement>('[data-rate]').forEach((b) =>
           b.addEventListener('click', async () => {
             rating = Number(b.dataset.rate);
@@ -130,7 +138,7 @@ const t = useTranslations(lang);
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({ tmdbId }),
           });
-          if (res.ok) { status = ''; rating = 0; note = ''; render(); }
+          if (res.ok) { status = ''; favorite = false; rating = 0; note = ''; render(); }
         });
       };
 

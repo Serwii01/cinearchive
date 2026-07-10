@@ -41,6 +41,9 @@ const cinemaPicks = sample(pdFilms, 4);
 const collectionPicks = collections.slice(0, 3);
 const figurePicks = sample(figures, 6);
 const bookPicks = sample(books, 4);
+// En la portada solo las 3 revistas más recientes (por año de fundación). La
+// hemeroteca (/archive) sigue mostrándolas todas.
+const journalPicks = journals.slice().sort((a, b) => b.since - a.since).slice(0, 3);
 
 const manifestoCopy = manifesto[lang];
 
@@ -143,6 +146,23 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
     </div>
   </section>
 
+  {/* ENCUENTRA TU CINE (salas reales · OpenStreetMap) */}
+  <section class="frame py-12">
+    <a
+      href={localizePath(lang, 'cines')}
+      class="group flex flex-col justify-between gap-6 border border-ink bg-surface p-6 no-underline transition-colors hover:bg-film-white md:flex-row md:items-center md:p-8"
+    >
+      <div class="max-w-2xl">
+        <span class="label">{t('nav.cines')}</span>
+        <h2 class="mt-2 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">
+          {t('cines.homeTagline')}
+        </h2>
+        <p class="mt-2 text-body-md text-charcoal">{t('cines.intro')}</p>
+      </div>
+      <span class="label shrink-0 text-ink group-hover:text-muted">{t('cines.searchBtn')} →</span>
+    </a>
+  </section>
+
   {/* DOSIERES */}
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
@@ -197,7 +217,7 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
     <p class="mb-8 max-w-2xl text-body-md text-charcoal">{t('archive.currentIntro')}</p>
 
     <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
-      {journals.map((j) => <JournalCard item={j} lang={lang} />)}
+      {journalPicks.map((j) => <JournalCard item={j} lang={lang} />)}
     </div>
   </section>
 

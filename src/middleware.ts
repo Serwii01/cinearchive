@@ -1,5 +1,8 @@
 import { defineMiddleware } from 'astro:middleware';
+import { sql } from 'drizzle-orm';
 import { auth } from './lib/auth';
+import { db } from './db/client';
+import { user as userTable } from './db/schema';
 import { check, clientIp, tooMany } from './lib/ratelimit';
 import { isAdmin } from './lib/admin';
 import { languages, defaultLang } from './i18n/ui';
@@ -113,6 +116,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   context.locals.user = session?.user ?? null;
   context.locals.session = session?.session ?? null;
+
+  // "Última vez visto": en cada navegación autenticada (no API, no assets) se
+  // sella la marca, pero con throttle en la propia consulta (a lo sumo cada 10
+  // min) para no escribir en cada petición. Fire-and-forget: no añade latencia.
+  if (context.locals.user && method === 'GET' && !path.startsWith('/api/')) {
+    const uid = context.locals.user.id;
+    db.update(userTable)
+      .set({ lastSeenAt: sql`now()` })
+      .where(
+        sql`${userTable.id} = ${uid} and (${userTable.lastSeenAt} is null or ${userTable.lastSeenAt} < now() - interval '10 minutes')`,
+      )
+      .catch(() => {});
+  }
 
   // Protección de rutas privadas (solo páginas, no assets ni API).
   const lang = path.match(LANG_PREFIX)?.[1] ?? defaultLang;

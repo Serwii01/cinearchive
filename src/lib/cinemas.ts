@@ -1,0 +1,171 @@
+/**
+ * "Encuentra tu cine" — SOLO SERVIDOR.
+ *
+ * Busca salas de cine reales cerca de una ubicación en España (península e islas)
+ * con datos abiertos de OpenStreetMap:
+ *   - Nominatim: geocodifica una ciudad / código postal → coordenadas.
+ *   - Overpass:  lista los `amenity=cinema` en un radio alrededor del punto.
+ *
+ * Se llama solo desde /api/cinemas (proxy con rate-limit). Cumple la política de
+ * uso de Nominatim: User-Agent identificable, resultados cacheados, ≤1 req/s y
+ * atribución © OpenStreetMap (mostrada en la página). No se descargan zonas
+ * enteras: siempre alrededor de un punto que el usuario proporciona.
+ */
+
+// Identifica la aplicación ante Nominatim/Overpass (requerido por su política).
+const UA = 'CineArchive/1.0 (+https://cinearchive.es)';
+const NOMINATIM = 'https://nominatim.openstreetmap.org/search';
+const OVERPASS = 'https://overpass-api.de/api/interpreter';
+
+// Caja envolvente de España incluyendo Canarias, Baleares, Ceuta y Melilla.
+// Sirve para rechazar ubicaciones fuera del país (GPS o geocodificadas).
+const ES_BBOX = { minLat: 27.4, maxLat: 43.9, minLon: -18.4, maxLon: 4.6 };
+
+export function inSpain(lat: number, lon: number): boolean {
+  return (
+    lat >= ES_BBOX.minLat &&
+    lat <= ES_BBOX.maxLat &&
+    lon >= ES_BBOX.minLon &&
+    lon <= ES_BBOX.maxLon
+  );
+}
+
+export interface GeoPoint {
+  lat: number;
+  lon: number;
+  label: string;
+}
+
+export interface Cinema {
+  id: string;
+  name: string;
+  lat: number;
+  lon: number;
+  address: string | null;
+  distanceKm: number;
+}
+
+// Caché en memoria (un solo proceso Node en el VPS). Clave → { time, data }.
+const DAY_MS = 24 * 60 * 60 * 1000;
+const geoCache = new Map<string, { time: number; data: GeoPoint | null }>();
+const cinemaCache = new Map<string, { time: number; data: Cinema[] }>();
+
+function fresh<T>(entry: { time: number; data: T } | undefined): entry is { time: number; data: T } {
+  return !!entry && Date.now() - entry.time < DAY_MS;
+}
+
+/** Distancia Haversine en km entre dos puntos. */
+function haversineKm(aLat: number, aLon: number, bLat: number, bLon: number): number {
+  const R = 6371;
+  const dLat = ((bLat - aLat) * Math.PI) / 180;
+  const dLon = ((bLon - aLon) * Math.PI) / 180;
+  const s =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((aLat * Math.PI) / 180) * Math.cos((bLat * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+}
+
+async function fetchWithTimeout(url: string, init: RequestInit, ms = 12000): Promise<Response> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, { ...init, signal: ctrl.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** Geocodifica un texto (ciudad / código postal) restringido a España. */
+export async function geocode(query: string): Promise<GeoPoint | null> {
+  const key = query.trim().toLowerCase().slice(0, 120);
+  const cached = geoCache.get(key);
+  if (fresh(cached)) return cached.data;
+
+  const url = new URL(NOMINATIM);
+  url.searchParams.set('format', 'json');
+  url.searchParams.set('q', query);
+  url.searchParams.set('countrycodes', 'es');
+  url.searchParams.set('limit', '1');
+  url.searchParams.set('addressdetails', '0');
+
+  let data: GeoPoint | null = null;
+  try {
+    const res = await fetchWithTimeout(url.toString(), {
+      headers: { 'User-Agent': UA, accept: 'application/json' },
+    });
+    if (res.ok) {
+      const rows = (await res.json()) as Array<{ lat: string; lon: string; display_name: string }>;
+      const r = rows[0];
+      if (r) {
+        const lat = Number(r.lat);
+        const lon = Number(r.lon);
+        if (Number.isFinite(lat) && Number.isFinite(lon)) {
+          data = { lat, lon, label: r.display_name };
+        }
+      }
+    }
+  } catch {
+    /* red/timeout: se devuelve null y el endpoint responde "not_found" */
+  }
+  geoCache.set(key, { time: Date.now(), data });
+  return data;
+}
+
+/** Salas de cine (amenity=cinema) alrededor de un punto, ordenadas por distancia. */
+export async function findCinemas(lat: number, lon: number, radius = 15000): Promise<Cinema[]> {
+  const key = `${lat.toFixed(3)},${lon.toFixed(3)},${radius}`;
+  const cached = cinemaCache.get(key);
+  if (fresh(cached)) return cached.data;
+
+  const q =
+    `[out:json][timeout:20];` +
+    `nwr[amenity=cinema](around:${radius},${lat},${lon});` +
+    `out center tags;`;
+
+  let out: Cinema[] = [];
+  try {
+    const res = await fetchWithTimeout(OVERPASS, {
+      method: 'POST',
+      headers: { 'User-Agent': UA, 'content-type': 'application/x-www-form-urlencoded' },
+      body: 'data=' + encodeURIComponent(q),
+    });
+    if (res.ok) {
+      const json = (await res.json()) as {
+        elements: Array<{
+          type: string;
+          id: number;
+          lat?: number;
+          lon?: number;
+          center?: { lat: number; lon: number };
+          tags?: Record<string, string>;
+        }>;
+      };
+      out = json.elements
+        .map((el) => {
+          const p = el.center ?? (el.lat != null && el.lon != null ? { lat: el.lat, lon: el.lon } : null);
+          const tags = el.tags ?? {};
+          if (!p || !tags.name) return null;
+          const street = [tags['addr:street'], tags['addr:housenumber']].filter(Boolean).join(' ');
+          const address =
+            [street, tags['addr:city'] ?? tags['addr:town'] ?? tags['addr:village']]
+              .filter(Boolean)
+              .join(', ') || null;
+          return {
+            id: `${el.type}/${el.id}`,
+            name: tags.name,
+            lat: p.lat,
+            lon: p.lon,
+            address,
+            distanceKm: Math.round(haversineKm(lat, lon, p.lat, p.lon) * 10) / 10,
+          } satisfies Cinema;
+        })
+        .filter((c): c is Cinema => c !== null)
+        .sort((a, b) => a.distanceKm - b.distanceKm)
+        .slice(0, 30);
+    }
+  } catch {
+    /* red/timeout: se devuelve lista vacía */
+  }
+  cinemaCache.set(key, { time: Date.now(), data: out });
+  return out;
+}

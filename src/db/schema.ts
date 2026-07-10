@@ -32,6 +32,9 @@ export const user = pgTable('user', {
   image: text('image'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  // Última vez que el usuario usó la app (visita autenticada). Se actualiza con
+  // throttle desde el middleware; sobrevive a la caducidad de las sesiones.
+  lastSeenAt: timestamp('last_seen_at'),
 });
 
 export const session = pgTable('session', {

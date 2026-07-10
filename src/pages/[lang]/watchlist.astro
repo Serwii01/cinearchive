@@ -20,12 +20,21 @@ const rows = await db
 
 const briefs = await getFilmsBrief(rows.map((r) => r.tmdbId), lang);
 
-const groups: { key: 'want' | 'seen' | 'favorite'; label: string }[] = [
+// 'favorite' ya no es un estado, es un flag propio: una peli vista+favorita
+// aparece a la vez en "Vistas" y en "Favoritas". Las filas antiguas con
+// status='favorite' se normalizan al vuelo (cuentan como vistas y favoritas).
+const isFav = (r: (typeof rows)[number]) => r.favorite || r.status === 'favorite';
+const groups: { key: 'favorite' | 'want' | 'seen'; label: string }[] = [
   { key: 'favorite', label: t('watchlist.favorite') },
   { key: 'want', label: t('watchlist.want') },
   { key: 'seen', label: t('watchlist.seen') },
 ];
-const byStatus = (s: string) => rows.filter((r) => r.status === s);
+const byStatus = (key: 'favorite' | 'want' | 'seen') =>
+  key === 'favorite'
+    ? rows.filter(isFav)
+    : key === 'seen'
+      ? rows.filter((r) => r.status === 'seen' || r.status === 'favorite')
+      : rows.filter((r) => r.status === 'want');
 
 // Listas personalizadas del usuario (junto a las de estado).
 const lists = await db

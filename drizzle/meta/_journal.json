@@ -78,6 +78,13 @@
       "when": 1783285239299,
       "tag": "0010_material_killer_shrike",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1783695541265,
+      "tag": "0011_fantastic_guardsmen",
+      "breakpoints": true
     }
   ]
 }

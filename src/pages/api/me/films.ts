@@ -21,7 +21,9 @@ export const GET: APIRoute = async ({ locals }) => {
 
 const upsertSchema = z.object({
   tmdbId: z.number().int().positive(),
-  status: z.enum(['want', 'seen', 'favorite']).optional(),
+  // 'favorite' ya no es un estado: es un flag propio (campo `favorite`).
+  status: z.enum(['want', 'seen']).optional(),
+  favorite: z.boolean().optional(),
   rating: z.number().int().min(1).max(5).nullable().optional(),
   note: z.string().max(2000).nullable().optional(),
 });
@@ -35,7 +37,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
       status: 400,
     });
   }
-  const { tmdbId, status, rating, note } = parsed.data;
+  const { tmdbId, status, favorite, rating, note } = parsed.data;
 
   // La reseña se "sella" con la fecha actual cuando llega nota o valoración
   // (en la creación o en cada edición). Los cambios de solo estado no la tocan.
@@ -48,6 +50,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
       userId: locals.user.id,
       tmdbId,
       status: status ?? 'want',
+      favorite: favorite ?? false,
       rating: rating ?? null,
       note: note ?? null,
       reviewedAt: touchesReview && (rating != null || note != null) ? now : null,
@@ -58,6 +61,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
       // Solo actualiza los campos enviados (los no enviados se mantienen).
       set: {
         ...(status !== undefined ? { status } : {}),
+        ...(favorite !== undefined ? { favorite } : {}),
         ...(rating !== undefined ? { rating } : {}),
         ...(note !== undefined ? { note } : {}),
         ...(touchesReview ? { reviewedAt: now } : {}),

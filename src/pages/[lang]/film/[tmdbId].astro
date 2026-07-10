@@ -48,14 +48,20 @@ const watchGroups = watchmode
   : [];
 
 // Estado actual del usuario para esta película (si hay sesión).
-let userState: { status: 'want' | 'seen' | 'favorite'; rating: number | null; note: string | null } | null = null;
+let userState: { status: 'want' | 'seen'; favorite: boolean; rating: number | null; note: string | null } | null = null;
 if (Astro.locals.user) {
   const [row] = await db
     .select()
     .from(userFilms)
     .where(and(eq(userFilms.userId, Astro.locals.user.id), eq(userFilms.tmdbId, tmdbId)))
     .limit(1);
-  if (row) userState = { status: row.status, rating: row.rating, note: row.note };
+  // 'favorite' era un estado histórico; ahora es un flag. Se normaliza al vuelo.
+  if (row) userState = {
+    status: row.status === 'want' ? 'want' : 'seen',
+    favorite: row.favorite || row.status === 'favorite',
+    rating: row.rating,
+    note: row.note,
+  };
 }
 
 const ratings = omdb?.Ratings ?? [];
@@ -137,6 +143,7 @@ const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t);
                 tmdbId={tmdbId}
                 lang={lang}
                 status={userState?.status ?? null}
+                favorite={userState?.favorite ?? false}
                 rating={userState?.rating ?? null}
                 note={userState?.note ?? null}
               />
