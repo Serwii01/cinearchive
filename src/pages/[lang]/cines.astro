@@ -60,8 +60,18 @@ const t = useTranslations(lang);
 </BaseLayout>
 
 <script>
-  import L from 'leaflet';
-  import 'leaflet/dist/leaflet.css';
+  // Leaflet se carga de forma PEREZOSA (dinámica) solo al pintar el mapa. Así, si
+  // la librería fallara, el buscador y la lista siguen funcionando (no se rompe la
+  // página ni el formulario cae a su envío nativo, que recargaría sin buscar).
+  import type * as LType from 'leaflet';
+  let L: typeof LType | null = null;
+  async function loadLeaflet(): Promise<typeof LType> {
+    if (!L) {
+      const [mod] = await Promise.all([import('leaflet'), import('leaflet/dist/leaflet.css')]);
+      L = ((mod as unknown as { default?: typeof LType }).default ?? mod) as typeof LType;
+    }
+    return L;
+  }
 
   interface Cinema {
     id: string;
@@ -109,27 +119,24 @@ const t = useTranslations(lang);
       c.website ??
       `https://www.google.com/search?q=${encodeURIComponent(`${c.name} ${c.address ?? ''} cartelera`)}`;
 
-    // --- Mapa (Leaflet) ---
-    let map: L.Map | null = null;
-    let layer: L.LayerGroup | null = null;
+    // --- Mapa (Leaflet, carga perezosa) ---
+    let map: LType.Map | null = null;
+    let layer: LType.LayerGroup | null = null;
 
-    const ensureMap = () => {
-      if (map) return map;
-      mapEl.classList.remove('hidden');
-      map = L.map(mapEl, { scrollWheelZoom: false });
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap',
-      }).addTo(map);
-      layer = L.layerGroup().addTo(map);
-      return map;
-    };
-
-    const drawMap = (center: { lat: number; lon: number }, cinemas: Cinema[]) => {
-      const m = ensureMap();
+    const drawMap = async (center: { lat: number; lon: number }, cinemas: Cinema[]) => {
+      const Lm = await loadLeaflet();
+      if (!map) {
+        mapEl.classList.remove('hidden');
+        map = Lm.map(mapEl, { scrollWheelZoom: false });
+        Lm.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap',
+        }).addTo(map);
+        layer = Lm.layerGroup().addTo(map);
+      }
       layer!.clearLayers();
       // Tu ubicación (tinta) y cada cine (ocre).
-      L.circleMarker([center.lat, center.lon], {
+      Lm.circleMarker([center.lat, center.lon], {
         radius: 7,
         color: '#1a1a1a',
         weight: 2,
@@ -147,7 +154,7 @@ const t = useTranslations(lang);
           (c.address ? `${esc(c.address)}<br>` : '') +
           `<a href="${directionsUrl(c)}" target="_blank" rel="noopener noreferrer">${esc(L_.directions)}</a> · ` +
           `<a href="${carteleraUrl(c)}" target="_blank" rel="noopener noreferrer">${esc(L_.cartelera)}</a>`;
-        L.circleMarker([c.lat, c.lon], {
+        Lm.circleMarker([c.lat, c.lon], {
           radius: 6,
           color: '#8a5a2b',
           weight: 2,
@@ -158,9 +165,9 @@ const t = useTranslations(lang);
           .addTo(layer!);
       }
       // Ajusta el encuadre a todos los puntos.
-      m.fitBounds(points as L.LatLngBoundsExpression, { padding: [30, 30], maxZoom: 15 });
+      map!.fitBounds(points as LType.LatLngBoundsExpression, { padding: [30, 30], maxZoom: 15 });
       // El contenedor estaba oculto al crearse: recalcula tamaño.
-      setTimeout(() => m.invalidateSize(), 0);
+      setTimeout(() => map!.invalidateSize(), 0);
     };
 
     const render = (cinemas: Cinema[]) => {
@@ -199,7 +206,8 @@ const t = useTranslations(lang);
         if (!data.cinemas || data.cinemas.length === 0) return setStatus(L_.empty);
         setStatus('');
         render(data.cinemas as Cinema[]);
-        drawMap(data.center, data.cinemas as Cinema[]);
+        // El mapa es un extra: si Leaflet fallara, la lista ya está pintada.
+        drawMap(data.center, data.cinemas as Cinema[]).catch(() => mapEl.classList.add('hidden'));
       } catch {
         setStatus(L_.error);
       }

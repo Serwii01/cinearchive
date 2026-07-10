@@ -87,10 +87,29 @@ export async function geocode(query: string): Promise<GeoPoint | null> {
 
   const url = new URL(NOMINATIM);
   url.searchParams.set('format', 'json');
-  url.searchParams.set('q', query);
-  url.searchParams.set('countrycodes', 'es');
   url.searchParams.set('limit', '1');
   url.searchParams.set('addressdetails', '0');
+
+  // Detección de código postal: si el texto no tiene letras y son 4-5 dígitos, se
+  // usa la consulta ESTRUCTURADA de Nominatim (más fiable que la libre para CPs).
+  // Un CP de 4 dígitos se rellena con cero a la izquierda (p. ej. 1007 → 01007).
+  const raw = query.trim();
+  const digits = raw.replace(/\D/g, '');
+  const hasLetters = /[a-zA-ZÀ-ÿ]/.test(raw);
+  const postal =
+    !hasLetters && digits.length === 5
+      ? digits
+      : !hasLetters && digits.length === 4
+        ? '0' + digits
+        : null;
+
+  if (postal) {
+    url.searchParams.set('postalcode', postal);
+    url.searchParams.set('country', 'Spain');
+  } else {
+    url.searchParams.set('q', raw);
+    url.searchParams.set('countrycodes', 'es');
+  }
 
   let data: GeoPoint | null = null;
   try {
@@ -121,18 +140,24 @@ export async function findCinemas(lat: number, lon: number, radius = 25000): Pro
   const cached = cinemaCache.get(key);
   if (fresh(cached)) return cached.data;
 
+  // El timeout del cliente (abajo, 22 s) debe superar el de la consulta Overpass
+  // (18 s), si no se abortaría la petición antes de que el servidor responda.
   const q =
-    `[out:json][timeout:20];` +
+    `[out:json][timeout:18];` +
     `nwr[amenity=cinema](around:${radius},${lat},${lon});` +
     `out center tags;`;
 
   let out: Cinema[] = [];
   try {
-    const res = await fetchWithTimeout(OVERPASS, {
-      method: 'POST',
-      headers: { 'User-Agent': UA, 'content-type': 'application/x-www-form-urlencoded' },
-      body: 'data=' + encodeURIComponent(q),
-    });
+    const res = await fetchWithTimeout(
+      OVERPASS,
+      {
+        method: 'POST',
+        headers: { 'User-Agent': UA, 'content-type': 'application/x-www-form-urlencoded' },
+        body: 'data=' + encodeURIComponent(q),
+      },
+      22000,
+    );
     if (res.ok) {
       const json = (await res.json()) as {
         elements: Array<{

@@ -49,7 +49,7 @@ export const ui = {
     'cines.intro':
       'Busca salas de cine cerca de ti, en toda España —península e islas—. Datos abiertos de OpenStreetMap.',
     'cines.searchLabel': 'Ciudad o código postal',
-    'cines.searchPlaceholder': 'Madrid, Bilbao, 08001…',
+    'cines.searchPlaceholder': 'Sevilla, Barcelona, 41007…',
     'cines.searchBtn': 'Buscar',
     'cines.useLocation': 'Usar mi ubicación',
     'cines.distance': 'km',
@@ -524,7 +524,7 @@ export const ui = {
     'cines.intro':
       'Find cinemas near you, anywhere in Spain —mainland and islands. Open data from OpenStreetMap.',
     'cines.searchLabel': 'City or postcode',
-    'cines.searchPlaceholder': 'Madrid, Bilbao, 08001…',
+    'cines.searchPlaceholder': 'Sevilla, Barcelona, 41007…',
     'cines.searchBtn': 'Search',
     'cines.useLocation': 'Use my location',
     'cines.distance': 'km',
@@ -1003,7 +1003,7 @@ export const ui = {
     'cines.intro':
       'Busca salas de cine preto de ti, en toda España —península e illas—. Datos abertos de OpenStreetMap.',
     'cines.searchLabel': 'Cidade ou código postal',
-    'cines.searchPlaceholder': 'Madrid, Bilbao, 08001…',
+    'cines.searchPlaceholder': 'Sevilla, Barcelona, 41007…',
     'cines.searchBtn': 'Buscar',
     'cines.useLocation': 'Usar a miña localización',
     'cines.distance': 'km',
@@ -1478,7 +1478,7 @@ export const ui = {
     'cines.intro':
       'Bilatu zinema-aretoak zure inguruan, Espainia osoan —penintsula eta uharteak—. OpenStreetMap-eko datu irekiak.',
     'cines.searchLabel': 'Hiria edo posta-kodea',
-    'cines.searchPlaceholder': 'Madril, Bilbo, 08001…',
+    'cines.searchPlaceholder': 'Sevilla, Barcelona, 41007…',
     'cines.searchBtn': 'Bilatu',
     'cines.useLocation': 'Erabili nire kokapena',
     'cines.distance': 'km',
@@ -1955,7 +1955,7 @@ export const ui = {
     'cines.intro':
       'Cerca sales de cinema a prop teu, a tot Espanya —península i illes—. Dades obertes d’OpenStreetMap.',
     'cines.searchLabel': 'Ciutat o codi postal',
-    'cines.searchPlaceholder': 'Madrid, Bilbao, 08001…',
+    'cines.searchPlaceholder': 'Sevilla, Barcelona, 41007…',
     'cines.searchBtn': 'Cerca',
     'cines.useLocation': 'Fes servir la meva ubicació',
     'cines.distance': 'km',
