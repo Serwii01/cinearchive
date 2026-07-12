@@ -67,10 +67,26 @@ const backLabel = fromProfile
     : owner
       ? `@${owner.username}`
       : t('nav.home');
+
+// Enlace canónico para compartir (dominio real; tras el proxy Astro.url da
+// localhost, por eso se usa Astro.site). Solo tiene sentido si la lista es pública.
+const shareUrl = new URL(localizePath(lang, `lists/${id}`), Astro.site ?? Astro.url).href;
 ---
 
 <BaseLayout title={list.name}>
-  <section class="frame py-12" data-list={isOwner ? id : ''} data-confirm={t('lists.confirmDelete')} data-rename={t('lists.rename')} data-lists={localizePath(lang, 'watchlist')}>
+  <section
+    class="frame py-12"
+    data-list={isOwner ? id : ''}
+    data-confirm={t('lists.confirmDelete')}
+    data-rename={t('lists.rename')}
+    data-delete={t('lists.delete')}
+    data-cancel={t('profile.cancel')}
+    data-save={t('controls.save')}
+    data-nameph={t('lists.namePlaceholder')}
+    data-error={t('lists.actionError')}
+    data-ok={t('lists.ok')}
+    data-lists={localizePath(lang, 'watchlist')}
+  >
     <a href={backHref} class="label no-underline hover:text-ink">← {backLabel}</a>
     <header class="mt-6 flex flex-col gap-4 border-b border-ink pb-6 sm:flex-row sm:items-end sm:justify-between">
       <div>
@@ -82,10 +98,26 @@ const backLabel = fromProfile
           </p>
         )}
       </div>
-      {isOwner && (
-        <div class="flex shrink-0 gap-2">
-          <button type="button" id="rename" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white">{t('lists.rename')}</button>
-          <button type="button" id="delete" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white">{t('lists.delete')}</button>
+      {(list.isPublic || isOwner) && (
+        <div class="flex shrink-0 flex-wrap gap-2">
+          {list.isPublic && (
+            <button
+              type="button"
+              id="share-list"
+              data-url={shareUrl}
+              data-copied={t('profile.linkCopied')}
+              class="label inline-flex items-center gap-2 border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white"
+            >
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg>
+              {t('lists.share')}
+            </button>
+          )}
+          {isOwner && (
+            <Fragment>
+              <button type="button" id="rename" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white">{t('lists.rename')}</button>
+              <button type="button" id="delete" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white">{t('lists.delete')}</button>
+            </Fragment>
+          )}
         </div>
       )}
     </header>
@@ -118,16 +150,42 @@ const backLabel = fromProfile
 </BaseLayout>
 
 <script>
+  import { confirmModal, promptModal, alertModal } from '../../../lib/ui/modals';
+  import { shareLink } from '../../../lib/ui/share';
+
   const root = document.querySelector('[data-list]') as HTMLElement | null;
+
+  // Compartir (disponible para cualquiera que vea una lista pública, no solo el dueño).
+  const shareBtn = document.getElementById('share-list') as HTMLButtonElement | null;
+  if (shareBtn) shareLink(shareBtn);
+
+  // El resto (renombrar/eliminar/quitar películas) solo aplica al dueño.
   if (root && root.dataset.list) {
     const id = root.dataset.list;
-    const confirmMsg = root.dataset.confirm || 'Delete?';
-    const renameMsg = root.dataset.rename || 'Rename';
+    const L = {
+      confirm: root.dataset.confirm || 'Delete this list?',
+      rename: root.dataset.rename || 'Rename',
+      delete: root.dataset.delete || 'Delete',
+      cancel: root.dataset.cancel || 'Cancel',
+      save: root.dataset.save || 'Save',
+      nameph: root.dataset.nameph || '',
+      error: root.dataset.error || 'Something went wrong.',
+      ok: root.dataset.ok || 'OK',
+    };
     const listsUrl = root.dataset.lists || '/es/lists';
+    const showError = (title: string) =>
+      alertModal({ title, message: L.error, confirmLabel: L.ok });
 
     document.getElementById('rename')?.addEventListener('click', async () => {
-      const current = document.getElementById('list-name')?.textContent ?? '';
-      const name = prompt(renameMsg, current)?.trim();
+      const current = document.getElementById('list-name')?.textContent?.trim() ?? '';
+      const name = await promptModal({
+        title: L.rename,
+        value: current,
+        placeholder: L.nameph,
+        confirmLabel: L.save,
+        cancelLabel: L.cancel,
+        maxLength: 80,
+      });
       if (!name || name === current) return;
       const res = await fetch(`/api/me/lists/${id}`, {
         method: 'PATCH',
@@ -135,12 +193,21 @@ const backLabel = fromProfile
         body: JSON.stringify({ name }),
       });
       if (res.ok) location.reload();
+      else showError(L.rename);
     });
 
     document.getElementById('delete')?.addEventListener('click', async () => {
-      if (!confirm(confirmMsg)) return;
+      const ok = await confirmModal({
+        title: L.delete,
+        message: L.confirm,
+        confirmLabel: L.delete,
+        cancelLabel: L.cancel,
+        danger: true,
+      });
+      if (!ok) return;
       const res = await fetch(`/api/me/lists/${id}`, { method: 'DELETE' });
       if (res.ok) location.href = listsUrl;
+      else showError(L.delete);
     });
 
     document.querySelectorAll<HTMLButtonElement>('[data-remove]').forEach((b) =>
