@@ -205,7 +205,13 @@ const shareUrl = new URL(localizePath(lang, `lists/${id}`), Astro.site ?? Astro.
         danger: true,
       });
       if (!ok) return;
-      const res = await fetch(`/api/me/lists/${id}`, { method: 'DELETE' });
+      // El `content-type` es imprescindible: sin él, la protección CSRF de Astro
+      // rechaza el DELETE detrás del proxy (lo trata como envío cross-site y
+      // devuelve 403), porque tras el TLS de Caddy el origen deja de coincidir.
+      const res = await fetch(`/api/me/lists/${id}`, {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+      });
       if (res.ok) location.href = listsUrl;
       else showError(L.delete);
     });

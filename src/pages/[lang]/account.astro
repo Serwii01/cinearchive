@@ -419,7 +419,12 @@ const pending = await db
     });
     document.getElementById('avatar-remove')?.addEventListener('click', async () => {
       clearAlert();
-      const res = await fetch('/api/me/avatar', { method: 'DELETE' });
+      // content-type obligatorio: sin él, la CSRF de Astro rechaza el DELETE
+      // detrás del proxy (403 cross-site). Ver nota en lists/[id].astro.
+      const res = await fetch('/api/me/avatar', {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+      });
       if (res.ok) location.reload();
     });
   }
