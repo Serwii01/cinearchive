@@ -46,7 +46,7 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
           <article data-decade={Math.floor(f.year / 10) * 10} class="group flex h-full flex-col bg-surface">
             <a href={localizePath(lang, `cinema/${f.id}`)} class="flex h-full flex-col no-underline">
               <div class="flex items-center justify-between border-b border-ink px-3 py-2">
-                <span class="label">{t('cinema.publicDomain')}</span>
+                <span class="label">{f.license === 'cc-by' ? t('cinema.ccby') : t('cinema.publicDomain')}</span>
                 <span class="font-mono text-meta-data text-muted">{f.year}</span>
               </div>
               <div class="aspect-video overflow-hidden border-b border-ink bg-charcoal">

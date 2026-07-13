@@ -9,6 +9,8 @@ export interface PdFilm {
   year: number;
   country: string;
   runtime: number;
+  /** Licencia: dominio público por defecto; 'cc-by' para las de Creative Commons (Blender, etc.). */
+  license?: 'pd' | 'cc-by' | 'cc0';
   /** idioma del blurb por defecto (para el filtro de idioma): 'es' | 'en' */
   lang: string;
   blurb_es: string;

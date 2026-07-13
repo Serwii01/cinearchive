@@ -39,7 +39,7 @@ export const ui = {
     'nav.cinema': 'Cine abierto',
     'cinema.title': 'Cine abierto',
     'cinema.intro':
-      'Películas de dominio público que puedes ver aquí mismo, alojadas en Internet Archive. Cine libre, sin muros.',
+      'Películas de dominio público y con licencia libre que puedes ver aquí mismo, alojadas en Internet Archive. Cine libre, sin muros.',
     'cinema.count': 'películas',
     'cinema.watch': 'Ver película',
     'cinema.atIA': 'Ver en Internet Archive',
@@ -68,6 +68,7 @@ export const ui = {
     'home.helpBody':
       'Todo lo que puedes hacer en Cine Archive, sección a sección: la hemeroteca, el cine abierto, tu perfil, las listas y más.',
     'cinema.publicDomain': 'Dominio público',
+    'cinema.ccby': 'Creative Commons',
     'cinema.directedBy': 'Dirección',
     'cinema.viewerNote':
       'Reproductor de Internet Archive. La obra es de dominio público; al reproducir, tu navegador se conecta a archive.org.',
@@ -519,7 +520,7 @@ export const ui = {
     'nav.cinema': 'Open Cinema',
     'cinema.title': 'Open Cinema',
     'cinema.intro':
-      'Public-domain films you can watch right here, hosted on the Internet Archive. Free cinema, no walls.',
+      'Public-domain and freely licensed films you can watch right here, hosted on the Internet Archive. Free cinema, no walls.',
     'cinema.count': 'films',
     'cinema.watch': 'Watch film',
     'nav.cines': 'Find your cinema',
@@ -548,6 +549,7 @@ export const ui = {
     'cinema.atIA': 'View on Internet Archive',
     'cinema.backToCinema': 'Back to Open Cinema',
     'cinema.publicDomain': 'Public domain',
+    'cinema.ccby': 'Creative Commons',
     'cinema.directedBy': 'Directed by',
     'cinema.viewerNote':
       'Internet Archive player. The work is in the public domain; on play, your browser connects to archive.org.',
@@ -999,7 +1001,7 @@ export const ui = {
     'nav.cinema': 'Cine aberto',
     'cinema.title': 'Cine aberto',
     'cinema.intro':
-      'Películas de dominio público que podes ver aquí mesmo, aloxadas en Internet Archive. Cine libre, sen muros.',
+      'Películas de dominio público e con licenza libre que podes ver aquí mesmo, aloxadas en Internet Archive. Cine libre, sen muros.',
     'cinema.count': 'películas',
     'cinema.watch': 'Ver película',
     'cinema.atIA': 'Ver en Internet Archive',
@@ -1028,6 +1030,7 @@ export const ui = {
     'home.helpBody':
       'Todo o que podes facer en Cine Archive, sección a sección: a hemeroteca, o cine aberto, o teu perfil, as listas e máis.',
     'cinema.publicDomain': 'Dominio público',
+    'cinema.ccby': 'Creative Commons',
     'cinema.directedBy': 'Dirección',
     'cinema.viewerNote':
       'Reprodutor de Internet Archive. A obra é de dominio público; ao reproducila, o teu navegador conéctase a archive.org.',
@@ -1479,7 +1482,7 @@ export const ui = {
     'nav.cinema': 'Zinema irekia',
     'cinema.title': 'Zinema irekia',
     'cinema.intro':
-      'Jabari publikoko filmak, hementxe bertan ikus ditzakezunak, Internet Archive-n ostatatuta. Zinema librea, hormarik gabe.',
+      'Jabari publikoko eta lizentzia libreko filmak, hementxe bertan ikus ditzakezunak, Internet Archive-n ostatatuta. Zinema librea, hormarik gabe.',
     'cinema.count': 'film',
     'cinema.watch': 'Ikusi filma',
     'nav.cines': 'Aurkitu zure zinema',
@@ -1508,6 +1511,7 @@ export const ui = {
     'cinema.atIA': 'Ikusi Internet Archive-n',
     'cinema.backToCinema': 'Itzuli Zinema irekira',
     'cinema.publicDomain': 'Jabari publikoa',
+    'cinema.ccby': 'Creative Commons',
     'cinema.directedBy': 'Zuzendaritza',
     'cinema.viewerNote':
       'Internet Archive-ko erreproduzigailua. Obra jabari publikokoa da; erreproduzitzean, zure nabigatzailea archive.org-era konektatzen da.',
@@ -1959,7 +1963,7 @@ export const ui = {
     'nav.cinema': 'Cinema obert',
     'cinema.title': 'Cinema obert',
     'cinema.intro':
-      'Pel·lícules de domini públic que pots veure aquí mateix, allotjades a Internet Archive. Cinema lliure, sense murs.',
+      'Pel·lícules de domini públic i amb llicència lliure que pots veure aquí mateix, allotjades a Internet Archive. Cinema lliure, sense murs.',
     'cinema.count': 'pel·lícules',
     'cinema.watch': 'Veure la pel·lícula',
     'nav.cines': 'Troba el teu cinema',
@@ -1988,6 +1992,7 @@ export const ui = {
     'cinema.atIA': 'Veure a Internet Archive',
     'cinema.backToCinema': 'Tornar a Cinema obert',
     'cinema.publicDomain': 'Domini públic',
+    'cinema.ccby': 'Creative Commons',
     'cinema.directedBy': 'Direcció',
     'cinema.viewerNote':
       'Reproductor d’Internet Archive. L’obra és de domini públic; en reproduir-la, el teu navegador es connecta a archive.org.',
