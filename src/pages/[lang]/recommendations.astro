@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { getRecommendations } from '../../lib/recs';
+import { filmSlug } from '../../lib/slug';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -15,7 +16,8 @@ try {
 }
 
 const hero = recs[0] ?? null;
-const filmBase = localizePath(lang, 'film'); // /es/film  → el script añade /{id}
+const filmBase = localizePath(lang, 'film'); // /es/film  → el script añade /nombre-{id}
+const heroHref = hero ? `${filmBase}/${filmSlug(hero.tmdbId, hero.title)}` : filmBase;
 // Datos para el botón "otra recomendación" (se cicla en el cliente, sin más peticiones).
 const heroData = JSON.stringify(
   recs.map((r) => ({
@@ -56,13 +58,13 @@ const heroData = JSON.stringify(
                 </span>
               </div>
               <h2 class="text-display-mobile md:text-headline-lg lg:text-display-mobile">
-                <a id="rec-link" href={`${filmBase}/${hero?.tmdbId}`} class="text-ink no-underline hover:text-muted">
+                <a id="rec-link" href={heroHref} class="text-ink no-underline hover:text-muted">
                   {hero?.title}
                 </a>
               </h2>
               <p id="rec-overview" class="max-w-2xl text-body-md text-charcoal">{hero?.overview}</p>
               <div class="flex flex-wrap items-center gap-4">
-                <a id="rec-cta" href={`${filmBase}/${hero?.tmdbId}`} class="btn btn-primary no-underline">
+                <a id="rec-cta" href={heroHref} class="btn btn-primary no-underline">
                   {t('home.viewFilm')}
                 </a>
                 <button id="rec-next" type="button" class="btn border border-ink bg-background text-ink no-underline transition-colors hover:bg-ink hover:text-background">
@@ -72,7 +74,7 @@ const heroData = JSON.stringify(
               </div>
             </div>
 
-            <a id="rec-imglink" href={`${filmBase}/${hero?.tmdbId}`} class="order-1 block md:order-none md:col-span-7 md:border-l md:border-ink">
+            <a id="rec-imglink" href={heroHref} class="order-1 block md:order-none md:col-span-7 md:border-l md:border-ink">
               <img
                 id="rec-img"
                 src={hero?.backdrop ?? ''}
@@ -91,7 +93,7 @@ const heroData = JSON.stringify(
         <h2 class="mt-14 border-b border-ink pb-3 text-headline-lg text-ink">{t('recs.more')}</h2>
         <div class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
           {recs.map((r) => (
-            <a href={`${filmBase}/${r.tmdbId}`} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+            <a href={`${filmBase}/${filmSlug(r.tmdbId, r.title)}`} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
               <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
                 {r.poster ? (
                   <img
@@ -121,6 +123,7 @@ const heroData = JSON.stringify(
 
   <script type="application/json" id="rec-data" set:html={heroData}></script>
   <script>
+    import { filmSlug } from '../../lib/slug';
     const el = document.getElementById('rec-hero');
     const raw = document.getElementById('rec-data')?.textContent;
     if (el && raw) {
@@ -133,7 +136,7 @@ const heroData = JSON.stringify(
       const render = () => {
         const r = data[i];
         if (!r) return;
-        const href = `${base}/${r.id}`;
+        const href = `${base}/${filmSlug(r.id, r.title)}`;
         $('rec-link').textContent = r.title;
         $('rec-link').setAttribute('href', href);
         $('rec-cta').setAttribute('href', href);

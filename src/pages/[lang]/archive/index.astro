@@ -9,6 +9,7 @@ import { sortedGlossary, glossaryTerm, glossaryDef, timeline, movementName, move
 import { awards, awardName, awardNote } from '../../../lib/awards';
 import { getFilmsBrief } from '../../../lib/films';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { filmSlug } from '../../../lib/slug';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -135,7 +136,7 @@ const sections = [
                   {m.keyFilms.map((id) => {
                     const f = briefs.get(id);
                     return f ? (
-                      <a href={localizePath(lang, `film/${id}`)} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{f.title}{f.year && ` (${f.year})`}</a>
+                      <a href={localizePath(lang, `film/${filmSlug(id, f.title)}`)} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{f.title}{f.year && ` (${f.year})`}</a>
                     ) : null;
                   })}
                 </div>
@@ -169,7 +170,7 @@ const sections = [
                       <td class="px-3 py-2 font-mono text-meta-data text-muted">{w.year}</td>
                       <td class="px-3 py-2">
                         {w.tmdbId ? (
-                          <a href={localizePath(lang, `film/${w.tmdbId}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{w.title}</a>
+                          <a href={localizePath(lang, `film/${filmSlug(w.tmdbId, w.title)}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{w.title}</a>
                         ) : (<span class="font-display text-headline-md leading-tight text-ink">{w.title}</span>)}
                         {w.director && <span class="mt-0.5 block font-mono text-meta-data text-muted sm:hidden">{w.director}</span>}
                       </td>

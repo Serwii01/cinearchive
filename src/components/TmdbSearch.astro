@@ -32,6 +32,7 @@ const t = useTranslations(lang);
 </tmdb-search>
 
 <script>
+  import { filmSlug } from '../lib/slug';
   class TmdbSearch extends HTMLElement {
     connectedCallback() {
       const d = this.dataset;
@@ -69,7 +70,7 @@ const t = useTranslations(lang);
             const img = r.poster
               ? `<img src="${r.poster}" ${r.posterSrcset ? `srcset="${r.posterSrcset}"` : ''} sizes="(min-width:1024px) 18vw, (min-width:640px) 30vw, 45vw" alt="${esc(r.title)}" loading="lazy" decoding="async" class="h-full w-full object-cover" />`
               : `<div class="film-grain h-full w-full"></div>`;
-            return `<a href="${d.filmBase}/${r.tmdbId}" class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+            return `<a href="${d.filmBase}/${filmSlug(r.tmdbId, r.title)}" class="group flex flex-col bg-surface no-underline hover:bg-film-white">
               <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">${img}</div>
               <div class="flex flex-1 flex-col p-2">
                 <p class="font-display text-body-lg leading-tight text-ink">${esc(r.title)}</p>

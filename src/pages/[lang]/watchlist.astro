@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { filmSlug } from '../../lib/slug';
 import { db } from '../../db/client';
 import { userFilms, userLists, userListFilms } from '../../db/schema';
 import { eq, desc, count, inArray } from 'drizzle-orm';
@@ -91,7 +92,7 @@ const isEmpty = rows.length === 0 && lists.length === 0;
             {items.map((r) => {
               const b = briefs.get(r.tmdbId);
               return (
-                <a href={localizePath(lang, `film/${r.tmdbId}`)} class="flex gap-3 bg-surface p-3 no-underline hover:bg-film-white">
+                <a href={localizePath(lang, `film/${filmSlug(r.tmdbId, b?.title)}`)} class="flex gap-3 bg-surface p-3 no-underline hover:bg-film-white">
                   <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
                     {b?.poster && <img src={b.poster} alt={b.title} class="h-full w-full object-cover" />}
                   </div>

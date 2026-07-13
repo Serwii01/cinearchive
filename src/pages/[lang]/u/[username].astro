@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Avatar from '../../../components/Avatar.astro';
 import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../../i18n/ui';
+import { filmSlug } from '../../../lib/slug';
 import { db } from '../../../db/client';
 import { userFilms, userLists, userListFilms } from '../../../db/schema';
 import { and, desc, eq, isNotNull, or, count, inArray } from 'drizzle-orm';
@@ -237,7 +238,7 @@ const shareUrl = new URL(localizePath(lang, `u/${target.username}`), Astro.site 
                 {col.ids.slice(0, 27).map((id) => {
                   const b = briefs.get(id);
                   return (
-                    <a href={localizePath(lang, `film/${id}`)} class="block bg-surface no-underline" title={b?.title}>
+                    <a href={localizePath(lang, `film/${filmSlug(id, b?.title)}`)} class="block bg-surface no-underline" title={b?.title}>
                       <div class="aspect-[2/3] w-full bg-charcoal">
                         {b?.poster ? (
                           <img src={b.poster} alt={b?.title ?? ''} loading="lazy" decoding="async" class="h-full w-full object-cover" />
@@ -269,7 +270,7 @@ const shareUrl = new URL(localizePath(lang, `u/${target.username}`), Astro.site 
                   {l.films.slice(0, 18).map((id) => {
                     const b = briefs.get(id);
                     return (
-                      <a href={localizePath(lang, `film/${id}`)} class="block bg-surface no-underline" title={b?.title}>
+                      <a href={localizePath(lang, `film/${filmSlug(id, b?.title)}`)} class="block bg-surface no-underline" title={b?.title}>
                         <div class="aspect-[2/3] w-full bg-charcoal">
                           {b?.poster ? (
                             <img src={b.poster} alt={b?.title ?? ''} loading="lazy" decoding="async" class="h-full w-full object-cover" />

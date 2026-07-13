@@ -13,6 +13,7 @@ import { profileUrl } from '../../lib/tmdb';
 import { getFilmOfDay } from '../../lib/featured';
 import { manifesto } from '../../data/manifesto';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { filmSlug } from '../../lib/slug';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -61,13 +62,13 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
             <div class="flex flex-col justify-between gap-6 border-ink py-8 md:col-span-5 md:border-r md:py-12 md:pr-10">
               <span class="label">{t('home.filmOfDay')}</span>
               <h1 class="text-display-mobile md:text-display-lg">
-                <a href={localizePath(lang, `film/${film.tmdbId}`)} class="text-ink no-underline hover:text-muted">
+                <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} class="text-ink no-underline hover:text-muted">
                   {film.title}
                 </a>
               </h1>
               <p class="max-w-2xl text-body-lg text-charcoal">{overview}</p>
               <div class="flex flex-wrap items-center gap-4">
-                <a href={localizePath(lang, `film/${film.tmdbId}`)} class="btn btn-primary no-underline">
+                <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} class="btn btn-primary no-underline">
                   {t('home.viewFilm')}
                 </a>
                 <span class="font-mono text-meta-data text-muted">
@@ -78,7 +79,7 @@ const overview = film?.overview && film.overview.length > 320 ? film.overview.sl
 
             <div class="md:col-span-7">
               <a
-                href={localizePath(lang, `film/${film.tmdbId}`)}
+                href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)}
                 class="block h-full border-t border-ink md:border-l md:border-t-0"
               >
                 {film.backdrop ? (

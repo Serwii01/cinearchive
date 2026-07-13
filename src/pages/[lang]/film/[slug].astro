@@ -5,6 +5,7 @@ import ListPicker from '../../../components/ListPicker.astro';
 import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { resolveBackLink } from '../../../lib/backlink';
 import { getFilm } from '../../../lib/films';
+import { filmSlug, parseFilmId } from '../../../lib/slug';
 import { director, directorPerson, posterUrl, posterSrcset, profileUrl, backdropUrl, trailerKey, type TmdbSearchResult } from '../../../lib/tmdb';
 import { genreName } from '../../../data/genres';
 import { WATCH_REGIONS, countryName } from '../../../data/countries';
@@ -14,9 +15,12 @@ import { and, eq } from 'drizzle-orm';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
-const tmdbId = Number(Astro.params.tmdbId);
+// El id vive al final del slug (`nombre-{id}`); también acepta el id "pelado"
+// de las URLs viejas `/film/141`. El nombre es puramente decorativo.
+const slugParam = Astro.params.slug ?? '';
+const tmdbId = parseFilmId(slugParam);
 
-if (!Number.isInteger(tmdbId) || tmdbId <= 0) {
+if (tmdbId == null) {
   return Astro.redirect(localizePath(lang, 'films'));
 }
 
@@ -27,6 +31,13 @@ try {
   return new Response(t('film.notFound'), { status: 404 });
 }
 const { tmdb, omdb, watchmode, locations } = film;
+
+// URL canónica con nombre: si llegan por id pelado o con un slug distinto (título
+// cambiado/otro idioma), 301 al slug real. El id garantiza resolver siempre.
+const canonicalSlug = filmSlug(tmdbId, tmdb.title);
+if (slugParam !== canonicalSlug) {
+  return Astro.redirect(localizePath(lang, `film/${canonicalSlug}`), 301);
+}
 const dir = director(tmdb);
 const dirPerson = directorPerson(tmdb);
 const dirExtra = [tmdb.runtime ? `${tmdb.runtime} min` : null, tmdb.production_countries[0]?.name].filter(Boolean).join(' · ');
@@ -347,7 +358,7 @@ const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t);
         <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('film.similar')}</h2>
         <div class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
           {similar.map((s) => (
-            <a href={localizePath(lang, `film/${s.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+            <a href={localizePath(lang, `film/${filmSlug(s.id, s.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
               <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
                 <img
                   src={posterUrl(s.poster_path, 'w342')}

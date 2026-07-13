@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { filmSlug } from '../../../lib/slug';
 import { db } from '../../../db/client';
 import { userLists, userListFilms, profile, user as userTable } from '../../../db/schema';
 import { eq } from 'drizzle-orm';
@@ -128,7 +129,7 @@ const shareUrl = new URL(localizePath(lang, `lists/${id}`), Astro.site ?? Astro.
       <div id="grid" class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
         {films.map((f) => (
           <div class="group relative flex flex-col bg-surface" data-id={f!.tmdbId}>
-            <a href={localizePath(lang, `film/${f!.tmdbId}`)} class="flex flex-1 flex-col no-underline hover:bg-film-white">
+            <a href={localizePath(lang, `film/${filmSlug(f!.tmdbId, f!.title)}`)} class="flex flex-1 flex-col no-underline hover:bg-film-white">
               <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
                 {f!.poster ? (
                   <img src={f!.poster} alt={f!.title} loading="lazy" decoding="async" class="h-full w-full object-cover" />

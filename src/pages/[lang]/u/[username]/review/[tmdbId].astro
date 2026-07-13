@@ -6,6 +6,7 @@ import { db } from '../../../../../db/client';
 import { userFilms } from '../../../../../db/schema';
 import { and, eq } from 'drizzle-orm';
 import { getFilmsBrief } from '../../../../../lib/films';
+import { filmSlug } from '../../../../../lib/slug';
 import { getProfileByUsername, followState, canViewActivity } from '../../../../../lib/social';
 
 export const prerender = false;
@@ -41,7 +42,7 @@ const [row] = await db
 if (!row || (row.rating == null && !row.note)) return new Response(null, { status: 404 });
 
 const brief = (await getFilmsBrief([tmdbId], lang)).get(tmdbId);
-const filmHref = localizePath(lang, `film/${tmdbId}`);
+const filmHref = localizePath(lang, `film/${filmSlug(tmdbId, brief?.title)}`);
 const profileHref = localizePath(lang, `u/${target.username}`);
 const reviewedAt = row.reviewedAt ?? row.updatedAt;
 const isOwner = viewer?.id === target.userId;

@@ -4,6 +4,7 @@ import { getPersonCached, directedFilms, actedFilms, type FilmographyEntry } fro
 import { profileUrl } from '../../../lib/tmdb';
 import { resolveBackLink } from '../../../lib/backlink';
 import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { filmSlug } from '../../../lib/slug';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -86,7 +87,7 @@ const facts = [
               <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{s.label}</h2>
               <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-5">
                 {s.films.map((f) => (
-                  <a href={localizePath(lang, `film/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+                  <a href={localizePath(lang, `film/${filmSlug(f.id, f.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
                     <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
                       {f.poster ? (
                         <img src={f.poster} alt={f.title} loading="lazy" decoding="async" class="h-full w-full object-cover" />

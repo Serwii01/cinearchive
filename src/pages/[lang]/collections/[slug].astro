@@ -3,6 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { collectionBySlug, collectionTitle, collectionBlurb } from '../../../lib/collections';
 import { getFilmsBrief } from '../../../lib/films';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { filmSlug } from '../../../lib/slug';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -27,7 +28,7 @@ const films = collection.tmdbIds.map((id) => briefs.get(id)).filter((f) => f != 
     <div class="mt-10 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
       {
         films.map((f) => (
-          <a href={localizePath(lang, `film/${f!.tmdbId}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+          <a href={localizePath(lang, `film/${filmSlug(f!.tmdbId, f!.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
               {f!.poster ? (
                 <img src={f!.poster} alt={f!.title} loading="lazy" decoding="async" class="h-full w-full object-cover" />

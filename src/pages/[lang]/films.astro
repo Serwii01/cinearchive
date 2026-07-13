@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TmdbSearch from '../../components/TmdbSearch.astro';
 import { getCatalog } from '../../lib/catalog';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { filmSlug } from '../../lib/slug';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -68,7 +69,7 @@ const intro = t('films.intro').replace('{count}', String(films.length));
               >
                 <td class="px-3 py-3">
                   {f.tmdbId ? (
-                    <a href={localizePath(lang, `film/${f.tmdbId}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{f.title}</a>
+                    <a href={localizePath(lang, `film/${filmSlug(f.tmdbId, f.title)}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{f.title}</a>
                   ) : (
                     <span class="font-display text-headline-md leading-tight text-ink">{f.title}</span>
                   )}
