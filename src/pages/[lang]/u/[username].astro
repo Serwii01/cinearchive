@@ -105,6 +105,8 @@ const metaDesc = `${target.name} (@${target.username}) · ${t('site.title')}`;
 // Enlace canónico (dominio real). Astro.url tras el proxy da localhost, por eso
 // se usa Astro.site (SITE_URL / cinearchive.es).
 const shareUrl = new URL(localizePath(lang, `u/${target.username}`), Astro.site ?? Astro.url).href;
+// Imagen de historia (Instagram): endpoint público, solo para perfiles públicos.
+const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lang=${lang}`;
 ---
 
 <BaseLayout title={title} description={metaDesc} noindex={target.isPrivate}>
@@ -189,6 +191,20 @@ const shareUrl = new URL(localizePath(lang, `u/${target.username}`), Astro.site 
           <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg>
           {t('profile.share')}
         </button>
+        {isSelf && !target.isPrivate && (
+          <button
+            id="share-story"
+            type="button"
+            data-img={storyImg}
+            data-url={shareUrl}
+            data-share-title={title}
+            data-error={t('profile.shareStoryError')}
+            class="btn btn-secondary inline-flex items-center justify-center gap-2"
+          >
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
+            {t('profile.shareStory')}
+          </button>
+        )}
       </div>
     </header>
 
@@ -330,6 +346,8 @@ const shareUrl = new URL(localizePath(lang, `u/${target.username}`), Astro.site 
 </BaseLayout>
 
 <script>
+  import { shareStoryImage } from '../../../lib/ui/share';
+
   const btn = document.getElementById('follow-btn') as HTMLButtonElement | null;
   if (btn) {
     const labels = {
@@ -603,4 +621,8 @@ const shareUrl = new URL(localizePath(lang, `u/${target.username}`), Astro.site 
       }, 1500);
     });
   }
+
+  // --- Compartir perfil como imagen de historia (Instagram) ---
+  const storyBtn = document.getElementById('share-story') as HTMLButtonElement | null;
+  if (storyBtn) shareStoryImage(storyBtn);
 </script>
