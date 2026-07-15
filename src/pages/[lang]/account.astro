@@ -83,6 +83,13 @@ const pending = await db
         bad_type: t('profile.errBadType'),
         heic: t('profile.errHeic'),
       })}
+      data-processing={t('profile.avatarProcessing')}
+      data-crop={JSON.stringify({
+        title: t('profile.cropTitle'),
+        zoom: t('profile.cropZoom'),
+        cancel: t('profile.cancel'),
+        save: t('controls.save'),
+      })}
     >
       <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.yours')}</h2>
 
@@ -92,7 +99,7 @@ const pending = await db
         {/* Avatar */}
         <div class="flex flex-col items-center gap-3">
           <Avatar userId={user.id} name={user.name} hasAvatar={!!myProfile?.avatarType} size={112} class="h-28 w-28" />
-          <input id="avatar-input" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" />
+          <input id="avatar-input" type="file" accept="image/*" class="hidden" />
           <div class="flex gap-2">
             <button id="avatar-upload" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white" disabled={!myProfile}>{t('profile.uploadAvatar')}</button>
             <button id="avatar-remove" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white" disabled={!myProfile?.avatarType}>{t('profile.removeAvatar')}</button>
@@ -296,6 +303,8 @@ const pending = await db
 </script>
 
 <script>
+  import { cropAvatar } from '../../lib/ui/crop';
+
   // --- Perfil público: username, bio, privacidad, avatar ---
   const editor = document.getElementById('profile-editor') as HTMLElement | null;
   if (editor) {
@@ -386,35 +395,75 @@ const pending = await db
       clearAlert();
       fileInput.click();
     });
+    const MAX_AVATAR_BYTES = 512 * 1024;
+    const uploadBtn = document.getElementById('avatar-upload') as HTMLButtonElement | null;
+    const processingLabel = editor.dataset.processing || '…';
+    const cropLabels = JSON.parse(editor.dataset.crop || '{}') as Record<string, string>;
+
     fileInput.addEventListener('change', async () => {
       clearAlert();
       const file = fileInput.files?.[0];
       if (!file) return;
-      // Caso típico de móvil: fotos de iPhone en HEIC/HEIF. Aviso claro y específico.
+      // HEIC/HEIF (iPhone): el navegador ni siquiera lo decodifica en canvas.
+      // Aviso claro y específico antes de abrir el recortador.
       if (/heic|heif/i.test(file.type) || /\.(heic|heif)$/i.test(file.name)) {
         showAlert(errors.heic || errors.bad_type || 'Invalid format');
         fileInput.value = '';
         return;
       }
-      if (file.size > 512 * 1024) {
+
+      let blob: Blob | null;
+      try {
+        // El usuario elige qué parte de la foto se usa (arrastrar + zoom). Devuelve
+        // un cuadrado 512² ya comprimido (WebP/JPEG ≤ 512 KB), sin metadatos EXIF.
+        // Así se puede partir de fotos grandes que Caddy cortaría en el borde.
+        blob = await cropAvatar(file, {
+          size: 512,
+          maxBytes: MAX_AVATAR_BYTES,
+          title: cropLabels.title || 'Ajusta tu foto',
+          zoomLabel: cropLabels.zoom || 'Zoom',
+          cancelLabel: cropLabels.cancel || 'Cancelar',
+          confirmLabel: cropLabels.save || 'Guardar',
+        });
+      } catch {
+        // La imagen no se pudo decodificar (formato no soportado).
+        showAlert(errors.bad_type || 'Error');
+        fileInput.value = '';
+        return;
+      }
+      if (!blob) {
+        // Cancelado por el usuario.
+        fileInput.value = '';
+        return;
+      }
+      if (blob.size > MAX_AVATAR_BYTES) {
         showAlert(errors.too_large || 'Too large');
         fileInput.value = '';
         return;
       }
-      // El tipo real lo valida el servidor por magic bytes (no bloqueamos aquí:
-      // así una foto de móvil que llega como JPEG se acepta sin fricción).
+
+      const originalLabel = uploadBtn?.textContent ?? '';
+      if (uploadBtn) {
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = processingLabel;
+      }
       try {
-        const res = await fetch('/api/me/avatar', { method: 'POST', body: file });
+        // El servidor valida por magic bytes y recomprime (WebP) para ahorrar espacio.
+        const res = await fetch('/api/me/avatar', { method: 'POST', body: blob });
         if (res.ok) {
           location.reload();
-        } else {
-          const data = await res.json().catch(() => ({}));
-          showAlert(errors[data.error] || errors.bad_type || 'Error');
-          fileInput.value = '';
+          return;
         }
+        const data = await res.json().catch(() => ({}));
+        showAlert(errors[data.error] || errors.bad_type || 'Error');
       } catch {
         showAlert(errors.bad_type || 'Error');
+      } finally {
         fileInput.value = '';
+        if (uploadBtn) {
+          uploadBtn.disabled = false;
+          uploadBtn.textContent = originalLabel;
+        }
       }
     });
     document.getElementById('avatar-remove')?.addEventListener('click', async () => {
