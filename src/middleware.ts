@@ -10,6 +10,12 @@ import { languages, defaultLang } from './i18n/ui';
 // Prefijo de idioma de la ruta: /es, /en, /gl, /eu, /ca.
 const LANG_PREFIX = new RegExp(`^/(${Object.keys(languages).join('|')})(?=/|$)`);
 
+// Rutas que no deben indexarse (API, auth y privadas). Se marca con X-Robots-Tag,
+// que cubre incluso respuestas no-HTML y redirecciones (complementa al <meta robots>).
+const NOINDEX_PATH = new RegExp(
+  `^/api/|^/(?:${Object.keys(languages).join('|')})/(?:account|watchlist|notifications|stats|recommendations|login|register|forgot|reset|admin)(?:/|$)`,
+);
+
 /**
  * - Carga la sesión (si existe) en Astro.locals para las rutas SSR.
  * - Protege las páginas privadas redirigiendo a /{lang}/login.
@@ -34,7 +40,7 @@ const isStatic = (p: string) => STATIC_PREFIX.test(p) || STATIC_FILE.test(p) || 
 const LIMIT_WEB = 150; // páginas dinámicas
 const LIMIT_API = 80; // endpoints /api/*
 
-function harden(response: Response): Response {
+function harden(response: Response, path?: string): Response {
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('X-Frame-Options', 'DENY');
@@ -43,6 +49,7 @@ function harden(response: Response): Response {
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
   );
+  if (path && NOINDEX_PATH.test(path)) response.headers.set('X-Robots-Tag', 'noindex');
   return response;
 }
 
@@ -60,7 +67,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       isApi ? LIMIT_API : LIMIT_WEB,
       60_000,
     );
-    if (!ok) return harden(tooMany(retryAfter));
+    if (!ok) return harden(tooMany(retryAfter), path);
   }
 
   // CSRF (defensa en profundidad): en escrituras a la API, si llega cabecera
@@ -98,6 +105,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
             status: 403,
             headers: { 'content-type': 'application/json' },
           }),
+          path,
         );
       }
     }
@@ -108,7 +116,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (context.isPrerendered) {
     context.locals.user = null;
     context.locals.session = null;
-    return harden(await next());
+    return harden(await next(), path);
   }
 
   // Recuperar la sesión a partir de las cookies de la petición.
@@ -137,7 +145,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   if (isProtected && !context.locals.user) {
     const back = encodeURIComponent(path);
-    return harden(context.redirect(`/${lang}/login?next=${back}`));
+    return harden(context.redirect(`/${lang}/login?next=${back}`), path);
   }
 
   // Panel de administración: solo cuentas de ADMIN_EMAILS (la API responde 403; las
@@ -152,14 +160,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
             status: 403,
             headers: { 'content-type': 'application/json' },
           }),
+          path,
         );
       }
       if (!context.locals.user) {
-        return harden(context.redirect(`/${lang}/login?next=${encodeURIComponent(path)}`));
+        return harden(context.redirect(`/${lang}/login?next=${encodeURIComponent(path)}`), path);
       }
-      return harden(context.redirect(`/${lang}`)); // logueado pero no admin → fuera
+      return harden(context.redirect(`/${lang}`), path); // logueado pero no admin → fuera
     }
   }
 
-  return harden(await next());
+  return harden(await next(), path);
 });

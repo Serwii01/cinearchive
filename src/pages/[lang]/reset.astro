@@ -6,7 +6,7 @@ const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 ---
 
-<BaseLayout title={t('auth.resetTitle')}>
+<BaseLayout title={t('auth.resetTitle')} noindex>
   <section class="frame py-12">
     <div class="mx-auto max-w-md border border-ink bg-surface">
       <h1 class="border-b border-ink px-6 py-4 font-display text-headline-lg text-ink">{t('auth.resetTitle')}</h1>

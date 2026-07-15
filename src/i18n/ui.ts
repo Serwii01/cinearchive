@@ -146,6 +146,42 @@ export const ui = {
     'info.accessibility': 'Nuestro compromiso de accesibilidad y cómo avisarnos de barreras.',
     'info.privacy': 'Qué datos tratamos, con qué fin y tus derechos.',
     'info.terms': 'Las condiciones de uso del sitio.',
+    'nav.faq': 'Preguntas frecuentes',
+    'faq.title': 'Preguntas frecuentes',
+    'faq.intro':
+      'Respuestas rápidas sobre cómo funciona Cine Archive: cuentas, privacidad, contenido y qué puedes ver.',
+    'faq.q1': '¿Qué es Cine Archive?',
+    'faq.a1':
+      'Un archivo de cine abierto y multilingüe: fichas de películas, dosieres, una hemeroteca de revistas de dominio público, cine libre para ver online y herramientas para llevar tu propia biblioteca personal.',
+    'faq.q2': '¿Tengo que pagar o crear una cuenta?',
+    'faq.a2':
+      'No. Todo el archivo se consulta gratis y sin cuenta. Solo necesitas registrarte si quieres guardar películas, escribir reseñas, crear listas o seguir a otras personas.',
+    'faq.q3': '¿Puedo ver películas completas aquí?',
+    'faq.a3':
+      'Las de «Cine abierto», sí: títulos en dominio público o con licencia libre que se reproducen aquí mismo desde Internet Archive. El resto del catálogo es una referencia: te decimos dónde se pueden ver legalmente, pero no alojamos esas películas.',
+    'faq.q4': '¿De dónde salen los datos de las fichas?',
+    'faq.a4':
+      'De fuentes abiertas como TMDB, OMDb, Watchmode y Wikidata, combinadas y traducidas a los cinco idiomas. Cine Archive solo las presenta; no las vende ni las revende.',
+    'faq.q5': '¿Quién puede ver mi perfil, mis listas y mis reseñas?',
+    'faq.a5':
+      'Tu perfil es privado por defecto: tú decides quién te sigue. Cada lista es privada salvo que la hagas pública, y solo entonces se puede compartir por enlace. Puedes cambiarlo cuando quieras desde tu cuenta.',
+    'faq.q6': '¿En qué idiomas está?',
+    'faq.a6':
+      'En cinco: español, inglés, gallego, euskera y catalán. Cambia el idioma desde el menú superior; los textos del archivo están traducidos a los cinco.',
+    'faq.q7': '¿Qué son la Hemeroteca y la Biblioteca?',
+    'faq.a7':
+      'La Hemeroteca reúne revistas y periódicos de cine de dominio público, que se leen aquí mismo en el visor de Internet Archive; la Biblioteca hace lo propio con libros. También enlazamos a revistas actuales de acceso abierto.',
+    'faq.q8': '¿Cómo encuentro salas de cine?',
+    'faq.a8':
+      'En «Encuentra tu cine» buscamos cines reales cerca de ti sobre un mapa de OpenStreetMap, con enlace a su cartelera. Los datos se consultan en el momento y no guardamos tu ubicación.',
+    'faq.q9': '¿Cómo borro mi cuenta o mis datos?',
+    'faq.a9':
+      'Desde tu cuenta puedes editar o eliminar tus reseñas y listas cuando quieras. Para borrar la cuenta entera y todos sus datos, escríbenos y lo hacemos sin dejar rastro. Tienes el detalle en la Política de Privacidad.',
+    'faq.q10': '¿Cómo aviso de un error o hago una sugerencia?',
+    'faq.a10':
+      'Escríbenos a contacto@cinearchive.es. Nos interesan especialmente los fallos de accesibilidad y los enlaces rotos del archivo.',
+    'faq.stillHelp': '¿No encuentras tu respuesta?',
+    'faq.stillHelpLink': 'Mira qué hay en Cine Archive',
     'ticker.label': 'Novedades',
     'home.featured': 'Destacado',
     'home.filmOfDay': 'Película del día',
@@ -627,6 +663,42 @@ export const ui = {
     'info.accessibility': 'Our accessibility commitment and how to report barriers.',
     'info.privacy': 'What data we process, why, and your rights.',
     'info.terms': 'The site’s terms of use.',
+    'nav.faq': 'FAQ',
+    'faq.title': 'Frequently asked questions',
+    'faq.intro':
+      'Quick answers about how Cine Archive works: accounts, privacy, content and what you can watch.',
+    'faq.q1': 'What is Cine Archive?',
+    'faq.a1':
+      'An open, multilingual film archive: film pages, dossiers, a periodicals library of public-domain magazines, freely licensed cinema to watch online and tools to keep your own personal library.',
+    'faq.q2': 'Do I have to pay or create an account?',
+    'faq.a2':
+      'No. The whole archive is free to browse without an account. You only need to sign up if you want to save films, write reviews, build lists or follow other people.',
+    'faq.q3': 'Can I watch full films here?',
+    'faq.a3':
+      'The “Open Cinema” ones, yes: public-domain or freely licensed titles that play right here from the Internet Archive. The rest of the catalogue is a reference: we tell you where they can be watched legally, but we don’t host those films.',
+    'faq.q4': 'Where does the film data come from?',
+    'faq.a4':
+      'From open sources such as TMDB, OMDb, Watchmode and Wikidata, combined and translated into all five languages. Cine Archive only presents it; it doesn’t sell or resell it.',
+    'faq.q5': 'Who can see my profile, lists and reviews?',
+    'faq.a5':
+      'Your profile is private by default: you decide who follows you. Each list is private unless you make it public, and only then can it be shared by link. You can change this any time from your account.',
+    'faq.q6': 'What languages is it in?',
+    'faq.a6':
+      'Five: Spanish, English, Galician, Basque and Catalan. Switch languages from the top menu; the archive’s texts are translated into all five.',
+    'faq.q7': 'What are the Periodicals and the Library?',
+    'faq.a7':
+      'The Periodicals section gathers public-domain film magazines and newspapers, read right here in the Internet Archive viewer; the Library does the same with books. We also link out to current open-access magazines.',
+    'faq.q8': 'How do I find cinemas?',
+    'faq.a8':
+      'In “Find your cinema” we look up real cinemas near you on an OpenStreetMap map, with a link to their listings. Data is fetched on the spot and we don’t store your location.',
+    'faq.q9': 'How do I delete my account or my data?',
+    'faq.a9':
+      'From your account you can edit or delete your reviews and lists any time. To delete the whole account and all its data, write to us and we’ll do it without a trace. The details are in the Privacy Policy.',
+    'faq.q10': 'How do I report a bug or make a suggestion?',
+    'faq.a10':
+      'Write to contacto@cinearchive.es. We’re especially keen to hear about accessibility issues and broken links in the archive.',
+    'faq.stillHelp': 'Didn’t find your answer?',
+    'faq.stillHelpLink': 'See what’s in Cine Archive',
     'ticker.label': 'What’s new',
     'home.featured': 'Featured',
     'home.filmOfDay': 'Film of the day',
@@ -1108,6 +1180,42 @@ export const ui = {
     'info.accessibility': 'O noso compromiso de accesibilidade e como avisarnos de barreiras.',
     'info.privacy': 'Que datos tratamos, con que fin e os teus dereitos.',
     'info.terms': 'As condicións de uso do sitio.',
+    'nav.faq': 'Preguntas frecuentes',
+    'faq.title': 'Preguntas frecuentes',
+    'faq.intro':
+      'Respostas rápidas sobre como funciona Cine Archive: contas, privacidade, contido e que podes ver.',
+    'faq.q1': 'Que é Cine Archive?',
+    'faq.a1':
+      'Un arquivo de cine aberto e multilingüe: fichas de películas, dossieres, unha hemeroteca de revistas de dominio público, cine libre para ver en liña e ferramentas para levar a túa propia biblioteca persoal.',
+    'faq.q2': 'Teño que pagar ou crear unha conta?',
+    'faq.a2':
+      'Non. Todo o arquivo consúltase de balde e sen conta. Só precisas rexistrarte se queres gardar películas, escribir reseñas, crear listas ou seguir a outras persoas.',
+    'faq.q3': 'Podo ver películas completas aquí?',
+    'faq.a3':
+      'As de «Cine aberto», si: títulos en dominio público ou con licenza libre que se reproducen aquí mesmo desde Internet Archive. O resto do catálogo é unha referencia: dicímosche onde se poden ver legalmente, pero non aloxamos esas películas.',
+    'faq.q4': 'De onde saen os datos das fichas?',
+    'faq.a4':
+      'De fontes abertas como TMDB, OMDb, Watchmode e Wikidata, combinadas e traducidas aos cinco idiomas. Cine Archive só as presenta; non as vende nin as revende.',
+    'faq.q5': 'Quen pode ver o meu perfil, as miñas listas e as miñas reseñas?',
+    'faq.a5':
+      'O teu perfil é privado por defecto: ti decides quen te segue. Cada lista é privada agás que a fagas pública, e só entón se pode compartir por ligazón. Podes cambialo cando queiras desde a túa conta.',
+    'faq.q6': 'En que idiomas está?',
+    'faq.a6':
+      'En cinco: español, inglés, galego, éuscaro e catalán. Cambia o idioma desde o menú superior; os textos do arquivo están traducidos aos cinco.',
+    'faq.q7': 'Que son a Hemeroteca e a Biblioteca?',
+    'faq.a7':
+      'A Hemeroteca reúne revistas e xornais de cine de dominio público, que se len aquí mesmo no visor de Internet Archive; a Biblioteca fai o propio con libros. Tamén ligamos a revistas actuais de acceso aberto.',
+    'faq.q8': 'Como atopo salas de cine?',
+    'faq.a8':
+      'En «Atopa o teu cine» buscamos cines reais preto de ti sobre un mapa de OpenStreetMap, con ligazón á súa carteleira. Os datos consúltanse no momento e non gardamos a túa localización.',
+    'faq.q9': 'Como borro a miña conta ou os meus datos?',
+    'faq.a9':
+      'Desde a túa conta podes editar ou eliminar as túas reseñas e listas cando queiras. Para borrar a conta enteira e todos os seus datos, escríbenos e facémolo sen deixar rastro. Tes o detalle na Política de Privacidade.',
+    'faq.q10': 'Como aviso dun erro ou fago unha suxestión?',
+    'faq.a10':
+      'Escríbenos a contacto@cinearchive.es. Interésannos especialmente os fallos de accesibilidade e as ligazóns rotas do arquivo.',
+    'faq.stillHelp': 'Non atopas a túa resposta?',
+    'faq.stillHelpLink': 'Mira que hai en Cine Archive',
     'ticker.label': 'Novidades',
     'home.featured': 'Destacado',
     'home.filmOfDay': 'Película do día',
@@ -1589,6 +1697,42 @@ export const ui = {
     'info.accessibility': 'Gure irisgarritasun-konpromisoa eta oztopoen berri nola eman.',
     'info.privacy': 'Zer datu tratatzen ditugun, zertarako, eta zure eskubideak.',
     'info.terms': 'Webgunearen erabilera-baldintzak.',
+    'nav.faq': 'Ohiko galderak',
+    'faq.title': 'Ohiko galderak',
+    'faq.intro':
+      'Cine Archive nola dabilen azaltzen duten erantzun azkarrak: kontuak, pribatutasuna, edukia eta zer ikus dezakezun.',
+    'faq.q1': 'Zer da Cine Archive?',
+    'faq.a1':
+      'Zinema-artxibo ireki eta eleaniztuna: filmen fitxak, dosierrak, jabari publikoko aldizkarien hemeroteka, sarean ikusteko zinema librea eta zeure liburutegi pertsonala eramateko tresnak.',
+    'faq.q2': 'Ordaindu edo kontu bat sortu behar dut?',
+    'faq.a2':
+      'Ez. Artxibo osoa doan eta konturik gabe kontsulta daiteke. Izena eman behar duzu soilik filmak gorde, iritziak idatzi, zerrendak sortu edo beste pertsona batzuk jarraitu nahi badituzu.',
+    'faq.q3': 'Film osoak ikus ditzaket hemen?',
+    'faq.a3':
+      '«Zinema irekikoak», bai: jabari publikoko edo lizentzia libreko izenburuak, hementxe erreproduzitzen direnak Internet Archive-tik. Gainerako katalogoa erreferentzia bat da: non ikus daitezkeen legez esaten dizugu, baina ez ditugu film horiek ostatatzen.',
+    'faq.q4': 'Nondik datoz fitxen datuak?',
+    'faq.a4':
+      'TMDB, OMDb, Watchmode eta Wikidata bezalako iturri irekietatik, bost hizkuntzetan konbinatu eta itzulita. Cine Archivek aurkeztu baino ez ditu egiten; ez ditu saltzen edo birsaltzen.',
+    'faq.q5': 'Nork ikus ditzake nire profila, zerrendak eta iritziak?',
+    'faq.a5':
+      'Zure profila lehenetsita pribatua da: zuk erabakitzen duzu nork jarraitzen zaituen. Zerrenda bakoitza pribatua da publiko egin ezean, eta orduan bakarrik parteka daiteke esteka bidez. Nahi duzunean alda dezakezu zure kontutik.',
+    'faq.q6': 'Zein hizkuntzatan dago?',
+    'faq.a6':
+      'Bostetan: gaztelania, ingelesa, galiziera, euskara eta katalana. Aldatu hizkuntza goiko menutik; artxiboko testuak bost hizkuntzetara itzulita daude.',
+    'faq.q7': 'Zer dira Hemeroteka eta Liburutegia?',
+    'faq.a7':
+      'Hemerotekak jabari publikoko zinema-aldizkariak eta egunkariak biltzen ditu, hementxe irakurtzen direnak Internet Archive-ren ikustailean; Liburutegiak gauza bera egiten du liburuekin. Gaur egungo sarbide irekiko aldizkarietara ere estekatzen dugu.',
+    'faq.q8': 'Nola aurkitzen ditut zinema-aretoak?',
+    'faq.a8':
+      '«Aurkitu zure zinema» atalean zure inguruko benetako zinemak bilatzen ditugu OpenStreetMap mapa batean, beren kartelerarako estekarekin. Datuak unean bertan kontsultatzen dira eta ez dugu zure kokapena gordetzen.',
+    'faq.q9': 'Nola ezabatzen dut nire kontua edo nire datuak?',
+    'faq.a9':
+      'Zure kontutik zure iritziak eta zerrendak edita edo ezaba ditzakezu nahi duzunean. Kontu osoa eta bere datu guztiak ezabatzeko, idatzi guri eta arrastorik utzi gabe egingo dugu. Xehetasunak Pribatutasun Politikan dituzu.',
+    'faq.q10': 'Nola jakinarazten dut akats bat edo iradokizun bat egiten dut?',
+    'faq.a10':
+      'Idatzi contacto@cinearchive.es helbidera. Bereziki interesatzen zaizkigu irisgarritasun-arazoak eta artxiboko esteka hautsiak.',
+    'faq.stillHelp': 'Ez duzu zure erantzuna aurkitu?',
+    'faq.stillHelpLink': 'Ikusi zer dagoen Cine Archiven',
     'ticker.label': 'Berriak',
     'home.featured': 'Nabarmendua',
     'home.filmOfDay': 'Eguneko filma',
@@ -2070,6 +2214,42 @@ export const ui = {
     'info.accessibility': 'El nostre compromís d’accessibilitat i com avisar-nos de barreres.',
     'info.privacy': 'Quines dades tractem, amb quina finalitat i els teus drets.',
     'info.terms': 'Les condicions d’ús del lloc.',
+    'nav.faq': 'Preguntes freqüents',
+    'faq.title': 'Preguntes freqüents',
+    'faq.intro':
+      'Respostes ràpides sobre com funciona Cine Archive: comptes, privadesa, contingut i què pots veure.',
+    'faq.q1': 'Què és Cine Archive?',
+    'faq.a1':
+      'Un arxiu de cinema obert i multilingüe: fitxes de pel·lícules, dossiers, una hemeroteca de revistes de domini públic, cinema lliure per veure en línia i eines per portar la teva pròpia biblioteca personal.',
+    'faq.q2': 'He de pagar o crear un compte?',
+    'faq.a2':
+      'No. Tot l’arxiu es consulta de franc i sense compte. Només cal que et registris si vols desar pel·lícules, escriure ressenyes, crear llistes o seguir altres persones.',
+    'faq.q3': 'Puc veure pel·lícules senceres aquí?',
+    'faq.a3':
+      'Les de «Cinema obert», sí: títols de domini públic o amb llicència lliure que es reprodueixen aquí mateix des d’Internet Archive. La resta del catàleg és una referència: t’indiquem on es poden veure legalment, però no allotgem aquestes pel·lícules.',
+    'faq.q4': 'D’on surten les dades de les fitxes?',
+    'faq.a4':
+      'De fonts obertes com TMDB, OMDb, Watchmode i Wikidata, combinades i traduïdes als cinc idiomes. Cine Archive només les presenta; no les ven ni les revèn.',
+    'faq.q5': 'Qui pot veure el meu perfil, les meves llistes i les meves ressenyes?',
+    'faq.a5':
+      'El teu perfil és privat per defecte: tu decideixes qui et segueix. Cada llista és privada tret que la facis pública, i només llavors es pot compartir per enllaç. Ho pots canviar quan vulguis des del teu compte.',
+    'faq.q6': 'En quins idiomes està?',
+    'faq.a6':
+      'En cinc: espanyol, anglès, gallec, èuscar i català. Canvia l’idioma des del menú superior; els textos de l’arxiu estan traduïts als cinc.',
+    'faq.q7': 'Què són l’Hemeroteca i la Biblioteca?',
+    'faq.a7':
+      'L’Hemeroteca reuneix revistes i diaris de cinema de domini públic, que es llegeixen aquí mateix al visor d’Internet Archive; la Biblioteca fa el mateix amb llibres. També enllacem a revistes actuals d’accés obert.',
+    'faq.q8': 'Com trobo sales de cinema?',
+    'faq.a8':
+      'A «Troba el teu cinema» busquem cinemes reals a prop teu sobre un mapa d’OpenStreetMap, amb enllaç a la seva cartellera. Les dades es consulten al moment i no desem la teva ubicació.',
+    'faq.q9': 'Com esborro el meu compte o les meves dades?',
+    'faq.a9':
+      'Des del teu compte pots editar o eliminar les teves ressenyes i llistes quan vulguis. Per esborrar el compte sencer i totes les seves dades, escriu-nos i ho fem sense deixar rastre. Tens el detall a la Política de Privadesa.',
+    'faq.q10': 'Com avíso d’un error o faig un suggeriment?',
+    'faq.a10':
+      'Escriu-nos a contacto@cinearchive.es. Ens interessen especialment els errors d’accessibilitat i els enllaços trencats de l’arxiu.',
+    'faq.stillHelp': 'No trobes la teva resposta?',
+    'faq.stillHelpLink': 'Mira què hi ha a Cine Archive',
     'ticker.label': 'Novetats',
     'home.featured': 'Destacat',
     'home.filmOfDay': 'Pel·lícula del dia',

@@ -8,14 +8,26 @@ import { getLangFromUrl, languages, useTranslations, defaultLang, type Lang } fr
 interface Props {
   title?: string;
   description?: string;
+  /** Imagen social (og/twitter). Absoluta o ruta relativa a `site`. Default: /og.png. */
+  image?: string;
+  /** Si es true, la página no se indexa (páginas privadas/finas). */
+  noindex?: boolean;
+  /** Tipo Open Graph: 'website' (default) o 'article' para fichas/dosieres. */
+  ogType?: 'website' | 'article';
+  /** Datos estructurados schema.org; se serializan como JSON-LD (uno o varios). */
+  jsonLd?: object | object[];
 }
 
 const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const { title, description } = Astro.props;
+const { title, description, image, noindex, ogType = 'website', jsonLd } = Astro.props;
 const pageTitle = title ? `${title} — ${t('site.title')}` : `${t('site.title')} — ${t('site.tagline')}`;
 const pageDesc = description ?? t('site.description');
+
+// Escapa `<` para que un `</script>` en el contenido no rompa el bloque JSON-LD.
+const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const serializeLd = (data: object): string => JSON.stringify(data).replace(/</g, '\\u003c');
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 // Toda página bajo /{lang}/ existe en todos los idiomas con la misma ruta:
@@ -29,7 +41,9 @@ const alternates = langPrefix.test(Astro.url.pathname)
     }))
   : [];
 const ogLocales: Record<Lang, string> = { es: 'es_ES', en: 'en_US', gl: 'gl_ES', eu: 'eu_ES', ca: 'ca_ES' };
-const ogImage = new URL('/og.png', Astro.site).href;
+const ogImage = image
+  ? (/^https?:\/\//.test(image) ? image : new URL(image, Astro.site).href)
+  : new URL('/og.png', Astro.site).href;
 ---
 
 <!doctype html>
@@ -45,26 +59,32 @@ const ogImage = new URL('/og.png', Astro.site).href;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDesc} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical.href} />
     {alternates.map((alt) => <link rel="alternate" hreflang={alt.code} href={alt.href} />)}
     {alternates.length > 0 && (
       <link rel="alternate" hreflang="x-default" href={alternates.find((a) => a.code === defaultLang)!.href} />
     )}
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={t('site.title')} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDesc} />
     <meta property="og:url" content={canonical.href} />
     <meta property="og:locale" content={ogLocales[lang]} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    {/* Solo declaramos dimensiones para la imagen por defecto (1200×630 conocido);
+        para imágenes por página deja que la plataforma lea el tamaño real. */}
+    {!image && <meta property="og:image:width" content="1200" />}
+    {!image && <meta property="og:image:height" content="630" />}
     <meta property="og:image:alt" content={t('site.title')} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDesc} />
     <meta name="twitter:image" content={ogImage} />
     <meta name="generator" content={Astro.generator} />
+    {jsonLdList.map((data) => (
+      <script type="application/ld+json" set:html={serializeLd(data)} />
+    ))}
   </head>
   <body class="flex min-h-screen flex-col">
     <Ticker />

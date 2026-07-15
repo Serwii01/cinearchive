@@ -33,7 +33,7 @@ const followers = myProfile ? await getConnections(userId, 'followers') : [];
 if (myProfile) await markNotificationsSeen(userId);
 ---
 
-<BaseLayout title={t('notifications.title')}>
+<BaseLayout title={t('notifications.title')} noindex>
   <section class="frame py-12">
     <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
     <header class="mt-6 border-b border-ink pb-6">

@@ -1,8 +1,9 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { pdFilms, pdEmbedUrl, pdIaUrl, type PdFilm } from '../../../lib/pdfilms';
+import { pdFilms, pdEmbedUrl, pdIaUrl, pdThumbUrl, type PdFilm } from '../../../lib/pdfilms';
 import { languages, localizedField, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { breadcrumbLd } from '../../../lib/seo';
 
 export function getStaticPaths() {
   const paths: { params: { lang: string; id: string }; props: { item: PdFilm } }[] = [];
@@ -20,9 +21,16 @@ const { item } = Astro.props as { item: PdFilm };
 
 const blurb = localizedField(item, 'blurb', lang);
 const meta = [item.director, item.country, item.year, `${item.runtime}′`].filter(Boolean).join(' · ');
+
+// SEO: fotograma de Internet Archive como imagen social + migas de pan.
+const socialImg = pdThumbUrl(item.id);
+const crumbsJsonLd = breadcrumbLd([
+  { name: t('cinema.title'), url: new URL(localizePath(lang, 'cinema'), Astro.site).href },
+  { name: item.title, url: new URL(Astro.url.pathname, Astro.site).href },
+]);
 ---
 
-<BaseLayout title={item.title} description={blurb}>
+<BaseLayout title={item.title} description={blurb} image={socialImg} ogType="article" jsonLd={crumbsJsonLd}>
   <article class="frame py-12">
     <a href={localizePath(lang, 'cinema')} class="label no-underline hover:text-ink">← {t('cinema.backToCinema')}</a>
 

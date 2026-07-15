@@ -32,7 +32,7 @@ const totals = stats
 const isEmpty = !stats || stats.total === 0;
 ---
 
-<BaseLayout title={t('stats.title')}>
+<BaseLayout title={t('stats.title')} noindex>
   <section class="frame py-12">
     <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
     <header class="mt-6 border-b border-ink pb-6">

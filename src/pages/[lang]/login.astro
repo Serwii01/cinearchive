@@ -12,7 +12,7 @@ if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
 const next = Astro.url.searchParams.get('next') || localizePath(lang);
 ---
 
-<BaseLayout title={t('auth.loginTitle')}>
+<BaseLayout title={t('auth.loginTitle')} noindex>
   <section class="frame py-12">
     <div class="mx-auto max-w-md border border-ink bg-surface">
       <h1 class="border-b border-ink px-6 py-4 font-display text-headline-lg text-ink">{t('auth.loginTitle')}</h1>

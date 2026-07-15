@@ -4,6 +4,7 @@ import { collectionBySlug, collectionTitle, collectionBlurb } from '../../../lib
 import { getFilmsBrief } from '../../../lib/films';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { filmSlug } from '../../../lib/slug';
+import { articleLd, breadcrumbLd } from '../../../lib/seo';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -14,9 +15,25 @@ if (!collection) return Astro.redirect(localizePath(lang, 'collections'));
 const briefs = await getFilmsBrief(collection.tmdbIds, lang);
 // Mantener el orden curado y descartar los que no resuelvan.
 const films = collection.tmdbIds.map((id) => briefs.get(id)).filter((f) => f != null);
+
+// SEO: dosier como Article + migas de pan.
+const collUrl = new URL(Astro.url.pathname, Astro.site).href;
+const collJsonLd = [
+  articleLd({
+    url: collUrl,
+    headline: collectionTitle(collection, lang),
+    description: collectionBlurb(collection, lang),
+    image: films[0]?.poster ?? undefined,
+    inLanguage: lang,
+  }),
+  breadcrumbLd([
+    { name: t('collections.title'), url: new URL(localizePath(lang, 'collections'), Astro.site).href },
+    { name: collectionTitle(collection, lang), url: collUrl },
+  ]),
+];
 ---
 
-<BaseLayout title={collectionTitle(collection, lang)} description={collectionBlurb(collection, lang)}>
+<BaseLayout title={collectionTitle(collection, lang)} description={collectionBlurb(collection, lang)} jsonLd={collJsonLd}>
   <section class="frame py-12">
     <a href={localizePath(lang, 'collections')} class="label no-underline hover:text-ink">← {t('collections.backToCollections')}</a>
     <header class="mt-6 border-b border-ink pb-6">

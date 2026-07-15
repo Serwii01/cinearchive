@@ -101,12 +101,13 @@ if (canView) {
 }
 
 const title = `@${target.username}`;
+const metaDesc = `${target.name} (@${target.username}) · ${t('site.title')}`;
 // Enlace canónico (dominio real). Astro.url tras el proxy da localhost, por eso
 // se usa Astro.site (SITE_URL / cinearchive.es).
 const shareUrl = new URL(localizePath(lang, `u/${target.username}`), Astro.site ?? Astro.url).href;
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} description={metaDesc} noindex={target.isPrivate}>
   <section class="frame py-12">
     {/* Cabecera del perfil */}
     <header class="flex flex-col gap-6 border-b border-ink pb-8 sm:flex-row sm:items-start sm:justify-between">

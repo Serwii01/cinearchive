@@ -72,9 +72,12 @@ const backLabel = fromProfile
 // Enlace canónico para compartir (dominio real; tras el proxy Astro.url da
 // localhost, por eso se usa Astro.site). Solo tiene sentido si la lista es pública.
 const shareUrl = new URL(localizePath(lang, `lists/${id}`), Astro.site ?? Astro.url).href;
+
+// SEO: descripción con recuento y autor; las listas privadas no se indexan.
+const listDesc = `${list.name} · ${films.length} ${t('lists.count')}${owner ? ` · @${owner.username}` : ''}`;
 ---
 
-<BaseLayout title={list.name}>
+<BaseLayout title={list.name} description={listDesc} noindex={!list.isPublic}>
   <section
     class="frame py-12"
     data-list={isOwner ? id : ''}

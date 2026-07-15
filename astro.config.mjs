@@ -41,6 +41,11 @@ export default defineConfig({
         defaultLocale: 'es',
         locales: { es: 'es-ES', en: 'en-US', gl: 'gl-ES', eu: 'eu-ES', ca: 'ca-ES' },
       },
+      // Fuera del sitemap las páginas privadas/de auth y las que van a `noindex`.
+      filter: (page) =>
+        !/\/(?:account|watchlist|notifications|stats|recommendations|login|register|forgot|reset|admin)(?:\/|$)/.test(
+          page,
+        ),
     }),
   ],
 });

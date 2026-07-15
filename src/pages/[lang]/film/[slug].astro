@@ -5,6 +5,7 @@ import ListPicker from '../../../components/ListPicker.astro';
 import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { resolveBackLink } from '../../../lib/backlink';
 import { getFilm } from '../../../lib/films';
+import { movieLd, breadcrumbLd } from '../../../lib/seo';
 import { filmSlug, parseFilmId } from '../../../lib/slug';
 import { director, directorPerson, posterUrl, posterSrcset, profileUrl, backdropUrl, trailerKey, type TmdbSearchResult } from '../../../lib/tmdb';
 import { genreName } from '../../../data/genres';
@@ -122,9 +123,37 @@ const tagline = cleanOmdb(tmdb.tagline);
 
 // Enlace de "volver" según el origen real (cabecera Referer).
 const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t);
+
+// SEO: imagen social (fotograma > cartel) y datos estructurados (Movie + migas).
+const socialImg = backdropUrl(tmdb.backdrop_path, 'w1280') ?? posterUrl(tmdb.poster_path, 'w780');
+const filmUrl = new URL(Astro.url.pathname, Astro.site).href;
+const movieJsonLd = movieLd({
+  url: filmUrl,
+  name: tmdb.title,
+  alternateName: tmdb.original_title,
+  image: socialImg,
+  description: tmdb.overview,
+  datePublished: tmdb.release_date ?? null,
+  genres: (tmdb.genres ?? []).map((g) => g.name),
+  director: dir,
+  runtimeMin: tmdb.runtime,
+  ratingValue: tmdb.vote_average,
+  ratingCount: tmdb.vote_count ?? null,
+  inLanguage: lang,
+});
+const crumbsJsonLd = breadcrumbLd([
+  { name: t('nav.films'), url: new URL(localizePath(lang, 'films'), Astro.site).href },
+  { name: tmdb.title, url: filmUrl },
+]);
 ---
 
-<BaseLayout title={tmdb.title} description={tmdb.overview}>
+<BaseLayout
+  title={tmdb.title}
+  description={tmdb.overview}
+  image={socialImg ?? undefined}
+  ogType="article"
+  jsonLd={[movieJsonLd, crumbsJsonLd]}
+>
   <article class="frame py-12">
     <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>
 

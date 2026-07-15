@@ -67,6 +67,7 @@ export interface TmdbMovie {
   poster_path: string | null;
   backdrop_path: string | null;
   vote_average: number;
+  vote_count?: number;
   genres: { id: number; name: string }[];
   production_countries: { iso_3166_1: string; name: string }[];
   production_companies?: { id: number; name: string }[];

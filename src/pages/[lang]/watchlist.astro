@@ -57,7 +57,7 @@ const detailBase = localizePath(lang, 'lists');
 const isEmpty = rows.length === 0 && lists.length === 0;
 ---
 
-<BaseLayout title={t('watchlist.title')}>
+<BaseLayout title={t('watchlist.title')} noindex>
   <section
     class="frame py-12"
     data-confirm={t('lists.confirmDelete')}
