@@ -19,6 +19,13 @@ const t = useTranslations(lang);
     data-l-directions={t('cines.directions')}
     data-l-cartelera={t('cines.cartelera')}
     data-l-geoerror={t('cines.geoError')}
+    data-l-geo-denied={t('cines.geoDenied')}
+    data-l-geo-unavailable={t('cines.geoUnavailable')}
+    data-l-geo-timeout={t('cines.geoTimeout')}
+    data-l-locating={t('cines.locating')}
+    data-l-search-area={t('cines.searchArea')}
+    data-l-widen={t('cines.widen')}
+    data-l-suggest-aria={t('cines.suggestionsAria')}
     data-l-maparia={t('cines.mapAria')}
     data-l-you={t('cines.youAreHere')}
   >
@@ -28,9 +35,9 @@ const t = useTranslations(lang);
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('cines.intro')}</p>
     </header>
 
-    {/* Buscador: por ciudad/CP o por geolocalización */}
+    {/* Buscador: por ciudad/CP (con autocompletado) o por geolocalización */}
     <form id="cines-form" class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-end">
-      <label class="flex-1">
+      <label class="relative flex-1">
         <span class="label mb-1 block">{t('cines.searchLabel')}</span>
         <input
           id="cines-q"
@@ -38,18 +45,38 @@ const t = useTranslations(lang);
           type="text"
           autocomplete="off"
           required
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded="false"
+          aria-controls="cines-suggest"
           placeholder={t('cines.searchPlaceholder')}
           class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
         />
+        {/* Desplegable de sugerencias (relleno por JS) */}
+        <ul
+          id="cines-suggest"
+          role="listbox"
+          aria-label={t('cines.suggestionsAria')}
+          class="absolute left-0 right-0 top-full z-[70] mt-px hidden max-h-64 overflow-auto border border-ink bg-white"
+          hidden
+        ></ul>
       </label>
       <button type="submit" class="btn btn-primary">{t('cines.searchBtn')}</button>
       <button type="button" id="cines-geo" class="btn">{t('cines.useLocation')}</button>
     </form>
 
     <p id="cines-status" role="status" class="mt-6 font-mono text-meta-data text-muted" hidden></p>
+    <button type="button" id="cines-widen" class="btn mt-3" hidden></button>
 
     {/* Mapa (Leaflet). Oculto hasta la primera búsqueda. */}
-    <div id="cines-map" class="mt-6 hidden h-[24rem] border border-ink" aria-label={t('cines.mapAria')}></div>
+    <div class="relative mt-6">
+      <div id="cines-map" class="hidden h-[24rem] border border-ink" aria-label={t('cines.mapAria')}></div>
+      <button
+        type="button"
+        id="cines-search-area"
+        class="btn btn-primary absolute left-1/2 top-3 z-[600] -translate-x-1/2 shadow-lg"
+        hidden></button>
+    </div>
 
     <div id="cines-results" class="mt-6 grid grid-cols-1 gap-px border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3"></div>
 
@@ -83,10 +110,19 @@ const t = useTranslations(lang);
     website: string | null;
     distanceKm: number;
   }
+  interface Suggestion {
+    lat: number;
+    lon: number;
+    label: string;
+  }
+
+  const DEFAULT_RADIUS = 25000;
+  const MAX_RADIUS = 50000;
 
   const root = document.querySelector('[data-cines]') as HTMLElement | null;
   if (root) {
     const API = '/api/cinemas';
+    const PLACES = '/api/places';
     const L_ = {
       loading: root.dataset.lLoading!,
       empty: root.dataset.lEmpty!,
@@ -96,14 +132,26 @@ const t = useTranslations(lang);
       directions: root.dataset.lDirections!,
       cartelera: root.dataset.lCartelera!,
       geoError: root.dataset.lGeoerror!,
+      geoDenied: root.dataset.lGeoDenied!,
+      geoUnavailable: root.dataset.lGeoUnavailable!,
+      geoTimeout: root.dataset.lGeoTimeout!,
+      locating: root.dataset.lLocating!,
+      searchArea: root.dataset.lSearchArea!,
+      widen: root.dataset.lWiden!,
       you: root.dataset.lYou!,
     };
     const form = document.getElementById('cines-form') as HTMLFormElement;
     const input = document.getElementById('cines-q') as HTMLInputElement;
+    const suggestBox = document.getElementById('cines-suggest') as HTMLUListElement;
     const geoBtn = document.getElementById('cines-geo') as HTMLButtonElement;
     const statusEl = document.getElementById('cines-status') as HTMLElement;
+    const widenBtn = document.getElementById('cines-widen') as HTMLButtonElement;
     const results = document.getElementById('cines-results') as HTMLElement;
     const mapEl = document.getElementById('cines-map') as HTMLElement;
+    const areaBtn = document.getElementById('cines-search-area') as HTMLButtonElement;
+
+    widenBtn.textContent = L_.widen;
+    areaBtn.textContent = L_.searchArea;
 
     const esc = (s: string) =>
       String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -119,22 +167,151 @@ const t = useTranslations(lang);
       c.website ??
       `https://www.google.com/search?q=${encodeURIComponent(`${c.name} ${c.address ?? ''} cartelera`)}`;
 
-    // --- Mapa (Leaflet, carga perezosa) ---
+    // --- Estado de la última búsqueda (para "ampliar" y "buscar en esta zona") ---
+    let lastCenter: { lat: number; lon: number } | null = null;
+    let lastRadius = DEFAULT_RADIUS;
+    let geoAccuracy: number | null = null; // precisión (m) si vino de geolocalización
+
+    // ================= Autocompletado =================
+    let suggestions: Suggestion[] = [];
+    let activeIndex = -1;
+    let debounceTimer = 0;
+    let suggestSeq = 0; // descarta respuestas fuera de orden
+
+    const closeSuggest = () => {
+      suggestBox.hidden = true;
+      suggestBox.classList.add('hidden');
+      input.setAttribute('aria-expanded', 'false');
+      activeIndex = -1;
+    };
+
+    const renderSuggest = () => {
+      if (suggestions.length === 0) return closeSuggest();
+      suggestBox.innerHTML = suggestions
+        .map((s, i) => {
+          const active = i === activeIndex;
+          return (
+            `<li role="option" id="cines-opt-${i}" data-i="${i}" aria-selected="${active}" ` +
+            `class="cursor-pointer px-3 py-2 font-body text-body-md ${active ? 'bg-ink text-white' : 'text-ink hover:bg-surface'}">` +
+            `${esc(s.label)}</li>`
+          );
+        })
+        .join('');
+      suggestBox.hidden = false;
+      suggestBox.classList.remove('hidden');
+      input.setAttribute('aria-expanded', 'true');
+    };
+
+    const fetchSuggest = async (q: string) => {
+      const seq = ++suggestSeq;
+      try {
+        const res = await fetch(`${PLACES}?q=${encodeURIComponent(q)}`, {
+          headers: { accept: 'application/json' },
+        });
+        const data = await res.json().catch(() => null);
+        if (seq !== suggestSeq) return; // llegó una consulta más nueva
+        suggestions = (data?.suggestions as Suggestion[]) ?? [];
+        activeIndex = -1;
+        renderSuggest();
+      } catch {
+        /* silencio: el autocompletado es un extra */
+      }
+    };
+
+    // Etiqueta corta para el campo al elegir (primeros dos segmentos del display_name).
+    const shortLabel = (label: string) => label.split(',').slice(0, 2).join(',').trim();
+
+    const chooseSuggestion = (s: Suggestion) => {
+      input.value = shortLabel(s.label);
+      closeSuggest();
+      geoAccuracy = null;
+      query(`lat=${s.lat}&lon=${s.lon}`, DEFAULT_RADIUS);
+    };
+
+    input.addEventListener('input', () => {
+      const q = input.value.trim();
+      window.clearTimeout(debounceTimer);
+      if (q.length < 2) return closeSuggest();
+      debounceTimer = window.setTimeout(() => fetchSuggest(q), 300);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (suggestBox.hidden || suggestions.length === 0) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIndex = (activeIndex + 1) % suggestions.length;
+        renderSuggest();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIndex = (activeIndex - 1 + suggestions.length) % suggestions.length;
+        renderSuggest();
+      } else if (e.key === 'Enter') {
+        if (activeIndex >= 0) {
+          e.preventDefault();
+          chooseSuggestion(suggestions[activeIndex]);
+        }
+      } else if (e.key === 'Escape') {
+        closeSuggest();
+      }
+    });
+
+    suggestBox.addEventListener('mousedown', (e) => {
+      // mousedown (no click) para no perder antes el foco del input.
+      const li = (e.target as HTMLElement).closest('[data-i]') as HTMLElement | null;
+      if (!li) return;
+      e.preventDefault();
+      const s = suggestions[Number(li.dataset.i)];
+      if (s) chooseSuggestion(s);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!form.contains(e.target as Node)) closeSuggest();
+    });
+
+    // ================= Mapa (Leaflet, carga perezosa) =================
     let map: LType.Map | null = null;
     let layer: LType.LayerGroup | null = null;
+    let programmaticMove = false; // true mientras encuadramos por código (ignora moveend)
+
+    const currentRadiusFromMap = (m: LType.Map): number => {
+      // Radio ≈ distancia del centro a la esquina del viewport, acotado.
+      const b = m.getBounds();
+      const meters = m.distance(m.getCenter(), b.getNorthEast());
+      return Math.min(MAX_RADIUS, Math.max(1000, Math.round(meters)));
+    };
 
     const drawMap = async (center: { lat: number; lon: number }, cinemas: Cinema[]) => {
       const Lm = await loadLeaflet();
       if (!map) {
         mapEl.classList.remove('hidden');
-        map = Lm.map(mapEl, { scrollWheelZoom: false });
+        map = Lm.map(mapEl, { scrollWheelZoom: true });
         Lm.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
           attribution: '© OpenStreetMap',
         }).addTo(map);
         layer = Lm.layerGroup().addTo(map);
+        // Tras mover/zoom el usuario, ofrecer "buscar en esta zona".
+        map.on('moveend', () => {
+          if (programmaticMove) {
+            programmaticMove = false;
+            return;
+          }
+          areaBtn.hidden = false;
+        });
       }
       layer!.clearLayers();
+
+      // Círculo de precisión si la posición vino del GPS del dispositivo.
+      if (geoAccuracy && geoAccuracy > 0) {
+        Lm.circle([center.lat, center.lon], {
+          radius: geoAccuracy,
+          color: '#1a1a1a',
+          weight: 1,
+          opacity: 0.4,
+          fillColor: '#1a1a1a',
+          fillOpacity: 0.08,
+        }).addTo(layer!);
+      }
       // Tu ubicación (tinta) y cada cine (ocre).
       Lm.circleMarker([center.lat, center.lon], {
         radius: 7,
@@ -164,12 +341,15 @@ const t = useTranslations(lang);
           .bindPopup(popup)
           .addTo(layer!);
       }
-      // Ajusta el encuadre a todos los puntos.
+      // Ajusta el encuadre a todos los puntos (movimiento programático).
+      programmaticMove = true;
       map!.fitBounds(points as LType.LatLngBoundsExpression, { padding: [30, 30], maxZoom: 15 });
-      // El contenedor estaba oculto al crearse: recalcula tamaño.
+      areaBtn.hidden = true;
+      // El contenedor pudo crearse oculto: recalcula tamaño.
       setTimeout(() => map!.invalidateSize(), 0);
     };
 
+    // ================= Lista de resultados =================
     const render = (cinemas: Cinema[]) => {
       results.innerHTML = cinemas
         .map((c) => {
@@ -191,19 +371,30 @@ const t = useTranslations(lang);
         .join('');
     };
 
-    const query = async (params: string) => {
+    // ================= Consulta al backend =================
+    // `params` ya incluye q= o lat/lon; `radius` es opcional.
+    const query = async (params: string, radius = DEFAULT_RADIUS) => {
+      lastRadius = radius;
+      closeSuggest();
       results.innerHTML = '';
+      widenBtn.hidden = true;
       setStatus(L_.loading);
       try {
-        const res = await fetch(`${API}?${params}`, { headers: { accept: 'application/json' } });
+        const res = await fetch(`${API}?${params}&radius=${radius}`, {
+          headers: { accept: 'application/json' },
+        });
         const data = await res.json().catch(() => null);
-        if (!res.ok || !data) {
-          setStatus(data?.error === 'out_of_area' ? L_.out : L_.error);
+        if (!data) return setStatus(L_.error);
+        if (data.error === 'out_of_area') return setStatus(L_.out);
+        if (!res.ok || data.error) return setStatus(L_.error); // 503/error: reintentable
+        if (data.center) lastCenter = { lat: data.center.lat, lon: data.center.lon };
+        if (!data.cinemas || data.cinemas.length === 0) {
+          setStatus(L_.empty);
+          // Ofrecer ampliar si aún no estamos en el radio máximo.
+          widenBtn.hidden = radius >= MAX_RADIUS || !lastCenter;
+          if (lastCenter) drawMap(lastCenter, []).catch(() => mapEl.classList.add('hidden'));
           return;
         }
-        if (data.error === 'out_of_area') return setStatus(L_.out);
-        if (data.error) return setStatus(L_.error);
-        if (!data.cinemas || data.cinemas.length === 0) return setStatus(L_.empty);
         setStatus('');
         render(data.cinemas as Cinema[]);
         // El mapa es un extra: si Leaflet fallara, la lista ya está pintada.
@@ -213,20 +404,55 @@ const t = useTranslations(lang);
       }
     };
 
+    // ================= Eventos de UI =================
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      // Si hay una sugerencia resaltada, se elige esa; si no, se geocodifica el texto.
+      if (activeIndex >= 0 && suggestions[activeIndex]) {
+        chooseSuggestion(suggestions[activeIndex]);
+        return;
+      }
       const q = input.value.trim();
       if (q.length < 2) return;
+      geoAccuracy = null;
       query(`q=${encodeURIComponent(q)}`);
+    });
+
+    widenBtn.addEventListener('click', () => {
+      if (!lastCenter) return;
+      const next = Math.min(MAX_RADIUS, lastRadius * 2);
+      query(`lat=${lastCenter.lat}&lon=${lastCenter.lon}`, next);
+    });
+
+    areaBtn.addEventListener('click', () => {
+      if (!map) return;
+      const c = map.getCenter();
+      areaBtn.hidden = true;
+      geoAccuracy = null;
+      query(`lat=${c.lat}&lon=${c.lng}`, currentRadiusFromMap(map));
     });
 
     geoBtn.addEventListener('click', () => {
       if (!navigator.geolocation) return setStatus(L_.geoError);
-      setStatus(L_.loading);
+      closeSuggest();
+      setStatus(L_.locating);
       navigator.geolocation.getCurrentPosition(
-        (pos) => query(`lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`),
-        () => setStatus(L_.geoError),
-        { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 },
+        (pos) => {
+          geoAccuracy = pos.coords.accuracy ?? null;
+          query(`lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+        },
+        (err) => {
+          const msg =
+            err.code === err.PERMISSION_DENIED
+              ? L_.geoDenied
+              : err.code === err.POSITION_UNAVAILABLE
+                ? L_.geoUnavailable
+                : err.code === err.TIMEOUT
+                  ? L_.geoTimeout
+                  : L_.geoError;
+          setStatus(msg);
+        },
+        { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 },
       );
     });
   }

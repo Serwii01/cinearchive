@@ -43,6 +43,13 @@ export const GET: APIRoute = async ({ request, url }) => {
     return Response.json({ error: 'invalid' }, { status: 400 });
   }
 
-  const cinemas = await findCinemas(center.lat, center.lon, radius);
-  return Response.json({ center, cinemas });
+  // findCinemas lanza si TODOS los espejos de Overpass fallan: se traduce a un
+  // error reintentable (no a una lista vacía, que el cliente mostraría como "no
+  // hay cines"). Un vacío legítimo llega como cinemas: [].
+  try {
+    const cinemas = await findCinemas(center.lat, center.lon, radius);
+    return Response.json({ center, cinemas });
+  } catch {
+    return Response.json({ error: 'error' }, { status: 503 });
+  }
 };
