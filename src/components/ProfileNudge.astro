@@ -1,0 +1,80 @@
+---
+/**
+ * Aviso para invitar a crear el perfil social.
+ *
+ * Si el usuario tiene sesión pero aún NO tiene perfil (username), a los 30 s de
+ * cargar la página se le muestra un modal (estética de la app, cerrable) que le
+ * propone crearlo. Se enseña una sola vez por sesión para no ser insistente.
+ *
+ * La detección es en cliente (vía /api/me/social-summary) para que funcione
+ * también en las páginas prerenderizadas, donde no hay sesión en el servidor.
+ */
+import { getLangFromUrl, useTranslations, localizePath, type Lang } from '../i18n/ui';
+
+const lang: Lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+// El editor del perfil vive en /account; se ancla a su sección.
+const accountUrl = `${localizePath(lang, 'account')}#profile-editor`;
+---
+
+<div
+  id="profile-nudge"
+  hidden
+  data-account={accountUrl}
+  data-title={t('profile.nudgeTitle')}
+  data-message={t('profile.nudgeMessage')}
+  data-create={t('profile.nudgeCreate')}
+  data-close={t('profile.nudgeClose')}
+></div>
+
+<script>
+  import { confirmModal } from '../lib/ui/modals';
+
+  const DELAY_MS = 30_000;
+  const SHOWN_KEY = 'cine:profile-nudge-shown';
+
+  const holder = document.getElementById('profile-nudge');
+  // En la propia página de cuenta ya puede crear el perfil: no molestamos allí.
+  if (holder && !document.getElementById('profile-editor')) {
+    let already = false;
+    try {
+      already = sessionStorage.getItem(SHOWN_KEY) === '1';
+    } catch {
+      /* sessionStorage no disponible: se mostrará como mucho una vez por carga */
+    }
+
+    if (!already) {
+      window.setTimeout(async () => {
+        try {
+          if (sessionStorage.getItem(SHOWN_KEY) === '1') return; // mostrado en otra pestaña
+        } catch {
+          /* ignore */
+        }
+
+        // ¿Sesión iniciada y sin perfil social?
+        let data: { authenticated?: boolean; username?: string | null } | null = null;
+        try {
+          const res = await fetch('/api/me/social-summary', { headers: { accept: 'application/json' } });
+          data = res.ok ? await res.json() : null;
+        } catch {
+          return; // sin red: no insistimos
+        }
+        if (!data || !data.authenticated || data.username) return; // sin sesión o ya tiene perfil
+
+        try {
+          sessionStorage.setItem(SHOWN_KEY, '1');
+        } catch {
+          /* ignore */
+        }
+
+        const go = await confirmModal({
+          title: holder.dataset.title || '',
+          message: holder.dataset.message || '',
+          confirmLabel: holder.dataset.create || '',
+          cancelLabel: holder.dataset.close || '',
+        });
+        if (go) window.location.href = holder.dataset.account || '/';
+      }, DELAY_MS);
+    }
+  }
+</script>
