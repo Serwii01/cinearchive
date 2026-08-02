@@ -234,23 +234,39 @@ export function profileUrl(path: string | null, size: 'w185' | 'h632' = 'w185') 
 
 export interface DiscoverParams {
   genres?: number[];
+  genreMode?: 'and' | 'or'; // combinar géneros: AND (coma) por defecto, OR (barra)
+  excludeGenres?: number[]; // without_genres
   decade?: number; // p. ej. 1980 → 1980-01-01..1989-12-31
   country?: string; // ISO 3166-1 (origen)
+  originalLanguage?: string; // ISO 639-1 (idioma original)
+  minRating?: number; // vote_average.gte (0-10)
+  minVotes?: number; // vote_count.gte
+  runtimeGte?: number; // duración mínima (minutos)
+  runtimeLte?: number; // duración máxima (minutos)
   sort?: 'popularity.desc' | 'vote_average.desc' | 'primary_release_date.desc' | 'revenue.desc';
   page?: number;
 }
 
 /** Explorador del catálogo de TMDB para la página Descubrir. */
 export async function discoverMovies(opts: DiscoverParams, locale: string) {
+  // Suelo de votos: evita que "mejor valoradas" devuelva 10/10 con un puñado de
+  // votos. El usuario puede elevarlo (minVotes) pero no bajarlo de ese suelo.
+  const voteFloor = opts.sort === 'vote_average.desc' ? 300 : 50;
   const params: Record<string, string> = {
     language: toTmdbLang(locale),
     sort_by: opts.sort ?? 'popularity.desc',
     include_adult: 'false',
     page: String(opts.page ?? 1),
-    'vote_count.gte': opts.sort === 'vote_average.desc' ? '300' : '50',
+    'vote_count.gte': String(Math.max(voteFloor, opts.minVotes ?? 0)),
   };
-  if (opts.genres?.length) params.with_genres = opts.genres.join('|');
+  // AND ('coma') = la película es de TODOS los géneros; OR ('|') = de cualquiera.
+  if (opts.genres?.length) params.with_genres = opts.genres.join(opts.genreMode === 'or' ? '|' : ',');
+  if (opts.excludeGenres?.length) params.without_genres = opts.excludeGenres.join('|');
   if (opts.country) params.with_origin_country = opts.country;
+  if (opts.originalLanguage) params.with_original_language = opts.originalLanguage;
+  if (opts.minRating != null) params['vote_average.gte'] = String(opts.minRating);
+  if (opts.runtimeGte != null) params['with_runtime.gte'] = String(opts.runtimeGte);
+  if (opts.runtimeLte != null) params['with_runtime.lte'] = String(opts.runtimeLte);
   if (opts.decade) {
     params['primary_release_date.gte'] = `${opts.decade}-01-01`;
     params['primary_release_date.lte'] = `${opts.decade + 9}-12-31`;

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
   posterUrl,
   posterSrcset,
@@ -7,6 +7,7 @@ import {
   trailerKey,
   toTmdbLang,
   director,
+  discoverMovies,
   TMDB_IMG,
   type TmdbMovie,
 } from '../src/lib/tmdb';
@@ -81,5 +82,61 @@ describe('director', () => {
   it('devuelve null si no hay director', () => {
     expect(director({ credits: { crew: [], cast: [] } } as unknown as TmdbMovie)).toBeNull();
     expect(director({} as TmdbMovie)).toBeNull();
+  });
+});
+
+describe('discoverMovies (construcción de la petición)', () => {
+  const origKey = process.env.TMDB_API_KEY;
+  afterEach(() => {
+    process.env.TMDB_API_KEY = origKey;
+    vi.unstubAllGlobals();
+  });
+
+  // Ejecuta discoverMovies con un fetch simulado y devuelve los parámetros de la URL.
+  async function paramsFor(opts: Parameters<typeof discoverMovies>[0]) {
+    process.env.TMDB_API_KEY = 'test-key';
+    let captured = '';
+    vi.stubGlobal('fetch', (url: URL) => {
+      captured = url.toString();
+      return Promise.resolve(
+        new Response(JSON.stringify({ results: [], total_pages: 3 }), {
+          headers: { 'content-type': 'application/json' },
+        }),
+      );
+    });
+    await discoverMovies(opts, 'es');
+    return new URL(captured).searchParams;
+  }
+
+  it('combina géneros con coma en modo AND', async () => {
+    const p = await paramsFor({ genres: [878, 27], genreMode: 'and' });
+    expect(p.get('with_genres')).toBe('878,27');
+  });
+
+  it('combina géneros con barra en modo OR', async () => {
+    const p = await paramsFor({ genres: [878, 27], genreMode: 'or' });
+    expect(p.get('with_genres')).toBe('878|27');
+  });
+
+  it('excluye géneros, filtra por duración, nota e idioma original', async () => {
+    const p = await paramsFor({
+      excludeGenres: [35, 10749],
+      runtimeGte: 90,
+      runtimeLte: 120,
+      minRating: 7,
+      originalLanguage: 'ja',
+    });
+    expect(p.get('without_genres')).toBe('35|10749');
+    expect(p.get('with_runtime.gte')).toBe('90');
+    expect(p.get('with_runtime.lte')).toBe('120');
+    expect(p.get('vote_average.gte')).toBe('7');
+    expect(p.get('with_original_language')).toBe('ja');
+  });
+
+  it('respeta el suelo de votos y lo eleva con minVotes', async () => {
+    const floor = await paramsFor({ sort: 'vote_average.desc' });
+    expect(floor.get('vote_count.gte')).toBe('300'); // suelo para "mejor valoradas"
+    const raised = await paramsFor({ sort: 'popularity.desc', minVotes: 500 });
+    expect(raised.get('vote_count.gte')).toBe('500'); // suelo 50 elevado a 500
   });
 });
