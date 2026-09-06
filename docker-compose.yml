@@ -8,6 +8,11 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - db-data:/var/lib/postgresql/data
+    # Publica Postgres SOLO en el loopback del VPS (no accesible desde internet):
+    # permite que el panel de administración local llegue a la BD a través de un
+    # túnel SSH (ssh -L). Sin este mapeo, la BD solo es visible dentro de Docker.
+    ports:
+      - '127.0.0.1:5432:5432'
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
       interval: 5s
@@ -29,6 +34,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # Sonda propia de la app (/api/health comprueba que PostgreSQL responde).
+    # Node 22 trae fetch incorporado, así que no hace falta curl en la imagen.
+    # start_period cubre el arranque: migraciones + primer render.
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:4321/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
     expose:
       - '4321'
 
@@ -48,7 +68,8 @@ services:
       - caddy-data:/data
       - caddy-config:/config
     depends_on:
-      - app
+      app:
+        condition: service_healthy
 
 volumes:
   db-data:

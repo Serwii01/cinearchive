@@ -81,19 +81,40 @@ export const verification = pgTable('verification', {
  * Tablas de la aplicación.
  * ------------------------------------------------------------------ */
 
-/** Cache server-side de las respuestas de TMDB/OMDb/Watchmode (nunca expone claves). */
-export const filmsCache = pgTable('films_cache', {
-  tmdbId: integer('tmdb_id').primaryKey(),
-  tmdb: jsonb('tmdb').notNull(),
-  omdb: jsonb('omdb'),
-  watchmode: jsonb('watchmode'),
-  watchmodeFetchedAt: timestamp('watchmode_fetched_at'),
-  wikidata: jsonb('wikidata'),
-  wikidataFetchedAt: timestamp('wikidata_fetched_at'),
-  fetchedAt: timestamp('fetched_at').notNull().defaultNow(),
-});
+/** Cache server-side de las respuestas de TMDB y OMDb (nunca expone claves). */
+export const filmsCache = pgTable(
+  'films_cache',
+  {
+    tmdbId: integer('tmdb_id').primaryKey(),
+    tmdb: jsonb('tmdb').notNull(),
+    omdb: jsonb('omdb'),
+    /**
+     * Dónde ver, por región ISO ({ ES: {...}, US: {...} }). Los datos son de
+     * JustWatch y llegan dentro de la propia ficha de TMDB, así que se refrescan
+     * solos con ella: no necesitan marca de tiempo ni TTL propios.
+     */
+    providers: jsonb('providers'),
+    /** @deprecated Watchmode (cuota de 1000/mes) sustituido por TMDB/JustWatch. */
+    watchmode: jsonb('watchmode'),
+    /** @deprecated Ver `watchmode`. */
+    watchmodeFetchedAt: timestamp('watchmode_fetched_at'),
+    wikidata: jsonb('wikidata'),
+    wikidataFetchedAt: timestamp('wikidata_fetched_at'),
+    fetchedAt: timestamp('fetched_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    // El sitemap de fichas pide las N más recientes de toda la tabla: sin índice,
+    // eso es leerla entera y ordenarla en cada petición del rastreador.
+    fetchedIdx: index('films_cache_fetched_idx').on(t.fetchedAt),
+  }),
+);
 
-/** Cache de "dónde ver" por película y región (cuota Watchmode baja: 1000/mes). */
+/**
+ * @deprecated Cache de "dónde ver" por película y región, de cuando la fuente era
+ * Watchmode y cada consulta gastaba cuota. Ahora el dato llega dentro de la ficha
+ * de TMDB y vive en films_cache.providers. La tabla se conserva (vaciarla o
+ * borrarla es una decisión aparte, no la fuerza este cambio).
+ */
 export const watchCache = pgTable(
   'watch_cache',
   {
@@ -150,20 +171,33 @@ export const userFilms = pgTable(
   },
   (t) => ({
     pk: primaryKey({ columns: [t.userId, t.tmdbId] }),
+    // La watchlist y el perfil público piden "las películas de este usuario, de
+    // más reciente a más antigua". La PK ordena por tmdb_id, así que sin este
+    // índice Postgres tiene que ordenar en memoria toda la colección del usuario.
+    userUpdatedIdx: index('user_films_user_updated_idx').on(t.userId, t.updatedAt),
+    // Reseñas del perfil público: solo las que tienen fecha de reseña.
+    userReviewedIdx: index('user_films_user_reviewed_idx').on(t.userId, t.reviewedAt),
   }),
 );
 
 /** Listas personalizadas del usuario (p. ej. "Para ver con amigos", "Cine de terror"). */
-export const userLists = pgTable('user_lists', {
-  id: text('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => user.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  // Opt-in: solo las listas marcadas como públicas aparecen en el perfil público.
-  isPublic: boolean('is_public').notNull().default(false),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-});
+export const userLists = pgTable(
+  'user_lists',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    // Opt-in: solo las listas marcadas como públicas aparecen en el perfil público.
+    isPublic: boolean('is_public').notNull().default(false),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    // Todas las consultas son "las listas de este usuario, por antigüedad".
+    userIdx: index('user_lists_user_idx').on(t.userId, t.createdAt),
+  }),
+);
 
 /** Películas dentro de una lista personalizada (una fila por lista y película). */
 export const userListFilms = pgTable(
@@ -177,6 +211,8 @@ export const userListFilms = pgTable(
   },
   (t) => ({
     pk: primaryKey({ columns: [t.listId, t.tmdbId] }),
+    // El detalle de la lista muestra las películas en el orden en que se añadieron.
+    listAddedIdx: index('user_list_films_list_added_idx').on(t.listId, t.addedAt),
   }),
 );
 

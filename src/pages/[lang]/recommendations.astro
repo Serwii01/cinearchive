@@ -78,7 +78,7 @@ const heroData = JSON.stringify(
               <img
                 id="rec-img"
                 src={hero?.backdrop ?? ''}
-                alt={hero?.title}
+                alt={hero?.title ?? ''}
                 width="1280"
                 height="720"
                 decoding="async"
@@ -95,12 +95,13 @@ const heroData = JSON.stringify(
           {recs.map((r) => (
             <a href={`${filmBase}/${filmSlug(r.tmdbId, r.title)}`} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
               <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+                {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
                 {r.poster ? (
                   <img
                     src={r.poster}
                     srcset={r.posterSrcset ?? undefined}
                     sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw"
-                    alt={r.title}
+                    alt=""
                     loading="lazy"
                     decoding="async"
                     class="h-full w-full object-cover"

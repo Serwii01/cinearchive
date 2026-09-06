@@ -1,10 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { normalizeLang, useTranslations, localizePath, contentLang, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, contentLang } from '../../i18n/ui';
 import { filmSlug } from '../../lib/slug';
-import { discoverMovies, posterUrl, posterSrcset, type DiscoverParams } from '../../lib/tmdb';
+import {
+  discoverMovies,
+  getProviderOptions,
+  posterUrl,
+  posterSrcset,
+  providerLogoUrl,
+  DISCOVER_SORTS,
+  WATCH_TYPES,
+  type DiscoverSort,
+  type WatchType,
+} from '../../lib/tmdb';
 import { GENRES, genreName } from '../../data/genres';
-import { COUNTRIES } from '../../data/countries';
+import { COUNTRIES, WATCH_REGIONS, countryName } from '../../data/countries';
 import { LANGUAGES } from '../../data/languages';
 
 const lang = normalizeLang(Astro.params.lang);
@@ -38,10 +48,35 @@ const minVotes = clampNum(sp.get('votes'), 0, 100000);
 const runtimeGte = clampNum(sp.get('rtmin'), 0, 1000);
 const runtimeLte = clampNum(sp.get('rtmax'), 0, 1000);
 
+// Rango de años: más fino que la década, con la que convive (el rango manda).
+const YEAR_MIN = 1874;
+const YEAR_MAX = new Date().getUTCFullYear() + 2; // deja sitio a estrenos anunciados
+let yearFrom = clampNum(sp.get('from'), YEAR_MIN, YEAR_MAX);
+let yearTo = clampNum(sp.get('to'), YEAR_MIN, YEAR_MAX);
+// Rango del revés: se ordena, en vez de devolver cero resultados sin explicar por qué.
+if (yearFrom != null && yearTo != null && yearFrom > yearTo) {
+  const swap = yearFrom;
+  yearFrom = yearTo;
+  yearTo = swap;
+}
+
+// Dónde ver: región + plataformas + modalidad. TMDB exige la región para que el
+// filtro de plataformas signifique algo, así que aquí van siempre juntas.
+const watchRegion = (WATCH_REGIONS as readonly string[]).includes(sp.get('wr') ?? '')
+  ? (sp.get('wr') as string)
+  : null;
+const providerOptions = watchRegion ? await getProviderOptions(watchRegion, lang) : [];
+const providerIds = new Set(providerOptions.map((pr) => pr.id));
+const platforms = watchRegion
+  ? [...new Set(sp.getAll('prov').map(Number))].filter((id) => providerIds.has(id))
+  : [];
+const watchTypes = watchRegion
+  ? (sp.getAll('wtype').filter((v) => (WATCH_TYPES as readonly string[]).includes(v)) as WatchType[])
+  : [];
+
 const sortParam = sp.get('sort') || 'popularity.desc';
-const allowedSorts = ['popularity.desc', 'vote_average.desc', 'primary_release_date.desc'] as const;
-const sort = (allowedSorts as readonly string[]).includes(sortParam)
-  ? (sortParam as DiscoverParams['sort'])
+const sort: DiscoverSort = (DISCOVER_SORTS as readonly string[]).includes(sortParam)
+  ? (sortParam as DiscoverSort)
   : 'popularity.desc';
 const page = Math.max(1, Math.min(500, Number(sp.get('page')) || 1));
 
@@ -50,7 +85,11 @@ for (let d = 2020; d >= 1900; d -= 10) decades.push(d);
 const ratingOptions = [5, 6, 7, 8];
 const votesOptions = [100, 500, 1000, 5000];
 
-let results: Awaited<ReturnType<typeof discoverMovies>> = { results: [], totalPages: 1 };
+let results: Awaited<ReturnType<typeof discoverMovies>> = {
+  results: [],
+  totalPages: 1,
+  totalResults: 0,
+};
 try {
   results = await discoverMovies(
     {
@@ -58,12 +97,17 @@ try {
       genreMode,
       excludeGenres: exclude.length ? exclude : undefined,
       decade: decade ?? undefined,
+      yearFrom: yearFrom ?? undefined,
+      yearTo: yearTo ?? undefined,
       country: country ?? undefined,
       originalLanguage: olang ?? undefined,
       minRating: minRating ?? undefined,
       minVotes: minVotes ?? undefined,
       runtimeGte: runtimeGte ?? undefined,
       runtimeLte: runtimeLte ?? undefined,
+      watchRegion: watchRegion ?? undefined,
+      watchProviders: platforms.length ? platforms : undefined,
+      watchTypes: watchTypes.length ? watchTypes : undefined,
       sort,
       page,
     },
@@ -73,45 +117,157 @@ try {
   /* deja resultados vacíos */
 }
 
-// Nº de filtros activos (para el resumen de la cabecera).
-const activeFilters =
-  genres.length +
-  exclude.length +
-  (decade ? 1 : 0) +
-  (country ? 1 : 0) +
-  (olang ? 1 : 0) +
-  (minRating != null ? 1 : 0) +
-  (minVotes != null ? 1 : 0) +
-  (runtimeGte != null ? 1 : 0) +
-  (runtimeLte != null ? 1 : 0);
-// Abrir "Filtros avanzados" si alguno de los que viven ahí está activo.
-const advancedActive =
-  exclude.length > 0 || !!olang || minRating != null || minVotes != null || runtimeGte != null || runtimeLte != null;
+/* ------------------------------------------------------------------ *
+ * Estado de los filtros.
+ *
+ * Cada filtro activo se describe UNA vez (etiqueta + qué parámetros lo forman),
+ * y de ahí salen tanto las pastillas que el usuario puede quitar como el
+ * contador. Antes solo había un número: se veía cuántos filtros había puestos,
+ * pero no cuáles, y la única salida era borrarlos todos de golpe.
+ * ------------------------------------------------------------------ */
+type Pair = [string, string];
+interface ActiveFilter {
+  label: string;
+  /** Pares [clave, valor] que hay que soltar para desactivarlo. */
+  drop: Pair[];
+}
 
-// Construye una URL conservando TODOS los filtros y cambiando la página.
-const pageUrl = (p: number) => {
+const langLabel = (code: string) => LANGUAGES.find((l) => l.code === code)?.[cl] ?? code;
+const rangeLabel = (from: number | null, to: number | null, suffix = '') => {
+  if (from != null && to != null) return from === to ? `${from}${suffix}` : `${from}–${to}${suffix}`;
+  if (from != null) return `≥ ${from}${suffix}`;
+  return `≤ ${to}${suffix}`;
+};
+
+const active: ActiveFilter[] = [];
+for (const id of genres) active.push({ label: genreName(id, cl), drop: [['genre', String(id)]] });
+for (const id of exclude) {
+  active.push({ label: `− ${genreName(id, cl)}`, drop: [['exclude', String(id)]] });
+}
+if (decade) active.push({ label: `${decade}s`, drop: [['decade', String(decade)]] });
+if (yearFrom != null || yearTo != null) {
+  active.push({
+    label: rangeLabel(yearFrom, yearTo),
+    drop: [
+      ['from', String(yearFrom ?? '')],
+      ['to', String(yearTo ?? '')],
+    ],
+  });
+}
+if (country) active.push({ label: countryName(country, lang), drop: [['country', country]] });
+if (olang) active.push({ label: langLabel(olang), drop: [['olang', olang]] });
+if (minRating != null) active.push({ label: `★ ${minRating}+`, drop: [['rating', String(minRating)]] });
+if (minVotes != null) {
+  active.push({ label: `${minVotes}+ ${t('discover.minVotes').toLowerCase()}`, drop: [['votes', String(minVotes)]] });
+}
+if (runtimeGte != null || runtimeLte != null) {
+  active.push({
+    label: rangeLabel(runtimeGte, runtimeLte, ' min'),
+    drop: [
+      ['rtmin', String(runtimeGte ?? '')],
+      ['rtmax', String(runtimeLte ?? '')],
+    ],
+  });
+}
+for (const id of platforms) {
+  active.push({
+    label: providerOptions.find((pr) => pr.id === id)?.name ?? String(id),
+    drop: [['prov', String(id)]],
+  });
+}
+const watchTypeLabels: Record<WatchType, string> = {
+  sub: t('film.sub'),
+  free: t('film.free'),
+  ads: t('film.ads'),
+  rent: t('film.rent'),
+  buy: t('film.buy'),
+};
+for (const wt of watchTypes) active.push({ label: watchTypeLabels[wt], drop: [['wtype', wt]] });
+
+// La región por sí sola no acota nada (sin plataformas ni modalidad devuelve lo
+// mismo), así que no cuenta como filtro: solo existe para dar sentido a los otros.
+const activeCount = active.length;
+
+// Secciones plegables: abiertas si algo de dentro está en uso.
+const advancedActive =
+  exclude.length > 0 ||
+  !!olang ||
+  minRating != null ||
+  minVotes != null ||
+  runtimeGte != null ||
+  runtimeLte != null ||
+  yearFrom != null ||
+  yearTo != null;
+const watchActive = !!watchRegion;
+
+/** Los parámetros vigentes, como lista de pares (conserva los repetibles). */
+const currentPairs = (): Pair[] => {
+  const out: Pair[] = [];
+  for (const g of genres) out.push(['genre', String(g)]);
+  for (const g of exclude) out.push(['exclude', String(g)]);
+  if (genreMode === 'or') out.push(['mode', 'or']);
+  if (decade) out.push(['decade', String(decade)]);
+  if (yearFrom != null) out.push(['from', String(yearFrom)]);
+  if (yearTo != null) out.push(['to', String(yearTo)]);
+  if (country) out.push(['country', country]);
+  if (olang) out.push(['olang', olang]);
+  if (minRating != null) out.push(['rating', String(minRating)]);
+  if (minVotes != null) out.push(['votes', String(minVotes)]);
+  if (runtimeGte != null) out.push(['rtmin', String(runtimeGte)]);
+  if (runtimeLte != null) out.push(['rtmax', String(runtimeLte)]);
+  if (watchRegion) out.push(['wr', watchRegion]);
+  for (const id of platforms) out.push(['prov', String(id)]);
+  for (const wt of watchTypes) out.push(['wtype', wt]);
+  if (sort !== 'popularity.desc') out.push(['sort', sort]);
+  return out;
+};
+
+const buildUrl = (pairs: Pair[], p = 1) => {
   const q = new URLSearchParams();
-  for (const g of genres) q.append('genre', String(g));
-  for (const g of exclude) q.append('exclude', String(g));
-  if (genreMode === 'or') q.set('mode', 'or');
-  if (decade) q.set('decade', String(decade));
-  if (country) q.set('country', country);
-  if (olang) q.set('olang', olang);
-  if (minRating != null) q.set('rating', String(minRating));
-  if (minVotes != null) q.set('votes', String(minVotes));
-  if (runtimeGte != null) q.set('rtmin', String(runtimeGte));
-  if (runtimeLte != null) q.set('rtmax', String(runtimeLte));
-  if (sort && sort !== 'popularity.desc') q.set('sort', sort);
+  for (const [k, v] of pairs) if (v !== '') q.append(k, v);
   if (p > 1) q.set('page', String(p));
   const qs = q.toString();
   return localizePath(lang, 'discover') + (qs ? `?${qs}` : '');
 };
+
+/** Cambiar de página conserva todos los filtros. */
+const pageUrl = (p: number) => buildUrl(currentPairs(), p);
+
+/**
+ * Quitar un filtro suelta sus pares y vuelve a la página 1: la página 7 de la
+ * búsqueda anterior no significa lo mismo en la nueva.
+ */
+const withoutUrl = (drop: Pair[]) => {
+  const fuera = new Set(drop.map(([k, v]) => `${k}=${v}`));
+  return buildUrl(currentPairs().filter(([k, v]) => !fuera.has(`${k}=${v}`)));
+};
+
+const nf = new Intl.NumberFormat(lang === 'en' ? 'en-GB' : 'es-ES');
 
 const selectCls =
   'border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none';
 // Chip de género: casilla oculta + etiqueta que reacciona con peer-checked (sin JS).
 const chipCls =
   'cursor-pointer select-none border border-ink px-3 py-1 font-mono text-meta-data text-ink transition-colors hover:bg-film-white peer-checked:bg-ochre peer-checked:text-on-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-ochre';
+// Chip de plataforma: igual, pero con sitio para el logotipo.
+const provCls =
+  'flex cursor-pointer select-none items-center gap-2 border border-ink py-1 pl-1 pr-2 font-mono text-meta-data text-ink transition-colors hover:bg-film-white peer-checked:bg-ochre peer-checked:text-on-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-ochre';
+
+const sortLabels: Record<DiscoverSort, string> = {
+  'popularity.desc': t('discover.sortPopular'),
+  'vote_average.desc': t('discover.sortRated'),
+  'vote_count.desc': t('discover.sortVotes'),
+  'primary_release_date.desc': t('discover.sortRecent'),
+  'primary_release_date.asc': t('discover.sortOldest'),
+  'revenue.desc': t('discover.sortRevenue'),
+  'title.asc': t('discover.sortTitle'),
+};
+
+// Páginas vecinas para la paginación numerada (una ventana alrededor de la actual).
+const windowPages: number[] = [];
+for (let p = Math.max(1, page - 2); p <= Math.min(results.totalPages, page + 2); p++) {
+  windowPages.push(p);
+}
 ---
 
 <BaseLayout title={t('discover.title')} description={t('discover.intro')}>
@@ -120,6 +276,27 @@ const chipCls =
       <span class="label">{t('discover.title')}</span>
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('discover.title')}</h1>
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('discover.intro')}</p>
+
+      {/* Filtros puestos: cada uno se puede quitar por separado, sin perder el resto. */}
+      {activeCount > 0 && (
+        <div class="mt-6 flex flex-wrap items-center gap-2">
+          <span class="label shrink-0">{t('discover.activeFilters')}</span>
+          {active.map((f) => (
+            <a
+              href={withoutUrl(f.drop)}
+              title={`${t('discover.remove')}: ${f.label}`}
+              class="group flex items-center gap-2 border border-ink bg-ochre px-3 py-1 font-mono text-meta-data text-on-accent no-underline transition-colors hover:bg-ink hover:text-background"
+            >
+              <span>{f.label}</span>
+              <span aria-hidden="true" class="opacity-60 group-hover:opacity-100">×</span>
+              <span class="sr-only">{t('discover.remove')}</span>
+            </a>
+          ))}
+          <a href={localizePath(lang, 'discover')} class="label no-underline hover:text-ink">
+            {t('discover.clear')}
+          </a>
+        </div>
+      )}
 
       <form method="get" class="mt-6 flex flex-col gap-5">
         {/* Géneros (varios a la vez) + combinar TODOS/CUALQUIERA */}
@@ -168,12 +345,80 @@ const chipCls =
           <label class="flex flex-col gap-1">
             <span class="label">{t('discover.sort')}</span>
             <select name="sort" class={selectCls}>
-              <option value="popularity.desc" selected={sort === 'popularity.desc'}>{t('discover.sortPopular')}</option>
-              <option value="vote_average.desc" selected={sort === 'vote_average.desc'}>{t('discover.sortRated')}</option>
-              <option value="primary_release_date.desc" selected={sort === 'primary_release_date.desc'}>{t('discover.sortRecent')}</option>
+              {DISCOVER_SORTS.map((s) => (
+                <option value={s} selected={sort === s}>{sortLabels[s]}</option>
+              ))}
             </select>
           </label>
         </div>
+
+        {/* Dónde ver: filtra por plataforma real de la región (datos de JustWatch
+            vía TMDB, sin cuota). La región es obligatoria: sin ella, TMDB
+            ignoraría el filtro y mostraría películas que no puedes ver. */}
+        <details open={watchActive} class="border border-ink bg-surface">
+          <summary class="cursor-pointer select-none px-4 py-2 font-mono text-meta-data uppercase tracking-widest text-ink">
+            {t('discover.platforms')}
+          </summary>
+          <div class="border-t border-ink p-4">
+            <div class="flex flex-wrap items-end gap-3">
+              <label class="flex flex-col gap-1">
+                <span class="label">{t('discover.watchRegion')}</span>
+                <select name="wr" class={selectCls}>
+                  <option value="">{t('discover.any')}</option>
+                  {WATCH_REGIONS.map((code) => (
+                    <option value={code} selected={watchRegion === code}>{countryName(code, lang)}</option>
+                  ))}
+                </select>
+              </label>
+              <p class="max-w-md font-mono text-meta-data text-muted">{t('discover.platformsHint')}</p>
+            </div>
+
+            {watchRegion && (
+              <>
+                <div class="mt-4">
+                  <span class="label">{t('discover.watchMode')}</span>
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    {WATCH_TYPES.map((wt) => (
+                      <label>
+                        <input type="checkbox" name="wtype" value={wt} checked={watchTypes.includes(wt)} class="peer sr-only" />
+                        <span class={chipCls}>{watchTypeLabels[wt]}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {providerOptions.length > 0 && (
+                  <div class="mt-4">
+                    <span class="label">{t('discover.platforms')}</span>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      {providerOptions.map((pr) => (
+                        <label>
+                          <input type="checkbox" name="prov" value={pr.id} checked={platforms.includes(pr.id)} class="peer sr-only" />
+                          <span class={provCls}>
+                            {providerLogoUrl(pr.logo, 'w45') ? (
+                              <img
+                                src={providerLogoUrl(pr.logo, 'w45')}
+                                alt=""
+                                width="20"
+                                height="20"
+                                loading="lazy"
+                                decoding="async"
+                                class="h-5 w-5 shrink-0 object-contain"
+                              />
+                            ) : (
+                              <span class="h-5 w-5 shrink-0"></span>
+                            )}
+                            {pr.name}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </details>
 
         {/* Filtros avanzados (plegable, nativo, sin JS) */}
         <details open={advancedActive} class="border border-ink bg-surface">
@@ -191,6 +436,35 @@ const chipCls =
               ))}
             </div>
             <div class="mt-4 flex flex-wrap items-end gap-3">
+              {/* Rango de años: más fino que la década, y manda sobre ella. */}
+              <label class="flex flex-col gap-1">
+                <span class="label">{t('discover.years')}</span>
+                <div class="flex items-center gap-2">
+                  <input
+                    type="number"
+                    name="from"
+                    min={YEAR_MIN}
+                    max={YEAR_MAX}
+                    step="1"
+                    value={yearFrom ?? ''}
+                    placeholder={t('discover.yearFrom')}
+                    aria-label={t('discover.yearFrom')}
+                    class={`${selectCls} w-24`}
+                  />
+                  <span class="font-mono text-meta-data text-muted">–</span>
+                  <input
+                    type="number"
+                    name="to"
+                    min={YEAR_MIN}
+                    max={YEAR_MAX}
+                    step="1"
+                    value={yearTo ?? ''}
+                    placeholder={t('discover.yearTo')}
+                    aria-label={t('discover.yearTo')}
+                    class={`${selectCls} w-24`}
+                  />
+                </div>
+              </label>
               <label class="flex flex-col gap-1">
                 <span class="label">{t('discover.origLang')}</span>
                 <select name="olang" class={selectCls}>
@@ -215,9 +489,9 @@ const chipCls =
               <label class="flex flex-col gap-1">
                 <span class="label">{t('discover.runtime')}</span>
                 <div class="flex items-center gap-2">
-                  <input type="number" name="rtmin" min="0" max="1000" step="5" value={runtimeGte ?? ''} placeholder={t('discover.runtimeMin')} class={`${selectCls} w-20`} />
+                  <input type="number" name="rtmin" min="0" max="1000" step="5" value={runtimeGte ?? ''} placeholder={t('discover.runtimeMin')} aria-label={t('discover.runtimeMin')} class={`${selectCls} w-20`} />
                   <span class="font-mono text-meta-data text-muted">–</span>
-                  <input type="number" name="rtmax" min="0" max="1000" step="5" value={runtimeLte ?? ''} placeholder={t('discover.runtimeMax')} class={`${selectCls} w-20`} />
+                  <input type="number" name="rtmax" min="0" max="1000" step="5" value={runtimeLte ?? ''} placeholder={t('discover.runtimeMax')} aria-label={t('discover.runtimeMax')} class={`${selectCls} w-20`} />
                 </div>
               </label>
             </div>
@@ -226,26 +500,36 @@ const chipCls =
 
         <div class="flex flex-wrap items-center gap-4">
           <button type="submit" class="btn btn-primary">{t('discover.apply')}</button>
-          {activeFilters > 0 && (
-            <a href={localizePath(lang, 'discover')} class="label no-underline hover:text-ink">{t('discover.clear')} ({activeFilters})</a>
+          {activeCount > 0 && (
+            <a href={localizePath(lang, 'discover')} class="label no-underline hover:text-ink">
+              {t('discover.clear')} ({activeCount})
+            </a>
           )}
         </div>
       </form>
     </header>
 
+    {/* Cuántas coincidencias hay: antes solo se sabía el número de páginas. */}
+    {results.totalResults > 0 && (
+      <p class="mt-6 font-mono text-meta-data text-muted">
+        {nf.format(results.totalResults)} {t('discover.results')}
+      </p>
+    )}
+
     {results.results.length === 0 ? (
       <p class="mt-10 font-mono text-body-md text-muted">{t('discover.empty')}</p>
     ) : (
-      <div class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+      <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
         {results.results.map((r) => (
           <a href={localizePath(lang, `film/${filmSlug(r.id, r.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+              {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
               {r.poster_path ? (
                 <img
                   src={posterUrl(r.poster_path, 'w342')}
                   srcset={posterSrcset(r.poster_path, 'w342', 'w500') ?? undefined}
                   sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw"
-                  alt={r.title}
+                  alt=""
                   loading="lazy"
                   decoding="async"
                   class="h-full w-full object-cover"
@@ -265,19 +549,43 @@ const chipCls =
       </div>
     )}
 
-    {/* Paginación */}
-    <nav class="mt-10 flex items-center justify-between border-t border-ink pt-4" aria-label="Paginación">
-      {page > 1 ? (
-        <a href={pageUrl(page - 1)} class="label no-underline hover:text-ink">{t('discover.prev')}</a>
-      ) : (
-        <span class="label text-muted">{t('discover.prev')}</span>
-      )}
-      <span class="font-mono text-meta-data text-muted">{page} / {results.totalPages}</span>
-      {page < results.totalPages ? (
-        <a href={pageUrl(page + 1)} class="label no-underline hover:text-ink">{t('discover.next')}</a>
-      ) : (
-        <span class="label text-muted">{t('discover.next')}</span>
-      )}
-    </nav>
+    {/* Paginación: con salto a la primera y la última, y páginas vecinas para no
+        tener que pulsar "siguiente" veinte veces. */}
+    {results.totalPages > 1 && (
+      <nav class="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-ink pt-4" aria-label={t('discover.page')}>
+        <div class="flex items-center gap-3">
+          {page > 1 ? (
+            <>
+              <a href={pageUrl(1)} class="label no-underline hover:text-ink">« {t('discover.first')}</a>
+              <a href={pageUrl(page - 1)} class="label no-underline hover:text-ink">{t('discover.prev')}</a>
+            </>
+          ) : (
+            <span class="label text-muted">{t('discover.prev')}</span>
+          )}
+        </div>
+
+        <div class="flex items-center gap-1">
+          {windowPages.map((p) =>
+            p === page ? (
+              <span aria-current="page" class="border border-ink bg-ink px-2 py-1 font-mono text-meta-data text-background">{p}</span>
+            ) : (
+              <a href={pageUrl(p)} class="border border-outline-variant px-2 py-1 font-mono text-meta-data text-ink no-underline hover:border-ink hover:bg-film-white">{p}</a>
+            ),
+          )}
+          <span class="ml-2 font-mono text-meta-data text-muted">/ {results.totalPages}</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          {page < results.totalPages ? (
+            <>
+              <a href={pageUrl(page + 1)} class="label no-underline hover:text-ink">{t('discover.next')}</a>
+              <a href={pageUrl(results.totalPages)} class="label no-underline hover:text-ink">{t('discover.last')} »</a>
+            </>
+          ) : (
+            <span class="label text-muted">{t('discover.next')}</span>
+          )}
+        </div>
+      </nav>
+    )}
   </section>
 </BaseLayout>

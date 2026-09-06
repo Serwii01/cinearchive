@@ -1,0 +1,1 @@
+ALTER TABLE "films_cache" ADD COLUMN "providers" jsonb;

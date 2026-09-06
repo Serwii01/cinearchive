@@ -58,10 +58,23 @@ const ogImage = image
     {/* Aplica el tema guardado antes de pintar (evita parpadeo). */}
     <script is:inline src="/theme-init.js"></script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    {/* Instalable en el móvil como aplicación (sin service worker: la app es SSR
+        y una copia offline mostraría datos de sesión desfasados). */}
+    <link rel="manifest" href="/manifest.webmanifest" />
+    {/* Color de la barra del navegador; sigue al tema claro/oscuro del sistema. */}
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAFAFA" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D0D0D" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDesc} />
     {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical.href} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${t('site.title')} — ${t('changelog.title')}`}
+      href={new URL(`/${lang}/rss.xml`, Astro.site).href}
+    />
     {alternates.map((alt) => <link rel="alternate" hreflang={alt.code} href={alt.href} />)}
     {alternates.length > 0 && (
       <link rel="alternate" hreflang="x-default" href={alternates.find((a) => a.code === defaultLang)!.href} />

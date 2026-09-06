@@ -2,21 +2,18 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { db } from '../../db/client';
-import { user, userFilms, filmsCache, watchCache, extraFilms } from '../../db/schema';
+import { user, userFilms, filmsCache, extraFilms } from '../../db/schema';
 import { count, desc } from 'drizzle-orm';
-import { getWatchmodeStatus } from '../../lib/watchmode';
 
 // El middleware garantiza que solo entran cuentas de ADMIN_EMAILS.
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const me = Astro.locals.user!;
 
-const [wm, users, filmCounts, fc, wc, uf, extras] = await Promise.all([
-  getWatchmodeStatus(),
+const [users, filmCounts, fc, uf, extras] = await Promise.all([
   db.select().from(user).orderBy(desc(user.createdAt)).limit(500),
   db.select({ userId: userFilms.userId, c: count() }).from(userFilms).groupBy(userFilms.userId),
   db.select({ c: count() }).from(filmsCache),
-  db.select({ c: count() }).from(watchCache),
   db.select({ c: count() }).from(userFilms),
   db.select().from(extraFilms).orderBy(desc(extraFilms.addedAt)),
 ]);
@@ -24,24 +21,16 @@ const [wm, users, filmCounts, fc, wc, uf, extras] = await Promise.all([
 const filmCountMap = new Map(filmCounts.map((r) => [r.userId, r.c]));
 const fmtDate = (d: Date) => new Date(d).toLocaleDateString(locales[lang]);
 
+// El "dónde ver" ya no tiene cuota propia: viaja dentro de la ficha de TMDB.
+// Antes ocupaba esta tarjeta Watchmode, con 1000 peticiones al mes que se
+// agotaban en unos cientos de fichas.
 const apiCards = [
-  {
-    name: 'Watchmode',
-    value: wm.ok
-      ? `${wm.quota - wm.quotaUsed} / ${wm.quota}`
-      : wm.reason === 'nokey'
-        ? t('admin.noKey')
-        : t('admin.quotaOut'),
-    note: wm.ok ? t('admin.remaining') : '',
-    warn: !wm.ok || wm.quota - wm.quotaUsed < wm.quota * 0.1,
-  },
-  { name: 'OMDb', value: '—', note: t('admin.noCounter'), warn: false },
   { name: 'TMDB', value: '∞', note: t('admin.unlimited'), warn: false },
+  { name: 'OMDb', value: '—', note: t('admin.noCounter'), warn: false },
 ];
 const dataCards = [
   { label: t('admin.usersCount'), value: users.length },
   { label: t('admin.cachedFilms'), value: fc[0]?.c ?? 0 },
-  { label: t('admin.watchRegions'), value: wc[0]?.c ?? 0 },
   { label: t('admin.listEntries'), value: uf[0]?.c ?? 0 },
   { label: t('admin.extraFilmsCount'), value: extras.length },
 ];

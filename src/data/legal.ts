@@ -89,7 +89,7 @@ export const privacy: Record<Lang, LegalDoc> = {
       {
         heading: 'Servicios de terceros',
         body: [
-          'La información de las películas procede de The Movie Database (TMDB), OMDb y Watchmode. Estas consultas se hacen desde nuestro servidor: no enviamos tus datos personales a esos servicios, solo identificadores o términos de búsqueda de películas.',
+          'La información de las películas procede de The Movie Database (TMDB) y OMDb; la disponibilidad en plataformas la aporta TMDB a partir de datos de JustWatch. Estas consultas se hacen desde nuestro servidor: no enviamos tus datos personales a esos servicios, solo identificadores o términos de búsqueda de películas.',
           'La hemeroteca incrusta el visor de Internet Archive (archive.org). Al abrir un número, tu navegador se conecta a archive.org, que aplica su propia política de privacidad.',
           'Si inicias sesión con Google o GitHub, esos proveedores nos facilitan los datos básicos de tu perfil (nombre y correo) según su propia política.',
           'Para enviar correos transaccionales (como el de restablecer la contraseña) usamos Resend como proveedor de envío; solo trata tu dirección de correo y el contenido del mensaje, en nuestro nombre.',
@@ -163,7 +163,7 @@ export const privacy: Record<Lang, LegalDoc> = {
       {
         heading: 'Third-party services',
         body: [
-          'Film information comes from The Movie Database (TMDB), OMDb and Watchmode. These queries run from our server: we do not send your personal data to them, only film identifiers or search terms.',
+          'Film information comes from The Movie Database (TMDB) and OMDb; streaming availability is supplied by TMDB from JustWatch data. These queries run from our server: we do not send your personal data to them, only film identifiers or search terms.',
           'The periodicals section embeds the Internet Archive viewer (archive.org). When you open an issue, your browser connects to archive.org, which applies its own privacy policy.',
           'If you sign in with Google or GitHub, those providers share basic profile data (name and email) with us under their own policies.',
           'To send transactional emails (such as the password reset) we use Resend as our delivery provider; it processes only your email address and the message content, on our behalf.',
@@ -237,7 +237,7 @@ export const privacy: Record<Lang, LegalDoc> = {
       {
         heading: 'Servizos de terceiros',
         body: [
-          'A información das películas procede de The Movie Database (TMDB), OMDb e Watchmode. Estas consultas fanse desde o noso servidor: non enviamos os teus datos persoais a eses servizos, só identificadores ou termos de busca de películas.',
+          'A información das películas procede de The Movie Database (TMDB) e OMDb; a dispoñibilidade en plataformas achégaa TMDB a partir de datos de JustWatch. Estas consultas fanse desde o noso servidor: non enviamos os teus datos persoais a eses servizos, só identificadores ou termos de busca de películas.',
           'A hemeroteca incrusta o visor de Internet Archive (archive.org). Ao abrir un número, o teu navegador conéctase a archive.org, que aplica a súa propia política de privacidade.',
           'Se inicias sesión con Google ou GitHub, eses provedores facilítannos os datos básicos do teu perfil (nome e correo) segundo a súa propia política.',
           'Para enviar correos transaccionais (como o de restablecer o contrasinal) usamos Resend como provedor de envío; só trata o teu enderezo de correo e o contido da mensaxe, no noso nome.',
@@ -311,7 +311,7 @@ export const privacy: Record<Lang, LegalDoc> = {
       {
         heading: 'Hirugarrenen zerbitzuak',
         body: [
-          'Filmen informazioa The Movie Database (TMDB), OMDb eta Watchmode-tik dator. Kontsulta horiek gure zerbitzaritik egiten dira: ez dizkiegu zure datu pertsonalak bidaltzen, filmen identifikatzaileak edo bilaketa-terminoak baizik.',
+          'Filmen informazioa The Movie Database (TMDB) eta OMDb-tik dator; plataformetako eskuragarritasuna TMDBk ematen du, JustWatch-en datuetatik. Kontsulta horiek gure zerbitzaritik egiten dira: ez dizkiegu zure datu pertsonalak bidaltzen, filmen identifikatzaileak edo bilaketa-terminoak baizik.',
           'Hemerotekak Internet Archive-ren (archive.org) ikustailea txertatzen du. Ale bat irekitzean, zure nabigatzailea archive.org-era konektatzen da, eta hark bere pribatutasun-politika aplikatzen du.',
           'Google edo GitHub-ekin saioa hasten baduzu, hornitzaile horiek zure profileko oinarrizko datuak (izena eta korreoa) ematen dizkigute beren politikaren arabera.',
           'Posta transakzionalak bidaltzeko (pasahitza berrezartzekoa, adibidez) Resend erabiltzen dugu bidalketa-hornitzaile gisa; zure posta-helbidea eta mezuaren edukia soilik tratatzen ditu, gure izenean.',
@@ -385,7 +385,7 @@ export const privacy: Record<Lang, LegalDoc> = {
       {
         heading: 'Serveis de tercers',
         body: [
-          'La informació de les pel·lícules prové de The Movie Database (TMDB), OMDb i Watchmode. Aquestes consultes es fan des del nostre servidor: no enviem les teves dades personals a aquests serveis, només identificadors o termes de cerca de pel·lícules.',
+          'La informació de les pel·lícules prové de The Movie Database (TMDB) i OMDb; la disponibilitat a plataformes la proporciona TMDB a partir de dades de JustWatch. Aquestes consultes es fan des del nostre servidor: no enviem les teves dades personals a aquests serveis, només identificadors o termes de cerca de pel·lícules.',
           "L'hemeroteca incrusta el visor d'Internet Archive (archive.org). En obrir un número, el teu navegador es connecta a archive.org, que aplica la seva pròpia política de privadesa.",
           'Si inicies sessió amb Google o GitHub, aquests proveïdors ens faciliten les dades bàsiques del teu perfil (nom i correu) segons la seva pròpia política.',
           "Per enviar correus transaccionals (com el de restablir la contrasenya) fem servir Resend com a proveïdor d'enviament; només tracta la teva adreça de correu i el contingut del missatge, en nom nostre.",
@@ -712,7 +712,7 @@ export const terms: Record<Lang, LegalDoc> = {
       {
         heading: 'Contenido de terceros',
         body: [
-          'Los datos de películas se obtienen de The Movie Database (TMDB), OMDb y Watchmode, cada uno con sus propios términos. Este producto usa la API de TMDB pero no está avalado ni certificado por TMDB.',
+          'Los datos de películas se obtienen de The Movie Database (TMDB) y OMDb, cada uno con sus propios términos; la disponibilidad en plataformas procede de JustWatch a través de TMDB. Este producto usa la API de TMDB pero no está avalado ni certificado por TMDB.',
           'Las revistas y periódicos históricos se muestran a través de Internet Archive (Media History Digital Library) y son, en su mayoría, de dominio público. Las revistas actuales se enlazan a su sitio oficial y pertenecen a sus respectivos editores.',
         ],
       },
@@ -774,7 +774,7 @@ export const terms: Record<Lang, LegalDoc> = {
       {
         heading: 'Third-party content',
         body: [
-          'Film data is sourced from The Movie Database (TMDB), OMDb and Watchmode, each with its own terms. This product uses the TMDB API but is not endorsed or certified by TMDB.',
+          'Film data is sourced from The Movie Database (TMDB) and OMDb, each with its own terms; streaming availability comes from JustWatch via TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.',
           'Historical magazines and newspapers are shown via the Internet Archive (Media History Digital Library) and are mostly in the public domain. Current journals are linked to their official sites and belong to their respective publishers.',
         ],
       },
@@ -834,7 +834,7 @@ export const terms: Record<Lang, LegalDoc> = {
       {
         heading: 'Contido de terceiros',
         body: [
-          'Os datos de películas obtéñense de The Movie Database (TMDB), OMDb e Watchmode, cada un cos seus propios termos. Este produto usa a API de TMDB pero non está avalado nin certificado por TMDB.',
+          'Os datos de películas obtéñense de The Movie Database (TMDB) e OMDb, cada un cos seus propios termos; a dispoñibilidade en plataformas procede de JustWatch a través de TMDB. Este produto usa a API de TMDB pero non está avalado nin certificado por TMDB.',
           'As revistas e xornais históricos móstranse a través de Internet Archive (Media History Digital Library) e son, na súa maioría, de dominio público. As revistas actuais ligan ao seu sitio oficial e pertencen aos seus respectivos editores.',
         ],
       },
@@ -896,7 +896,7 @@ export const terms: Record<Lang, LegalDoc> = {
       {
         heading: 'Hirugarrenen edukia',
         body: [
-          'Filmen datuak The Movie Database (TMDB), OMDb eta Watchmode-tik lortzen dira, bakoitza bere baldintzekin. Produktu honek TMDBren APIa erabiltzen du, baina ez dago TMDBk babestua edo ziurtatua.',
+          'Filmen datuak The Movie Database (TMDB) eta OMDb-tik lortzen dira, bakoitza bere baldintzekin; plataformetako eskuragarritasuna JustWatch-ekoa da, TMDB bidez. Produktu honek TMDBren APIa erabiltzen du, baina ez dago TMDBk babestua edo ziurtatua.',
           'Aldizkari eta egunkari historikoak Internet Archive-ren bidez (Media History Digital Library) erakusten dira eta, gehienak, domeinu publikokoak dira. Gaur egungo aldizkariak beren gune ofizialera estekatzen dira eta beren argitaratzaileei dagozkie.',
         ],
       },
@@ -958,7 +958,7 @@ export const terms: Record<Lang, LegalDoc> = {
       {
         heading: 'Contingut de tercers',
         body: [
-          "Les dades de pel·lícules s'obtenen de The Movie Database (TMDB), OMDb i Watchmode, cadascun amb els seus propis termes. Aquest producte utilitza l'API de TMDB però no està avalat ni certificat per TMDB.",
+          "Les dades de pel·lícules s'obtenen de The Movie Database (TMDB) i OMDb, cadascun amb els seus propis termes; la disponibilitat a plataformes prové de JustWatch a través de TMDB. Aquest producte utilitza l'API de TMDB però no està avalat ni certificat per TMDB.",
           "Les revistes i diaris històrics es mostren a través d'Internet Archive (Media History Digital Library) i són, majoritàriament, de domini públic. Les revistes actuals s'enllacen al seu lloc oficial i pertanyen als seus respectius editors.",
         ],
       },

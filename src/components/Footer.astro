@@ -35,6 +35,8 @@ const year = new Date().getFullYear();
       <a href={localizePath(lang, 'accessibility')} class="label text-background no-underline hover:text-ochre">{t('nav.accessibility')}</a>
       <a href={localizePath(lang, 'style')} class="label text-background no-underline hover:text-ochre">{t('nav.style')}</a>
       <a href={localizePath(lang, 'changelog')} class="label text-background no-underline hover:text-ochre">{t('nav.changelog')} · v{CURRENT_VERSION}</a>
+      {/* Feed de novedades: el único canal de retorno sin cuentas ni rastreadores. */}
+      <a href={`/${lang}/rss.xml`} class="label text-background no-underline hover:text-ochre">RSS</a>
     </nav>
   </div>
 </footer>

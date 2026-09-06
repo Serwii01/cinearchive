@@ -22,9 +22,10 @@ const typeLabel = t(item.type === 'magazine' ? 'archive.type.magazine' : 'archiv
     </div>
 
     <div class="aspect-[3/4] overflow-hidden border-b border-ink bg-charcoal">
+      {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
       <img
         src={cover}
-        alt={`${item.title} — ${item.issue}`}
+        alt=""
         loading="lazy"
         decoding="async"
         class="h-full w-full object-cover object-top"

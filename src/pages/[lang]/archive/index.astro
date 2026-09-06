@@ -92,7 +92,8 @@ const sections = [
             <article class="group flex h-full flex-col bg-surface" data-search={`${b.title} ${b.author}`.toLowerCase()}>
               <a href={localizePath(lang, `library/${b.id}`)} class="flex h-full flex-col no-underline">
                 <div class="flex items-center justify-between border-b border-ink px-3 py-2"><span class="label">{t('cinema.publicDomain')}</span><span class="font-mono text-meta-data text-muted">{b.year}</span></div>
-                <div class="aspect-[3/4] overflow-hidden border-b border-ink bg-charcoal"><img src={bookCoverUrl(b.id)} alt={b.title} loading="lazy" decoding="async" class="h-full w-full object-cover object-top" /></div>
+                  {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
+                  <img src={bookCoverUrl(b.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" /></div>
                 <div class="flex flex-1 flex-col p-3"><h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{b.title}</h3><p class="mt-1 font-mono text-meta-data text-muted">{b.author}</p></div>
               </a>
             </article>

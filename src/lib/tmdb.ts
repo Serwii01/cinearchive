@@ -5,6 +5,8 @@
  * del servidor.
  */
 
+import { createMemo } from './memo';
+
 const BASE = 'https://api.themoviedb.org/3';
 export const TMDB_IMG = 'https://image.tmdb.org/t/p';
 
@@ -79,12 +81,16 @@ export interface TmdbMovie {
   recommendations?: { results: TmdbSearchResult[] };
   similar?: { results: TmdbSearchResult[] };
   videos?: { results: { key: string; site: string; type: string; name: string; official?: boolean }[] };
+  /** Dónde ver, por región ISO. Llega con append_to_response; se poda antes de cachear. */
+  'watch/providers'?: { results: Record<string, TmdbRegionProviders> };
 }
 
 export async function getMovie(id: number, locale: string) {
   return tmdbFetch<TmdbMovie>(`/movie/${id}`, {
     language: toTmdbLang(locale),
-    append_to_response: 'credits,keywords,recommendations,similar,videos',
+    // 'watch/providers' viene EN ESTA MISMA petición (append_to_response): el
+    // "dónde ver" no cuesta ni una llamada extra ni tiene cuota propia.
+    append_to_response: 'credits,keywords,recommendations,similar,videos,watch/providers',
   });
 }
 
@@ -232,23 +238,58 @@ export function profileUrl(path: string | null, size: 'w185' | 'h632' = 'w185') 
   return path ? `${TMDB_IMG}/${size}${path}` : null;
 }
 
+/** Ordenaciones admitidas en Descubrir (subconjunto seguro de sort_by de TMDB). */
+export const DISCOVER_SORTS = [
+  'popularity.desc',
+  'vote_average.desc',
+  'vote_count.desc',
+  'primary_release_date.desc',
+  'primary_release_date.asc',
+  'revenue.desc',
+  'title.asc',
+] as const;
+export type DiscoverSort = (typeof DISCOVER_SORTS)[number];
+
 export interface DiscoverParams {
   genres?: number[];
   genreMode?: 'and' | 'or'; // combinar géneros: AND (coma) por defecto, OR (barra)
   excludeGenres?: number[]; // without_genres
   decade?: number; // p. ej. 1980 → 1980-01-01..1989-12-31
+  yearFrom?: number; // año de estreno mínimo (tiene prioridad sobre decade)
+  yearTo?: number; // año de estreno máximo (tiene prioridad sobre decade)
   country?: string; // ISO 3166-1 (origen)
   originalLanguage?: string; // ISO 639-1 (idioma original)
   minRating?: number; // vote_average.gte (0-10)
   minVotes?: number; // vote_count.gte
   runtimeGte?: number; // duración mínima (minutos)
   runtimeLte?: number; // duración máxima (minutos)
-  sort?: 'popularity.desc' | 'vote_average.desc' | 'primary_release_date.desc' | 'revenue.desc';
+  /** Filtro "dónde ver": ids de plataforma (TMDB/JustWatch). Exige watchRegion. */
+  watchProviders?: number[];
+  watchRegion?: string; // ISO 3166-1 de la región de disponibilidad
+  /** Modalidades: sub | free | ads | rent | buy. Vacío = cualquiera. */
+  watchTypes?: WatchType[];
+  sort?: DiscoverSort;
   page?: number;
 }
 
+export interface DiscoverResult {
+  results: TmdbSearchResult[];
+  totalPages: number;
+  /** Total real de coincidencias (TMDB solo sirve las 500 primeras páginas). */
+  totalResults: number;
+}
+
+/** Nuestras modalidades → las que entiende with_watch_monetization_types. */
+const MONETIZATION: Record<WatchType, string> = {
+  sub: 'flatrate',
+  free: 'free',
+  ads: 'ads',
+  rent: 'rent',
+  buy: 'buy',
+};
+
 /** Explorador del catálogo de TMDB para la página Descubrir. */
-export async function discoverMovies(opts: DiscoverParams, locale: string) {
+export async function discoverMovies(opts: DiscoverParams, locale: string): Promise<DiscoverResult> {
   // Suelo de votos: evita que "mejor valoradas" devuelva 10/10 con un puñado de
   // votos. El usuario puede elevarlo (minVotes) pero no bajarlo de ese suelo.
   const voteFloor = opts.sort === 'vote_average.desc' ? 300 : 50;
@@ -267,13 +308,185 @@ export async function discoverMovies(opts: DiscoverParams, locale: string) {
   if (opts.minRating != null) params['vote_average.gte'] = String(opts.minRating);
   if (opts.runtimeGte != null) params['with_runtime.gte'] = String(opts.runtimeGte);
   if (opts.runtimeLte != null) params['with_runtime.lte'] = String(opts.runtimeLte);
-  if (opts.decade) {
-    params['primary_release_date.gte'] = `${opts.decade}-01-01`;
-    params['primary_release_date.lte'] = `${opts.decade + 9}-12-31`;
+
+  // Años: el rango explícito manda; si no lo hay, se deriva de la década.
+  const from = opts.yearFrom ?? (opts.decade ?? null);
+  const to = opts.yearTo ?? (opts.decade != null ? opts.decade + 9 : null);
+  if (from != null) params['primary_release_date.gte'] = `${from}-01-01`;
+  if (to != null) params['primary_release_date.lte'] = `${to}-12-31`;
+
+  // Dónde ver: TMDB exige la región junto a las plataformas; sin ella el filtro
+  // se ignoraría en silencio y el usuario vería resultados que no puede ver.
+  if (opts.watchRegion) {
+    params.watch_region = opts.watchRegion;
+    if (opts.watchProviders?.length) params.with_watch_providers = opts.watchProviders.join('|');
+    if (opts.watchTypes?.length) {
+      params.with_watch_monetization_types = opts.watchTypes.map((t) => MONETIZATION[t]).join('|');
+    }
   }
-  const data = await tmdbFetch<{ results: TmdbSearchResult[]; total_pages: number }>(
+
+  const data = await tmdbFetch<{ results: TmdbSearchResult[]; total_pages: number; total_results: number }>(
     '/discover/movie',
     params,
   );
-  return { results: data.results, totalPages: Math.min(data.total_pages, 500) };
+  return {
+    results: data.results,
+    totalPages: Math.min(data.total_pages, 500),
+    totalResults: data.total_results ?? data.results.length,
+  };
+}
+
+/* ------------------------------------------------------------------ *
+ * Dónde ver (proveedores de streaming).
+ *
+ * Los datos son de JustWatch y llegan DENTRO de la ficha (append_to_response),
+ * así que no cuestan una petición aparte ni tienen cuota propia — al contrario
+ * que Watchmode, cuyo plan gratuito (1000/mes, 2 llamadas por película y región)
+ * se agotaba en unos cientos de fichas.
+ *
+ * Condición de uso de TMDB: hay que atribuir los datos a JustWatch y llevar al
+ * usuario a su enlace (`link`), no montar un scraper propio. De ahí que se
+ * conserve el `link` de cada región y se muestre la atribución en la ficha.
+ * ------------------------------------------------------------------ */
+
+/** Un proveedor tal y como lo devuelve TMDB dentro de una región. */
+interface TmdbProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string | null;
+  display_priority?: number;
+}
+
+/** Bloque de una región: el enlace de JustWatch y los proveedores por modalidad. */
+export interface TmdbRegionProviders {
+  link?: string;
+  flatrate?: TmdbProvider[];
+  free?: TmdbProvider[];
+  ads?: TmdbProvider[];
+  rent?: TmdbProvider[];
+  buy?: TmdbProvider[];
+}
+
+/** Modalidades de acceso, en el orden en que se muestran. */
+export const WATCH_TYPES = ['sub', 'free', 'ads', 'rent', 'buy'] as const;
+export type WatchType = (typeof WATCH_TYPES)[number];
+
+/** Nombre TMDB de cada modalidad → el nuestro. */
+const TYPE_MAP: Record<string, WatchType> = {
+  flatrate: 'sub',
+  free: 'free',
+  ads: 'ads',
+  rent: 'rent',
+  buy: 'buy',
+};
+
+export interface WatchProvider {
+  id: number;
+  name: string;
+  /** Ruta del logo en TMDB (sin dominio); se resuelve con providerLogoUrl(). */
+  logo: string | null;
+  type: WatchType;
+}
+
+export interface WatchAvailability {
+  region: string;
+  /** Página de JustWatch (vía TMDB) para esa película y región. */
+  link: string | null;
+  providers: WatchProvider[];
+}
+
+/** Logo de una plataforma. w92 basta para un icono; w154 para pantallas densas. */
+export function providerLogoUrl(path: string | null, size: 'w45' | 'w92' | 'w154' = 'w92') {
+  return path ? `${TMDB_IMG}/${size}${path}` : null;
+}
+
+/** Aplana el bloque de una región a nuestra lista, sin repetir plataforma+modalidad. */
+function flattenRegion(region: string, block: TmdbRegionProviders | undefined): WatchAvailability {
+  const providers: WatchProvider[] = [];
+  if (!block) return { region, link: null, providers };
+
+  const seen = new Set<string>();
+  for (const [tmdbKey, type] of Object.entries(TYPE_MAP)) {
+    const list = block[tmdbKey as keyof TmdbRegionProviders] as TmdbProvider[] | undefined;
+    if (!Array.isArray(list)) continue;
+    // TMDB los devuelve por display_priority: cuanto menor, más relevante en el país.
+    for (const p of [...list].sort((x, y) => (x.display_priority ?? 999) - (y.display_priority ?? 999))) {
+      const key = `${p.provider_id}|${type}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      providers.push({ id: p.provider_id, name: p.provider_name, logo: p.logo_path, type });
+    }
+  }
+  return { region, link: block.link ?? null, providers };
+}
+
+/**
+ * Extrae el "dónde ver" de las regiones pedidas y DESCARTA el resto.
+ *
+ * El bloque en bruto pesa 45-90 kB por película (131 regiones): guardarlo entero
+ * duplicaría la tabla films_cache. Podado a las regiones que ofrecemos son unos
+ * pocos kB. Además muta el objeto para quitarle la clave gorda, de modo que lo
+ * que se cachea después ya va limpio.
+ */
+export function extractWatchProviders(
+  movie: TmdbMovie,
+  regions: readonly string[],
+): Record<string, WatchAvailability> {
+  const raw = movie['watch/providers']?.results ?? {};
+  const out: Record<string, WatchAvailability> = {};
+  for (const region of regions) {
+    const flat = flattenRegion(region, raw[region]);
+    // Una región sin plataformas no ocupa sitio en la caché: se omite y al
+    // leerla se interpreta como "sin resultados" (que es lo mismo).
+    if (flat.providers.length > 0 || flat.link) out[region] = flat;
+  }
+  delete movie['watch/providers'];
+  return out;
+}
+
+/** Catálogo de plataformas disponibles en una región (para el filtro de Descubrir). */
+export interface ProviderOption {
+  id: number;
+  name: string;
+  logo: string | null;
+}
+
+// El catálogo cambia muy rara vez y es igual para todos: se guarda un día en
+// memoria por (región, idioma).
+const providerCatalog = createMemo<ProviderOption[]>(24 * 60 * 60 * 1000, 60);
+
+/**
+ * Plataformas que operan en la región, ordenadas por relevancia local
+ * (display_priorities) y recortadas a las `limit` primeras: el filtro no puede
+ * ser una lista de 80 casillas.
+ */
+export async function getProviderOptions(
+  region: string,
+  locale: string,
+  limit = 24,
+): Promise<ProviderOption[]> {
+  return providerCatalog
+    .get(`${region}:${toTmdbLang(locale)}:${limit}`, async () => {
+      const data = await tmdbFetch<{
+        results: {
+          provider_id: number;
+          provider_name: string;
+          logo_path: string | null;
+          display_priorities?: Record<string, number>;
+        }[];
+      }>('/watch/providers/movie', { language: toTmdbLang(locale), watch_region: region });
+
+      return (data.results ?? [])
+        .map((p) => ({
+          id: p.provider_id,
+          name: p.provider_name,
+          logo: p.logo_path,
+          priority: p.display_priorities?.[region] ?? 9999,
+        }))
+        .sort((a, b) => a.priority - b.priority)
+        .slice(0, limit)
+        .map(({ id, name, logo }) => ({ id, name, logo }));
+    })
+    // Si TMDB falla, el filtro simplemente no ofrece plataformas: la página sigue.
+    .catch(() => []);
 }

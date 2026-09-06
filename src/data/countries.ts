@@ -29,6 +29,11 @@ export const COUNTRIES: Country[] = [
 export const countryName = (code: string, lang: 'es' | 'en'): string =>
   COUNTRIES.find((c) => c.code === code)?.[lang] ?? code;
 
-/** Regiones permitidas para "dónde ver" (Watchmode). Acota la cuota mensual. */
+/**
+ * Regiones que ofrece el selector de "dónde ver". TMDB/JustWatch cubre 131, pero
+ * solo se guardan estas en films_cache: el bloque en bruto pesa 45-90 kB por
+ * película y guardarlo entero duplicaría la tabla. Ampliar la lista es gratis en
+ * peticiones; solo cuesta unos kB por ficha.
+ */
 export const WATCH_REGIONS = ['ES', 'US', 'GB', 'FR', 'IT', 'DE', 'MX', 'AR', 'BR'] as const;
 export const isWatchRegion = (r: string): boolean => (WATCH_REGIONS as readonly string[]).includes(r);

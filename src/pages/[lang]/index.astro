@@ -147,7 +147,8 @@ const homeJsonLd = [
         cinemaPicks.map((f) => (
           <a href={localizePath(lang, `cinema/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-video overflow-hidden border-b border-ink bg-charcoal">
-              <img src={pdThumbUrl(f.id)} alt={f.title} loading="lazy" decoding="async" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+              {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
+              <img src={pdThumbUrl(f.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
             </div>
             <div class="p-3">
               <h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{f.title}</h3>
@@ -207,7 +208,7 @@ const homeJsonLd = [
           <a href={localizePath(lang, `person/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
               {profileUrl(f.profile_path, 'w185') ? (
-                <img src={profileUrl(f.profile_path, 'w185')} alt={f.name} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                <img src={profileUrl(f.profile_path, 'w185')} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
               ) : (
                 <div class="film-grain h-full w-full" />
               )}
@@ -245,7 +246,7 @@ const homeJsonLd = [
         bookPicks.map((b) => (
           <a href={localizePath(lang, `library/${b.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-[3/4] overflow-hidden border-b border-ink bg-charcoal">
-              <img src={bookCoverUrl(b.id)} alt={b.title} loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
+              <img src={bookCoverUrl(b.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
             </div>
             <div class="p-3">
               <h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{b.title}</h3>

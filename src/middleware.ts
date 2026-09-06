@@ -5,6 +5,7 @@ import { db } from './db/client';
 import { user as userTable } from './db/schema';
 import { check, clientIp, tooMany } from './lib/ratelimit';
 import { isAdmin } from './lib/admin';
+import { cachePolicy } from './lib/httpcache';
 import { languages, defaultLang } from './i18n/ui';
 
 // Prefijo de idioma de la ruta: /es, /en, /gl, /eu, /ca.
@@ -170,5 +171,5 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   }
 
-  return harden(await next(), path);
+  return cachePolicy(harden(await next(), path), stripped, !!context.locals.user);
 });

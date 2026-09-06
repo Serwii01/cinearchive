@@ -6,23 +6,44 @@
 import { eq, inArray } from 'drizzle-orm';
 import { db } from '../db/client';
 import { filmsCache } from '../db/schema';
-import { getMovie, director, posterUrl, type TmdbMovie } from './tmdb';
+import {
+  getMovie,
+  director,
+  posterUrl,
+  extractWatchProviders,
+  type TmdbMovie,
+  type WatchAvailability,
+} from './tmdb';
 import { getOmdbByImdbId, type OmdbData } from './omdb';
-import { getWatchSources, type WatchAvailability } from './watchmode';
 import { getFilmLocations, type FilmLocations } from './wikidata';
+import { createMemo } from './memo';
+import { WATCH_REGIONS } from '../data/countries';
 
 const OMDB_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
-const WATCHMODE_TTL_MS = 45 * 24 * 60 * 60 * 1000; // 45 días (cuota mensual baja: refresca poco)
 const WIKIDATA_TTL_MS = 60 * 24 * 60 * 60 * 1000; // 60 días (cambia rara vez)
 
 export interface FilmDetail {
   tmdb: TmdbMovie;
   omdb: OmdbData | null;
-  watchmode: WatchAvailability | null;
+  /** Dónde ver, por región ISO. Viene de TMDB/JustWatch, sin coste de cuota. */
+  providers: Record<string, WatchAvailability>;
   locations: FilmLocations | null;
 }
 
-export async function getFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
+// La ficha es idéntica para todos los visitantes: durante unos minutos se
+// reutiliza el resultado en memoria en lugar de repetir consulta a BD + TMDB +
+// upsert en cada visita (una peli popular, o un bot rastreando el catálogo, lo
+// repetirían cientos de veces). Las capas de abajo (OMDb y Wikidata)
+// mantienen sus TTL largos en films_cache; esto solo evita el trabajo repetido
+// a corto plazo.
+const FILM_MEMO_TTL_MS = 10 * 60 * 1000; // 10 min
+const filmMemo = createMemo<FilmDetail>(FILM_MEMO_TTL_MS, 300);
+
+export function getFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
+  return filmMemo.get(`${tmdbId}:${locale}`, () => loadFilm(tmdbId, locale));
+}
+
+async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
   const [cached] = await db
     .select()
     .from(filmsCache)
@@ -47,18 +68,15 @@ export async function getFilm(tmdbId: number, locale: string): Promise<FilmDetai
     omdb = (await getOmdbByImdbId(tmdb.imdb_id)) ?? omdb;
   }
 
-  // Watchmode: cache prolongada (límite mensual bajo).
-  let watchmode = (cached?.watchmode as WatchAvailability | null) ?? null;
-  const wmFresh =
-    cached?.watchmodeFetchedAt &&
-    Date.now() - new Date(cached.watchmodeFetchedAt).getTime() < WATCHMODE_TTL_MS;
-  let watchmodeFetchedAt = cached?.watchmodeFetchedAt ?? null;
-  if (!wmFresh) {
-    const fresh = await getWatchSources(tmdbId, 'ES');
-    if (fresh) {
-      watchmode = fresh;
-      watchmodeFetchedAt = new Date();
-    }
+  // Dónde ver: viene incrustado en la respuesta de TMDB que acabamos de pedir,
+  // así que siempre está fresco y no gasta ninguna cuota. extractWatchProviders
+  // se queda con las regiones que ofrecemos y BORRA el bloque en bruto (45-90 kB
+  // por película) antes de que se guarde en films_cache.
+  let providers = extractWatchProviders(tmdb, WATCH_REGIONS);
+  // Si TMDB falló y estamos sirviendo desde cache, el objeto cacheado ya no trae
+  // el bloque en bruto: se reutiliza lo que se guardó la última vez.
+  if (Object.keys(providers).length === 0 && cached?.providers) {
+    providers = cached.providers as Record<string, WatchAvailability>;
   }
 
   // Wikidata: localizaciones (rodaje/narrativa). Cache muy prolongada.
@@ -77,13 +95,13 @@ export async function getFilm(tmdbId: number, locale: string): Promise<FilmDetai
 
   await db
     .insert(filmsCache)
-    .values({ tmdbId, tmdb, omdb, watchmode, watchmodeFetchedAt, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() })
+    .values({ tmdbId, tmdb, omdb, providers, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() })
     .onConflictDoUpdate({
       target: filmsCache.tmdbId,
-      set: { tmdb, omdb, watchmode, watchmodeFetchedAt, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() },
+      set: { tmdb, omdb, providers, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() },
     });
 
-  return { tmdb, omdb, watchmode, locations };
+  return { tmdb, omdb, providers, locations };
 }
 
 export interface FilmBrief {
@@ -128,7 +146,7 @@ export async function getFilmsBrief(
     .where(inArray(filmsCache.tmdbId, tmdbIds));
   for (const row of cached) out.set(row.tmdbId, briefFromTmdb(row.tmdb as TmdbMovie));
 
-  // Para los que falten pedimos SOLO a TMDB (no OMDb/Watchmode/Wikidata, que son
+  // Para los que falten pedimos SOLO a TMDB (no OMDb ni Wikidata, que son
   // lentos y aquí no se usan) y en paralelo; se cachea el tmdb para la ficha completa.
   const missing = tmdbIds.filter((id) => !out.has(id));
   await Promise.all(

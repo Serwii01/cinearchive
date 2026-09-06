@@ -227,7 +227,8 @@ const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lan
                 return (
                   <a href={localizePath(lang, `u/${target.username}/review/${r.tmdbId}`)} class="flex gap-3 bg-surface p-3 no-underline hover:bg-film-white">
                     <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
-                      {b?.poster && <img src={b.poster} alt={b.title} class="h-full w-full object-cover" />}
+                      {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
+                      {b?.poster && <img src={b.poster} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
                     </div>
                     <div class="min-w-0">
                       <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${r.tmdbId}`}</p>

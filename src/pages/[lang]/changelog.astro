@@ -35,7 +35,7 @@ const releases = CHANGELOG.map((r) => ({
 
     <ol class="mt-10 space-y-10">
       {releases.map((r, i) => (
-        <li class="border-l-2 border-ink pl-6">
+        <li id={`v${r.version}`} class="scroll-mt-24 border-l-2 border-ink pl-6">
           <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
             <h2 class="font-display text-headline-lg text-ink">v{r.version}</h2>
             {i === 0 && <span class="label border border-ink bg-ochre px-2 py-1 text-on-accent">{t('changelog.current')}</span>}

@@ -17,7 +17,7 @@ publicidad, sin rastreadores. Pensado para autoalojarse pagando solo **VPS + dom
   Ramsaye…).
 - **Filmoteca** — catálogo de referencia + buscador en vivo sobre toda la base de TMDB, con
   **fichas ricas**: presupuesto, taquilla, premios, localizaciones (Wikidata), reparto, tráiler
-  (carga diferida) y "dónde ver" por región (Watchmode).
+  (carga diferida) y "dónde ver" por región (JustWatch, vía TMDB).
 - **Descubrir** — explorador por género, década, país y orden.
 - **Dosieres** — 12 colecciones temáticas comentadas que enlazan a fichas.
 - **Figuras** — fichas de cineastas (biografía + filmografía).
@@ -34,7 +34,7 @@ publicidad, sin rastreadores. Pensado para autoalojarse pagando solo **VPS + dom
 
 **Ninguna API key se expone en el navegador.** La app es **SSR (Astro en modo servidor)**: las
 claves viven en variables de entorno del servidor (sin prefijo `PUBLIC_`) y el navegador solo
-habla con nuestras rutas `/api/*`, que son las que llaman a TMDB/OMDb/Watchmode. Además:
+habla con nuestras rutas `/api/*`, que son las que llaman a TMDB y OMDb. Además:
 
 - Sesiones con cookies `httpOnly`/`secure` (Better Auth) y HTTPS automático con Caddy.
 - **CSP estricta** (sin `unsafe-inline` en scripts) y cabeceras de seguridad en Caddy.
@@ -55,7 +55,7 @@ habla con nuestras rutas `/api/*`, que son las que llaman a TMDB/OMDb/Watchmode.
 
 ### Fuentes de datos (todas server-side y cacheadas)
 
-TMDB (fichas, créditos, tráiler, descubrir), OMDb (premios/taquilla), Watchmode (dónde ver),
+TMDB (fichas, créditos, tráiler, descubrir y "dónde ver" con datos de JustWatch), OMDb (premios/taquilla),
 Wikidata (localizaciones, palmarés Óscar/Cannes) e Internet Archive (cine y prensa de dominio
 público). El palmarés del Goya se genera desde la Wikipedia en español.
 
@@ -67,7 +67,7 @@ src/
                        films (+cinema, collections, figures, atlas, person, film/[tmdbId]),
                        discover, account, watchlist, recommendations, stats, admin, legal…
   pages/api/           auth/[...all], films/*, me/* (proxys + datos de usuario)
-  lib/                 tmdb, omdb, watchmode, wikidata, films(cache), people, recs, stats,
+  lib/                 tmdb, omdb, wikidata, films(cache), memo, httpcache, people, recs, stats,
                        ratelimit, backlink, pdfilms, library, collections, awards, atlas…
   data/                *.json + *.ts (catálogo, géneros, países, contenido curado)
   db/                  schema.ts, client.ts        i18n/ui.ts (diccionario ES/EN/GL/EU/CA)
@@ -136,7 +136,7 @@ social es opcional: si dejas sus variables vacías, esos botones no aparecen.
 ## Créditos y licencia
 
 Diseño y código: **Sergio Fernández Morales**. Este producto usa la API de **TMDB** pero no está
-avalado ni certificado por TMDB. Los datos proceden de TMDB, OMDb, Watchmode, Wikidata, Wikipedia
+avalado ni certificado por TMDB. Los datos proceden de TMDB, JustWatch (vía TMDB), OMDb, Wikidata, Wikipedia
 e Internet Archive, cada uno bajo sus propios términos; las obras y la prensa incrustadas son, en
 su mayoría, de dominio público. Las marcas, carteles e imágenes de películas pertenecen a sus
 titulares y se usan con fines informativos.

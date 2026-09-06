@@ -50,9 +50,10 @@ const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sor
                 <span class="font-mono text-meta-data text-muted">{f.year}</span>
               </div>
               <div class="aspect-video overflow-hidden border-b border-ink bg-charcoal">
+                {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
                 <img
                   src={pdThumbUrl(f.id)}
-                  alt={f.title}
+                  alt=""
                   loading="lazy"
                   decoding="async"
                   class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
