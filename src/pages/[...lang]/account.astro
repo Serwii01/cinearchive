@@ -1,0 +1,500 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Avatar from '../../components/Avatar.astro';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { GENRES } from '../../data/genres';
+import { db } from '../../db/client';
+import { userPreferences, follows, user as userTable, profile } from '../../db/schema';
+import { and, eq, desc } from 'drizzle-orm';
+import { isAdmin } from '../../lib/admin';
+import { getMyProfile } from '../../lib/social';
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const user = Astro.locals.user!; // middleware garantiza sesión
+const admin = isAdmin(user);
+
+const [prefs] = await db
+  .select()
+  .from(userPreferences)
+  .where(eq(userPreferences.userId, user.id))
+  .limit(1);
+
+const favGenres = new Set(prefs?.favoriteGenres ?? []);
+const favDirectors = (prefs?.favoriteDirectors ?? []).join(', ');
+const theme = prefs?.theme ?? 'light';
+
+// Perfil público del usuario y solicitudes de seguimiento pendientes.
+const myProfile = await getMyProfile(user.id);
+const pending = await db
+  .select({ id: userTable.id, name: userTable.name, username: profile.username, hasAvatar: profile.avatarType })
+  .from(follows)
+  .innerJoin(userTable, eq(userTable.id, follows.followerId))
+  .leftJoin(profile, eq(profile.userId, follows.followerId))
+  .where(and(eq(follows.followingId, user.id), eq(follows.status, 'pending')))
+  .orderBy(desc(follows.createdAt));
+---
+
+<BaseLayout title={t('account.title')} noindex>
+  <section class="frame py-12">
+    <header class="border-b border-ink pb-6">
+      <span class="label">{t('account.title')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{user.name}</h1>
+      <p class="mt-3 font-mono text-meta-data text-muted">{user.email}</p>
+      <button id="logout" type="button" class="btn btn-secondary mt-5" data-home={localizePath(lang)}>
+        {t('nav.logout')}
+      </button>
+    </header>
+
+    {/* Hub: accesos a la actividad del usuario */}
+    <nav class="mt-10" aria-label={t('account.sections')}>
+      <h2 class="label mb-3">{t('account.sections')}</h2>
+      <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
+        {[
+          ...(myProfile ? [{ href: localizePath(lang, `u/${myProfile.username}`), label: t('profile.viewProfile') }] : []),
+          { href: localizePath(lang, 'notifications'), label: t('nav.notifications') },
+          { href: localizePath(lang, 'watchlist'), label: t('nav.lists') },
+          { href: localizePath(lang, 'stats'), label: t('nav.stats') },
+          { href: localizePath(lang, 'recommendations'), label: t('nav.recommendations') },
+          { href: localizePath(lang, 'search'), label: t('search.title') },
+          ...(admin ? [{ href: localizePath(lang, 'admin'), label: t('nav.admin') }] : []),
+        ].map((s) => (
+          <a
+            href={s.href}
+            class="flex items-center justify-between bg-surface p-4 font-display text-headline-md text-ink no-underline transition-colors hover:bg-ink hover:text-white"
+          >
+            {s.label}
+            <span aria-hidden="true">→</span>
+          </a>
+        ))}
+      </div>
+    </nav>
+
+    {/* Perfil público (username, avatar, bio, privacidad) */}
+    <section
+      class="mt-12 max-w-3xl"
+      id="profile-editor"
+      data-has-profile={myProfile ? '1' : '0'}
+      data-errors={JSON.stringify({
+        format: t('profile.errFormat'),
+        reserved: t('profile.errReserved'),
+        taken: t('profile.errTaken'),
+        username_required: t('profile.errRequired'),
+        bad_instagram: t('profile.errInstagram'),
+        too_large: t('profile.errTooLarge'),
+        bad_type: t('profile.errBadType'),
+        heic: t('profile.errHeic'),
+      })}
+      data-processing={t('profile.avatarProcessing')}
+      data-crop={JSON.stringify({
+        title: t('profile.cropTitle'),
+        zoom: t('profile.cropZoom'),
+        cancel: t('profile.cancel'),
+        save: t('controls.save'),
+      })}
+    >
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.yours')}</h2>
+
+      {!myProfile && <p class="mt-3 font-mono text-body-md text-muted">{t('profile.setUsernameFirst')}</p>}
+
+      <div class="mt-6 flex flex-col gap-6 sm:flex-row sm:items-start">
+        {/* Avatar */}
+        <div class="flex flex-col items-center gap-3">
+          <Avatar userId={user.id} name={user.name} hasAvatar={!!myProfile?.avatarType} size={112} class="h-28 w-28" />
+          <input id="avatar-input" type="file" accept="image/*" class="hidden" />
+          <div class="flex gap-2">
+            <button id="avatar-upload" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white" disabled={!myProfile}>{t('profile.uploadAvatar')}</button>
+            <button id="avatar-remove" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white" disabled={!myProfile?.avatarType}>{t('profile.removeAvatar')}</button>
+          </div>
+          <p class="text-center font-mono text-meta-data text-muted">{t('profile.avatarHint')}</p>
+
+          {/* Alerta con estilo si la foto no se puede subir */}
+          <div id="avatar-alert" role="alert" hidden class="w-full max-w-xs border-2 border-error bg-surface p-3" data-title={t('profile.avatarErrorTitle')}>
+            <p class="label flex items-center gap-2 text-error"><span aria-hidden="true">▲</span> {t('profile.avatarErrorTitle')}</p>
+            <p id="avatar-alert-msg" class="mt-1 font-mono text-meta-data text-charcoal"></p>
+          </div>
+        </div>
+
+        {/* Datos */}
+        <form id="profile-form" class="min-w-0 flex-1">
+          <label class="block">
+            <span class="label mb-2 block">{t('profile.username')}</span>
+            <div class="flex items-center border border-ink bg-white focus-within:bg-film-white">
+              <span class="px-3 font-mono text-body-md text-muted">@</span>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                value={myProfile?.username ?? ''}
+                maxlength="20"
+                autocomplete="off"
+                autocapitalize="off"
+                autocorrect="off"
+                spellcheck="false"
+                inputmode="text"
+                enterkeyhint="done"
+                placeholder="usuario"
+                class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
+              />
+            </div>
+            <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.usernameHint')}</span>
+          </label>
+
+          <label class="mt-5 block">
+            <span class="label mb-2 block">{t('profile.bio')}</span>
+            <textarea id="bio" name="bio" rows="3" maxlength="300" placeholder={t('profile.bioPlaceholder')} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none">{myProfile?.bio ?? ''}</textarea>
+          </label>
+
+          <label class="mt-5 block">
+            <span class="label mb-2 block">{t('profile.instagram')}</span>
+            <div class="flex items-center border border-ink bg-white focus-within:bg-film-white">
+              <span class="px-3 font-mono text-body-md text-muted">@</span>
+              <input
+                id="instagram"
+                name="instagram"
+                type="text"
+                value={myProfile?.instagram ?? ''}
+                maxlength="30"
+                autocomplete="off"
+                autocapitalize="off"
+                autocorrect="off"
+                spellcheck="false"
+                inputmode="text"
+                placeholder="tu_usuario"
+                class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
+              />
+            </div>
+            <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.instagramHint')}</span>
+          </label>
+
+          <fieldset class="mt-5">
+            <legend class="label mb-2">{t('profile.privacy')}</legend>
+            <label class="flex items-start gap-3">
+              <input id="is-private" type="checkbox" checked={myProfile?.isPrivate ?? true} class="mt-1" />
+              <span>
+                <span class="block font-body text-body-md text-ink">{t('profile.makePrivate')}</span>
+                <span class="block font-mono text-meta-data text-muted">{t('profile.privacyHint')}</span>
+              </span>
+            </label>
+          </fieldset>
+
+          <div class="mt-6 flex flex-wrap items-center gap-4">
+            <button type="submit" class="btn btn-primary">{t('profile.save')}</button>
+            {myProfile && <a href={localizePath(lang, `u/${myProfile.username}`)} class="label no-underline hover:text-ink">{t('profile.viewProfile')} →</a>}
+            <span id="profile-msg" class="font-mono text-meta-data text-muted"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    {/* Solicitudes de seguimiento */}
+    <section class="mt-12 max-w-3xl" id="requests">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.requests')} <span class="label">· {pending.length}</span></h2>
+      {pending.length === 0 ? (
+        <p class="mt-3 font-mono text-body-md text-muted">{t('profile.noRequests')}</p>
+      ) : (
+        <ul class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink">
+          {pending.map((r) => (
+            <li class="flex items-center justify-between gap-3 bg-surface p-3" data-requester={r.id}>
+              <a href={r.username ? localizePath(lang, `u/${r.username}`) : '#'} class="flex min-w-0 items-center gap-3 no-underline">
+                <Avatar userId={r.id} name={r.name} hasAvatar={!!r.hasAvatar} size={40} class="h-10 w-10" />
+                <span class="min-w-0">
+                  <span class="block truncate font-display text-headline-md text-ink">{r.name}</span>
+                  {r.username && <span class="block font-mono text-meta-data text-muted">@{r.username}</span>}
+                </span>
+              </a>
+              <div class="flex shrink-0 gap-2">
+                <button type="button" data-accept class="label border border-ink px-3 py-1 transition-colors hover:bg-ink hover:text-white">{t('profile.accept')}</button>
+                <button type="button" data-reject class="label border border-ink px-3 py-1 transition-colors hover:bg-error hover:text-white">{t('profile.reject')}</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+
+    <form id="prefs-form" class="mt-12 max-w-3xl" data-saved={t('account.saved')}>
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('account.preferences')}</h2>
+
+      <!-- Géneros favoritos -->
+      <fieldset class="mt-6">
+        <legend class="label mb-3">{t('account.favoriteGenres')}</legend>
+        <div class="flex flex-wrap gap-2">
+          {GENRES.map((g) => (
+            <label class="cursor-pointer">
+              <input type="checkbox" name="genre" value={g.id} checked={favGenres.has(g.id)} class="peer sr-only" />
+              <span class="label inline-block border border-ink px-3 py-2 transition-colors peer-checked:bg-ochre peer-checked:text-on-accent hover:bg-ink hover:text-white peer-checked:hover:bg-ochre peer-checked:hover:text-on-accent">
+                {g[lang]}
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <!-- Directores favoritos -->
+      <label class="mt-8 block">
+        <span class="label mb-2 block">{t('account.favoriteDirectors')}</span>
+        <input id="directors" type="text" value={favDirectors} placeholder="Tarkovsky, Varda, Ozu" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md focus:bg-film-white focus:outline-none" />
+      </label>
+
+      <!-- Tema -->
+      <fieldset class="mt-8">
+        <legend class="label mb-3">{t('account.theme')}</legend>
+        <div class="inline-flex border border-ink">
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="light" checked={theme === 'light'} class="peer sr-only" />
+            <span class="label inline-block border-r border-ink px-4 py-2 peer-checked:bg-ink peer-checked:text-white">{t('account.themeLight')}</span>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="dark" checked={theme === 'dark'} class="peer sr-only" />
+            <span class="label inline-block px-4 py-2 peer-checked:bg-ink peer-checked:text-white">{t('account.themeDark')}</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="mt-8 flex items-center gap-4">
+        <button type="submit" class="btn btn-primary">{t('account.save')}</button>
+        <span data-msg class="font-mono text-meta-data text-muted"></span>
+      </div>
+    </form>
+  </section>
+</BaseLayout>
+
+<script>
+  import { signOut } from '../../lib/auth-client';
+
+  const logout = document.getElementById('logout');
+  // La portada la da el servidor en un data-*: en castellano es '/' y en los
+  // demás idiomas '/xx', y eso no se deduce fiablemente desde el pathname.
+  const home = logout?.dataset.home || '/';
+
+  logout?.addEventListener('click', async () => {
+    await signOut();
+    window.location.href = home;
+  });
+
+  const form = document.getElementById('prefs-form') as HTMLFormElement;
+  const msg = form.querySelector('[data-msg]') as HTMLElement;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const genres = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="genre"]:checked')).map((i) =>
+      Number(i.value),
+    );
+    const directors = (document.getElementById('directors') as HTMLInputElement).value
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const theme = (form.querySelector('input[name="theme"]:checked') as HTMLInputElement)?.value || 'light';
+
+    // Aplica el tema de inmediato y lo recuerda en este dispositivo.
+    if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    try {
+      localStorage.setItem('theme', theme);
+    } catch (e) {}
+    document.dispatchEvent(new Event('themechange'));
+
+    const res = await fetch('/api/me/preferences', {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ locale: lang, favoriteGenres: genres, favoriteDirectors: directors, theme }),
+    });
+    if (res.ok) {
+      msg.textContent = form.dataset.saved || 'OK';
+      setTimeout(() => (msg.textContent = ''), 1800);
+    }
+  });
+</script>
+
+<script>
+  import { cropAvatar } from '../../lib/ui/crop';
+
+  // --- Perfil público: username, bio, privacidad, avatar ---
+  const editor = document.getElementById('profile-editor') as HTMLElement | null;
+  if (editor) {
+    const errors = JSON.parse(editor.dataset.errors || '{}') as Record<string, string>;
+    const pmsg = document.getElementById('profile-msg') as HTMLElement;
+    const savedText = (document.getElementById('prefs-form') as HTMLElement)?.dataset.saved || 'OK';
+
+    const profileForm = document.getElementById('profile-form') as HTMLFormElement;
+    const usernameInput = document.getElementById('username') as HTMLInputElement;
+    const saveBtn = profileForm.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+    // Saneado en vivo: en móvil el teclado capitaliza/autocorrige. Forzamos el
+    // juego de caracteres válido (minúsculas, dígitos y _) mientras se escribe.
+    usernameInput.addEventListener('input', () => {
+      const clean = usernameInput.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+      if (clean !== usernameInput.value) {
+        const pos = usernameInput.selectionStart ?? clean.length;
+        usernameInput.value = clean;
+        try { usernameInput.setSelectionRange(pos - 1 < 0 ? 0 : pos, pos - 1 < 0 ? 0 : pos); } catch {}
+      }
+    });
+
+    // Instagram: mismo saneado en vivo (minúsculas, dígitos, punto y guion bajo)
+    // para que no se pueda enviar un handle no válido y falle al guardar.
+    const igInput = document.getElementById('instagram') as HTMLInputElement | null;
+    igInput?.addEventListener('input', () => {
+      const clean = igInput.value.toLowerCase().replace(/[^a-z0-9._]/g, '');
+      if (clean !== igInput.value) {
+        const pos = igInput.selectionStart ?? clean.length;
+        igInput.value = clean;
+        try { igInput.setSelectionRange(pos - 1 < 0 ? 0 : pos, pos - 1 < 0 ? 0 : pos); } catch {}
+      }
+    });
+
+    let saving = false;
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (saving) return;
+      saving = true;
+      saveBtn.disabled = true;
+      pmsg.classList.remove('text-error');
+      pmsg.textContent = '…';
+      const body = {
+        username: usernameInput.value.trim().toLowerCase(),
+        bio: (document.getElementById('bio') as HTMLTextAreaElement).value.trim(),
+        instagram: (document.getElementById('instagram') as HTMLInputElement).value.trim(),
+        isPrivate: (document.getElementById('is-private') as HTMLInputElement).checked,
+      };
+      try {
+        const res = await fetch('/api/me/profile', {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (res.ok) {
+          pmsg.textContent = savedText;
+          // Si acabamos de crear el perfil, recargar para habilitar avatar y enlace.
+          if (editor.dataset.hasProfile === '0') { location.reload(); return; }
+          setTimeout(() => (pmsg.textContent = ''), 2200);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          pmsg.classList.add('text-error');
+          pmsg.textContent = errors[data.error] || 'Error';
+        }
+      } catch {
+        pmsg.classList.add('text-error');
+        pmsg.textContent = 'Error';
+      } finally {
+        saving = false;
+        saveBtn.disabled = false;
+      }
+    });
+
+    // Avatar: subir y quitar. Los errores se muestran en una alerta con estilo.
+    const fileInput = document.getElementById('avatar-input') as HTMLInputElement;
+    const alertBox = document.getElementById('avatar-alert') as HTMLElement;
+    const alertMsg = document.getElementById('avatar-alert-msg') as HTMLElement;
+
+    const showAlert = (msg: string) => {
+      alertMsg.textContent = msg;
+      alertBox.hidden = false;
+    };
+    const clearAlert = () => {
+      alertBox.hidden = true;
+    };
+
+    document.getElementById('avatar-upload')?.addEventListener('click', () => {
+      clearAlert();
+      fileInput.click();
+    });
+    const MAX_AVATAR_BYTES = 512 * 1024;
+    const uploadBtn = document.getElementById('avatar-upload') as HTMLButtonElement | null;
+    const processingLabel = editor.dataset.processing || '…';
+    const cropLabels = JSON.parse(editor.dataset.crop || '{}') as Record<string, string>;
+
+    fileInput.addEventListener('change', async () => {
+      clearAlert();
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      // HEIC/HEIF (iPhone): el navegador ni siquiera lo decodifica en canvas.
+      // Aviso claro y específico antes de abrir el recortador.
+      if (/heic|heif/i.test(file.type) || /\.(heic|heif)$/i.test(file.name)) {
+        showAlert(errors.heic || errors.bad_type || 'Invalid format');
+        fileInput.value = '';
+        return;
+      }
+
+      let blob: Blob | null;
+      try {
+        // El usuario elige qué parte de la foto se usa (arrastrar + zoom). Devuelve
+        // un cuadrado 512² ya comprimido (WebP/JPEG ≤ 512 KB), sin metadatos EXIF.
+        // Así se puede partir de fotos grandes que Caddy cortaría en el borde.
+        blob = await cropAvatar(file, {
+          size: 512,
+          maxBytes: MAX_AVATAR_BYTES,
+          title: cropLabels.title || 'Ajusta tu foto',
+          zoomLabel: cropLabels.zoom || 'Zoom',
+          cancelLabel: cropLabels.cancel || 'Cancelar',
+          confirmLabel: cropLabels.save || 'Guardar',
+        });
+      } catch {
+        // La imagen no se pudo decodificar (formato no soportado).
+        showAlert(errors.bad_type || 'Error');
+        fileInput.value = '';
+        return;
+      }
+      if (!blob) {
+        // Cancelado por el usuario.
+        fileInput.value = '';
+        return;
+      }
+      if (blob.size > MAX_AVATAR_BYTES) {
+        showAlert(errors.too_large || 'Too large');
+        fileInput.value = '';
+        return;
+      }
+
+      const originalLabel = uploadBtn?.textContent ?? '';
+      if (uploadBtn) {
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = processingLabel;
+      }
+      try {
+        // El servidor valida por magic bytes y recomprime (WebP) para ahorrar espacio.
+        const res = await fetch('/api/me/avatar', { method: 'POST', body: blob });
+        if (res.ok) {
+          location.reload();
+          return;
+        }
+        const data = await res.json().catch(() => ({}));
+        showAlert(errors[data.error] || errors.bad_type || 'Error');
+      } catch {
+        showAlert(errors.bad_type || 'Error');
+      } finally {
+        fileInput.value = '';
+        if (uploadBtn) {
+          uploadBtn.disabled = false;
+          uploadBtn.textContent = originalLabel;
+        }
+      }
+    });
+    document.getElementById('avatar-remove')?.addEventListener('click', async () => {
+      clearAlert();
+      // content-type obligatorio: sin él, la CSRF de Astro rechaza el DELETE
+      // detrás del proxy (403 cross-site). Ver nota en lists/[id].astro.
+      const res = await fetch('/api/me/avatar', {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+      });
+      if (res.ok) location.reload();
+    });
+  }
+
+  // --- Solicitudes de seguimiento: aceptar / rechazar ---
+  document.querySelectorAll<HTMLLIElement>('#requests li[data-requester]').forEach((li) => {
+    const requesterId = li.dataset.requester!;
+    const act = async (action: 'accept' | 'reject') => {
+      const res = await fetch('/api/follow/requests', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ requesterId, action }),
+      });
+      if (res.ok) li.remove();
+    };
+    li.querySelector('[data-accept]')?.addEventListener('click', () => act('accept'));
+    li.querySelector('[data-reject]')?.addEventListener('click', () => act('reject'));
+  });
+</script>

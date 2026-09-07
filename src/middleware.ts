@@ -6,15 +6,17 @@ import { user as userTable } from './db/schema';
 import { check, clientIp, tooMany } from './lib/ratelimit';
 import { isAdmin } from './lib/admin';
 import { cachePolicy } from './lib/httpcache';
-import { languages, defaultLang } from './i18n/ui';
+import { isKnownRoute, legacyDefaultLangRedirect } from './lib/routes';
+import { languages, defaultLang, localizePath, stripLangPrefix, getLangFromUrl } from './i18n/ui';
 
-// Prefijo de idioma de la ruta: /es, /en, /gl, /eu, /ca.
-const LANG_PREFIX = new RegExp(`^/(${Object.keys(languages).join('|')})(?=/|$)`);
+const LANGS = Object.keys(languages);
 
 // Rutas que no deben indexarse (API, auth y privadas). Se marca con X-Robots-Tag,
 // que cubre incluso respuestas no-HTML y redirecciones (complementa al <meta robots>).
+// El prefijo de idioma es OPCIONAL: en castellano estas páginas viven en la raíz
+// (/account), y sin `(?:xx/)?` se quedaban sin la cabecera.
 const NOINDEX_PATH = new RegExp(
-  `^/api/|^/(?:${Object.keys(languages).join('|')})/(?:account|watchlist|notifications|stats|recommendations|login|register|forgot|reset|admin)(?:/|$)`,
+  `^/api/|^/(?:(?:${LANGS.join('|')})/)?(?:account|watchlist|notifications|stats|recommendations|login|register|forgot|reset|admin)(?:/|$)`,
 );
 
 /**
@@ -75,6 +77,44 @@ export const onRequest = defineMiddleware(async (context, next) => {
       60_000,
     );
     if (!ok) return harden(tooMany(retryAfter), path);
+  }
+
+  // ---------------------------------------------------------------------
+  // Enrutado por idioma: el castellano vive en la raíz (/cines) y los demás
+  // idiomas llevan prefijo (/en/cines).
+  //
+  // Este bloque va aquí arriba, ANTES del retorno anticipado de las páginas
+  // prerenderizadas: si no, las editoriales (/es/about y compañía) se saltarían
+  // el 301 y la comprobación de sección.
+  // ---------------------------------------------------------------------
+
+  // Las URLs viejas con /es dejaron de ser canónicas: 301 permanente para que
+  // los buscadores trasladen la señal en vez de repartirla entre dos URLs.
+  //
+  // No se exime a `isStatic`: bajo /es no hay ningún recurso estático, y esa
+  // comprobación (pensada para el límite por IP) perdona todo lo acabado en
+  // .xml, con lo que /es/rss.xml se quedaba sirviendo el feed en la URL vieja
+  // en vez de redirigir.
+  const legacy = legacyDefaultLangRedirect(path, url.search, defaultLang);
+  if (legacy) return harden(context.redirect(legacy, 301), path);
+
+  // `[...lang]` casa con cualquier cosa —incluido /api/loquesea—, así que sin
+  // esto /pepe renderizaría la portada en español, y /api/inventado también.
+  if (!isKnownRoute(path, LANGS)) {
+    if (path.startsWith('/api/')) {
+      return harden(
+        new Response(JSON.stringify({ error: 'not_found' }), {
+          status: 404,
+          headers: { 'content-type': 'application/json' },
+        }),
+        path,
+      );
+    }
+    // Se pinta la página 404 de verdad (con su ilustración), pero forzando el
+    // estado: la reescritura de Astro devuelve 200 y un 404 que dice "200" es
+    // justo lo que hace que Google indexe basura.
+    const res = await context.rewrite('/404');
+    return harden(new Response(res.body, { status: 404, headers: res.headers }), path);
   }
 
   // CSRF (defensa en profundidad): en escrituras a la API, si llega cabecera
@@ -146,13 +186,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   // Protección de rutas privadas (solo páginas, no assets ni API).
-  const lang = path.match(LANG_PREFIX)?.[1] ?? defaultLang;
-  const stripped = path.replace(LANG_PREFIX, '');
+  const lang = getLangFromUrl(url);
+  const stripped = stripLangPrefix(path);
   const isProtected = PROTECTED.some((p) => stripped === p || stripped.startsWith(p + '/'));
 
   if (isProtected && !context.locals.user) {
     const back = encodeURIComponent(path);
-    return harden(context.redirect(`/${lang}/login?next=${back}`), path);
+    return harden(context.redirect(`${localizePath(lang, 'login')}?next=${back}`), path);
   }
 
   // Panel de administración: solo cuentas de ADMIN_EMAILS (la API responde 403; las
@@ -171,9 +211,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
         );
       }
       if (!context.locals.user) {
-        return harden(context.redirect(`/${lang}/login?next=${encodeURIComponent(path)}`), path);
+        return harden(
+          context.redirect(`${localizePath(lang, 'login')}?next=${encodeURIComponent(path)}`),
+          path,
+        );
       }
-      return harden(context.redirect(`/${lang}`), path); // logueado pero no admin → fuera
+      return harden(context.redirect(localizePath(lang)), path); // logueado pero no admin → fuera
     }
   }
 

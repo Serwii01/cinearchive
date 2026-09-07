@@ -1,0 +1,671 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FilmControls from '../../../components/FilmControls.astro';
+import ListPicker from '../../../components/ListPicker.astro';
+import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { resolveBackLink } from '../../../lib/backlink';
+import { getFilm } from '../../../lib/films';
+import { movieLd, breadcrumbLd } from '../../../lib/seo';
+import { filmSlug, parseFilmId } from '../../../lib/slug';
+import {
+  director,
+  directorPerson,
+  posterUrl,
+  posterSrcset,
+  profileUrl,
+  backdropUrl,
+  trailerKey,
+  providerLogoUrl,
+  WATCH_TYPES,
+  type TmdbSearchResult,
+  type WatchType,
+} from '../../../lib/tmdb';
+import { genreName } from '../../../data/genres';
+import { WATCH_REGIONS, countryName } from '../../../data/countries';
+import { db } from '../../../db/client';
+import { userFilms } from '../../../db/schema';
+import { and, eq } from 'drizzle-orm';
+import '../../../styles/map.css';
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+// El id vive al final del slug (`nombre-{id}`); también acepta el id "pelado"
+// de las URLs viejas `/film/141`. El nombre es puramente decorativo.
+const slugParam = Astro.params.slug ?? '';
+const tmdbId = parseFilmId(slugParam);
+
+if (tmdbId == null) {
+  return Astro.redirect(localizePath(lang, 'films'));
+}
+
+let film;
+try {
+  film = await getFilm(tmdbId, lang);
+} catch {
+  return new Response(t('film.notFound'), { status: 404 });
+}
+const { tmdb, omdb, providers, locations } = film;
+
+// URL canónica con nombre: si llegan por id pelado o con un slug distinto (título
+// cambiado/otro idioma), 301 al slug real. El id garantiza resolver siempre.
+const canonicalSlug = filmSlug(tmdbId, tmdb.title);
+if (slugParam !== canonicalSlug) {
+  return Astro.redirect(localizePath(lang, `film/${canonicalSlug}`), 301);
+}
+const dir = director(tmdb);
+const dirPerson = directorPerson(tmdb);
+const dirExtra = [tmdb.runtime ? `${tmdb.runtime} min` : null, tmdb.production_countries[0]?.name].filter(Boolean).join(' · ');
+const poster = posterUrl(tmdb.poster_path, 'w500');
+const poster2x = posterSrcset(tmdb.poster_path, 'w500', 'w780');
+const year = tmdb.release_date ? tmdb.release_date.slice(0, 4) : '';
+
+// Dónde ver: los datos (JustWatch, vía TMDB) llegan dentro de la propia ficha,
+// para TODAS las regiones que ofrecemos. La página pinta España y el selector
+// cambia de región leyendo de nuestra API, sin tocar ninguna API externa.
+const DEFAULT_REGION = 'ES';
+const watch = providers[DEFAULT_REGION] ?? { region: DEFAULT_REGION, link: null, providers: [] };
+const watchLabels: Record<WatchType, string> = {
+  sub: t('film.sub'),
+  free: t('film.free'),
+  ads: t('film.ads'),
+  rent: t('film.rent'),
+  buy: t('film.buy'),
+};
+const watchGroups = WATCH_TYPES.map((type) => ({
+  type,
+  label: watchLabels[type],
+  items: watch.providers.filter((pr) => pr.type === type),
+})).filter((g) => g.items.length > 0);
+
+// Estado actual del usuario para esta película (si hay sesión).
+let userState: { status: 'want' | 'seen'; favorite: boolean; rating: number | null; note: string | null } | null = null;
+if (Astro.locals.user) {
+  const [row] = await db
+    .select()
+    .from(userFilms)
+    .where(and(eq(userFilms.userId, Astro.locals.user.id), eq(userFilms.tmdbId, tmdbId)))
+    .limit(1);
+  // 'favorite' era un estado histórico; ahora es un flag. Se normaliza al vuelo.
+  if (row) userState = {
+    status: row.status === 'want' ? 'want' : 'seen',
+    favorite: row.favorite || row.status === 'favorite',
+    rating: row.rating,
+    note: row.note,
+  };
+}
+
+const ratings = omdb?.Ratings ?? [];
+
+// Tráiler (YouTube), reparto y películas similares (ya vienen en la tmdb cacheada).
+const trailer = trailerKey(tmdb);
+const trailerThumb = backdropUrl(tmdb.backdrop_path, 'w780');
+const cast = (tmdb.credits?.cast ?? []).slice(0, 8);
+const similar: TmdbSearchResult[] = [];
+const seen = new Set<number>([tmdbId]);
+for (const s of [...(tmdb.recommendations?.results ?? []), ...(tmdb.similar?.results ?? [])]) {
+  if (similar.length >= 12) break;
+  if (s.poster_path && !seen.has(s.id)) {
+    seen.add(s.id);
+    similar.push(s);
+  }
+}
+
+// Regiones para el selector de "dónde ver".
+const regions = WATCH_REGIONS.map((code) => ({ code, name: countryName(code, lang) }));
+
+
+// Datos curiosos: finanzas (TMDB), taquilla y premios (OMDb), productoras.
+const fmtMoney = (n?: number) =>
+  n && n > 0
+    ? new Intl.NumberFormat(locales[lang], {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0,
+      }).format(n)
+    : null;
+const cleanOmdb = (v?: string) => (v && v !== 'N/A' ? v : null);
+const profitVal = tmdb.budget && tmdb.revenue && tmdb.budget > 0 && tmdb.revenue > 0 ? tmdb.revenue - tmdb.budget : null;
+const companies = (tmdb.production_companies ?? []).map((c) => c.name).slice(0, 4);
+
+const facts = [
+  { label: t('film.budget'), value: fmtMoney(tmdb.budget) },
+  { label: t('film.revenue'), value: fmtMoney(tmdb.revenue) },
+  { label: t('film.profit'), value: profitVal != null ? fmtMoney(profitVal) : null },
+  { label: t('film.boxOffice'), value: cleanOmdb(omdb?.BoxOffice) },
+  { label: t('film.awards'), value: cleanOmdb(omdb?.Awards) },
+  { label: t('film.companies'), value: companies.length > 0 ? companies.join(', ') : null },
+].filter((f) => f.value);
+
+const hasLocations = !!locations && (locations.filming.length > 0 || locations.narrative.length > 0);
+
+/*
+ * Puntos del mapa. Solo entran los que tienen coordenada Y no son una
+ * demarcación entera: el centroide de «España» o de «California» no señala
+ * ningún rodaje y daría una falsa sensación de precisión.
+ *
+ * Se marca cuáles son de rodaje y cuáles del relato, porque no es lo mismo:
+ * «Nueva York» como lugar donde se rodó y «Nueva York» como lugar donde
+ * transcurre la historia son dos afirmaciones distintas.
+ */
+const lugaresMapa = [
+  ...(locations?.filming ?? []).map((l) => ({ ...l, rodaje: true })),
+  ...(locations?.narrative ?? []).map((l) => ({ ...l, rodaje: false })),
+]
+  .filter((l) => l.lat != null && l.lon != null && l.kind !== 'region')
+  .map((l) => ({ n: l.name, lat: l.lat, lon: l.lon, exacto: l.kind === 'exacto', rodaje: l.rodaje }));
+const conMapa = lugaresMapa.length > 0;
+const tagline = cleanOmdb(tmdb.tagline);
+
+// Enlace de "volver" según el origen real (cabecera Referer).
+const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t, [
+  Astro.url.hostname,
+  Astro.site?.hostname,
+]);
+
+// SEO: imagen social (fotograma > cartel) y datos estructurados (Movie + migas).
+const socialImg = backdropUrl(tmdb.backdrop_path, 'w1280') ?? posterUrl(tmdb.poster_path, 'w780');
+const filmUrl = new URL(Astro.url.pathname, Astro.site).href;
+const movieJsonLd = movieLd({
+  url: filmUrl,
+  name: tmdb.title,
+  alternateName: tmdb.original_title,
+  image: socialImg,
+  description: tmdb.overview,
+  datePublished: tmdb.release_date ?? null,
+  genres: (tmdb.genres ?? []).map((g) => g.name),
+  director: dir,
+  runtimeMin: tmdb.runtime,
+  ratingValue: tmdb.vote_average,
+  ratingCount: tmdb.vote_count ?? null,
+  inLanguage: lang,
+});
+const crumbsJsonLd = breadcrumbLd([
+  { name: t('nav.films'), url: new URL(localizePath(lang, 'films'), Astro.site).href },
+  { name: tmdb.title, url: filmUrl },
+]);
+---
+
+<BaseLayout
+  title={tmdb.title}
+  description={tmdb.overview}
+  image={socialImg ?? undefined}
+  ogType="article"
+  jsonLd={[movieJsonLd, crumbsJsonLd]}
+>
+  <article class="frame py-12">
+    <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>
+
+    <div class="mt-6 grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-12">
+      <!-- Póster + controles -->
+      <div class="mx-auto w-full max-w-[20rem] md:mx-0 md:max-w-none md:col-span-4">
+        <div class="border border-ink bg-charcoal">
+          {poster ? (
+            <img
+              src={poster}
+              srcset={poster2x ?? undefined}
+              alt={tmdb.title}
+              width="500"
+              height="750"
+              decoding="async"
+              class="w-full"
+            />
+          ) : (
+            <div class="film-grain aspect-[2/3] w-full"></div>
+          )}
+        </div>
+
+        <div class="mt-6">
+          {Astro.locals.user ? (
+            <div class="flex flex-col gap-4">
+              <FilmControls
+                tmdbId={tmdbId}
+                lang={lang}
+                status={userState?.status ?? null}
+                favorite={userState?.favorite ?? false}
+                rating={userState?.rating ?? null}
+                note={userState?.note ?? null}
+              />
+              <ListPicker tmdbId={tmdbId} lang={lang} />
+            </div>
+          ) : (
+            <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`} class="btn btn-primary w-full justify-center no-underline">
+              {t('film.addToList')}
+            </a>
+          )}
+        </div>
+      </div>
+
+      <!-- Ficha -->
+      <div class="md:col-span-8">
+        <span class="label">{tmdb.original_title}{year && ` · ${year}`}</span>
+        <h1 class="mt-2 text-display-mobile md:text-display-lg">{tmdb.title}</h1>
+        {tagline && <p class="mt-3 max-w-2xl font-display text-headline-md italic text-muted">«{tagline}»</p>}
+
+        <p class="mt-5 font-mono text-meta-data uppercase tracking-[0.08em] text-muted">
+          {dirPerson ? (
+            <a href={localizePath(lang, `person/${dirPerson.id}`)} class="text-muted no-underline hover:text-ink hover:underline">{dirPerson.name}</a>
+          ) : (
+            dir
+          )}
+          {dirExtra && <span>{(dirPerson || dir ? ' · ' : '') + dirExtra}</span>}
+        </p>
+
+        <div class="mt-4 flex flex-wrap gap-2">
+          {tmdb.genres.map((g) => (
+            <span class="label border border-ink px-2 py-1">{genreName(g.id, lang)}</span>
+          ))}
+        </div>
+
+        <p class="prose-archive mt-6 max-w-2xl text-body-lg text-charcoal">{tmdb.overview}</p>
+
+        {/* Tráiler (YouTube, carga diferida al pulsar → privacidad) */}
+        {trailer && (
+          <div id="trailer" class="mt-8 border border-ink" data-key={trailer}>
+            <button type="button" id="trailer-btn" class="group relative block w-full" aria-label={t('film.playTrailer')}>
+              {trailerThumb ? (
+                <img src={trailerThumb} alt={t('film.trailer')} width="780" height="439" loading="lazy" decoding="async" class="aspect-video w-full object-cover" />
+              ) : (
+                <div class="film-grain aspect-video w-full"></div>
+              )}
+              <span class="absolute inset-0 flex items-center justify-center bg-ink/30 transition-colors group-hover:bg-ink/50">
+                <span class="btn btn-primary pointer-events-none">▶ {t('film.playTrailer')}</span>
+              </span>
+            </button>
+          </div>
+        )}
+
+        <!-- Notas externas -->
+        {(ratings.length > 0 || tmdb.vote_average > 0) && (
+          <div class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
+            <div class="bg-film-white p-3">
+              <span class="label">TMDB</span>
+              <p class="font-display text-headline-md text-ink">{tmdb.vote_average.toFixed(1)}</p>
+            </div>
+            {omdb?.imdbRating && (
+              <div class="bg-film-white p-3">
+                <span class="label">{t('film.imdb')}</span>
+                <p class="font-display text-headline-md text-ink">{omdb.imdbRating}</p>
+              </div>
+            )}
+            {ratings
+              .filter((r) => r.Source !== 'Internet Movie Database')
+              .slice(0, 2)
+              .map((r) => (
+                <div class="bg-film-white p-3">
+                  <span class="label">{r.Source.replace('Rotten Tomatoes', 'RT')}</span>
+                  <p class="font-display text-headline-md text-ink">{r.Value}</p>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {/* Datos curiosos: presupuesto, recaudación, premios, productoras */}
+        {facts.length > 0 && (
+          <section class="mt-10">
+            <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('film.facts')}</h2>
+            <dl class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2">
+              {facts.map((f) => (
+                <div class="bg-surface p-3">
+                  <dt class="label">{f.label}</dt>
+                  <dd class="mt-1 font-mono text-body-md text-ink">{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        {/* Localizaciones (Wikidata) */}
+        {hasLocations && (
+          <section class="mt-10" id="localizaciones">
+            <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('film.locations')}</h2>
+
+            {/* El mapa solo aparece si hay algo que señalar. Un país entero no
+                cuenta: su centroide no dice nada y daría una falsa precisión.
+                Leaflet se carga al llegar aquí, no al abrir la ficha. */}
+            {conMapa && (
+              <div class="mt-4">
+                <div
+                  id="mapa-localizaciones"
+                  class="mapa-archivo h-[22rem] border border-ink"
+                  role="img"
+                  aria-label={t('film.locationsMapAria')}
+                  data-lugares={JSON.stringify(lugaresMapa)}
+                  data-l-rodaje={t('film.filmingLocation')}
+                  data-l-relato={t('film.narrativeLocation')}
+                ></div>
+                <p class="mt-2 font-mono text-meta-data text-muted">{t('film.locationsNote')}</p>
+              </div>
+            )}
+
+            {locations!.filming.length > 0 && (
+              <div class="mt-4">
+                <span class="label">{t('film.filmingLocation')}</span>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  {locations!.filming.map((l) => (
+                    <span
+                      class:list={[
+                        'border px-2 py-1 font-mono text-meta-data',
+                        l.kind === 'region' ? 'border-outline-variant text-muted' : 'border-ink text-ink',
+                      ]}
+                      title={l.kind === 'region' ? t('film.locationsRegion') : undefined}
+                    >
+                      {l.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {locations!.narrative.length > 0 && (
+              <div class="mt-4">
+                <span class="label">{t('film.narrativeLocation')}</span>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  {locations!.narrative.map((l) => (
+                    <span class="border border-outline-variant px-2 py-1 font-mono text-meta-data text-charcoal">{l.name}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <p class="mt-3 font-mono text-meta-data text-muted">
+              {conMapa ? t('film.locationsSource') : t('film.locationsBy')}
+            </p>
+            {/* Wikidata es editable: si falta algo, se puede arreglar para todos. */}
+            <p class="mt-1 font-mono text-meta-data text-muted">
+              <a
+                href={`https://www.wikidata.org/wiki/Special:Search?search=${encodeURIComponent(tmdb.imdb_id ?? tmdb.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-ink underline underline-offset-2 hover:text-ochre-dim"
+              >
+                {t('film.locationsHelp')}
+              </a>
+            </p>
+          </section>
+        )}
+
+        {/* Reparto */}
+        {cast.length > 0 && (
+          <section class="mt-10">
+            <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('film.cast')}</h2>
+            <ul class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
+              {cast.map((c) => (
+                <li class="bg-surface">
+                  <a href={localizePath(lang, `person/${c.id}`)} class="group flex h-full flex-col no-underline hover:bg-film-white">
+                    <div class="aspect-[2/3] w-full bg-charcoal">
+                      {/* alt vacío: el nombre ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
+                      {profileUrl(c.profile_path) ? (
+                        <img src={profileUrl(c.profile_path)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                      ) : (
+                        <div class="film-grain h-full w-full"></div>
+                      )}
+                    </div>
+                    <div class="p-2">
+                      <p class="font-display text-body-md leading-tight text-ink transition-colors group-hover:text-muted">{c.name}</p>
+                      <p class="font-mono text-meta-data text-muted">{c.character}</p>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Dónde ver — datos de JustWatch vía TMDB, incluidos en la ficha */}
+        <section
+          id="watch-section"
+          class="mt-10 border border-ink"
+          data-id={tmdbId}
+          data-labels={JSON.stringify(watchLabels)}
+          data-order={JSON.stringify(WATCH_TYPES)}
+          data-empty={t('film.noSources')}
+          data-link-label={t('film.justwatch')}
+        >
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-ink bg-ink px-3 py-2">
+            <h2 class="label text-background">{t('film.whereToWatch')}</h2>
+            <label class="flex items-center gap-2">
+              <span class="label text-background">{t('film.regionSelect')}</span>
+              <select id="watch-region" class="border border-background bg-ink px-2 py-1 font-mono text-meta-data text-background focus:outline-none">
+                {regions.map((r) => <option value={r.code} selected={r.code === DEFAULT_REGION}>{r.name}</option>)}
+              </select>
+            </label>
+          </div>
+          <div id="watch-groups">
+            {watchGroups.length === 0 ? (
+              <p class="px-3 py-4 font-mono text-meta-data text-muted">{t('film.noSources')}</p>
+            ) : (
+              watchGroups.map((g) => (
+                <div class="flex flex-col gap-2 border-b border-outline-variant px-3 py-3 last:border-b-0 sm:flex-row sm:items-center">
+                  <span class="label shrink-0 sm:w-32">{g.label}</span>
+                  <ul class="flex flex-wrap gap-2">
+                    {g.items.map((pr) => (
+                      <li class="flex items-center gap-2 border border-ink px-2 py-1">
+                        {providerLogoUrl(pr.logo) && (
+                          <img
+                            src={providerLogoUrl(pr.logo)}
+                            alt=""
+                            width="24"
+                            height="24"
+                            loading="lazy"
+                            decoding="async"
+                            class="h-6 w-6 shrink-0 object-contain"
+                          />
+                        )}
+                        <span class="font-mono text-meta-data text-ink">{pr.name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            )}
+          </div>
+          {/* JustWatch no da enlace por plataforma: uno solo, a su página de la
+              película en esa región (es además la condición de uso del dato). */}
+          <div id="watch-foot" class="flex flex-wrap items-center justify-between gap-2 border-t border-outline-variant px-3 py-2">
+            <p class="font-mono text-meta-data text-muted">{t('film.sourcesBy')}</p>
+            {watch.link && (
+              <a
+                id="watch-link"
+                href={watch.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-mono text-meta-data text-ink no-underline hover:text-ochre"
+              >
+                {t('film.justwatch')} →
+              </a>
+            )}
+          </div>
+        </section>
+      </div>
+    </div>
+
+    {/* Películas similares */}
+    {similar.length > 0 && (
+      <section class="mt-14">
+        <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('film.similar')}</h2>
+        <div class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+          {similar.map((s) => (
+            <a href={localizePath(lang, `film/${filmSlug(s.id, s.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+              <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+                <img
+                  src={posterUrl(s.poster_path, 'w342')}
+                  srcset={posterSrcset(s.poster_path, 'w342', 'w500') ?? undefined}
+                  sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover"
+                />
+              </div>
+              <div class="flex flex-1 flex-col p-2">
+                <p class="font-display text-body-lg leading-tight text-ink">{s.title}</p>
+                <p class="font-mono text-meta-data text-muted">{s.release_date ? s.release_date.slice(0, 4) : ''}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </article>
+
+  <script>
+    // Tráiler: inyecta el iframe de YouTube solo al pulsar (privacidad + menos peso).
+    const tw = document.getElementById('trailer');
+    const tb = document.getElementById('trailer-btn');
+    tb?.addEventListener('click', () => {
+      const key = tw?.dataset.key;
+      if (!tw || !key) return;
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${key}?autoplay=1`;
+      f.title = 'Tráiler';
+      f.allow = 'autoplay; encrypted-media; fullscreen';
+      f.setAttribute('allowfullscreen', '');
+      f.className = 'aspect-video w-full';
+      f.style.border = '0';
+      tw.replaceChildren(f);
+    });
+
+    // Selector de región: pide a /api/films/:id/watch, que ahora es una lectura
+    // de nuestra propia caché (el "dónde ver" de todas las regiones viene dentro
+    // de la ficha de TMDB), así que cambiar de país no consume ninguna cuota.
+    const ws = document.getElementById('watch-section');
+    const sel = document.getElementById('watch-region') as HTMLSelectElement | null;
+    const groups = document.getElementById('watch-groups');
+    const foot = document.getElementById('watch-foot');
+    if (ws && sel && groups) {
+      const id = ws.dataset.id;
+      const labels = JSON.parse(ws.dataset.labels || '{}');
+      const order: string[] = JSON.parse(ws.dataset.order || '[]');
+      const emptyMsg = ws.dataset.empty || '';
+      const linkLabel = ws.dataset.linkLabel || '';
+      const LOGO = 'https://image.tmdb.org/t/p/w92';
+
+      const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
+
+      type P = { name: string; type: string; logo: string | null };
+      const render = (watch: { link: string | null; providers: P[] } | null) => {
+        const list = watch?.providers ?? [];
+        if (list.length === 0) {
+          groups.innerHTML = `<p class="px-3 py-4 font-mono text-meta-data text-muted">${escape(emptyMsg)}</p>`;
+        } else {
+          let html = '';
+          for (const type of order) {
+            const items = list.filter((p) => p.type === type);
+            if (items.length === 0) continue;
+            const chips = items
+              .map((p) => {
+                const logo = p.logo
+                  ? `<img src="${LOGO}${escape(p.logo)}" alt="" width="24" height="24" loading="lazy" decoding="async" class="h-6 w-6 shrink-0 object-contain">`
+                  : '';
+                return `<li class="flex items-center gap-2 border border-ink px-2 py-1">${logo}<span class="font-mono text-meta-data text-ink">${escape(p.name)}</span></li>`;
+              })
+              .join('');
+            html += `<div class="flex flex-col gap-2 border-b border-outline-variant px-3 py-3 last:border-b-0 sm:flex-row sm:items-center"><span class="label shrink-0 sm:w-32">${escape(labels[type] || type)}</span><ul class="flex flex-wrap gap-2">${chips}</ul></div>`;
+          }
+          groups.innerHTML = html;
+        }
+
+        // El enlace de JustWatch es por región: se rehace en cada cambio.
+        document.getElementById('watch-link')?.remove();
+        if (foot && watch?.link) {
+          const a = document.createElement('a');
+          a.id = 'watch-link';
+          a.href = watch.link;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.className = 'font-mono text-meta-data text-ink no-underline hover:text-ochre';
+          a.textContent = `${linkLabel} →`;
+          foot.appendChild(a);
+        }
+      };
+
+      sel.addEventListener('change', async () => {
+        groups.style.opacity = '0.5';
+        try {
+          const res = await fetch(`/api/films/${id}/watch?region=${encodeURIComponent(sel.value)}`);
+          const data = await res.json();
+          render(data?.watch ?? null);
+        } catch {
+          /* mantiene lo anterior */
+        } finally {
+          groups.style.opacity = '1';
+        }
+      });
+    }
+
+    /* ================= Mapa de localizaciones (Wikidata) ================= */
+    // Leaflet pesa, y la ficha es de lo más visitado del sitio: no se carga al
+    // abrir la página, sino cuando el mapa se acerca a la pantalla. Quien no
+    // baje hasta aquí no descarga nada.
+    const mapaEl = document.getElementById('mapa-localizaciones');
+    if (mapaEl) {
+      interface Lugar { n: string; lat: number; lon: number; exacto: boolean; rodaje: boolean }
+      const lugares: Lugar[] = JSON.parse(mapaEl.dataset.lugares || '[]');
+      const etiquetaRodaje = mapaEl.dataset.lRodaje || '';
+      const etiquetaRelato = mapaEl.dataset.lRelato || '';
+
+      const pintarMapa = async () => {
+        const Lm = await import('leaflet');
+        await import('leaflet/dist/leaflet.css');
+        const Leaf = ((Lm as unknown as { default?: typeof Lm }).default ?? Lm) as typeof Lm;
+
+        const mapa = Leaf.map(mapaEl, {
+          scrollWheelZoom: false, // igual que en /cines: la rueda desplaza la página
+          attributionControl: true,
+        });
+        mapa.on('click', () => mapa.scrollWheelZoom.enable());
+        mapaEl.addEventListener('mouseleave', () => mapa.scrollWheelZoom.disable());
+
+        Leaf.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap',
+        }).addTo(mapa);
+
+        const puntos: [number, number][] = [];
+        for (const l of lugares) {
+          puntos.push([l.lat, l.lon]);
+          // Cuadrado = punto concreto; círculo = solo sabemos la ciudad. La
+          // forma dice la precisión sin necesidad de leyenda.
+          const clases = [
+            'loc-pin',
+            l.rodaje ? 'loc-pin--rodaje' : 'loc-pin--relato',
+            l.exacto ? '' : 'loc-pin--aprox',
+          ]
+            .filter(Boolean)
+            .join(' ');
+          const lado = l.exacto ? 16 : 14;
+          Leaf.marker([l.lat, l.lon], {
+            icon: Leaf.divIcon({ className: clases, iconSize: [lado, lado], iconAnchor: [lado / 2, lado / 2] }),
+            title: l.n,
+          })
+            .bindPopup(
+              '<strong>' + escapar(l.n) + '</strong><br>' +
+                '<span class="loc-tipo">' + escapar(l.rodaje ? etiquetaRodaje : etiquetaRelato) + '</span>',
+            )
+            .addTo(mapa);
+        }
+
+        if (puntos.length === 1) mapa.setView(puntos[0], 11);
+        else mapa.fitBounds(puntos as [number, number][], { padding: [36, 36], maxZoom: 13 });
+        setTimeout(() => mapa.invalidateSize(), 0);
+      };
+
+      const escapar = (s: string) =>
+        String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
+
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver(
+          (entradas) => {
+            if (!entradas.some((e) => e.isIntersecting)) return;
+            obs.disconnect();
+            void pintarMapa().catch(() => mapaEl.remove()); // si Leaflet falla, fuera el hueco
+          },
+          { rootMargin: '200px' }, // arranca un poco antes de que se vea
+        );
+        obs.observe(mapaEl);
+      } else {
+        void pintarMapa().catch(() => mapaEl.remove());
+      }
+    }
+  </script>
+</BaseLayout>

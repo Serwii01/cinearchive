@@ -3295,10 +3295,51 @@ export function localizedField<T>(obj: T, base: string, lang: Lang): string {
   return typeof v === 'string' ? v : '';
 }
 
-/** Construye una ruta con prefijo de idioma. p.ej. localizePath('es', 'archive') -> '/es/archive' */
+/**
+ * Construye la ruta pública de una sección en un idioma.
+ *
+ * El castellano, por ser el idioma por defecto, va SIN prefijo: es la forma
+ * canónica del sitio (/archive, no /es/archive). Los demás sí lo llevan.
+ *
+ *   localizePath('es')            -> '/'
+ *   localizePath('es', 'archive') -> '/archive'
+ *   localizePath('en', 'archive') -> '/en/archive'
+ *
+ * Es la palanca central del enrutado: la usan todos los enlaces internos, el
+ * sitemap de fichas y las imágenes sociales, así que cambiar aquí el esquema de
+ * URLs lo cambia en todo el sitio a la vez.
+ */
 export function localizePath(lang: Lang, path = ''): string {
   const clean = path.replace(/^\/+|\/+$/g, '');
-  return clean ? `/${lang}/${clean}` : `/${lang}`;
+  const prefix = lang === defaultLang ? '' : `/${lang}`;
+  return clean ? `${prefix}/${clean}` : prefix || '/';
+}
+
+/** Prefijo de idioma al principio de una ruta: /en, /gl, /eu, /ca (y /es, heredado). */
+const LANG_PREFIX = new RegExp(`^/(?:${Object.keys(languages).join('|')})(?=/|$)`);
+
+/**
+ * Quita el prefijo de idioma de una ruta y devuelve la parte común a todos los
+ * idiomas, siempre empezando por '/'. Es la operación inversa de localizePath:
+ * juntas permiten traducir una URL de un idioma a otro.
+ *
+ *   stripLangPrefix('/en/archive') -> '/archive'
+ *   stripLangPrefix('/archive')    -> '/archive'
+ *   stripLangPrefix('/en')         -> '/'
+ */
+export function stripLangPrefix(pathname: string): string {
+  return pathname.replace(LANG_PREFIX, '') || '/';
+}
+
+/**
+ * getStaticPaths compartido por las páginas prerenderizadas: una variante por
+ * idioma. El `undefined` del idioma por defecto es lo que genera la ruta sin
+ * prefijo (/about en vez de /es/about); Astro lo admite en los segmentos rest.
+ */
+export function langStaticPaths(): { params: { lang: string | undefined } }[] {
+  return (Object.keys(languages) as Lang[]).map((lang) => ({
+    params: { lang: lang === defaultLang ? undefined : lang },
+  }));
 }
 
 /** Formatea una fecha según el idioma. */

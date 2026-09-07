@@ -14,8 +14,16 @@ describe('sharedTtl', () => {
   it('reconoce las rutas públicas exactas y las de prefijo', () => {
     expect(sharedTtl('')).toBe(600); // portada
     expect(sharedTtl('/discover')).toBe(600);
+    expect(sharedTtl('/cines')).toBe(1800);
     expect(sharedTtl('/film/ciudadano-kane-15')).toBe(3600);
     expect(sharedTtl('/person/1234')).toBe(3600);
+  });
+
+  it('la portada se reconoce también como "/"', () => {
+    // Con el castellano en la raíz, stripLangPrefix devuelve '/' y no ''. Si
+    // esto se rompe, la portada pierde el Cache-Control y cada visita anónima
+    // vuelve a consultar la BD y TMDB.
+    expect(sharedTtl('/')).toBe(600);
   });
 
   it('no lista rutas que en realidad son redirecciones', () => {

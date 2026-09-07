@@ -19,8 +19,8 @@
     { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "Descubrir", "url": "/es/discover" },
-    { "name": "Filmoteca", "url": "/es/films" },
-    { "name": "Hemeroteca", "url": "/es/archive" }
+    { "name": "Descubrir", "url": "/discover" },
+    { "name": "Filmoteca", "url": "/films" },
+    { "name": "Hemeroteca", "url": "/archive" }
   ]
 }

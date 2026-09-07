@@ -4,7 +4,15 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Ticker from '../components/Ticker.astro';
 import ProfileNudge from '../components/ProfileNudge.astro';
-import { getLangFromUrl, languages, useTranslations, defaultLang, type Lang } from '../i18n/ui';
+import {
+  getLangFromUrl,
+  languages,
+  useTranslations,
+  defaultLang,
+  localizePath,
+  stripLangPrefix,
+  type Lang,
+} from '../i18n/ui';
 
 interface Props {
   title?: string;
@@ -31,16 +39,17 @@ const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const serializeLd = (data: object): string => JSON.stringify(data).replace(/</g, '\\u003c');
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
-// Toda página bajo /{lang}/ existe en todos los idiomas con la misma ruta:
-// las alternativas hreflang se obtienen intercambiando el prefijo.
+// Toda página existe en los cinco idiomas con la misma ruta: las alternativas
+// hreflang salen de quitar el prefijo y volver a ponerlo en cada idioma. Ojo:
+// no basta con sustituir el prefijo, porque el castellano no lleva ninguno.
+// En las páginas noindex (el 404) no se emiten: no hay nada que alternar.
 const langs = Object.keys(languages) as Lang[];
-const langPrefix = new RegExp(`^/(${langs.join('|')})(?=/|$)`);
-const alternates = langPrefix.test(Astro.url.pathname)
-  ? langs.map((code) => ({
+const alternates = noindex
+  ? []
+  : langs.map((code) => ({
       code,
-      href: new URL(Astro.url.pathname.replace(langPrefix, `/${code}`), Astro.site).href,
-    }))
-  : [];
+      href: new URL(localizePath(code, stripLangPrefix(Astro.url.pathname)), Astro.site).href,
+    }));
 const ogLocales: Record<Lang, string> = { es: 'es_ES', en: 'en_US', gl: 'gl_ES', eu: 'eu_ES', ca: 'ca_ES' };
 const ogImage = image
   ? (/^https?:\/\//.test(image) ? image : new URL(image, Astro.site).href)
@@ -73,7 +82,7 @@ const ogImage = image
       rel="alternate"
       type="application/rss+xml"
       title={`${t('site.title')} — ${t('changelog.title')}`}
-      href={new URL(`/${lang}/rss.xml`, Astro.site).href}
+      href={new URL(localizePath(lang, 'rss.xml'), Astro.site).href}
     />
     {alternates.map((alt) => <link rel="alternate" hreflang={alt.code} href={alt.href} />)}
     {alternates.length > 0 && (

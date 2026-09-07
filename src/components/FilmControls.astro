@@ -1,5 +1,5 @@
 ---
-import { useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
 
 interface Props {
   tmdbId: number;
@@ -29,7 +29,7 @@ const t = useTranslations(lang);
   data-l-save={t('controls.save')}
   data-l-saved={t('controls.saved')}
   data-l-remove={t('controls.remove')}
-  data-login-url={`/${lang}/login`}
+  data-login-url={localizePath(lang, 'login')}
   class="block border border-ink bg-film-white"
 >
   <noscript><p class="p-3 font-mono text-meta-data text-muted">JS necesario.</p></noscript>

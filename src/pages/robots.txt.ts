@@ -2,22 +2,23 @@ import type { APIRoute } from 'astro';
 
 export const prerender = true;
 
-// Rutas que no aportan a la indexación: API, autenticación y páginas privadas. Se
-// bloquea su rastreo (los comodines `/*/…` cubren los 5 prefijos de idioma). El
-// contenido editorial y las fichas siguen abiertos.
-const DISALLOW = [
-  '/api/',
-  '/*/account',
-  '/*/watchlist',
-  '/*/notifications',
-  '/*/stats',
-  '/*/recommendations',
-  '/*/login',
-  '/*/register',
-  '/*/forgot',
-  '/*/reset',
-  '/*/admin',
+// Rutas que no aportan a la indexación: API, autenticación y páginas privadas.
+// De cada una hay DOS formas que bloquear: la del castellano, que va sin prefijo
+// (/account), y la de los otros cuatro idiomas, que sí lo llevan (/en/account,
+// cubierto por el comodín `/*/…`).
+const PRIVADAS = [
+  'account',
+  'watchlist',
+  'notifications',
+  'stats',
+  'recommendations',
+  'login',
+  'register',
+  'forgot',
+  'reset',
+  'admin',
 ];
+const DISALLOW = ['/api/', ...PRIVADAS.flatMap((p) => [`/${p}`, `/*/${p}`])];
 
 /** robots.txt con los sitemaps apuntando al dominio real (de astro.config `site`). */
 export const GET: APIRoute = ({ site }) => {

@@ -33,9 +33,16 @@ const CACHE_PREFIX: [string, number][] = [
   ['/collections/', 3600],
 ];
 
-/** TTL de caché compartida para una ruta pública, o null si no es cacheable. */
+/**
+ * TTL de caché compartida para una ruta pública, o null si no es cacheable.
+ *
+ * La portada llega como '/' desde stripLangPrefix, pero en la lista figura como
+ * cadena vacía (herencia de cuando su ruta era /es y quitarle el prefijo dejaba
+ * ''). Se normaliza aquí y no en el middleware para que la lista sea la única
+ * que decide qué es cacheable: es fácil olvidarse de un ajuste que vive lejos.
+ */
 export function sharedTtl(stripped: string): number | null {
-  const exact = CACHE_EXACT.get(stripped);
+  const exact = CACHE_EXACT.get(stripped === '/' ? '' : stripped);
   if (exact !== undefined) return exact;
   for (const [prefix, ttl] of CACHE_PREFIX) {
     if (stripped.startsWith(prefix)) return ttl;

@@ -1,0 +1,16 @@
+---
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LegalDoc from '../../components/LegalDoc.astro';
+import { privacy } from '../../data/legal';
+import { localizePath, langStaticPaths, normalizeLang, type Lang } from '../../i18n/ui';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = normalizeLang(Astro.params.lang);
+const doc = privacy[lang];
+---
+
+<BaseLayout title={doc.title} description={doc.intro}>
+  <LegalDoc doc={doc} />
+</BaseLayout>

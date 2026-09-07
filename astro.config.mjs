@@ -18,17 +18,16 @@ export default defineConfig({
   // siempre coincida: http://localhost:4321/api/auth/callback/google
   server: { port: 4321 },
   trailingSlash: 'ignore',
-  redirects: {
-    '/': '/es',
-  },
-  i18n: {
-    locales: ['es', 'en', 'gl', 'eu', 'ca'],
-    defaultLocale: 'es',
-    routing: {
-      prefixDefaultLocale: true,
-      redirectToDefaultLocale: false,
-    },
-  },
+  // OJO: aquí NO va un bloque `i18n`. El enrutado por idioma lo lleva
+  // src/pages/[...lang]/ (segmento opcional: /cines es español, /en/cines es
+  // inglés) junto con src/middleware.ts, que redirige /es/* a la forma sin
+  // prefijo y rechaza las secciones que no existen.
+  //
+  // Declarar `i18n` con prefixDefaultLocale: true activa la estrategia
+  // "pathname-prefix-always-no-redirect" de Astro, cuyo middleware interno
+  // devuelve 404 a TODA página sin prefijo de idioma: es decir, tumbaría la web
+  // entera. Y con prefixDefaultLocale: false, Astro responde a /es/* con un 404
+  // pelado en vez del 301 que nos interesa para no partir el SEO.
   // Evita que Astro "incruste" los scripts pequeños inline en el HTML: así todos
   // salen como /_astro/*.js externos y la CSP estricta (script-src 'self') los
   // permite. Sin esto, el menú móvil, el modo oscuro y los filtros no funcionan

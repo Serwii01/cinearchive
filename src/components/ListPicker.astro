@@ -1,5 +1,5 @@
 ---
-import { useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
 
 interface Props {
   tmdbId: number;
@@ -14,7 +14,7 @@ const t = useTranslations(lang);
   data-l-new={t('lists.newListPlaceholder')}
   data-l-add={t('lists.add')}
   data-l-nolists={t('lists.noLists')}
-  data-login-url={`/${lang}/login`}
+  data-login-url={localizePath(lang, 'login')}
   data-login-label={t('film.addToList')}
   class="block border border-ink bg-film-white"
 >

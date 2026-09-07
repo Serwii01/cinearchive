@@ -1,5 +1,12 @@
 ---
-import { getLangFromUrl, languages, localizePath, useTranslations, type Lang } from '../i18n/ui';
+import {
+  getLangFromUrl,
+  languages,
+  localizePath,
+  stripLangPrefix,
+  useTranslations,
+  type Lang,
+} from '../i18n/ui';
 
 interface Props {
   /** Lado hacia el que se alinea el desplegable (según dónde viva el botón). */
@@ -11,13 +18,11 @@ const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const langs = Object.keys(languages) as Lang[];
 
-// Las rutas son simétricas entre idiomas: la equivalente se obtiene
-// intercambiando el prefijo de la URL actual.
-const prefix = new RegExp(`^/(${langs.join('|')})(?=/|$)`);
-const pathFor = (target: Lang) =>
-  prefix.test(Astro.url.pathname)
-    ? Astro.url.pathname.replace(prefix, `/${target}`)
-    : localizePath(target);
+// Las rutas son simétricas entre idiomas: se quita el prefijo de la actual y se
+// vuelve a construir en el idioma de destino. No vale con sustituir el prefijo,
+// porque el castellano no lleva ninguno (/cines) y los demás sí (/en/cines).
+const seccion = stripLangPrefix(Astro.url.pathname);
+const pathFor = (target: Lang) => localizePath(target, seccion);
 ---
 
 <details data-lang-menu class="relative">

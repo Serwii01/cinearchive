@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ui, languages, getLangFromUrl, useTranslations, localizePath, normalizeLang, contentLang, type Lang } from '../src/i18n/ui';
+import { ui, languages, getLangFromUrl, useTranslations, localizePath, stripLangPrefix, langStaticPaths, normalizeLang, contentLang, type Lang } from '../src/i18n/ui';
 
 const LANGS = Object.keys(languages) as Lang[];
 
@@ -57,11 +57,69 @@ describe('contentLang', () => {
 });
 
 describe('localizePath', () => {
-  it('construye rutas con prefijo de idioma y normaliza barras', () => {
-    expect(localizePath('es')).toBe('/es');
+  it('el castellano va sin prefijo: es la forma canónica del sitio', () => {
+    expect(localizePath('es')).toBe('/');
+    expect(localizePath('es', 'films')).toBe('/films');
+    expect(localizePath('es', '/archive/')).toBe('/archive');
+  });
+
+  it('los demás idiomas sí lo llevan', () => {
+    expect(localizePath('en')).toBe('/en');
     expect(localizePath('en', 'films')).toBe('/en/films');
-    expect(localizePath('es', '/archive/')).toBe('/es/archive');
-    expect(localizePath('gl', 'films')).toBe('/gl/films');
+    expect(localizePath('gl', '/archive/')).toBe('/gl/archive');
+    expect(localizePath('eu', 'films')).toBe('/eu/films');
+    expect(localizePath('ca', 'films')).toBe('/ca/films');
+  });
+
+  it('nunca devuelve la cadena vacía: la portada es "/"', () => {
+    // Un href="" recarga la página actual en vez de ir a la portada.
+    for (const lang of LANGS) expect(localizePath(lang)).not.toBe('');
+  });
+});
+
+describe('stripLangPrefix', () => {
+  it('quita el prefijo cuando lo hay', () => {
+    expect(stripLangPrefix('/en/archive')).toBe('/archive');
+    expect(stripLangPrefix('/ca/film/donnie-darko-141')).toBe('/film/donnie-darko-141');
+  });
+
+  it('deja intacta la ruta en castellano', () => {
+    expect(stripLangPrefix('/archive')).toBe('/archive');
+    expect(stripLangPrefix('/')).toBe('/');
+  });
+
+  it('la portada de cualquier idioma es "/"', () => {
+    for (const lang of LANGS) expect(stripLangPrefix(localizePath(lang))).toBe('/');
+  });
+
+  it('no muerde un segmento que solo EMPIECE por un idioma', () => {
+    // /english o /cadiz no son /en ni /ca.
+    expect(stripLangPrefix('/english')).toBe('/english');
+    expect(stripLangPrefix('/estudios')).toBe('/estudios');
+  });
+
+  it('es la inversa de localizePath en los cinco idiomas', () => {
+    for (const lang of LANGS) {
+      expect(stripLangPrefix(localizePath(lang, 'discover'))).toBe('/discover');
+    }
+  });
+});
+
+describe('langStaticPaths', () => {
+  it('genera una variante por idioma', () => {
+    expect(langStaticPaths()).toHaveLength(LANGS.length);
+  });
+
+  it('el idioma por defecto va como undefined, que es lo que crea la ruta sin prefijo', () => {
+    const porDefecto = langStaticPaths().filter((p) => p.params.lang === undefined);
+    expect(porDefecto).toHaveLength(1);
+  });
+
+  it('los demás llevan su código', () => {
+    const codigos = langStaticPaths()
+      .map((p) => p.params.lang)
+      .filter((l): l is string => l !== undefined);
+    expect(codigos.sort()).toEqual(LANGS.filter((l) => l !== 'es').sort());
   });
 });
 
