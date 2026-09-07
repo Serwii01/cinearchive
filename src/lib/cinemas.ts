@@ -4,13 +4,33 @@
  * Busca salas de cine reales cerca de una ubicación en España (península e islas)
  * con datos abiertos de OpenStreetMap:
  *   - Nominatim: geocodifica una ciudad / código postal → coordenadas.
- *   - Overpass:  lista los `amenity=cinema` en un radio alrededor del punto.
+ *   - Overpass:  lista las salas en un radio alrededor del punto.
+ *
+ * OSM es la fuente y a quien se atribuye, pero es colaborativo y su cobertura de
+ * los cines españoles es irregular. Sobre la respuesta en bruto se aplica una
+ * capa de calidad —ver "Calidad del dato", más abajo— sin la cual faltaban salas
+ * en activo (por ejemplo el multicine del CC Los Arcos, en Sevilla).
  *
  * Se llama solo desde /api/cinemas (proxy con rate-limit). Cumple la política de
  * uso de Nominatim: User-Agent identificable, resultados cacheados, ≤1 req/s y
  * atribución © OpenStreetMap (mostrada en la página). No se descargan zonas
  * enteras: siempre alrededor de un punto que el usuario proporciona.
  */
+
+import overridesData from '../data/cinemas-overrides.json';
+
+/** Correcciones propias sobre OSM (ver src/data/cinemas-overrides.json). */
+interface CinemaOverrides {
+  /** Campos que se sobrescriben en un objeto de OSM, por su id `tipo/id`. */
+  fix: Record<string, Partial<Pick<Cinema, 'name' | 'address' | 'operator' | 'website'>>>;
+  /** Ids de OSM que no deben aparecer (no son cines, o han cerrado). */
+  hide: string[];
+  /** Salas que OSM no tiene en absoluto. */
+  add: (Pick<Cinema, 'id' | 'name' | 'lat' | 'lon'> &
+    Partial<Pick<Cinema, 'address' | 'operator' | 'website'>>)[];
+}
+
+const OVERRIDES = overridesData as unknown as CinemaOverrides;
 
 // Identifica la aplicación ante Nominatim/Overpass (requerido por su política).
 const UA = 'CineArchive/1.0 (+https://cinearchive.es)';
@@ -47,7 +67,12 @@ export interface GeoPoint {
 
 export interface Cinema {
   id: string;
-  name: string;
+  /**
+   * Puede ser null: OSM tiene nodos `amenity=cinema` sin nombre. Son cines
+   * reales, así que se muestran igual y la página les pone un rótulo genérico
+   * en su idioma, en vez de descartarlos.
+   */
+  name: string | null;
   lat: number;
   lon: number;
   address: string | null;
@@ -241,39 +266,153 @@ interface OverpassElement {
   tags?: Record<string, string>;
 }
 
+/* ------------------------------------------------------------------ *
+ * Calidad del dato.
+ *
+ * OSM es colaborativo, y en España las salas están desigualmente mapeadas. Los
+ * tres fallos que se ven una y otra vez:
+ *
+ *   1. Cines etiquetados como `amenity=theatre` (el multicine del CC Los Arcos
+ *      de Sevilla, por ejemplo). Buscando solo `amenity=cinema` no salían.
+ *   2. Nodos `amenity=cinema` SIN nombre: son cines de verdad, y se tiraban.
+ *   3. Salas cerradas que siguen en el mapa, o duplicadas como nodo y como
+ *      edificio.
+ *
+ * Se corrigen aquí, más una capa de arreglos propios (cinemas-overrides.json)
+ * para lo que OSM tiene mal y todavía no se ha enmendado allí.
+ * ------------------------------------------------------------------ */
+
+/** Quita acentos y pasa a minúsculas, para comparar nombres sin sorpresas. */
+const normalize = (s: string): string =>
+  s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, ''); // marcas diacríticas sueltas tras NFD
+
+/**
+ * ¿El nombre delata una sala de cine? Se aplica SOLO a `amenity=theatre`, para
+ * rescatar los cines mal etiquetados sin arrastrar los teatros de verdad
+ * ("Teatro Lope de Vega", "Sala Cero"…). Se exige palabra completa: así "Cinesa"
+ * entra y "Cinegética" no.
+ */
+const CINEMA_WORDS =
+  /(^|[^a-z0-9])(cine|cines|cinema|cinemas|multicine|multicines|megaplex|kinepolis|cinepolis|cinesa|yelmo|ocine|cinesur|cinebox|imax|filmoteca)([^a-z0-9]|$)/;
+
+export function looksLikeCinema(name: string): boolean {
+  return CINEMA_WORDS.test(normalize(name));
+}
+
+/** Marcas de que el sitio ya no está en activo: no debe aparecer en la lista. */
+export function isClosed(tags: Record<string, string>): boolean {
+  if (tags['disused'] === 'yes' || tags['abandoned'] === 'yes') return true;
+  if (tags['opening_hours'] === 'closed' || tags['opening_hours'] === 'off') return true;
+  // Prefijos de ciclo de vida: disused:amenity=cinema, was:amenity=cinema…
+  return Object.keys(tags).some((k) => /^(disused|abandoned|was|removed|demolished):/.test(k));
+}
+
+/** ¿Este elemento es una sala de cine que queremos mostrar? */
+export function isCinema(tags: Record<string, string>): boolean {
+  if (isClosed(tags)) return false;
+  if (tags.amenity === 'cinema') return true;
+  // Teatro: solo si el nombre lo delata como cine (fallo 1).
+  if (tags.amenity === 'theatre') {
+    const name = tags.name ?? tags.brand ?? tags.operator ?? '';
+    return !!name && looksLikeCinema(name);
+  }
+  return false;
+}
+
+/**
+ * Une duplicados: el mismo cine mapeado como nodo Y como edificio aparece dos
+ * veces. Se consideran el mismo si están a menos de 200 m y comparten nombre (o
+ * uno de los dos no tiene). Se conserva la ficha con más datos.
+ */
+export function dedupe(list: Cinema[]): Cinema[] {
+  const out: Cinema[] = [];
+  const richness = (c: Cinema) => (c.name ? 1 : 0) + (c.address ? 1 : 0) + (c.website ? 1 : 0) + (c.operator ? 1 : 0);
+
+  for (const c of list) {
+    const twin = out.findIndex((o) => {
+      if (haversineKm(o.lat, o.lon, c.lat, c.lon) > 0.2) return false;
+      if (!o.name || !c.name) return true; // uno sin nombre, mismo sitio
+      const a = normalize(o.name);
+      const b = normalize(c.name);
+      return a === b || a.includes(b) || b.includes(a);
+    });
+    if (twin < 0) {
+      out.push(c);
+    } else if (richness(c) > richness(out[twin])) {
+      out[twin] = c; // nos quedamos con la ficha más completa
+    }
+  }
+  return out;
+}
+
 /** Convierte la respuesta de Overpass en cines ordenados por distancia. */
-function parseCinemas(elements: OverpassElement[], lat: number, lon: number): Cinema[] {
-  return elements
+function parseCinemas(
+  elements: OverpassElement[],
+  lat: number,
+  lon: number,
+  radius: number,
+): Cinema[] {
+  const list = elements
     .map((el) => {
       const p = el.center ?? (el.lat != null && el.lon != null ? { lat: el.lat, lon: el.lon } : null);
       const tags = el.tags ?? {};
-      // Nombre con respaldo en la marca/cadena: recupera salas sin `name` pero
-      // con `brand`/`operator` (multiplex de cadena, que antes se descartaban).
-      const name = tags.name ?? tags.brand ?? tags.operator;
-      if (!p || !name) return null;
+      if (!p || !isCinema(tags)) return null;
+
+      const id = `${el.type}/${el.id}`;
+      if (OVERRIDES.hide.includes(id)) return null;
+
+      // Nombre con respaldo en la marca/cadena. Puede quedar en null: un
+      // `amenity=cinema` sin nombre es un cine igual, y la página lo rotula
+      // en su idioma (fallo 2).
+      const name = tags.name ?? tags.brand ?? tags.operator ?? null;
       const street = [tags['addr:street'], tags['addr:housenumber']].filter(Boolean).join(' ');
       const city = tags['addr:city'] ?? tags['addr:town'] ?? tags['addr:village'];
       const address = [street, tags['addr:postcode'], city].filter(Boolean).join(', ') || null;
       const operator = tags.brand ?? tags.operator ?? null;
       const website = tags.website ?? tags['contact:website'] ?? null;
-      return {
-        id: `${el.type}/${el.id}`,
+
+      const base: Cinema = {
+        id,
         name,
         lat: p.lat,
         lon: p.lon,
         address,
-        operator: operator && operator !== name ? operator : null,
+        operator,
         website,
-        distanceKm: Math.round(haversineKm(lat, lon, p.lat, p.lon) * 10) / 10,
-      } satisfies Cinema;
+        distanceKm: 0,
+      };
+      // Arreglos propios sobre lo que OSM trae mal. Las claves que empiezan por
+      // "_" son notas para quien mantiene el fichero: no deben salir en la API.
+      const fix = Object.fromEntries(
+        Object.entries(OVERRIDES.fix[id] ?? {}).filter(([k]) => !k.startsWith('_')),
+      );
+      const merged = { ...base, ...fix } as Cinema;
+      // La cadena solo se muestra si aporta algo: repetir el nombre debajo del
+      // nombre es ruido. Se decide DESPUÉS del arreglo, que puede cambiar ambos.
+      merged.operator = merged.operator && merged.operator !== merged.name ? merged.operator : null;
+      return merged;
     })
-    .filter((c): c is Cinema => c !== null)
+    .filter((c): c is Cinema => c !== null);
+
+  // Salas que OSM no tiene. Solo entran las que caen DENTRO del radio pedido:
+  // si no, aparecerían en búsquedas de la otra punta del país.
+  for (const extra of OVERRIDES.add) {
+    if (haversineKm(lat, lon, extra.lat, extra.lon) * 1000 <= radius) {
+      list.push({ operator: null, website: null, address: null, ...extra, distanceKm: 0 });
+    }
+  }
+
+  return dedupe(list)
+    .map((c) => ({ ...c, distanceKm: Math.round(haversineKm(lat, lon, c.lat, c.lon) * 10) / 10 }))
     .sort((a, b) => a.distanceKm - b.distanceKm)
     .slice(0, 60);
 }
 
 /**
- * Salas de cine (amenity=cinema) alrededor de un punto, ordenadas por distancia.
+ * Salas de cine alrededor de un punto, ordenadas por distancia.
  *
  * Prueba los espejos de Overpass en orden y usa el primero que responda. Solo se
  * cachea un resultado EFECTIVO (24 h si hay salas, 10 min si vino vacío); si todos
@@ -287,9 +426,17 @@ export async function findCinemas(lat: number, lon: number, radius = 25000): Pro
 
   // El timeout del cliente (15 s) debe superar el de la consulta Overpass (12 s),
   // si no se abortaría la petición antes de que el servidor responda.
+  //
+  // Se piden también los teatros: en OSM hay multicines etiquetados como
+  // `amenity=theatre` (el del CC Los Arcos, en Sevilla, entre otros). El filtro
+  // por nombre se hace AQUÍ, en isCinema(), y no en la consulta: probado con un
+  // regex dentro de Overpass, la petición se pasaba de tiempo; traer los teatros
+  // de la zona y cribarlos en casa tarda ~3 s y además deja el criterio a la
+  // vista y con tests.
   const q =
-    `[out:json][timeout:12];` +
-    `nwr[amenity=cinema](around:${radius},${lat},${lon});` +
+    `[out:json][timeout:20];` +
+    `(nwr[amenity=cinema](around:${radius},${lat},${lon});` +
+    `nwr[amenity=theatre](around:${radius},${lat},${lon}););` +
     `out center tags;`;
 
   let lastError: unknown = new Error('overpass unavailable');
@@ -302,14 +449,16 @@ export async function findCinemas(lat: number, lon: number, radius = 25000): Pro
           headers: { 'User-Agent': UA, 'content-type': 'application/x-www-form-urlencoded' },
           body: 'data=' + encodeURIComponent(q),
         },
-        15000,
+        // Por encima del timeout de la consulta (20 s): si no, abortaríamos
+        // antes de que Overpass llegue a contestar.
+        25000,
       );
       if (!res.ok) {
         lastError = new Error(`overpass http ${res.status}`);
         continue; // 429/504…: prueba el siguiente espejo
       }
       const json = (await res.json()) as { elements: OverpassElement[] };
-      const out = parseCinemas(json.elements ?? [], lat, lon);
+      const out = parseCinemas(json.elements ?? [], lat, lon, radius);
       cinemaCache.set(key, {
         expires: Date.now() + (out.length ? DAY_MS : EMPTY_TTL_MS),
         data: out,

@@ -71,6 +71,7 @@ export const ui = {
     'cines.cartelera': 'Cartelera / web',
     'cines.mapAria': 'Mapa con las salas de cine encontradas',
     'cines.youAreHere': 'Estás aquí',
+    'cines.unnamed': 'Cine sin nombre en el mapa',
     'home.helpTitle': '¿Necesitas ayuda?',
     'home.helpBody':
       'Todo lo que puedes hacer en Cine Archive, sección a sección: la hemeroteca, el cine abierto, tu perfil, las listas y más.',
@@ -638,6 +639,7 @@ export const ui = {
     'cines.cartelera': 'Showtimes / website',
     'cines.mapAria': 'Map with the cinemas found',
     'cines.youAreHere': 'You are here',
+    'cines.unnamed': 'Cinema unnamed on the map',
     'home.helpTitle': 'Need help?',
     'home.helpBody':
       'Everything you can do on Cine Archive, section by section: the periodicals archive, open cinema, your profile, lists and more.',
@@ -1209,6 +1211,7 @@ export const ui = {
     'cines.cartelera': 'Carteleira / web',
     'cines.mapAria': 'Mapa coas salas de cine atopadas',
     'cines.youAreHere': 'Estás aquí',
+    'cines.unnamed': 'Cine sen nome no mapa',
     'home.helpTitle': 'Precisas axuda?',
     'home.helpBody':
       'Todo o que podes facer en Cine Archive, sección a sección: a hemeroteca, o cine aberto, o teu perfil, as listas e máis.',
@@ -1776,6 +1779,7 @@ export const ui = {
     'cines.cartelera': 'Kartelera / web',
     'cines.mapAria': 'Aurkitutako zinema-aretoen mapa',
     'cines.youAreHere': 'Hemen zaude',
+    'cines.unnamed': 'Zinema izenik gabe mapan',
     'home.helpTitle': 'Laguntza behar duzu?',
     'home.helpBody':
       'Cine Archive-n egin dezakezun guztia, atalez atal: hemeroteka, zinema irekia, zure profila, zerrendak eta gehiago.',
@@ -2345,6 +2349,7 @@ export const ui = {
     'cines.cartelera': 'Cartellera / web',
     'cines.mapAria': 'Mapa amb les sales de cinema trobades',
     'cines.youAreHere': 'Ets aquí',
+    'cines.unnamed': 'Cinema sense nom al mapa',
     'home.helpTitle': 'Necessites ajuda?',
     'home.helpBody':
       'Tot el que pots fer a Cine Archive, secció a secció: l’hemeroteca, el cinema obert, el teu perfil, les llistes i més.',

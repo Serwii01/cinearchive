@@ -1,0 +1,19 @@
+{
+  "_note": "Correcciones propias sobre los datos de OpenStreetMap para 'Encuentra tu cine'. OSM es la fuente (y la que se atribuye), pero es colaborativo y en España tiene salas mal etiquetadas, sin nombre o ausentes. Este fichero permite arreglarlas sin esperar a que OSM se corrija. Lo suyo es corregirlo TAMBIÉN en osm.org: cuando el dato llegue bien, basta con borrar la entrada de aquí.",
+
+  "_fix": "Mejora los campos de un objeto de OSM, por su id (tipo/id). Solo se tocan los campos indicados.",
+  "fix": {
+    "node/1315960031": {
+      "name": "Multicines Los Arcos",
+      "address": "Centro Comercial Los Arcos, Avenida de Andalucía, Sevilla",
+      "website": "https://www.cineciudad.com/",
+      "_why": "En OSM está como amenity=theatre y con el nombre a medias ('Multicines'). Es el multicine del CC Los Arcos (Sevilla), en activo y sin dirección en OSM. Datos verificados en cclosarcos.com."
+    }
+  },
+
+  "_hide": "Ids de OSM que NO son salas de cine comercial y se cuelan en la búsqueda (o que ya han cerrado). Se excluyen del resultado.",
+  "hide": [],
+
+  "_add": "Salas que OSM no tiene en absoluto. Requieren nombre y coordenadas. Úsalo como último recurso: es preferible darlas de alta en OSM, que beneficia a todo el mundo.",
+  "add": []
+}

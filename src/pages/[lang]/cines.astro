@@ -28,6 +28,7 @@ const t = useTranslations(lang);
     data-l-suggest-aria={t('cines.suggestionsAria')}
     data-l-maparia={t('cines.mapAria')}
     data-l-you={t('cines.youAreHere')}
+    data-l-unnamed={t('cines.unnamed')}
   >
     <header class="border-b border-ink pb-6">
       <span class="label">{t('nav.cines')}</span>
@@ -102,7 +103,8 @@ const t = useTranslations(lang);
 
   interface Cinema {
     id: string;
-    name: string;
+    /** null cuando OSM tiene la sala pero sin nombre: se rotula con L_.unnamed. */
+    name: string | null;
     lat: number;
     lon: number;
     address: string | null;
@@ -139,6 +141,7 @@ const t = useTranslations(lang);
       searchArea: root.dataset.lSearchArea!,
       widen: root.dataset.lWiden!,
       you: root.dataset.lYou!,
+      unnamed: root.dataset.lUnnamed!,
     };
     const form = document.getElementById('cines-form') as HTMLFormElement;
     const input = document.getElementById('cines-q') as HTMLInputElement;
@@ -162,10 +165,13 @@ const t = useTranslations(lang);
     };
 
     const directionsUrl = (c: Cinema) => `https://www.openstreetmap.org/directions?to=${c.lat}%2C${c.lon}`;
+    // Rótulo: OSM tiene cines sin nombre; se muestran igual, con etiqueta genérica.
+    const cinemaName = (c: Cinema) => c.name ?? L_.unnamed;
     // Cartelera: la web oficial si OSM la conoce; si no, una búsqueda de cartelera.
+    // Sin nombre, se busca por dirección (un "cine sin nombre" no busca nada).
     const carteleraUrl = (c: Cinema) =>
       c.website ??
-      `https://www.google.com/search?q=${encodeURIComponent(`${c.name} ${c.address ?? ''} cartelera`)}`;
+      `https://www.google.com/search?q=${encodeURIComponent(`${c.name ?? 'cine'} ${c.address ?? ''} cartelera`)}`;
 
     // --- Estado de la última búsqueda (para "ampliar" y "buscar en esta zona") ---
     let lastCenter: { lat: number; lon: number } | null = null;
@@ -327,7 +333,7 @@ const t = useTranslations(lang);
       for (const c of cinemas) {
         points.push([c.lat, c.lon]);
         const popup =
-          `<strong>${esc(c.name)}</strong><br>` +
+          `<strong>${esc(cinemaName(c))}</strong><br>` +
           (c.address ? `${esc(c.address)}<br>` : '') +
           `<a href="${directionsUrl(c)}" target="_blank" rel="noopener noreferrer">${esc(L_.directions)}</a> · ` +
           `<a href="${carteleraUrl(c)}" target="_blank" rel="noopener noreferrer">${esc(L_.cartelera)}</a>`;
@@ -359,7 +365,7 @@ const t = useTranslations(lang);
             : '';
           return (
             `<div class="flex flex-col justify-between gap-2 bg-surface p-4">` +
-            `<div><h3 class="font-display text-headline-md leading-tight text-ink">${esc(c.name)}</h3>${chain}${addr}` +
+            `<div><h3 class="font-display text-headline-md leading-tight text-ink">${esc(cinemaName(c))}</h3>${chain}${addr}` +
             `<p class="mt-1 font-mono text-meta-data text-ink">${c.distanceKm} ${esc(L_.distance)}</p></div>` +
             `<div class="mt-1 flex flex-wrap gap-x-4 gap-y-1">` +
             `<a href="${directionsUrl(c)}" target="_blank" rel="noopener noreferrer" class="label no-underline text-ink hover:text-muted">${esc(L_.directions)} →</a>` +

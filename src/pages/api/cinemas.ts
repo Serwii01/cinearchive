@@ -19,7 +19,13 @@ export const GET: APIRoute = async ({ request, url }) => {
   const lonRaw = url.searchParams.get('lon');
 
   // Radio opcional (para "ampliar la zona" desde el mapa). Acotado por seguridad.
-  const radiusRaw = Number(url.searchParams.get('radius'));
+  //
+  // OJO con el parámetro ausente: `searchParams.get` devuelve null y `Number(null)`
+  // es 0, que es finito, así que sin esta comprobación el radio caía al mínimo
+  // (1 km) en vez de al de por defecto (25 km). La página siempre manda `radius`,
+  // pero cualquier llamada directa a la API recibía cuatro cines de nada.
+  const radiusParam = url.searchParams.get('radius');
+  const radiusRaw = radiusParam === null || radiusParam.trim() === '' ? NaN : Number(radiusParam);
   const radius = Number.isFinite(radiusRaw)
     ? Math.min(50000, Math.max(1000, radiusRaw))
     : 25000;
