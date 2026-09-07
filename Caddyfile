@@ -44,7 +44,11 @@ www.{$DOMAIN} {
 		X-Content-Type-Options "nosniff"
 		Referrer-Policy "strict-origin-when-cross-origin"
 		X-Frame-Options "DENY"
-		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+		# geolocation=(self): lo necesita "Encuentra tu cine". Con la lista vacía
+		# el navegador bloquea la API sin preguntar y el botón siempre fallaba.
+		# (self) la limita a nuestro origen; el usuario sigue decidiendo en el
+		# diálogo del navegador.
+		Permissions-Policy "camera=(), microphone=(), geolocation=(self), payment=(), usb=(), interest-cohort=()"
 		Cross-Origin-Opener-Policy "same-origin"
 		# CSP estricta: scripts y estilos propios; imágenes desde TMDB e Internet
 		# Archive; el visor de la hemeroteca se incrusta desde archive.org (frame-src).

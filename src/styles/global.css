@@ -132,6 +132,16 @@
 }
 
 @layer base {
+  /*
+   * El atributo `hidden` tiene que ganar SIEMPRE. Las clases que fijan `display`
+   * (.btn es inline-flex) pisan la regla del navegador para [hidden], así que
+   * botones marcados como ocultos se veían igualmente: en "Encuentra tu cine"
+   * aparecían "Ampliar la zona" y "Buscar en esta zona" antes de buscar nada.
+   */
+  [hidden] {
+    display: none !important;
+  }
+
   /* Tipografía de cuerpo dentro de los artículos (Markdown renderizado). */
   .prose-archive :where(h2) {
     @apply mt-12 mb-4 font-display text-headline-lg text-ink;

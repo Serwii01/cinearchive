@@ -79,13 +79,136 @@ const t = useTranslations(lang);
         hidden></button>
     </div>
 
-    <div id="cines-results" class="mt-6 grid grid-cols-1 gap-px border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3"></div>
+    {/* auto-rows-fr iguala la altura de TODAS las filas, no solo la de cada una:
+        sin esto, una sala con dirección larga hacía su fila más alta que el resto
+        y la rejilla quedaba a saltos. */}
+    <div
+      id="cines-results"
+      class="mt-6 grid auto-rows-fr grid-cols-1 gap-px border border-ink bg-ink empty:hidden empty:border-0 sm:grid-cols-2 lg:grid-cols-3"
+    ></div>
 
     <p class="mt-8 border-t border-outline-variant pt-4 font-mono text-meta-data text-muted">
       {t('cines.attribution')}
     </p>
   </section>
 </BaseLayout>
+
+{/*
+  Leaflet se pinta por JavaScript, fuera del alcance de los estilos con ámbito,
+  así que su skin va en un bloque global acotado a #cines-map.
+
+  La idea: que el mapa parezca del sitio y no una isla de Google Maps. Las teselas
+  de OSM son de colores y chillan al lado de la paleta ocre/tinta, así que se
+  desaturan por CSS —sin cambiar de proveedor, sin claves y sin tocar la CSP— y
+  todo lo que va encima (marcadores, globos, controles) usa la retícula dura de
+  la casa: sin esquinas redondeadas, borde negro y tipografías propias.
+*/}
+<style is:global>
+  /* --- Teselas: monocromo, para que el color lo pongan los marcadores --- */
+  #cines-map .leaflet-tile-pane {
+    filter: grayscale(1) contrast(0.92) brightness(1.06);
+  }
+  /* En modo oscuro se invierte el mapa (truco clásico): el papel se vuelve
+     carbón y las carreteras claras, en lugar de un rectángulo blanco cegador. */
+  [data-theme='dark'] #cines-map .leaflet-tile-pane {
+    filter: grayscale(1) invert(1) contrast(0.85) brightness(0.95);
+  }
+
+  #cines-map {
+    background: var(--c-film-white);
+  }
+
+  /* --- Marcadores: cuadrados, como el resto de la interfaz --- */
+  #cines-map .cine-pin {
+    border: 2px solid var(--c-ink);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  }
+  #cines-map .cine-pin--sala {
+    background: var(--c-ochre);
+  }
+  #cines-map .cine-pin--you {
+    background: var(--c-ink);
+    /* Rombo: distingue "estás aquí" de una sala de un vistazo, sin leyenda. */
+    transform: rotate(45deg);
+  }
+  #cines-map .cine-pin--sala:hover {
+    background: var(--c-ink);
+  }
+  #cines-map .leaflet-marker-icon:focus-visible {
+    outline: 3px solid var(--c-ochre);
+    outline-offset: 2px;
+  }
+
+  /* --- Globos de información --- */
+  #cines-map .leaflet-popup-content-wrapper,
+  #cines-map .leaflet-popup-tip {
+    border-radius: 0;
+    background: var(--c-background);
+    color: var(--c-ink);
+    box-shadow: 4px 4px 0 var(--c-ink);
+    border: 2px solid var(--c-ink);
+  }
+  #cines-map .leaflet-popup-content {
+    margin: 12px 14px;
+    font-family: 'Geist Sans', Geist, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  #cines-map .leaflet-popup-content strong {
+    font-family: 'EB Garamond Variable', 'EB Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  #cines-map .leaflet-popup-content a {
+    font-family: 'Space Mono', ui-monospace, monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--c-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  #cines-map .leaflet-popup-content a:hover {
+    color: var(--c-ochre-dim);
+  }
+  #cines-map .leaflet-popup-close-button {
+    color: var(--c-ink);
+    font-size: 20px;
+    padding: 6px 8px 0 0;
+  }
+
+  /* --- Controles: cuadrados y con el borde de la casa --- */
+  #cines-map .leaflet-control-zoom,
+  #cines-map .leaflet-control-attribution {
+    border-radius: 0;
+    border: 2px solid var(--c-ink);
+    box-shadow: none;
+  }
+  #cines-map .leaflet-control-zoom a {
+    border-radius: 0;
+    background: var(--c-background);
+    color: var(--c-ink);
+    border-bottom: 2px solid var(--c-ink);
+    font-weight: 700;
+  }
+  #cines-map .leaflet-control-zoom a:last-child {
+    border-bottom: 0;
+  }
+  #cines-map .leaflet-control-zoom a:hover {
+    background: var(--c-ochre);
+    color: var(--c-on-accent);
+  }
+  #cines-map .leaflet-control-attribution {
+    background: var(--c-background);
+    border-width: 2px 0 0 2px;
+    font-family: 'Space Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--c-muted);
+  }
+  #cines-map .leaflet-control-attribution a {
+    color: var(--c-muted);
+  }
+</style>
 
 <script>
   // Leaflet se carga de forma PEREZOSA (dinámica) solo al pintar el mapa. Así, si
@@ -164,7 +287,11 @@ const t = useTranslations(lang);
       statusEl.hidden = !msg;
     };
 
-    const directionsUrl = (c: Cinema) => `https://www.openstreetmap.org/directions?to=${c.lat}%2C${c.lon}`;
+    // Cómo llegar: Google Maps, que es lo que la gente tiene en el móvil y calcula
+    // la ruta desde donde estés. Se manda por coordenadas (no por nombre) para que
+    // apunte a la sala exacta, no a un sitio parecido.
+    const directionsUrl = (c: Cinema) =>
+      `https://www.google.com/maps/dir/?api=1&destination=${c.lat}%2C${c.lon}`;
     // Rótulo: OSM tiene cines sin nombre; se muestran igual, con etiqueta genérica.
     const cinemaName = (c: Cinema) => c.name ?? L_.unnamed;
     // Cartelera: la web oficial si OSM la conoce; si no, una búsqueda de cartelera.
@@ -189,6 +316,10 @@ const t = useTranslations(lang);
       suggestBox.classList.add('hidden');
       input.setAttribute('aria-expanded', 'false');
       activeIndex = -1;
+      // Invalida cualquier sugerencia en vuelo: si no, la respuesta del
+      // autocompletado llegaba DESPUÉS de lanzar la búsqueda y volvía a abrir el
+      // desplegable, que quedaba tapando el mapa.
+      suggestSeq++;
     };
 
     const renderSuggest = () => {
@@ -277,7 +408,23 @@ const t = useTranslations(lang);
     // ================= Mapa (Leaflet, carga perezosa) =================
     let map: LType.Map | null = null;
     let layer: LType.LayerGroup | null = null;
-    let programmaticMove = false; // true mientras encuadramos por código (ignora moveend)
+    /*
+     * "Buscar en esta zona" solo debe salir cuando el mapa lo ha movido el
+     * USUARIO. El problema es que Leaflet dispara `moveend` también por su
+     * cuenta: al encuadrar los resultados y al abrir un globo (que desplaza el
+     * mapa para que quepa). Con un booleano se colaba, porque un movimiento
+     * programático que no llega a producir `moveend` dejaba la marca puesta y se
+     * comía el siguiente movimiento de verdad.
+     *
+     * Con una marca de tiempo no hay estado que se quede pegado: se ignora lo
+     * que pase en el instante siguiente a una acción nuestra, y punto.
+     */
+    let ignoreMovesUntil = 0;
+    const suppressMove = (ms = 900) => {
+      ignoreMovesUntil = Date.now() + ms;
+    };
+    /** Hay un globo abierto: el botón de "buscar en esta zona" no debe taparlo. */
+    let popupOpen = false;
 
     const currentRadiusFromMap = (m: LType.Map): number => {
       // Radio ≈ distancia del centro a la esquina del viewport, acotado.
@@ -286,23 +433,41 @@ const t = useTranslations(lang);
       return Math.min(MAX_RADIUS, Math.max(1000, Math.round(meters)));
     };
 
+    // Paleta del sitio (src/styles/global.css) para lo que dibuja Leaflet por JS.
+    const INK = '#000000';
+
     const drawMap = async (center: { lat: number; lon: number }, cinemas: Cinema[]) => {
       const Lm = await loadLeaflet();
       if (!map) {
         mapEl.classList.remove('hidden');
-        map = Lm.map(mapEl, { scrollWheelZoom: true });
+        // scrollWheelZoom apagado de entrada: con la rueda activa, bajar la
+        // página con el ratón encima del mapa hacía zoom en lugar de desplazar,
+        // y te dejaba tirado a mitad de la lista. Se activa al pinchar en el
+        // mapa (ya estás usándolo) y se vuelve a apagar al salir de él.
+        map = Lm.map(mapEl, { scrollWheelZoom: false });
+        map.on('click', () => map?.scrollWheelZoom.enable());
+        mapEl.addEventListener('mouseleave', () => map?.scrollWheelZoom.disable());
         Lm.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
           attribution: '© OpenStreetMap',
         }).addTo(map);
         layer = Lm.layerGroup().addTo(map);
-        // Tras mover/zoom el usuario, ofrecer "buscar en esta zona".
+        // Tras mover/zoom el usuario, ofrecer "buscar en esta zona". Nunca
+        // mientras hay un globo abierto: el botón se dibuja en la parte alta del
+        // mapa, justo donde aparece el globo, y lo tapaba.
         map.on('moveend', () => {
-          if (programmaticMove) {
-            programmaticMove = false;
-            return;
-          }
+          if (popupOpen || Date.now() < ignoreMovesUntil) return;
           areaBtn.hidden = false;
+        });
+        // Abrir un globo desplaza el mapa para que quepa; eso no lo ha hecho el
+        // usuario. Con una ventana de tiempo no bastaba: la animación del
+        // desplazamiento suelta el `moveend` más tarde y el botón reaparecía.
+        map.on('popupopen', () => {
+          popupOpen = true;
+          areaBtn.hidden = true;
+        });
+        map.on('popupclose', () => {
+          popupOpen = false;
         });
       }
       layer!.clearLayers();
@@ -311,20 +476,22 @@ const t = useTranslations(lang);
       if (geoAccuracy && geoAccuracy > 0) {
         Lm.circle([center.lat, center.lon], {
           radius: geoAccuracy,
-          color: '#1a1a1a',
+          color: INK,
           weight: 1,
           opacity: 0.4,
-          fillColor: '#1a1a1a',
-          fillOpacity: 0.08,
+          fillColor: INK,
+          fillOpacity: 0.06,
         }).addTo(layer!);
       }
-      // Tu ubicación (tinta) y cada cine (ocre).
-      Lm.circleMarker([center.lat, center.lon], {
-        radius: 7,
-        color: '#1a1a1a',
-        weight: 2,
-        fillColor: '#1a1a1a',
-        fillOpacity: 0.85,
+      // Tu ubicación: cuadrado de tinta, como los marcadores del resto del sitio
+      // (nada de globos redondeados: aquí no hay esquinas curvas).
+      Lm.marker([center.lat, center.lon], {
+        icon: Lm.divIcon({
+          className: 'cine-pin cine-pin--you',
+          iconSize: [14, 14],
+          iconAnchor: [7, 7],
+        }),
+        keyboard: false,
       })
         .bindPopup(esc(L_.you))
         .addTo(layer!);
@@ -337,18 +504,19 @@ const t = useTranslations(lang);
           (c.address ? `${esc(c.address)}<br>` : '') +
           `<a href="${directionsUrl(c)}" target="_blank" rel="noopener noreferrer">${esc(L_.directions)}</a> · ` +
           `<a href="${carteleraUrl(c)}" target="_blank" rel="noopener noreferrer">${esc(L_.cartelera)}</a>`;
-        Lm.circleMarker([c.lat, c.lon], {
-          radius: 6,
-          color: '#8a5a2b',
-          weight: 2,
-          fillColor: '#c8862f',
-          fillOpacity: 0.85,
+        Lm.marker([c.lat, c.lon], {
+          icon: Lm.divIcon({
+            className: 'cine-pin cine-pin--sala',
+            iconSize: [16, 16],
+            iconAnchor: [8, 8],
+          }),
+          title: cinemaName(c),
         })
           .bindPopup(popup)
           .addTo(layer!);
       }
       // Ajusta el encuadre a todos los puntos (movimiento programático).
-      programmaticMove = true;
+      suppressMove();
       map!.fitBounds(points as LType.LatLngBoundsExpression, { padding: [30, 30], maxZoom: 15 });
       areaBtn.hidden = true;
       // El contenedor pudo crearse oculto: recalcula tamaño.
@@ -364,7 +532,7 @@ const t = useTranslations(lang);
             ? `<p class="mt-1 font-mono text-meta-data text-muted">${esc(c.operator)}</p>`
             : '';
           return (
-            `<div class="flex flex-col justify-between gap-2 bg-surface p-4">` +
+            `<div class="flex h-full flex-col justify-between gap-2 bg-surface p-4">` +
             `<div><h3 class="font-display text-headline-md leading-tight text-ink">${esc(cinemaName(c))}</h3>${chain}${addr}` +
             `<p class="mt-1 font-mono text-meta-data text-ink">${c.distanceKm} ${esc(L_.distance)}</p></div>` +
             `<div class="mt-1 flex flex-wrap gap-x-4 gap-y-1">` +
@@ -442,12 +610,25 @@ const t = useTranslations(lang);
       if (!navigator.geolocation) return setStatus(L_.geoError);
       closeSuggest();
       setStatus(L_.locating);
+      // Mientras localiza puede tardar unos segundos: se deshabilita el botón
+      // para que no se acumulen peticiones si le dan varias veces.
+      geoBtn.disabled = true;
+
+      const done = () => {
+        geoBtn.disabled = false;
+      };
+
       navigator.geolocation.getCurrentPosition(
         (pos) => {
+          done();
           geoAccuracy = pos.coords.accuracy ?? null;
+          // Deja claro de dónde vienen los resultados: si no, el campo se queda
+          // con la búsqueda anterior y parece que no ha hecho caso.
+          input.value = L_.you;
           query(`lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
         },
         (err) => {
+          done();
           const msg =
             err.code === err.PERMISSION_DENIED
               ? L_.geoDenied
@@ -458,7 +639,10 @@ const t = useTranslations(lang);
                   : L_.geoError;
           setStatus(msg);
         },
-        { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 },
+        // En un portátil sin GPS la posición se deduce del wifi y tarda: 25 s de
+        // margen en vez de 12. maximumAge acepta una lectura de hace un minuto,
+        // así que volver a pulsar responde al instante en lugar de repetir todo.
+        { enableHighAccuracy: true, timeout: 25000, maximumAge: 60000 },
       );
     });
   }

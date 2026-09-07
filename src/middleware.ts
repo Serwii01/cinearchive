@@ -48,7 +48,13 @@ function harden(response: Response, path?: string): Response {
   response.headers.set('X-DNS-Prefetch-Control', 'off');
   response.headers.set(
     'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
+    // geolocation=(self): "Encuentra tu cine" necesita la ubicación del
+    // dispositivo. Con la lista vacía —geolocation=()— el navegador bloquea la
+    // API sin llegar a preguntar, y el botón fallaba siempre con "permiso
+    // denegado". (self) la habilita solo para nuestro propio origen: ningún
+    // iframe de terceros puede pedirla, y el usuario sigue teniendo la última
+    // palabra en el diálogo del navegador.
+    'camera=(), microphone=(), geolocation=(self), payment=(), usb=(), interest-cohort=()',
   );
   if (path && NOINDEX_PATH.test(path)) response.headers.set('X-Robots-Tag', 'noindex');
   return response;
