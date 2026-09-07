@@ -1,5 +1,169 @@
 [
   {
+    "version": "1.6",
+    "date": "2026-09-08",
+    "title": {
+      "es": "Dónde ver, mapas de rodaje y la web sin /es",
+      "en": "Where to watch, filming maps and the site without /es",
+      "gl": "Onde ver, mapas de rodaxe e a web sen /es",
+      "eu": "Non ikusi, filmaketa-mapak eta webgunea /es gabe",
+      "ca": "On veure, mapes de rodatge i el web sense /es"
+    },
+    "changes": {
+      "es": [
+        "La web pierde el «/es»: la portada es ahora cinearchive.es a secas y las direcciones en castellano van sin prefijo. Los demás idiomas conservan el suyo (/en, /gl, /eu, /ca) y los enlaces antiguos siguen funcionando.",
+        "«Dónde ver» pasa de 9 países a 131 y deja de agotarse a mitad de mes: el dato viene ya dentro de la consulta que la ficha hacía de todas formas.",
+        "Descubrir estrena filtro de plataforma (región, servicios de ese país y modalidad: suscripción, gratis, con anuncios, alquiler o compra), año exacto en lugar de solo décadas, contador de resultados y siete formas de ordenar.",
+        "Los filtros que tienes puestos se ven uno a uno y se quitan por separado, sin perder los demás.",
+        "Cada ficha puede traer un mapa con las localizaciones de rodaje, distinguiendo el punto exacto de la ciudad aproximada. Los datos vienen de Wikidata y no siempre existen.",
+        "Encuentra tu cine: «usar mi ubicación» ya funciona, el mapa tiene la estética del sitio, cada sala lleva su «cómo llegar» y aparecen salas que antes faltaban, como Multicines Los Arcos en Sevilla.",
+        "Cine Archive se puede instalar en el móvil como una aplicación, y estrena canal RSS de novedades.",
+        "Las páginas públicas se guardan en caché: cargan bastante más rápido y el archivo aguanta mejor las visitas."
+      ],
+      "en": [
+        "The site drops the “/es”: the home page is now plain cinearchive.es and Spanish addresses carry no prefix. The other languages keep theirs (/en, /gl, /eu, /ca) and old links still work.",
+        "“Where to watch” goes from 9 countries to 131 and no longer runs out halfway through the month: the data now arrives inside the request the film page was making anyway.",
+        "Discover gains a platform filter (region, that country’s services, and how you watch: subscription, free, with ads, rental or purchase), an exact year instead of only decades, a results counter and seven ways to sort.",
+        "The filters you have applied are listed one by one and can be removed separately, without losing the rest.",
+        "Film pages can now show a map of the shooting locations, telling an exact spot apart from an approximate city. The data comes from Wikidata and is not always there.",
+        "Find your cinema: “use my location” works now, the map follows the site’s own look, every venue has directions, and venues that used to be missing show up, such as Multicines Los Arcos in Seville.",
+        "Cine Archive can be installed on your phone as an app, and there is now an RSS feed of what’s new.",
+        "Public pages are cached: they load noticeably faster and the archive copes better with visitors."
+      ],
+      "gl": [
+        "A web perde o «/es»: a portada é agora cinearchive.es a secas e os enderezos en castelán van sen prefixo. Os demais idiomas conservan o seu (/en, /gl, /eu, /ca) e as ligazóns antigas seguen funcionando.",
+        "«Onde ver» pasa de 9 países a 131 e deixa de esgotarse a metade de mes: o dato vén xa dentro da consulta que a ficha facía de todos os xeitos.",
+        "Descubrir estrea filtro de plataforma (rexión, servizos dese país e modalidade: subscrición, de balde, con anuncios, alugueiro ou compra), ano exacto no canto de só décadas, contador de resultados e sete formas de ordenar.",
+        "Os filtros que tes postos vense un a un e quítanse por separado, sen perder os demais.",
+        "Cada ficha pode traer un mapa coas localizacións de rodaxe, distinguindo o punto exacto da cidade aproximada. Os datos veñen de Wikidata e non sempre existen.",
+        "Atopa o teu cine: «usar a miña localización» xa funciona, o mapa ten a estética do sitio, cada sala leva o seu «como chegar» e aparecen salas que antes faltaban, como Multicines Los Arcos en Sevilla.",
+        "Cine Archive pódese instalar no móbil como unha aplicación, e estrea canle RSS de novidades.",
+        "As páxinas públicas gárdanse na caché: cargan bastante máis rápido e o arquivo aguanta mellor as visitas."
+      ],
+      "eu": [
+        "Webguneak «/es» galtzen du: hasiera-orria cinearchive.es hutsa da orain, eta gaztelaniazko helbideek ez dute aurrizkirik. Gainerako hizkuntzek berea gordetzen dute (/en, /gl, /eu, /ca) eta esteka zaharrek funtzionatzen jarraitzen dute.",
+        "«Non ikusi» 9 herrialdetatik 131ra pasatzen da, eta ez da hilaren erdian agortzen: datua fitxak dagoeneko egiten zuen kontsultaren barruan dator.",
+        "Aurkitu atalak plataforma-iragazkia dakar (eskualdea, herrialde horretako zerbitzuak eta modalitatea: harpidetza, doan, iragarkiekin, alokairua edo erosketa), urte zehatza hamarkaden ordez, emaitzen kontagailua eta ordenatzeko zazpi modu.",
+        "Jarrita dituzun iragazkiak banan-banan ikusten dira eta bereizita kentzen dira, gainerakoak galdu gabe.",
+        "Fitxa bakoitzak filmaketa-kokalekuen mapa bat ekar dezake, puntu zehatza hiri hurbildutik bereizita. Datuak Wikidatatik datoz eta ez daude beti.",
+        "Aurkitu zure zinema: «erabili nire kokapena» dagoeneko badabil, mapak webgunearen estetika du, areto bakoitzak bere «nola iritsi» darama eta lehen falta ziren aretoak agertzen dira, Sevillako Multicines Los Arcos kasu.",
+        "Cine Archive mugikorrean aplikazio gisa instala daiteke, eta berritasunen RSS kanala estreinatzen du.",
+        "Orri publikoak katxean gordetzen dira: askoz azkarrago kargatzen dira eta artxiboak hobeto eusten die bisitei."
+      ],
+      "ca": [
+        "El web perd el «/es»: la portada és ara cinearchive.es a seques i les adreces en castellà van sense prefix. Els altres idiomes conserven el seu (/en, /gl, /eu, /ca) i els enllaços antics segueixen funcionant.",
+        "«On veure» passa de 9 països a 131 i deixa d’esgotar-se a mitjan mes: la dada ja ve dins de la consulta que la fitxa feia igualment.",
+        "Descobrir estrena filtre de plataforma (regió, serveis d’aquell país i modalitat: subscripció, gratis, amb anuncis, lloguer o compra), any exacte en lloc de només dècades, comptador de resultats i set maneres d’ordenar.",
+        "Els filtres que tens posats es veuen un a un i es treuen per separat, sense perdre els altres.",
+        "Cada fitxa pot portar un mapa amb les localitzacions de rodatge, distingint el punt exacte de la ciutat aproximada. Les dades vénen de Wikidata i no sempre hi són.",
+        "Troba el teu cinema: «fer servir la meva ubicació» ja funciona, el mapa té l’estètica del lloc, cada sala porta el seu «com arribar-hi» i apareixen sales que abans faltaven, com Multicines Los Arcos a Sevilla.",
+        "Cine Archive es pot instal·lar al mòbil com una aplicació, i estrena canal RSS de novetats.",
+        "Les pàgines públiques es desen a la memòria cau: carreguen bastant més ràpid i l’arxiu aguanta millor les visites."
+      ]
+    }
+  },
+  {
+    "version": "1.5",
+    "date": "2026-08-02",
+    "title": {
+      "es": "Descubrir apunta mucho más fino",
+      "en": "Discover takes much better aim",
+      "gl": "Descubrir apunta moito máis fino",
+      "eu": "Aurkitu askoz zehatzago",
+      "ca": "Descobrir apunta molt més fi"
+    },
+    "changes": {
+      "es": [
+        "Los géneros se combinan a tu gusto: puedes pedir que se cumplan todos a la vez o cualquiera de ellos, y también excluir los que no quieras ver.",
+        "Filtros nuevos de nota mínima, número de votos, duración e idioma original.",
+        "Los filtros avanzados se pliegan para no abrumar, y todo sigue funcionando sin JavaScript: son casillas y enlaces.",
+        "Arregladas las etiquetas de género y país, que salían vacías en gallego, euskera y catalán."
+      ],
+      "en": [
+        "Genres combine the way you want: you can ask for all of them at once or any of them, and also rule out the ones you would rather not see.",
+        "New filters for minimum rating, number of votes, running time and original language.",
+        "Advanced filters fold away so they do not overwhelm, and everything still works without JavaScript: they are checkboxes and links.",
+        "Fixed the genre and country labels, which came out empty in Galician, Basque and Catalan."
+      ],
+      "gl": [
+        "Os xéneros combínanse ao teu gusto: podes pedir que se cumpran todos á vez ou calquera deles, e tamén excluír os que non queiras ver.",
+        "Filtros novos de nota mínima, número de votos, duración e idioma orixinal.",
+        "Os filtros avanzados prégase para non abrumar, e todo segue funcionando sen JavaScript: son caixas e ligazóns.",
+        "Arranxadas as etiquetas de xénero e país, que saían baleiras en galego, éuscaro e catalán."
+      ],
+      "eu": [
+        "Generoak nahi duzun eran konbinatzen dira: guztiak batera edo horietako edozein bete daitezela eska dezakezu, eta ikusi nahi ez dituzunak baztertu ere bai.",
+        "Iragazki berriak: gutxieneko nota, boto kopurua, iraupena eta jatorrizko hizkuntza.",
+        "Iragazki aurreratuak tolestu egiten dira gainezka ez egiteko, eta dena JavaScriptik gabe dabil oraindik: laukitxoak eta estekak dira.",
+        "Genero eta herrialdeen etiketak konponduta: hutsik ateratzen ziren galegoz, euskaraz eta katalanez."
+      ],
+      "ca": [
+        "Els gèneres es combinen com vulguis: pots demanar que es compleixin tots alhora o qualsevol d’ells, i també excloure els que no vulguis veure.",
+        "Filtres nous de nota mínima, nombre de vots, durada i idioma original.",
+        "Els filtres avançats es pleguen per no aclaparar, i tot continua funcionant sense JavaScript: són caselles i enllaços.",
+        "Arreglades les etiquetes de gènere i país, que sortien buides en gallec, basc i català."
+      ]
+    }
+  },
+  {
+    "version": "1.4",
+    "date": "2026-07-19",
+    "title": {
+      "es": "Encuentra tu cine, listas propias y perfil para compartir",
+      "en": "Find your cinema, proper lists and a shareable profile",
+      "gl": "Atopa o teu cine, listas propias e perfil para compartir",
+      "eu": "Aurkitu zure zinema, zerrenda propioak eta profil partekagarria",
+      "ca": "Troba el teu cinema, llistes pròpies i perfil per compartir"
+    },
+    "changes": {
+      "es": [
+        "Nuevo apartado «Encuentra tu cine»: busca salas por ciudad o código postal y velas sobre un mapa, con datos abiertos de OpenStreetMap.",
+        "Las listas estrenan ventanas propias en lugar de los avisos del navegador, se pueden compartir cuando son públicas y el borrado ya no falla.",
+        "La foto de perfil trae recortador: eliges el encuadre y la imagen se comprime sola antes de subirse.",
+        "Tu perfil y tus reseñas se pueden compartir como imagen de historia, con el cartel de fondo y un código QR.",
+        "Las fichas cambian de dirección: ahora son /film/donnie-darko-141 en vez de un número suelto.",
+        "Cine abierto suma cinco películas de los 2000 y 2010, cada una con su licencia a la vista.",
+        "Nueva página de preguntas frecuentes, y la de accesibilidad rediseñada de arriba abajo."
+      ],
+      "en": [
+        "New “Find your cinema” section: search venues by city or postcode and see them on a map, using open data from OpenStreetMap.",
+        "Lists now use their own dialogs instead of browser alerts, can be shared when public, and deleting them no longer fails.",
+        "The profile picture comes with a cropper: you choose the framing and the image is compressed on its own before uploading.",
+        "Your profile and your reviews can be shared as a story image, with the poster in the background and a QR code.",
+        "Film pages change address: they are now /film/donnie-darko-141 instead of a bare number.",
+        "Open Cinema adds five films from the 2000s and 2010s, each with its licence in plain sight.",
+        "A new frequently asked questions page, and the accessibility one redesigned from top to bottom."
+      ],
+      "gl": [
+        "Novo apartado «Atopa o teu cine»: busca salas por cidade ou código postal e velas sobre un mapa, con datos abertos de OpenStreetMap.",
+        "As listas estrean ventás propias no canto dos avisos do navegador, pódense compartir cando son públicas e o borrado xa non falla.",
+        "A foto de perfil trae recortador: escolles o encadre e a imaxe comprímese soa antes de subirse.",
+        "O teu perfil e as túas recensións pódense compartir como imaxe de historia, co cartel de fondo e un código QR.",
+        "As fichas cambian de enderezo: agora son /film/donnie-darko-141 no canto dun número solto.",
+        "Cine aberto suma cinco películas dos 2000 e 2010, cada unha coa súa licenza á vista.",
+        "Nova páxina de preguntas frecuentes, e a de accesibilidade redeseñada de arriba abaixo."
+      ],
+      "eu": [
+        "«Aurkitu zure zinema» atal berria: bilatu aretoak hiriaren edo posta-kodearen arabera eta ikusi itzazu mapan, OpenStreetMap-en datu irekiekin.",
+        "Zerrendek leiho propioak dituzte orain, nabigatzailearen abisuen ordez; publikoak direnean parteka daitezke, eta ezabatzeak jada ez du huts egiten.",
+        "Profileko argazkiak mozteko tresna dakar: enkoadraketa zuk aukeratzen duzu eta irudia bere kabuz konprimitzen da igo aurretik.",
+        "Zure profila eta zure iruzkinak istorio-irudi gisa parteka daitezke, kartela atzealdean eta QR kode batekin.",
+        "Filmen fitxek helbidea aldatzen dute: orain /film/donnie-darko-141 dira, zenbaki soil baten ordez.",
+        "Zinema irekiak 2000ko eta 2010eko hamarkadetako bost film gehitzen ditu, bakoitza bere lizentzia agerian duela.",
+        "Ohiko galderen orri berria, eta irisgarritasunarena goitik behera birdiseinatuta."
+      ],
+      "ca": [
+        "Nou apartat «Troba el teu cinema»: busca sales per ciutat o codi postal i mira-les sobre un mapa, amb dades obertes d’OpenStreetMap.",
+        "Les llistes estrenen finestres pròpies en lloc dels avisos del navegador, es poden compartir quan són públiques i esborrar-les ja no falla.",
+        "La foto de perfil porta retallador: tries l’enquadrament i la imatge es comprimeix sola abans de pujar-se.",
+        "El teu perfil i les teves ressenyes es poden compartir com a imatge d’història, amb el cartell de fons i un codi QR.",
+        "Les fitxes canvien d’adreça: ara són /film/donnie-darko-141 en lloc d’un número solt.",
+        "Cinema obert suma cinc pel·lícules dels 2000 i 2010, cadascuna amb la seva llicència a la vista.",
+        "Nova pàgina de preguntes freqüents, i la d’accessibilitat redissenyada de dalt a baix."
+      ]
+    }
+  },
+  {
     "version": "1.3.1",
     "date": "2026-07-08",
     "title": {
