@@ -10,6 +10,7 @@ import { db } from '../db/client';
 import { userFilms } from '../db/schema';
 import { getFilmsBrief } from './films';
 import { genreName } from '../data/genres';
+import { registerCache } from './cache-registry';
 
 export interface CountItem {
   label: string;
@@ -31,6 +32,14 @@ export interface UserStats {
 
 const CACHE_TTL = 10 * 60_000;
 const cache = new Map<string, { at: number; data: UserStats }>();
+
+registerCache({
+  id: 'stats',
+  label: 'Estadísticas de usuario',
+  ttlMs: CACHE_TTL,
+  size: () => cache.size,
+  clear: () => cache.clear(),
+});
 
 export function invalidateStats(userId: string): void {
   for (const key of cache.keys()) if (key.startsWith(`${userId}:`)) cache.delete(key);

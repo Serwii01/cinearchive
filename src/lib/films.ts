@@ -15,8 +15,9 @@ import {
   type WatchAvailability,
 } from './tmdb';
 import { getOmdbByImdbId, type OmdbData } from './omdb';
-import { getFilmLocations, type FilmLocations } from './wikidata';
+import { getFilmLocations, esFormatoActual, type FilmLocations } from './wikidata';
 import { createMemo } from './memo';
+import { registerCache } from './cache-registry';
 import { WATCH_REGIONS } from '../data/countries';
 
 const OMDB_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
@@ -38,6 +39,15 @@ export interface FilmDetail {
 // a corto plazo.
 const FILM_MEMO_TTL_MS = 10 * 60 * 1000; // 10 min
 const filmMemo = createMemo<FilmDetail>(FILM_MEMO_TTL_MS, 300);
+
+registerCache({
+  id: 'films',
+  label: 'Fichas de película',
+  ttlMs: FILM_MEMO_TTL_MS,
+  maxKeys: 300,
+  size: () => filmMemo.size,
+  clear: () => filmMemo.clear(),
+});
 
 export function getFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
   return filmMemo.get(`${tmdbId}:${locale}`, () => loadFilm(tmdbId, locale));
@@ -80,8 +90,13 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
   }
 
   // Wikidata: localizaciones (rodaje/narrativa). Cache muy prolongada.
-  let locations = (cached?.wikidata as FilmLocations | null) ?? null;
+  const guardado = (cached?.wikidata as FilmLocations | null) ?? null;
+  // Lo guardado antes de que hubiera coordenadas es solo una lista de nombres:
+  // no sirve para el mapa. Se descarta y se vuelve a consultar en la primera
+  // visita, en vez de esperar los 60 días del TTL.
+  let locations = esFormatoActual(guardado) ? guardado : null;
   const wdFresh =
+    locations !== null &&
     cached?.wikidataFetchedAt &&
     Date.now() - new Date(cached.wikidataFetchedAt).getTime() < WIKIDATA_TTL_MS;
   let wikidataFetchedAt = cached?.wikidataFetchedAt ?? null;

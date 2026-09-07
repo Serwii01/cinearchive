@@ -3,10 +3,20 @@
  * caché en memoria por (idioma, id), igual que recs.ts/stats.ts. No expone claves.
  */
 import { getPerson, posterUrl, type TmdbPerson, type TmdbPersonCredit } from './tmdb';
+import { registerCache } from './cache-registry';
 
 const TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 días
 const MAX = 500;
 const cache = new Map<string, { at: number; data: TmdbPerson }>();
+
+registerCache({
+  id: 'people',
+  label: 'Fichas de persona',
+  ttlMs: TTL_MS,
+  maxKeys: MAX,
+  size: () => cache.size,
+  clear: () => cache.clear(),
+});
 
 export async function getPersonCached(id: number, locale: string): Promise<TmdbPerson> {
   const key = `${locale}:${id}`;

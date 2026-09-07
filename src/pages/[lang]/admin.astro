@@ -1,39 +1,96 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, locales, useTranslations, localizePath, type UIKey } from '../../i18n/ui';
 import { db } from '../../db/client';
 import { user, userFilms, filmsCache, extraFilms } from '../../db/schema';
 import { count, desc } from 'drizzle-orm';
+import { readVitals } from '../../lib/vitals';
+import { getDbStats } from '../../lib/dbstats';
+import { getCrecimiento, getActividad, type PuntoSemana } from '../../lib/growth';
+import { listCaches } from '../../lib/caches';
+import { formatBytes, formatDuration, formatNum, formatPct, pct, SIN_DATO } from '../../lib/format';
 
 // El middleware garantiza que solo entran cuentas de ADMIN_EMAILS.
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const me = Astro.locals.user!;
 
-const [users, filmCounts, fc, uf, extras] = await Promise.all([
-  db.select().from(user).orderBy(desc(user.createdAt)).limit(500),
-  db.select({ userId: userFilms.userId, c: count() }).from(userFilms).groupBy(userFilms.userId),
-  db.select({ c: count() }).from(filmsCache),
-  db.select({ c: count() }).from(userFilms),
-  db.select().from(extraFilms).orderBy(desc(extraFilms.addedAt)),
-]);
+// Las sondas de fuentes externas NO se piden aquí a propósito: la primera carga
+// del panel no puede quedarse esperando cuatro segundos a un tercero. Las pide
+// el navegador con el primer refresco.
+const [users, filmCounts, fc, uf, extras, vitals, dbStats, crecimiento, actividad] =
+  await Promise.all([
+    db.select().from(user).orderBy(desc(user.createdAt)).limit(500),
+    db.select({ userId: userFilms.userId, c: count() }).from(userFilms).groupBy(userFilms.userId),
+    db.select({ c: count() }).from(filmsCache),
+    db.select({ c: count() }).from(userFilms),
+    db.select().from(extraFilms).orderBy(desc(extraFilms.addedAt)),
+    readVitals(),
+    getDbStats(),
+    getCrecimiento(),
+    getActividad(),
+  ]);
 
+const caches = listCaches();
 const filmCountMap = new Map(filmCounts.map((r) => [r.userId, r.c]));
-const fmtDate = (d: Date) => new Date(d).toLocaleDateString(locales[lang]);
+const nf = locales[lang];
+const fmtDate = (d: Date) => new Date(d).toLocaleDateString(nf);
 
-// El "dónde ver" ya no tiene cuota propia: viaja dentro de la ficha de TMDB.
-// Antes ocupaba esta tarjeta Watchmode, con 1000 peticiones al mes que se
-// agotaban en unos cientos de fichas.
-const apiCards = [
-  { name: 'TMDB', value: '∞', note: t('admin.unlimited'), warn: false },
-  { name: 'OMDb', value: '—', note: t('admin.noCounter'), warn: false },
-];
+/** Umbral de alarma: ámbar a partir del 75 %, rojo a partir del 90 %. */
+const colorUso = (p: number | null): string =>
+  p == null ? 'text-ink' : p >= 90 ? 'text-error' : p >= 75 ? 'text-ochre-dim' : 'text-ink';
+
 const dataCards = [
   { label: t('admin.usersCount'), value: users.length },
   { label: t('admin.cachedFilms'), value: fc[0]?.c ?? 0 },
   { label: t('admin.listEntries'), value: uf[0]?.c ?? 0 },
   { label: t('admin.extraFilmsCount'), value: extras.length },
 ];
+
+// Id de caché → clave de traducción. Si algún día aparece una caché nueva sin
+// entrada aquí, se muestra con la etiqueta en español de su registro: la página
+// no se rompe por eso.
+const CACHE_LABEL: Record<string, UIKey> = {
+  films: 'admin.cacheFilms',
+  'tmdb-providers': 'admin.cacheProviders',
+  people: 'admin.cachePeople',
+  stats: 'admin.cacheStats',
+  recs: 'admin.cacheRecs',
+  featured: 'admin.cacheFeatured',
+  'cines-geo': 'admin.cacheGeo',
+  'cines-sugerencias': 'admin.cacheSuggest',
+  'cines-salas': 'admin.cacheCinemas',
+  probes: 'admin.cacheProbes',
+  ratelimit: 'admin.cacheRateLimit',
+};
+const cacheLabel = (id: string, fallback: string) =>
+  CACHE_LABEL[id] ? t(CACHE_LABEL[id]) : fallback;
+
+// El armazón de las sondas se pinta aquí, con su texto ya traducido; el
+// navegador solo rellena estado y latencia. Así no queda ni una cadena
+// traducible dentro del JavaScript.
+const FUENTES = ['tmdb', 'omdb', 'overpass', 'nominatim', 'wikidata'] as const;
+const NOMBRE_FUENTE: Record<string, string> = {
+  tmdb: 'TMDB',
+  omdb: 'OMDb',
+  overpass: 'Overpass',
+  nominatim: 'Nominatim',
+  wikidata: 'Wikidata',
+};
+
+const series: { titulo: string; puntos: PuntoSemana[] }[] = [
+  { titulo: t('admin.newUsers'), puntos: crecimiento.usuarios },
+  { titulo: t('admin.newReviews'), puntos: crecimiento.resenas },
+  { titulo: t('admin.newCached'), puntos: crecimiento.fichas },
+  { titulo: t('admin.newFollows'), puntos: crecimiento.seguimientos },
+];
+/** Etiqueta corta del lunes de la semana: "04 ago". */
+const etiquetaSemana = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString(nf, {
+    day: '2-digit',
+    month: 'short',
+    timeZone: 'UTC',
+  });
 ---
 
 <BaseLayout title={t('admin.title')} noindex>
@@ -43,38 +100,303 @@ const dataCards = [
     data-adderr={t('admin.addError')}
     data-delete={t('admin.delete')}
     data-cancel={t('profile.cancel')}
+    data-confirm-clear={t('admin.confirmClear')}
+    data-clear={t('admin.clear')}
+    data-l-error={t('admin.error')}
+    data-l-ok={t('admin.statusOk')}
+    data-l-slow={t('admin.statusSlow')}
+    data-l-down={t('admin.statusDown')}
+    data-l-skipped={t('admin.statusSkipped')}
   >
     <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
-    <header class="mt-6 border-b border-ink pb-6">
-      <span class="label">{t('admin.title')}</span>
-      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('admin.title')}</h1>
+
+    <header class="mt-6 flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-6">
+      <div>
+        <span class="label">{t('nav.admin')}</span>
+        <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('admin.title')}</h1>
+      </div>
+      {/* aria-live solo aquí: si se anunciara cada número, un lector de pantalla
+          recitaría el panel entero cada diez segundos. */}
+      <p class="font-mono text-meta-data text-muted" aria-live="polite">
+        <span class="text-ochre-dim">●</span> {t('admin.live')} ·
+        <span id="ultima-act">{t('admin.lastUpdate')}</span>
+      </p>
     </header>
 
-    {/* CONSUMO DE APIs */}
-    <h2 class="mt-10 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.apiUsage')}</h2>
-    <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
-      {apiCards.map((c) => (
-        <div class="bg-surface p-4">
-          <span class="label">{c.name}</span>
-          <p class:list={['mt-1 font-display text-display-mobile', c.warn ? 'text-error' : 'text-ink']}>{c.value}</p>
-          <p class="font-mono text-meta-data text-muted">{c.note}</p>
+    {/* ================= RECURSOS DEL SERVIDOR ================= */}
+    <h2 class="mt-10 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.resources')}</h2>
+
+    {!vitals.procDisponible && (
+      <p class="mt-3 border border-outline-variant bg-surface p-3 font-mono text-meta-data text-muted">
+        {t('admin.unavailable')} — {t('admin.hostNote')}
+      </p>
+    )}
+
+    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-4">
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.cpuUsage')}</span>
+        <p data-vital="vitals.cpu.usoPct" data-fmt="pct" data-umbral class:list={['mt-1 font-display text-display-mobile', colorUso(vitals.cpu.usoPct)]}>
+          {formatPct(vitals.cpu.usoPct)}
+        </p>
+        <span class="mt-2 block h-2 bg-surface-dim">
+          <span data-bar="vitals.cpu.usoPct" class="block h-2 bg-ink" style={`width:${pct(vitals.cpu.usoPct, 100)}%`}></span>
+        </span>
+        <p class="mt-2 font-mono text-meta-data text-muted">
+          <span data-vital="vitals.cpu.nucleos">{formatNum(vitals.cpu.nucleos, nf)}</span> {t('admin.cores')}
+        </p>
+      </div>
+
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.memory')}</span>
+        <p data-vital="vitals.mem.usoPct" data-fmt="pct" data-umbral class:list={['mt-1 font-display text-display-mobile', colorUso(vitals.mem.usoPct)]}>
+          {formatPct(vitals.mem.usoPct)}
+        </p>
+        <span class="mt-2 block h-2 bg-surface-dim">
+          <span data-bar="vitals.mem.usoPct" class="block h-2 bg-ink" style={`width:${pct(vitals.mem.usoPct, 100)}%`}></span>
+        </span>
+        <p class="mt-2 font-mono text-meta-data text-muted">
+          <span data-vital="vitals.mem.usadosBytes" data-fmt="bytes">{formatBytes(vitals.mem.usadosBytes)}</span>
+          {' / '}
+          <span data-vital="vitals.mem.totalBytes" data-fmt="bytes">{formatBytes(vitals.mem.totalBytes)}</span>
+        </p>
+      </div>
+
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.disk')}</span>
+        <p data-vital="vitals.disco.usoPct" data-fmt="pct" data-umbral class:list={['mt-1 font-display text-display-mobile', colorUso(vitals.disco.usoPct)]}>
+          {formatPct(vitals.disco.usoPct)}
+        </p>
+        <span class="mt-2 block h-2 bg-surface-dim">
+          <span data-bar="vitals.disco.usoPct" class="block h-2 bg-ink" style={`width:${pct(vitals.disco.usoPct, 100)}%`}></span>
+        </span>
+        <p class="mt-2 font-mono text-meta-data text-muted">
+          <span data-vital="vitals.disco.usadosBytes" data-fmt="bytes">{formatBytes(vitals.disco.usadosBytes)}</span>
+          {' / '}
+          <span data-vital="vitals.disco.totalBytes" data-fmt="bytes">{formatBytes(vitals.disco.totalBytes)}</span>
+        </p>
+      </div>
+
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.load')}</span>
+        <p data-vital="vitals.cpu.carga.0" data-fmt="carga" class="mt-1 font-display text-display-mobile text-ink">
+          {vitals.cpu.carga ? vitals.cpu.carga[0].toFixed(2).replace('.', ',') : SIN_DATO}
+        </p>
+        <p class="mt-2 font-mono text-meta-data text-muted">
+          {t('admin.uptimeHost')}:
+          <span data-vital="vitals.hostUptimeS" data-fmt="dur">{formatDuration(vitals.hostUptimeS)}</span>
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.hostNote')} · {t('admin.diskNote')}</p>
+
+    {/* Proceso Node y límites del contenedor */}
+    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-4">
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.uptimeProc')}</span>
+        <p data-vital="vitals.proceso.uptimeS" data-fmt="dur" class="mt-1 font-display text-headline-md text-ink">{formatDuration(vitals.proceso.uptimeS)}</p>
+      </div>
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.rss')}</span>
+        <p data-vital="vitals.proceso.rss" data-fmt="bytes" class="mt-1 font-display text-headline-md text-ink">{formatBytes(vitals.proceso.rss)}</p>
+        <p class="mt-1 font-mono text-meta-data text-muted">
+          {t('admin.heap')}: <span data-vital="vitals.proceso.heapUsado" data-fmt="bytes">{formatBytes(vitals.proceso.heapUsado)}</span>
+        </p>
+      </div>
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.containerLimit')}</span>
+        <p data-vital="vitals.contenedor.memActualBytes" data-fmt="bytes" class="mt-1 font-display text-headline-md text-ink">{formatBytes(vitals.contenedor.memActualBytes)}</p>
+        <p class="mt-1 font-mono text-meta-data text-muted">
+          {vitals.contenedor.memLimiteBytes ? formatBytes(vitals.contenedor.memLimiteBytes) : t('admin.noLimit')}
+        </p>
+      </div>
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.nodeVersion')}</span>
+        <p class="mt-1 font-display text-headline-md text-ink">{vitals.proceso.versionNode}</p>
+        <p class="mt-1 font-mono text-meta-data text-muted">
+          {t('admin.cpuThrottle')}: <span data-vital="vitals.contenedor.estranguladoPct" data-fmt="pct">{formatPct(vitals.contenedor.estranguladoPct)}</span>
+        </p>
+      </div>
+    </div>
+
+    {/* ================= BASE DE DATOS ================= */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.database')}</h2>
+    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-4">
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.dbSize')}</span>
+        <p data-vital="db.general.tamanoBytes" data-fmt="bytes" class="mt-1 font-display text-display-mobile text-ink">{formatBytes(dbStats.general?.tamanoBytes)}</p>
+        <p class="mt-1 font-mono text-meta-data text-muted">{dbStats.general?.version ?? SIN_DATO}</p>
+      </div>
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.connections')}</span>
+        <p data-vital="db.conexiones.total" class="mt-1 font-display text-display-mobile text-ink">{formatNum(dbStats.conexiones?.total, nf)}</p>
+        <p class="mt-1 font-mono text-meta-data text-muted">/ {formatNum(dbStats.conexiones?.max, nf)}</p>
+      </div>
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.hitRatio')}</span>
+        <p data-vital="db.cache.hitPct" data-fmt="pct1" class="mt-1 font-display text-display-mobile text-ink">{formatPct(dbStats.cache?.hitPct, 1)}</p>
+        <p class="mt-1 font-mono text-meta-data text-muted">{t('admin.hitRatioNote')}</p>
+      </div>
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.migration')}</span>
+        <p class:list={['mt-1 font-display text-headline-md', (dbStats.migracion?.pendientes ?? 0) > 0 ? 'text-error' : 'text-ink']}>
+          {dbStats.migracion ? `${dbStats.migracion.aplicadas} / ${dbStats.migracion.enDisco}` : SIN_DATO}
+        </p>
+        <p class="mt-1 font-mono text-meta-data text-muted">
+          {dbStats.migracion && dbStats.migracion.pendientes > 0
+            ? `${dbStats.migracion.pendientes} ${t('admin.migrationsPending')}`
+            : `${dbStats.migracion?.ultimaEtiqueta ?? ''} · ${t('admin.migrationsUpToDate')}`}
+        </p>
+      </div>
+    </div>
+
+    {dbStats.tablas.length > 0 && (
+      <div class="mt-4 overflow-x-auto border border-ink">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="border-b border-ink bg-ink text-background">
+              <th class="label px-3 py-2 font-medium text-background">{t('admin.colTable')}</th>
+              <th class="label px-3 py-2 text-right font-medium text-background">{t('admin.colSize')}</th>
+              <th class="label hidden px-3 py-2 text-right font-medium text-background sm:table-cell">{t('admin.colIndexes')}</th>
+              <th class="label px-3 py-2 text-right font-medium text-background">{t('admin.colRows')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dbStats.tablas.map((tb) => (
+              <tr class="border-b border-outline-variant last:border-b-0">
+                <td class="px-3 py-2 font-mono text-meta-data text-ink">{tb.tabla}</td>
+                <td class="px-3 py-2 text-right font-mono text-meta-data text-charcoal">{formatBytes(tb.totalBytes)}</td>
+                <td class="hidden px-3 py-2 text-right font-mono text-meta-data text-muted sm:table-cell">{formatBytes(tb.indicesBytes)}</td>
+                {/* Estimación del recolector de estadísticas: si aún no ha
+                    pasado por la tabla vale cero, y "0 filas" en una tabla que
+                    ocupa megas sería mentira. */}
+                <td class="px-3 py-2 text-right font-mono text-meta-data text-charcoal">
+                  {tb.filasVivas > 0 || tb.heapBytes <= 8192 ? formatNum(tb.filasVivas, nf) : SIN_DATO}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+
+    {/* ================= FUENTES EXTERNAS ================= */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.sources')}</h2>
+    <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.sourcesNote')}</p>
+    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-5">
+      {FUENTES.map((id) => (
+        <div class="bg-surface p-4" data-probe={id}>
+          <span class="label">{NOMBRE_FUENTE[id]}</span>
+          {/* El estado nunca se transmite solo por color: siempre lleva su texto. */}
+          <p data-probe-estado class="mt-1 font-display text-headline-md text-muted">…</p>
+          <p data-probe-ms class="mt-1 font-mono text-meta-data text-muted">{SIN_DATO}</p>
+          <p data-probe-nota class="mt-1 font-mono text-meta-data text-ochre-dim"></p>
         </div>
       ))}
     </div>
 
-    {/* CACHÉS Y DATOS */}
-    <h2 class="mt-10 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.dataTitle')}</h2>
-    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-5">
+    {/* ================= CACHÉS ================= */}
+    <div class="mt-12 flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-2">
+      <h2 class="text-headline-lg text-ink">{t('admin.caches')}</h2>
+      <button type="button" id="vaciar-todas" class="label border border-ink px-2 py-1 transition-colors hover:bg-ink hover:text-background">{t('admin.clearAll')}</button>
+    </div>
+    <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.cachesNote')}</p>
+    <div class="mt-4 overflow-x-auto border border-ink">
+      <table class="w-full border-collapse text-left">
+        <thead>
+          <tr class="border-b border-ink bg-ink text-background">
+            <th class="label px-3 py-2 font-medium text-background">{t('admin.colCache')}</th>
+            <th class="label px-3 py-2 text-right font-medium text-background">{t('admin.colEntries')}</th>
+            <th class="label hidden px-3 py-2 text-right font-medium text-background sm:table-cell">{t('admin.colTtl')}</th>
+            <th class="label hidden px-3 py-2 text-right font-medium text-background sm:table-cell">{t('admin.colMax')}</th>
+            <th class="px-3 py-2"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {caches.map((c) => (
+            <tr class="border-b border-outline-variant last:border-b-0">
+              <td class="px-3 py-2 font-display text-headline-md text-ink">{cacheLabel(c.id, c.label)}</td>
+              <td data-cache-size={c.id} class="px-3 py-2 text-right font-mono text-meta-data text-charcoal">{formatNum(c.size, nf)}</td>
+              <td class="hidden px-3 py-2 text-right font-mono text-meta-data text-muted sm:table-cell">{c.ttlMs ? formatDuration(c.ttlMs / 1000) : SIN_DATO}</td>
+              <td class="hidden px-3 py-2 text-right font-mono text-meta-data text-muted sm:table-cell">{c.maxKeys ? formatNum(c.maxKeys, nf) : SIN_DATO}</td>
+              <td class="px-3 py-2 text-right">
+                {c.clearable ? (
+                  <button type="button" data-clear-cache={c.id} class="label border border-ink px-2 py-1 transition-colors hover:bg-ink hover:text-background">{t('admin.clear')}</button>
+                ) : (
+                  <span class="label text-muted">{SIN_DATO}</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    {/* ================= ACTIVIDAD ================= */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.activity')}</h2>
+    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-5">
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.active24h')}</span>
+        <p data-vital="actividad.d1" class="mt-1 font-display text-display-mobile text-ink">{formatNum(actividad.d1, nf)}</p>
+      </div>
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.active7d')}</span>
+        <p data-vital="actividad.d7" class="mt-1 font-display text-display-mobile text-ink">{formatNum(actividad.d7, nf)}</p>
+      </div>
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.active30d')}</span>
+        <p data-vital="actividad.d30" class="mt-1 font-display text-display-mobile text-ink">{formatNum(actividad.d30, nf)}</p>
+      </div>
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.sessionsLive')}</span>
+        <p data-vital="actividad.sesionesVivas" class="mt-1 font-display text-display-mobile text-ink">{formatNum(actividad.sesionesVivas, nf)}</p>
+      </div>
+      <div class="bg-surface p-4">
+        <span class="label">{t('admin.neverSeen')}</span>
+        <p data-vital="actividad.nunca" class="mt-1 font-display text-display-mobile text-muted">{formatNum(actividad.nunca, nf)}</p>
+      </div>
+    </div>
+
+    {/* ================= CRECIMIENTO ================= */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.growth')}</h2>
+    <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.growthNote')}</p>
+    <div class="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2">
+      {series.map((s, i) => {
+        // Cada serie se escala a su propio máximo: si no, las altas de usuarios
+        // (decenas) desaparecerían al lado de las fichas cacheadas (miles).
+        const max = Math.max(1, ...s.puntos.map((p) => p.n));
+        return (
+          <div>
+            <h3 class="label">{s.titulo}</h3>
+            <ul class="mt-3 space-y-1">
+              {s.puntos.map((p) => (
+                <li class="grid grid-cols-[4.5rem_1fr_2.5rem] items-center gap-2">
+                  <span class="font-mono text-meta-data text-muted">{etiquetaSemana(p.semana)}</span>
+                  <span class="block h-4 bg-surface-dim">
+                    <span class:list={['block h-4', i % 2 === 0 ? 'bg-ink' : 'bg-ochre']} style={`width:${pct(p.n, max)}%`}></span>
+                  </span>
+                  <span class="text-right font-mono text-meta-data text-charcoal">{p.n}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+    </div>
+
+    {/* ================= DATOS ================= */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.dataTitle')}</h2>
+    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
       {dataCards.map((c) => (
         <div class="bg-surface p-4">
           <span class="label">{c.label}</span>
-          <p class="mt-1 font-display text-display-mobile text-ink">{c.value}</p>
+          <p class="mt-1 font-display text-display-mobile text-ink">{formatNum(c.value, nf)}</p>
         </div>
       ))}
     </div>
 
-    {/* AÑADIR PELÍCULA */}
-    <h2 class="mt-10 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.addFilm')}</h2>
+    {/* ================= AÑADIR PELÍCULA ================= */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.addFilm')}</h2>
     <form id="add-film-form" class="mt-4 flex flex-wrap items-end gap-3">
       <label class="flex flex-col gap-1">
         <span class="label">{t('admin.tmdbId')}</span>
@@ -114,7 +436,7 @@ const dataCards = [
       </div>
     )}
 
-    {/* USUARIOS */}
+    {/* ================= USUARIOS ================= */}
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.users')} · {users.length}</h2>
     <div class="mt-4 overflow-x-auto border border-ink">
       <table class="w-full border-collapse text-left">
@@ -151,14 +473,197 @@ const dataCards = [
 
 <script>
   import { confirmModal } from '../../lib/ui/modals';
+  import { formatBytes, formatDuration, formatMs, formatNum, formatPct, SIN_DATO } from '../../lib/format';
 
   const root = document.querySelector('[data-confirm]') as HTMLElement;
   const confirmMsg = root?.dataset.confirm || 'Delete?';
   const addErr = root?.dataset.adderr || 'Error';
   const deleteLabel = root?.dataset.delete || 'Delete';
   const cancelLabel = root?.dataset.cancel || 'Cancel';
+  const confirmClear = root?.dataset.confirmClear || 'Clear?';
+  const clearLabel = root?.dataset.clear || 'Clear';
 
-  // Añadir película
+  // Los textos de estado vienen del servidor ya traducidos: dentro de este
+  // script no hay ni una cadena que traducir.
+  const ESTADO: Record<string, string> = {
+    ok: root?.dataset.lOk || 'ok',
+    slow: root?.dataset.lSlow || 'slow',
+    down: root?.dataset.lDown || 'down',
+    skipped: root?.dataset.lSkipped || '—',
+  };
+  const COLOR_ESTADO: Record<string, string> = {
+    ok: 'text-ink',
+    slow: 'text-ochre-dim',
+    down: 'text-error',
+    skipped: 'text-muted',
+  };
+
+  /* ================= Refresco en vivo ================= */
+
+  const REFRESCO_MS = 10_000;
+  let temporizador: number | undefined;
+  let enVuelo = false; // impide que se apilen peticiones si el servidor va lento
+  let fallos = 0;
+  const marca = document.getElementById('ultima-act');
+  const nf = document.documentElement.lang || 'es';
+
+  /** Lee "vitals.cpu.usoPct" dentro del objeto de respuesta. */
+  const leer = (obj: unknown, ruta: string): unknown =>
+    ruta
+      .split('.')
+      .reduce<unknown>((o, k) => (o == null ? null : (o as Record<string, unknown>)[k]), obj);
+
+  function formatear(v: unknown, fmt: string | undefined): string {
+    const n = typeof v === 'number' ? v : null;
+    switch (fmt) {
+      case 'bytes':
+        return formatBytes(n);
+      case 'dur':
+        return formatDuration(n);
+      case 'ms':
+        return formatMs(n);
+      case 'pct':
+        return formatPct(n);
+      case 'pct1':
+        return formatPct(n, 1);
+      case 'carga':
+        return n == null ? SIN_DATO : n.toFixed(2).replace('.', ',');
+      default:
+        return formatNum(n, nf);
+    }
+  }
+
+  /** Mismos umbrales que en el servidor: ámbar al 75 %, rojo al 90 %. */
+  function colorUso(el: HTMLElement, p: unknown) {
+    if (typeof p !== 'number') return;
+    el.classList.remove('text-error', 'text-ochre-dim', 'text-ink');
+    el.classList.add(p >= 90 ? 'text-error' : p >= 75 ? 'text-ochre-dim' : 'text-ink');
+  }
+
+  function pintar(datos: unknown) {
+    for (const el of document.querySelectorAll<HTMLElement>('[data-vital]')) {
+      const v = leer(datos, el.dataset.vital!);
+      el.textContent = formatear(v, el.dataset.fmt);
+      if (el.hasAttribute('data-umbral')) colorUso(el, v);
+    }
+    for (const el of document.querySelectorAll<HTMLElement>('[data-bar]')) {
+      const v = leer(datos, el.dataset.bar!);
+      el.style.width = `${typeof v === 'number' ? Math.min(100, Math.max(0, v)) : 0}%`;
+    }
+
+    const d = datos as {
+      caches?: { id: string; size: number }[];
+      sondas?: { id: string; estado: string; ms: number | null; nota: string | null }[];
+    };
+
+    for (const c of d.caches ?? []) {
+      const celda = document.querySelector<HTMLElement>(`[data-cache-size="${c.id}"]`);
+      if (celda) celda.textContent = formatNum(c.size, nf);
+    }
+
+    for (const s of d.sondas ?? []) {
+      const caja = document.querySelector<HTMLElement>(`[data-probe="${s.id}"]`);
+      if (!caja) continue;
+      const est = caja.querySelector<HTMLElement>('[data-probe-estado]');
+      if (est) {
+        est.textContent = ESTADO[s.estado] ?? s.estado;
+        est.classList.remove('text-ink', 'text-ochre-dim', 'text-error', 'text-muted');
+        est.classList.add(COLOR_ESTADO[s.estado] ?? 'text-muted');
+      }
+      const ms = caja.querySelector<HTMLElement>('[data-probe-ms]');
+      if (ms) ms.textContent = formatMs(s.ms);
+      const nota = caja.querySelector<HTMLElement>('[data-probe-nota]');
+      if (nota) nota.textContent = s.nota ?? '';
+    }
+  }
+
+  /**
+   * Ante 429 o 5xx se para el intervalo y se reintenta con espera creciente. El
+   * límite de la API es de 80 peticiones por minuto y se comparte con el resto
+   * de la navegación: reintentar de inmediato convertiría un tropiezo puntual en
+   * un bloqueo largo.
+   */
+  function retroceder() {
+    parar();
+    fallos++;
+    const espera = Math.min(120_000, 30_000 * fallos);
+    if (marca) marca.textContent = root?.dataset.lError || '';
+    window.setTimeout(arrancar, espera);
+  }
+
+  async function tick() {
+    if (document.hidden || enVuelo) return;
+    enVuelo = true;
+    try {
+      const res = await fetch('/api/admin/vitals', { headers: { accept: 'application/json' } });
+      if (!res.ok) {
+        retroceder();
+        return;
+      }
+      fallos = 0;
+      pintar(await res.json());
+      if (marca) marca.textContent = new Date().toLocaleTimeString(nf);
+    } catch {
+      retroceder();
+    } finally {
+      enVuelo = false;
+    }
+  }
+
+  function parar() {
+    if (temporizador) {
+      window.clearInterval(temporizador);
+      temporizador = undefined;
+    }
+  }
+
+  function arrancar() {
+    parar();
+    temporizador = window.setInterval(tick, REFRESCO_MS);
+    void tick(); // sin esperar al primer intervalo
+  }
+
+  // Un panel abierto en una pestaña de fondo toda la tarde no puede seguir
+  // consultando Postgres cada diez segundos.
+  document.addEventListener('visibilitychange', () => (document.hidden ? parar() : arrancar()));
+  window.addEventListener('pagehide', parar);
+  arrancar();
+
+  /* ================= Vaciar cachés ================= */
+
+  async function vaciar(id: string) {
+    const res = await fetch('/api/admin/caches', {
+      method: 'DELETE',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) void tick(); // repinta los tamaños sin recargar la página
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('[data-clear-cache]').forEach((b) =>
+    b.addEventListener('click', async () => {
+      const ok = await confirmModal({
+        title: clearLabel,
+        message: confirmClear,
+        confirmLabel: clearLabel,
+        cancelLabel,
+      });
+      if (ok) await vaciar(b.dataset.clearCache!);
+    }),
+  );
+
+  document.getElementById('vaciar-todas')?.addEventListener('click', async () => {
+    const ok = await confirmModal({
+      title: clearLabel,
+      message: confirmClear,
+      confirmLabel: clearLabel,
+      cancelLabel,
+    });
+    if (ok) await vaciar('all');
+  });
+
+  /* ================= Gestión de contenido ================= */
+
   const form = document.getElementById('add-film-form') as HTMLFormElement | null;
   const msg = document.getElementById('add-msg');
   form?.addEventListener('submit', async (e) => {
@@ -180,9 +685,18 @@ const dataCards = [
     }
   });
 
-  // Quitar película añadida
+  // Quitar una película añadida: ahora pide confirmación, como el borrado de
+  // usuario. Antes se borraba al primer clic, sin red de seguridad.
   document.querySelectorAll<HTMLButtonElement>('[data-remove-film]').forEach((b) =>
     b.addEventListener('click', async () => {
+      const ok = await confirmModal({
+        title: deleteLabel,
+        message: confirmClear,
+        confirmLabel: deleteLabel,
+        cancelLabel,
+        danger: true,
+      });
+      if (!ok) return;
       const tmdbId = Number(b.dataset.removeFilm);
       const res = await fetch('/api/admin/films', {
         method: 'DELETE',
@@ -193,7 +707,6 @@ const dataCards = [
     }),
   );
 
-  // Eliminar usuario
   document.querySelectorAll<HTMLButtonElement>('[data-del-user]').forEach((b) =>
     b.addEventListener('click', async () => {
       const ok = await confirmModal({

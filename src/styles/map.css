@@ -1,0 +1,145 @@
+/*
+ * Skin de Leaflet para los mapas del sitio (buscador de cines y localizaciones
+ * de rodaje). Se aplica a cualquier contenedor con la clase .mapa-archivo.
+ *
+ * Vive en un fichero propio y no dentro de una página porque lo usan dos, y
+ * duplicar cien líneas de CSS es pedir que diverjan.
+ *
+ * La idea: que el mapa parezca del sitio y no una isla de Google Maps. Las
+ * teselas de OSM son de colores y chillan al lado de la paleta ocre/tinta, así
+ * que se desaturan por CSS —sin cambiar de proveedor, sin claves y sin tocar la
+ * CSP— y todo lo que va encima usa la retícula dura de la casa: sin esquinas
+ * redondeadas, borde negro y tipografías propias.
+ */
+
+/* --- Teselas: monocromo, para que el color lo pongan los marcadores --- */
+.mapa-archivo .leaflet-tile-pane {
+  filter: grayscale(1) contrast(0.92) brightness(1.06);
+}
+/* En modo oscuro se invierte el mapa (truco clásico): el papel se vuelve
+   carbón y las carreteras claras, en lugar de un rectángulo blanco cegador. */
+[data-theme='dark'] .mapa-archivo .leaflet-tile-pane {
+  filter: grayscale(1) invert(1) contrast(0.85) brightness(0.95);
+}
+
+.mapa-archivo {
+  background: var(--c-film-white);
+}
+
+/* --- Marcadores: cuadrados, como el resto de la interfaz --- */
+.mapa-archivo .cine-pin {
+  border: 2px solid var(--c-ink);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+.mapa-archivo .cine-pin--sala {
+  background: var(--c-ochre);
+}
+.mapa-archivo .cine-pin--you {
+  background: var(--c-ink);
+  /* Rombo: distingue "estás aquí" de una sala de un vistazo, sin leyenda. */
+  transform: rotate(45deg);
+}
+.mapa-archivo .cine-pin--sala:hover {
+  background: var(--c-ink);
+}
+.mapa-archivo .leaflet-marker-icon:focus-visible {
+  outline: 3px solid var(--c-ochre);
+  outline-offset: 2px;
+}
+
+/* --- Globos de información --- */
+.mapa-archivo .leaflet-popup-content-wrapper,
+.mapa-archivo .leaflet-popup-tip {
+  border-radius: 0;
+  background: var(--c-background);
+  color: var(--c-ink);
+  box-shadow: 4px 4px 0 var(--c-ink);
+  border: 2px solid var(--c-ink);
+}
+.mapa-archivo .leaflet-popup-content {
+  margin: 12px 14px;
+  font-family: 'Geist Sans', Geist, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.mapa-archivo .leaflet-popup-content strong {
+  font-family: 'EB Garamond Variable', 'EB Garamond', serif;
+  font-size: 20px;
+  font-weight: 600;
+}
+.mapa-archivo .leaflet-popup-content a {
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--c-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.mapa-archivo .leaflet-popup-content a:hover {
+  color: var(--c-ochre-dim);
+}
+.mapa-archivo .leaflet-popup-close-button {
+  color: var(--c-ink);
+  font-size: 20px;
+  padding: 6px 8px 0 0;
+}
+
+/* --- Controles: cuadrados y con el borde de la casa --- */
+.mapa-archivo .leaflet-control-zoom,
+.mapa-archivo .leaflet-control-attribution {
+  border-radius: 0;
+  border: 2px solid var(--c-ink);
+  box-shadow: none;
+}
+.mapa-archivo .leaflet-control-zoom a {
+  border-radius: 0;
+  background: var(--c-background);
+  color: var(--c-ink);
+  border-bottom: 2px solid var(--c-ink);
+  font-weight: 700;
+}
+.mapa-archivo .leaflet-control-zoom a:last-child {
+  border-bottom: 0;
+}
+.mapa-archivo .leaflet-control-zoom a:hover {
+  background: var(--c-ochre);
+  color: var(--c-on-accent);
+}
+.mapa-archivo .leaflet-control-attribution {
+  background: var(--c-background);
+  border-width: 2px 0 0 2px;
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--c-muted);
+}
+.mapa-archivo .leaflet-control-attribution a {
+  color: var(--c-muted);
+}
+
+/* --- Localizaciones de rodaje (ficha de película) ---
+   La FORMA dice la precisión, sin necesidad de leyenda: cuadrado = punto
+   concreto (un puente, un estudio), círculo = solo se conoce la ciudad. Y el
+   RELLENO dice de qué se habla: ocre = donde se rodó, papel = donde transcurre. */
+.mapa-archivo .loc-pin {
+  border: 2px solid var(--c-ink);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+.mapa-archivo .loc-pin--rodaje {
+  background: var(--c-ochre);
+}
+.mapa-archivo .loc-pin--relato {
+  background: var(--c-background);
+}
+/* El !important es necesario: global.css redondea a cero en todo el sitio. */
+.mapa-archivo .loc-pin--aprox {
+  border-radius: 50% !important;
+  opacity: 0.8;
+}
+.mapa-archivo .leaflet-popup-content .loc-tipo {
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--c-muted);
+}

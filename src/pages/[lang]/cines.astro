@@ -2,6 +2,7 @@
 export const prerender = false; // resultados en vivo desde /api/cinemas
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { normalizeLang, useTranslations } from '../../i18n/ui';
+import '../../styles/map.css';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -71,7 +72,7 @@ const t = useTranslations(lang);
 
     {/* Mapa (Leaflet). Oculto hasta la primera búsqueda. */}
     <div class="relative mt-6">
-      <div id="cines-map" class="hidden h-[24rem] border border-ink" aria-label={t('cines.mapAria')}></div>
+      <div id="cines-map" class="mapa-archivo hidden h-[24rem] border border-ink" aria-label={t('cines.mapAria')}></div>
       <button
         type="button"
         id="cines-search-area"
@@ -93,122 +94,6 @@ const t = useTranslations(lang);
   </section>
 </BaseLayout>
 
-{/*
-  Leaflet se pinta por JavaScript, fuera del alcance de los estilos con ámbito,
-  así que su skin va en un bloque global acotado a #cines-map.
-
-  La idea: que el mapa parezca del sitio y no una isla de Google Maps. Las teselas
-  de OSM son de colores y chillan al lado de la paleta ocre/tinta, así que se
-  desaturan por CSS —sin cambiar de proveedor, sin claves y sin tocar la CSP— y
-  todo lo que va encima (marcadores, globos, controles) usa la retícula dura de
-  la casa: sin esquinas redondeadas, borde negro y tipografías propias.
-*/}
-<style is:global>
-  /* --- Teselas: monocromo, para que el color lo pongan los marcadores --- */
-  #cines-map .leaflet-tile-pane {
-    filter: grayscale(1) contrast(0.92) brightness(1.06);
-  }
-  /* En modo oscuro se invierte el mapa (truco clásico): el papel se vuelve
-     carbón y las carreteras claras, en lugar de un rectángulo blanco cegador. */
-  [data-theme='dark'] #cines-map .leaflet-tile-pane {
-    filter: grayscale(1) invert(1) contrast(0.85) brightness(0.95);
-  }
-
-  #cines-map {
-    background: var(--c-film-white);
-  }
-
-  /* --- Marcadores: cuadrados, como el resto de la interfaz --- */
-  #cines-map .cine-pin {
-    border: 2px solid var(--c-ink);
-    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
-  }
-  #cines-map .cine-pin--sala {
-    background: var(--c-ochre);
-  }
-  #cines-map .cine-pin--you {
-    background: var(--c-ink);
-    /* Rombo: distingue "estás aquí" de una sala de un vistazo, sin leyenda. */
-    transform: rotate(45deg);
-  }
-  #cines-map .cine-pin--sala:hover {
-    background: var(--c-ink);
-  }
-  #cines-map .leaflet-marker-icon:focus-visible {
-    outline: 3px solid var(--c-ochre);
-    outline-offset: 2px;
-  }
-
-  /* --- Globos de información --- */
-  #cines-map .leaflet-popup-content-wrapper,
-  #cines-map .leaflet-popup-tip {
-    border-radius: 0;
-    background: var(--c-background);
-    color: var(--c-ink);
-    box-shadow: 4px 4px 0 var(--c-ink);
-    border: 2px solid var(--c-ink);
-  }
-  #cines-map .leaflet-popup-content {
-    margin: 12px 14px;
-    font-family: 'Geist Sans', Geist, system-ui, sans-serif;
-    font-size: 14px;
-    line-height: 1.45;
-  }
-  #cines-map .leaflet-popup-content strong {
-    font-family: 'EB Garamond Variable', 'EB Garamond', serif;
-    font-size: 20px;
-    font-weight: 600;
-  }
-  #cines-map .leaflet-popup-content a {
-    font-family: 'Space Mono', ui-monospace, monospace;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--c-ink);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  #cines-map .leaflet-popup-content a:hover {
-    color: var(--c-ochre-dim);
-  }
-  #cines-map .leaflet-popup-close-button {
-    color: var(--c-ink);
-    font-size: 20px;
-    padding: 6px 8px 0 0;
-  }
-
-  /* --- Controles: cuadrados y con el borde de la casa --- */
-  #cines-map .leaflet-control-zoom,
-  #cines-map .leaflet-control-attribution {
-    border-radius: 0;
-    border: 2px solid var(--c-ink);
-    box-shadow: none;
-  }
-  #cines-map .leaflet-control-zoom a {
-    border-radius: 0;
-    background: var(--c-background);
-    color: var(--c-ink);
-    border-bottom: 2px solid var(--c-ink);
-    font-weight: 700;
-  }
-  #cines-map .leaflet-control-zoom a:last-child {
-    border-bottom: 0;
-  }
-  #cines-map .leaflet-control-zoom a:hover {
-    background: var(--c-ochre);
-    color: var(--c-on-accent);
-  }
-  #cines-map .leaflet-control-attribution {
-    background: var(--c-background);
-    border-width: 2px 0 0 2px;
-    font-family: 'Space Mono', ui-monospace, monospace;
-    font-size: 10px;
-    color: var(--c-muted);
-  }
-  #cines-map .leaflet-control-attribution a {
-    color: var(--c-muted);
-  }
-</style>
 
 <script>
   // Leaflet se carga de forma PEREZOSA (dinámica) solo al pintar el mapa. Así, si

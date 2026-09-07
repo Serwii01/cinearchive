@@ -25,6 +25,7 @@ import { WATCH_REGIONS, countryName } from '../../../data/countries';
 import { db } from '../../../db/client';
 import { userFilms } from '../../../db/schema';
 import { and, eq } from 'drizzle-orm';
+import '../../../styles/map.css';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -136,6 +137,23 @@ const facts = [
 ].filter((f) => f.value);
 
 const hasLocations = !!locations && (locations.filming.length > 0 || locations.narrative.length > 0);
+
+/*
+ * Puntos del mapa. Solo entran los que tienen coordenada Y no son una
+ * demarcación entera: el centroide de «España» o de «California» no señala
+ * ningún rodaje y daría una falsa sensación de precisión.
+ *
+ * Se marca cuáles son de rodaje y cuáles del relato, porque no es lo mismo:
+ * «Nueva York» como lugar donde se rodó y «Nueva York» como lugar donde
+ * transcurre la historia son dos afirmaciones distintas.
+ */
+const lugaresMapa = [
+  ...(locations?.filming ?? []).map((l) => ({ ...l, rodaje: true })),
+  ...(locations?.narrative ?? []).map((l) => ({ ...l, rodaje: false })),
+]
+  .filter((l) => l.lat != null && l.lon != null && l.kind !== 'region')
+  .map((l) => ({ n: l.name, lat: l.lat, lon: l.lon, exacto: l.kind === 'exacto', rodaje: l.rodaje }));
+const conMapa = lugaresMapa.length > 0;
 const tagline = cleanOmdb(tmdb.tagline);
 
 // Enlace de "volver" según el origen real (cabecera Referer).
@@ -295,29 +313,71 @@ const crumbsJsonLd = breadcrumbLd([
 
         {/* Localizaciones (Wikidata) */}
         {hasLocations && (
-          <section class="mt-10">
+          <section class="mt-10" id="localizaciones">
             <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('film.locations')}</h2>
+
+            {/* El mapa solo aparece si hay algo que señalar. Un país entero no
+                cuenta: su centroide no dice nada y daría una falsa precisión.
+                Leaflet se carga al llegar aquí, no al abrir la ficha. */}
+            {conMapa && (
+              <div class="mt-4">
+                <div
+                  id="mapa-localizaciones"
+                  class="mapa-archivo h-[22rem] border border-ink"
+                  role="img"
+                  aria-label={t('film.locationsMapAria')}
+                  data-lugares={JSON.stringify(lugaresMapa)}
+                  data-l-rodaje={t('film.filmingLocation')}
+                  data-l-relato={t('film.narrativeLocation')}
+                ></div>
+                <p class="mt-2 font-mono text-meta-data text-muted">{t('film.locationsNote')}</p>
+              </div>
+            )}
+
             {locations!.filming.length > 0 && (
               <div class="mt-4">
                 <span class="label">{t('film.filmingLocation')}</span>
                 <div class="mt-2 flex flex-wrap gap-2">
                   {locations!.filming.map((l) => (
-                    <span class="border border-ink px-2 py-1 font-mono text-meta-data text-ink">{l}</span>
+                    <span
+                      class:list={[
+                        'border px-2 py-1 font-mono text-meta-data',
+                        l.kind === 'region' ? 'border-outline-variant text-muted' : 'border-ink text-ink',
+                      ]}
+                      title={l.kind === 'region' ? t('film.locationsRegion') : undefined}
+                    >
+                      {l.name}
+                    </span>
                   ))}
                 </div>
               </div>
             )}
+
             {locations!.narrative.length > 0 && (
               <div class="mt-4">
                 <span class="label">{t('film.narrativeLocation')}</span>
                 <div class="mt-2 flex flex-wrap gap-2">
                   {locations!.narrative.map((l) => (
-                    <span class="border border-ink px-2 py-1 font-mono text-meta-data text-charcoal">{l}</span>
+                    <span class="border border-outline-variant px-2 py-1 font-mono text-meta-data text-charcoal">{l.name}</span>
                   ))}
                 </div>
               </div>
             )}
-            <p class="mt-3 font-mono text-meta-data text-muted">{t('film.locationsBy')}</p>
+
+            <p class="mt-3 font-mono text-meta-data text-muted">
+              {conMapa ? t('film.locationsSource') : t('film.locationsBy')}
+            </p>
+            {/* Wikidata es editable: si falta algo, se puede arreglar para todos. */}
+            <p class="mt-1 font-mono text-meta-data text-muted">
+              <a
+                href={`https://www.wikidata.org/wiki/Special:Search?search=${encodeURIComponent(tmdb.imdb_id ?? tmdb.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-ink underline underline-offset-2 hover:text-ochre-dim"
+              >
+                {t('film.locationsHelp')}
+              </a>
+            </p>
           </section>
         )}
 
@@ -528,6 +588,81 @@ const crumbsJsonLd = breadcrumbLd([
           groups.style.opacity = '1';
         }
       });
+    }
+
+    /* ================= Mapa de localizaciones (Wikidata) ================= */
+    // Leaflet pesa, y la ficha es de lo más visitado del sitio: no se carga al
+    // abrir la página, sino cuando el mapa se acerca a la pantalla. Quien no
+    // baje hasta aquí no descarga nada.
+    const mapaEl = document.getElementById('mapa-localizaciones');
+    if (mapaEl) {
+      interface Lugar { n: string; lat: number; lon: number; exacto: boolean; rodaje: boolean }
+      const lugares: Lugar[] = JSON.parse(mapaEl.dataset.lugares || '[]');
+      const etiquetaRodaje = mapaEl.dataset.lRodaje || '';
+      const etiquetaRelato = mapaEl.dataset.lRelato || '';
+
+      const pintarMapa = async () => {
+        const Lm = await import('leaflet');
+        await import('leaflet/dist/leaflet.css');
+        const Leaf = ((Lm as unknown as { default?: typeof Lm }).default ?? Lm) as typeof Lm;
+
+        const mapa = Leaf.map(mapaEl, {
+          scrollWheelZoom: false, // igual que en /cines: la rueda desplaza la página
+          attributionControl: true,
+        });
+        mapa.on('click', () => mapa.scrollWheelZoom.enable());
+        mapaEl.addEventListener('mouseleave', () => mapa.scrollWheelZoom.disable());
+
+        Leaf.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap',
+        }).addTo(mapa);
+
+        const puntos: [number, number][] = [];
+        for (const l of lugares) {
+          puntos.push([l.lat, l.lon]);
+          // Cuadrado = punto concreto; círculo = solo sabemos la ciudad. La
+          // forma dice la precisión sin necesidad de leyenda.
+          const clases = [
+            'loc-pin',
+            l.rodaje ? 'loc-pin--rodaje' : 'loc-pin--relato',
+            l.exacto ? '' : 'loc-pin--aprox',
+          ]
+            .filter(Boolean)
+            .join(' ');
+          const lado = l.exacto ? 16 : 14;
+          Leaf.marker([l.lat, l.lon], {
+            icon: Leaf.divIcon({ className: clases, iconSize: [lado, lado], iconAnchor: [lado / 2, lado / 2] }),
+            title: l.n,
+          })
+            .bindPopup(
+              '<strong>' + escapar(l.n) + '</strong><br>' +
+                '<span class="loc-tipo">' + escapar(l.rodaje ? etiquetaRodaje : etiquetaRelato) + '</span>',
+            )
+            .addTo(mapa);
+        }
+
+        if (puntos.length === 1) mapa.setView(puntos[0], 11);
+        else mapa.fitBounds(puntos as [number, number][], { padding: [36, 36], maxZoom: 13 });
+        setTimeout(() => mapa.invalidateSize(), 0);
+      };
+
+      const escapar = (s: string) =>
+        String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
+
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver(
+          (entradas) => {
+            if (!entradas.some((e) => e.isIntersecting)) return;
+            obs.disconnect();
+            void pintarMapa().catch(() => mapaEl.remove()); // si Leaflet falla, fuera el hueco
+          },
+          { rootMargin: '200px' }, // arranca un poco antes de que se vea
+        );
+        obs.observe(mapaEl);
+      } else {
+        void pintarMapa().catch(() => mapaEl.remove());
+      }
     }
   </script>
 </BaseLayout>

@@ -18,6 +18,7 @@
  */
 
 import overridesData from '../data/cinemas-overrides.json';
+import { registerCache } from './cache-registry';
 
 /** Correcciones propias sobre OSM (ver src/data/cinemas-overrides.json). */
 interface CinemaOverrides {
@@ -33,7 +34,9 @@ interface CinemaOverrides {
 const OVERRIDES = overridesData as unknown as CinemaOverrides;
 
 // Identifica la aplicación ante Nominatim/Overpass (requerido por su política).
-const UA = 'CineArchive/1.0 (+https://cinearchive.es)';
+// Se exporta para que las sondas del panel usen exactamente el mismo, y no
+// aparezcamos ante esos servicios como dos clientes distintos.
+export const UA = 'CineArchive/1.0 (+https://cinearchive.es)';
 const NOMINATIM = 'https://nominatim.openstreetmap.org/search';
 // Photon (Komoot): geocodificador pensado para autocompletado por prefijo. Se usa
 // solo para las sugerencias (Nominatim rankea mal los prefijos y cuela comercios).
@@ -93,6 +96,28 @@ const suggestCache = new Map<string, { time: number; data: GeoPoint[] }>();
 // La caché de cines usa vencimiento explícito por entrada (24 h si hay salas,
 // 10 min si el resultado fue vacío).
 const cinemaCache = new Map<string, { expires: number; data: Cinema[] }>();
+
+registerCache({
+  id: 'cines-geo',
+  label: 'Geocodificación de lugares',
+  ttlMs: DAY_MS,
+  size: () => geoCache.size,
+  clear: () => geoCache.clear(),
+});
+registerCache({
+  id: 'cines-sugerencias',
+  label: 'Sugerencias del buscador',
+  ttlMs: DAY_MS,
+  size: () => suggestCache.size,
+  clear: () => suggestCache.clear(),
+});
+// Sin ttlMs: esta caduca por entrada (24 h con resultados, 10 min si vino vacía).
+registerCache({
+  id: 'cines-salas',
+  label: 'Salas por zona',
+  size: () => cinemaCache.size,
+  clear: () => cinemaCache.clear(),
+});
 
 function fresh<T>(entry: { time: number; data: T } | undefined): entry is { time: number; data: T } {
   return !!entry && Date.now() - entry.time < DAY_MS;

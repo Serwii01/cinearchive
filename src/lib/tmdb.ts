@@ -6,6 +6,7 @@
  */
 
 import { createMemo } from './memo';
+import { registerCache } from './cache-registry';
 
 const BASE = 'https://api.themoviedb.org/3';
 export const TMDB_IMG = 'https://image.tmdb.org/t/p';
@@ -454,6 +455,15 @@ export interface ProviderOption {
 // El catálogo cambia muy rara vez y es igual para todos: se guarda un día en
 // memoria por (región, idioma).
 const providerCatalog = createMemo<ProviderOption[]>(24 * 60 * 60 * 1000, 60);
+
+registerCache({
+  id: 'tmdb-providers',
+  label: 'Plataformas por región',
+  ttlMs: 24 * 60 * 60 * 1000,
+  maxKeys: 60,
+  size: () => providerCatalog.size,
+  clear: () => providerCatalog.clear(),
+});
 
 /**
  * Plataformas que operan en la región, ordenadas por relevancia local

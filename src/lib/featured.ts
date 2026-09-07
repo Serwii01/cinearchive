@@ -16,6 +16,7 @@
  * Se cachea en memoria por idioma para no repetir la llamada en cada visita.
  */
 import { discoverMovies, getMovie, backdropUrl, posterUrl, type TmdbSearchResult } from './tmdb';
+import { registerCache } from './cache-registry';
 
 export interface FilmOfDay {
   tmdbId: number;
@@ -51,6 +52,14 @@ type PickLike = {
 };
 
 const cache = new Map<string, { day: number; data: FilmOfDay }>();
+
+// Sin ttlMs: no caduca por tiempo, sino al cambiar el día.
+registerCache({
+  id: 'featured',
+  label: 'Película del día',
+  size: () => cache.size,
+  clear: () => cache.clear(),
+});
 // Id elegido para el día, compartido por todos los idiomas (misma peli en ES/EN).
 let chosen: { day: number; id: number } | null = null;
 

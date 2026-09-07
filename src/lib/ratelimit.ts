@@ -6,9 +6,23 @@
  * se limpia periódicamente el Map y se acota su tamaño para que el propio
  * limitador no pueda agotar la memoria del proceso.
  */
+import { registerCache } from './cache-registry';
+
 const buckets = new Map<string, number[]>();
 const MAX_KEYS = 50_000; // cota dura de memoria (≈ nº de IPs distintas rastreadas)
 let lastSweep = Date.now();
+
+// Se publica como MEDIDA —el tamaño equivale, más o menos, al número de IPs bajo
+// vigilancia, que es un dato operativo útil— pero NO se puede vaciar: hacerlo
+// perdonaría de golpe a cualquier bot al que se esté frenando en ese momento.
+registerCache({
+  id: 'ratelimit',
+  label: 'Límite de peticiones por IP',
+  maxKeys: MAX_KEYS,
+  clearable: false,
+  size: () => buckets.size,
+  clear: () => {},
+});
 
 /** Cada minuto elimina las claves sin actividad reciente para acotar la memoria. */
 function sweep(now: number): void {

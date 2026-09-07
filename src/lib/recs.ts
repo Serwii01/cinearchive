@@ -25,6 +25,7 @@ import {
   type TmdbSearchResult,
 } from './tmdb';
 import { genreName } from '../data/genres';
+import { registerCache } from './cache-registry';
 
 export interface Recommendation {
   tmdbId: number;
@@ -42,6 +43,14 @@ const MIN_RESULTS = 30; // mínimo garantizado por usuario
 const MAX_RESULTS = 48; // tope superior
 const CACHE_TTL = 10 * 60_000; // 10 min
 const cache = new Map<string, { at: number; data: Recommendation[] }>();
+
+registerCache({
+  id: 'recs',
+  label: 'Recomendaciones',
+  ttlMs: CACHE_TTL,
+  size: () => cache.size,
+  clear: () => cache.clear(),
+});
 
 export async function getRecommendations(userId: string, locale: string): Promise<Recommendation[]> {
   const cacheKey = `${userId}:${locale}`;
