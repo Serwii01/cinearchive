@@ -1,5 +1,6 @@
 ---
 import { useTranslations, localizePath, type Lang } from '../i18n/ui';
+import { aInputDate } from '../lib/filmstate';
 
 interface Props {
   tmdbId: number;
@@ -8,10 +9,18 @@ interface Props {
   favorite?: boolean;
   rating?: number | null;
   note?: string | null;
+  /** Cuándo la vio. Se edita aquí mismo, junto a la valoración. */
+  reviewedAt?: Date | string | null;
 }
 
-const { tmdbId, lang, status = null, favorite = false, rating = null, note = null } = Astro.props;
+const {
+  tmdbId, lang, status = null, favorite = false,
+  rating = null, note = null, reviewedAt = null,
+} = Astro.props;
 const t = useTranslations(lang);
+
+// El tope del calendario se calcula en el cliente con la fecha LOCAL: aquí sería
+// la del servidor, y en el último tramo del día no coinciden.
 ---
 
 <film-controls
@@ -21,11 +30,13 @@ const t = useTranslations(lang);
   data-favorite={favorite ? '1' : ''}
   data-rating={rating ?? ''}
   data-note={note ?? ''}
+  data-reviewed={aInputDate(reviewedAt)}
   data-l-want={t('controls.want')}
   data-l-seen={t('controls.seen')}
   data-l-fav={t('controls.favorite')}
   data-l-rate={t('controls.rating')}
   data-l-note={t('controls.note')}
+  data-l-watched={t('controls.watchedOn')}
   data-l-save={t('controls.save')}
   data-l-saved={t('controls.saved')}
   data-l-remove={t('controls.remove')}
@@ -45,10 +56,19 @@ const t = useTranslations(lang);
       let favorite = d.favorite === '1';
       let rating = d.rating ? Number(d.rating) : 0;
       let note = d.note || '';
+      let reviewed = d.reviewed || '';
 
       const L = {
         want: d.lWant!, seen: d.lSeen!, fav: d.lFav!, rate: d.lRate!,
-        note: d.lNote!, save: d.lSave!, saved: d.lSaved!, remove: d.lRemove!,
+        note: d.lNote!, watched: d.lWatched!, save: d.lSave!,
+        saved: d.lSaved!, remove: d.lRemove!,
+      };
+
+      // Tope del calendario: hoy en la hora LOCAL del usuario. Con toISOString
+      // se usaría la de UTC, y de madrugada eso deja fuera el día de verdad.
+      const hoyLocal = () => {
+        const n = new Date();
+        return new Date(n.getTime() - n.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
       };
 
       // Escapa texto del usuario antes de inyectarlo en innerHTML (anti-XSS).
@@ -77,6 +97,11 @@ const t = useTranslations(lang);
             <span class="label">${L.rate}</span>
             <span class="flex border border-ink">${[1, 2, 3, 4, 5].map(star).join('')}</span>
           </div>
+          <div class="flex items-center gap-2 border-b border-ink px-3 py-2">
+            <label class="label" for="fc-fecha-${tmdbId}">${L.watched}</label>
+            <input id="fc-fecha-${tmdbId}" type="date" data-reviewed value="${reviewed}" max="${hoyLocal()}"
+              class="ml-auto border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none" />
+          </div>
           <div class="p-3">
             <label class="label mb-1 block">${L.note}</label>
             <textarea data-note rows="2" class="w-full border border-ink bg-white px-2 py-1 font-body text-body-md focus:bg-film-white focus:outline-none">${esc(note)}</textarea>
@@ -102,6 +127,19 @@ const t = useTranslations(lang);
         return res.ok;
       };
 
+      const borrar = async () => {
+        const res = await fetch('/api/me/films', {
+          method: 'DELETE',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ tmdbId }),
+        });
+        return res.ok;
+      };
+
+      /** La fecha del campo, o cadena vacía. El propio input ya impide el futuro. */
+      const leerFecha = () =>
+        this.querySelector<HTMLInputElement>('[data-reviewed]')?.value || '';
+
       const flash = () => {
         const msg = this.querySelector('[data-msg]');
         if (msg) {
@@ -111,34 +149,71 @@ const t = useTranslations(lang);
       };
 
       const wire = () => {
+        // Estado: pendiente y vista son excluyentes, y pulsar el que ya está
+        // puesto lo quita. «Pendiente» además deja de ser favorita, porque no
+        // se puede tener de favorita algo que no has visto (la regla completa
+        // está en src/lib/filmstate.ts y la aplica también el servidor).
         this.querySelectorAll<HTMLButtonElement>('[data-status]').forEach((b) =>
           b.addEventListener('click', async () => {
-            status = b.dataset.status!;
-            if (await post({ status })) { render(); flash(); }
+            const next = b.dataset.status!;
+            // Volver a pulsar el que ya está puesto no hace nada. Quitar la
+            // película de la colección es cosa de «quitar»: que un segundo clic
+            // se llevara por delante la nota y la puntuación sería una trampa.
+            if (status === next) return;
+            if (await post({ status: next })) {
+              status = next;
+              if (next === 'want') favorite = false;
+              render();
+              flash();
+            }
           }),
         );
-        // Favorita: flag independiente del estado (toggle). No toca want/seen.
+        // Favorita: marcarla implica haberla visto. Desmarcarla NO la devuelve
+        // a pendiente: solo deja de ser favorita.
         this.querySelector<HTMLButtonElement>('[data-fav]')?.addEventListener('click', async () => {
           const next = !favorite;
-          if (await post({ favorite: next })) { favorite = next; render(); flash(); }
+          if (await post({ favorite: next })) {
+            favorite = next;
+            if (next) status = 'seen';
+            render();
+            flash();
+          }
         });
+        // Puntuar es haberla visto. La fecha se manda siempre: si no, el
+        // servidor la volvería a sellar con la de hoy y se perdería la que el
+        // usuario había puesto.
         this.querySelectorAll<HTMLButtonElement>('[data-rate]').forEach((b) =>
           b.addEventListener('click', async () => {
-            rating = Number(b.dataset.rate);
-            if (await post({ rating, status: status || 'seen' })) { status = status || 'seen'; render(); flash(); }
+            const next = Number(b.dataset.rate);
+            const fecha = leerFecha();
+            if (await post({ rating: next, ...(fecha ? { reviewedAt: fecha } : {}) })) {
+              rating = next;
+              status = 'seen';
+              if (fecha) reviewed = fecha;
+              render();
+              flash();
+            }
           }),
         );
         this.querySelector<HTMLButtonElement>('[data-save]')?.addEventListener('click', async () => {
           note = this.querySelector<HTMLTextAreaElement>('[data-note]')?.value ?? '';
-          if (await post({ note, status: status || 'want' })) { status = status || 'want'; render(); flash(); }
+          const fecha = leerFecha();
+          if (await post({ note, status: status || 'want', ...(fecha ? { reviewedAt: fecha } : {}) })) {
+            status = status || 'want';
+            if (fecha) reviewed = fecha;
+            render();
+            flash();
+          }
+        });
+        // Cambiar la fecha guarda sola: es un dato suelto y pedir «guardar»
+        // para un calendario que ya se ha cerrado sobra.
+        this.querySelector<HTMLInputElement>('[data-reviewed]')?.addEventListener('change', async () => {
+          const fecha = leerFecha();
+          if (!fecha) return;
+          if (await post({ reviewedAt: fecha })) { reviewed = fecha; flash(); }
         });
         this.querySelector<HTMLButtonElement>('[data-remove]')?.addEventListener('click', async () => {
-          const res = await fetch('/api/me/films', {
-            method: 'DELETE',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ tmdbId }),
-          });
-          if (res.ok) { status = ''; favorite = false; rating = 0; note = ''; render(); }
+          if (await borrar()) { status = ''; favorite = false; rating = 0; note = ''; reviewed = ''; render(); }
         });
       };
 

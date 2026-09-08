@@ -14,6 +14,8 @@ const t = useTranslations(lang);
   data-l-new={t('lists.newListPlaceholder')}
   data-l-add={t('lists.add')}
   data-l-nolists={t('lists.noLists')}
+  data-l-save={t('controls.save')}
+  data-l-saved={t('controls.saved')}
   data-login-url={localizePath(lang, 'login')}
   data-login-label={t('film.addToList')}
   class="block border border-ink bg-film-white"
@@ -34,23 +36,46 @@ const t = useTranslations(lang);
       const esc = (s: string) =>
         s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
-      const toggle = (id: string, contains: boolean) =>
+      /** Lo que hay marcado ahora mismo, aún sin guardar. */
+      let marcadas = new Set<string>();
+
+      const aplicar = (id: string, dentro: boolean) =>
         fetch(`/api/me/lists/${id}/films`, {
-          method: contains ? 'DELETE' : 'POST',
+          method: dentro ? 'POST' : 'DELETE',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ tmdbId }),
         });
 
       const wire = (lists: ListItem[]) => {
+        /*
+         * Marcar es solo marcar: no se guarda hasta pulsar el botón. Antes cada
+         * clic disparaba su petición Y repintaba la lista entera, así que al
+         * marcar dos seguidas la segunda caía sobre un botón que ya no estaba
+         * en el documento y se perdía. Ahora se eligen todas y se envían juntas.
+         */
         this.querySelectorAll<HTMLButtonElement>('[data-list]').forEach((btn) =>
-          btn.addEventListener('click', async () => {
-            const l = lists.find((x) => x.id === btn.dataset.list);
-            if (!l) return;
-            await toggle(l.id, l.contains);
-            l.contains = !l.contains;
-            render(lists);
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.list!;
+            if (marcadas.has(id)) marcadas.delete(id);
+            else marcadas.add(id);
+            pintarMarca(btn, marcadas.has(id));
+            refrescarBotonGuardar(lists);
           }),
         );
+        this.querySelector<HTMLButtonElement>('[data-apply]')?.addEventListener('click', async () => {
+          const cambios = lists.filter((l) => l.contains !== marcadas.has(l.id));
+          if (!cambios.length) return;
+          const res = await Promise.all(cambios.map((l) => aplicar(l.id, marcadas.has(l.id))));
+          // Solo se da por bueno lo que el servidor confirmó: si algo falla, esa
+          // lista se queda como estaba y la marca vuelve a su sitio.
+          cambios.forEach((l, i) => { if (res[i].ok) l.contains = marcadas.has(l.id); });
+          render(lists);
+          const msg = this.querySelector('[data-msg]');
+          if (msg) {
+            msg.textContent = res.every((r) => r.ok) ? d.lSaved! : '⚠';
+            setTimeout(() => (msg.textContent = ''), 1500);
+          }
+        });
         this.querySelector<HTMLFormElement>('[data-create]')?.addEventListener('submit', async (e) => {
           e.preventDefault();
           const input = this.querySelector('[data-name]') as HTMLInputElement;
@@ -63,22 +88,47 @@ const t = useTranslations(lang);
           });
           if (!res.ok) return;
           const created = await res.json();
-          await toggle(created.id, false); // añade la película a la lista recién creada
+          await aplicar(created.id, true); // la lista nueva se crea ya con la película
           load();
         });
       };
 
+      /** Aspecto de un botón según esté marcado o no. */
+      const pintarMarca = (btn: HTMLElement, dentro: boolean) => {
+        btn.classList.toggle('bg-ochre', dentro);
+        btn.classList.toggle('text-on-accent', dentro);
+        btn.classList.toggle('hover:bg-ink', !dentro);
+        btn.classList.toggle('hover:text-white', !dentro);
+        btn.setAttribute('aria-pressed', dentro ? 'true' : 'false');
+        const marca = btn.querySelector('[data-mark]');
+        if (marca) marca.textContent = dentro ? '✓' : '+';
+      };
+
+      /** El botón de guardar solo se enciende si hay algo que guardar. */
+      const refrescarBotonGuardar = (lists: ListItem[]) => {
+        const btn = this.querySelector<HTMLButtonElement>('[data-apply]');
+        if (!btn) return;
+        const hayCambios = lists.some((l) => l.contains !== marcadas.has(l.id));
+        btn.disabled = !hayCambios;
+        btn.classList.toggle('opacity-40', !hayCambios);
+      };
+
       const render = (lists: ListItem[]) => {
+        marcadas = new Set(lists.filter((l) => l.contains).map((l) => l.id));
         const items = lists
           .map(
-            (l) => `<button type="button" data-list="${l.id}" class="label flex w-full items-center justify-between border border-ink px-2 py-2 transition-colors ${
+            (l) => `<button type="button" data-list="${l.id}" aria-pressed="${l.contains}" class="label flex w-full items-center justify-between border border-ink px-2 py-2 transition-colors ${
               l.contains ? 'bg-ochre text-on-accent' : 'hover:bg-ink hover:text-white'
-            }"><span class="truncate">${esc(l.name)}</span><span aria-hidden="true">${l.contains ? '✓' : '+'}</span></button>`,
+            }"><span class="truncate">${esc(l.name)}</span><span data-mark aria-hidden="true">${l.contains ? '✓' : '+'}</span></button>`,
           )
           .join('');
         body.innerHTML = `${
           lists.length
-            ? `<div class="flex flex-col gap-2">${items}</div>`
+            ? `<div class="flex flex-col gap-2">${items}</div>
+               <div class="mt-3 flex items-center gap-3">
+                 <button type="button" data-apply disabled class="btn btn-primary opacity-40">${esc(d.lSave!)}</button>
+                 <span data-msg class="font-mono text-meta-data text-muted"></span>
+               </div>`
             : `<p class="mb-3 text-muted">${esc(d.lNolists!)}</p>`
         }<form data-create class="mt-3 flex gap-2"><input data-name maxlength="80" autocomplete="off" placeholder="${esc(d.lNew!)}" class="min-w-0 flex-1 border border-ink bg-white px-2 py-1 font-body text-body-md text-ink focus:bg-film-white focus:outline-none" /><button type="submit" class="btn btn-primary shrink-0">${esc(d.lAdd!)}</button></form>`;
         wire(lists);

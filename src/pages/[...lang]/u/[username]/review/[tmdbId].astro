@@ -2,6 +2,7 @@
 import BaseLayout from '../../../../../layouts/BaseLayout.astro';
 import Avatar from '../../../../../components/Avatar.astro';
 import { normalizeLang, useTranslations, localizePath, formatDate } from '../../../../../i18n/ui';
+import { aInputDate } from '../../../../../lib/filmstate';
 import { db } from '../../../../../db/client';
 import { userFilms } from '../../../../../db/schema';
 import { and, eq } from 'drizzle-orm';
@@ -88,7 +89,7 @@ const canShareStory = isOwner && !target.isPrivate;
             <span class="font-mono text-meta-data text-ink hover:text-ochre">@{target.username}</span>
           </a>
           <span class="font-mono text-meta-data text-muted">·</span>
-          <time class="font-mono text-meta-data text-muted">{formatDate(reviewedAt, lang)}</time>
+          <time id="view-date" datetime={aInputDate(reviewedAt)} class="font-mono text-meta-data text-muted">{formatDate(reviewedAt, lang)}</time>
         </div>
 
         {/* Vista de la reseña (con ids estables para el dueño, actualizables al editar) */}
@@ -121,6 +122,16 @@ const canShareStory = isOwner && !target.isPrivate;
                 <button type="button" data-star={n} aria-label={String(n)} class="h-8 w-8 border-r border-ink font-mono text-meta-data transition-colors last:border-r-0 hover:bg-ochre hover:text-on-accent">{n}</button>
               ))}
             </div>
+            <label class="label mt-4 block" for="edit-date">{t('controls.watchedOn')}</label>
+            {/* El tope se pone en el cliente con la fecha LOCAL: la del servidor
+                puede ir un día por detrás en las últimas horas del día. */}
+            <input
+              id="edit-date"
+              type="date"
+              value={aInputDate(row.reviewedAt)}
+              class="mt-1 block border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none"
+            />
+
             <label class="label mt-4 block" for="edit-note">{t('controls.note')}</label>
             <textarea id="edit-note" rows="4" class="w-full border border-ink bg-white px-2 py-1 font-body text-body-md focus:bg-film-white focus:outline-none">{row.note}</textarea>
             <div class="mt-3 flex items-center gap-2">
@@ -181,11 +192,13 @@ const canShareStory = isOwner && !target.isPrivate;
     if (shareBtn) shareStoryImage(shareBtn);
 
     const byId = (id: string) => document.getElementById(id);
-    const post = (tmdbId: number, rating: number | null, note: string | null) =>
+    const post = (tmdbId: number, rating: number | null, note: string | null, reviewedAt?: string) =>
       fetch('/api/me/films', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ tmdbId, rating, note }),
+        // La fecha se manda SIEMPRE que la haya: si no, el servidor volvería a
+        // sellar la reseña con la de hoy y se perdería la que puso el usuario.
+        body: JSON.stringify({ tmdbId, rating, note, ...(reviewedAt ? { reviewedAt } : {}) }),
       });
 
     // --- Edición inline de la reseña (sin ir a la ficha) ---
@@ -195,7 +208,14 @@ const canShareStory = isOwner && !target.isPrivate;
       const tmdbId = Number(editor.dataset.tmdb);
       const redirect = editor.dataset.redirect || '/';
       const noteEl = byId('edit-note') as HTMLTextAreaElement;
+      const dateEl = byId('edit-date') as HTMLInputElement | null;
       const saveBtn = byId('edit-save') as HTMLButtonElement | null;
+      // Tope del calendario en hora local: con toISOString sería la de UTC, y
+      // de madrugada eso dejaría fuera el día que el usuario tiene delante.
+      if (dateEl) {
+        const n = new Date();
+        dateEl.max = new Date(n.getTime() - n.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      }
       const stars = Array.from(editor.querySelectorAll<HTMLButtonElement>('[data-star]'));
       const viewStars = byId('view-stars');
       const viewNote = byId('view-note');
@@ -220,7 +240,16 @@ const canShareStory = isOwner && !target.isPrivate;
       byId('edit-toggle')?.addEventListener('click', open);
       byId('edit-cancel')?.addEventListener('click', close);
 
-      const updateView = (r: number, note: string) => {
+      const updateView = (r: number, note: string, fecha?: string) => {
+        // La fecha se repinta con el idioma de la página para que coincida con
+        // la que sirvió el servidor, en vez de con el del navegador.
+        const viewDate = byId('view-date') as HTMLTimeElement | null;
+        if (viewDate && fecha) {
+          viewDate.dateTime = fecha;
+          viewDate.textContent = new Intl.DateTimeFormat(document.documentElement.lang || 'es', {
+            year: 'numeric', month: 'long', day: 'numeric',
+          }).format(new Date(`${fecha}T12:00:00Z`));
+        }
         if (viewStars) {
           viewStars.classList.toggle('hidden', r === 0);
           viewStars.innerHTML = r
@@ -244,8 +273,8 @@ const canShareStory = isOwner && !target.isPrivate;
             saveBtn.disabled = false;
             return;
           }
-          const res = await post(tmdbId, rating || null, note || null);
-          if (res.ok) { updateView(rating, note); close(); }
+          const res = await post(tmdbId, rating || null, note || null, dateEl?.value || undefined);
+          if (res.ok) { updateView(rating, note, dateEl?.value || ''); close(); }
           saveBtn.disabled = false;
         } catch {
           saveBtn.disabled = false;

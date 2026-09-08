@@ -5,6 +5,7 @@ import { db } from '../../../db/client';
 import { userFilms } from '../../../db/schema';
 import { invalidateRecommendations } from '../../../lib/recs';
 import { invalidateStats } from '../../../lib/stats';
+import { aplicarReglas, fechaVista } from '../../../lib/filmstate';
 
 export const prerender = false;
 
@@ -26,6 +27,12 @@ const upsertSchema = z.object({
   favorite: z.boolean().optional(),
   rating: z.number().int().min(1).max(5).nullable().optional(),
   note: z.string().max(2000).nullable().optional(),
+  /** Cuándo la vio, en YYYY-MM-DD. Es el usuario quien la fija; no puede ser futura. */
+  reviewedAt: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .nullable()
+    .optional(),
 });
 
 /** POST — añadir o actualizar (status / rating / note). */
@@ -37,12 +44,28 @@ export const POST: APIRoute = async ({ locals, request }) => {
       status: 400,
     });
   }
-  const { tmdbId, status, favorite, rating, note } = parsed.data;
+  const { tmdbId, rating, note } = parsed.data;
+  // Las tres marcas no son independientes: ver src/lib/filmstate.ts.
+  const { status, favorite } = aplicarReglas(parsed.data);
 
-  // La reseña se "sella" con la fecha actual cuando llega nota o valoración
-  // (en la creación o en cada edición). Los cambios de solo estado no la tocan.
+  // La fecha de la reseña la puede fijar el usuario («la vi el 3 de mayo»). Si
+  // no manda ninguna, se sella con la de hoy al tocar nota o valoración; los
+  // cambios de solo estado no la tocan.
   const now = new Date();
   const touchesReview = rating !== undefined || note !== undefined;
+
+  let reviewedAt: Date | null | undefined;
+  if (parsed.data.reviewedAt !== undefined) {
+    if (parsed.data.reviewedAt === null) {
+      reviewedAt = null;
+    } else {
+      const d = fechaVista(parsed.data.reviewedAt);
+      if (!d) return new Response(JSON.stringify({ error: 'fecha_invalida' }), { status: 400 });
+      reviewedAt = d;
+    }
+  } else if (touchesReview && (rating != null || note != null)) {
+    reviewedAt = now;
+  }
 
   await db
     .insert(userFilms)
@@ -53,7 +76,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
       favorite: favorite ?? false,
       rating: rating ?? null,
       note: note ?? null,
-      reviewedAt: touchesReview && (rating != null || note != null) ? now : null,
+      reviewedAt: reviewedAt ?? null,
       updatedAt: now,
     })
     .onConflictDoUpdate({
@@ -64,7 +87,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
         ...(favorite !== undefined ? { favorite } : {}),
         ...(rating !== undefined ? { rating } : {}),
         ...(note !== undefined ? { note } : {}),
-        ...(touchesReview ? { reviewedAt: now } : {}),
+        ...(reviewedAt !== undefined ? { reviewedAt } : {}),
         updatedAt: now,
       },
     });
