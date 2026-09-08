@@ -136,6 +136,26 @@
   border-radius: 50% !important;
   opacity: 0.8;
 }
+/* --- Leyenda del mapa de rodaje ---
+   Las mismas marcas que los pines, pero fuera del mapa: por eso NO cuelgan de
+   .mapa-archivo. Dos ejes: la forma (cuadrado exacto / círculo aproximado) y
+   el relleno (ocre rodaje / papel ambientación). */
+.leyenda-loc {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  flex: none;
+  border: 2px solid var(--c-ink);
+  background: var(--c-ochre);
+}
+/* El !important es necesario: global.css redondea a cero en todo el sitio. */
+.leyenda-loc--aprox {
+  border-radius: 50% !important;
+}
+.leyenda-loc--relato {
+  background: var(--c-background);
+}
+
 .mapa-archivo .leaflet-popup-content .loc-tipo {
   font-family: 'Space Mono', ui-monospace, monospace;
   font-size: 11px;

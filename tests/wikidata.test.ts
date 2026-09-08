@@ -148,7 +148,10 @@ describe('hayMapa', () => {
     expect(hayMapa(loc([{ name: 'Tokio', lat: 35.6, lon: 139.7, kind: 'ciudad' }]))).toBe(true);
   });
 
-  it('SOLO con países, no hay mapa: un centroide no señala ningún rodaje', () => {
+  it('solo con países TAMBIÉN hay mapa: se pintan como aproximados', () => {
+    // Antes se devolvía false para no fingir precisión, y el efecto era peor:
+    // «El padrino» decía que se rodó en Sicilia y el mapa no la enseñaba. Ahora
+    // se dibujan con otra forma y la leyenda avisa de que son aproximadas.
     expect(
       hayMapa(
         loc([
@@ -156,7 +159,7 @@ describe('hayMapa', () => {
           { name: 'Australia', lat: -25, lon: 133, kind: 'region' },
         ]),
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it('sin coordenadas, no hay mapa', () => {

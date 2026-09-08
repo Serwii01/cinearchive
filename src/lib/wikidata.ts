@@ -87,12 +87,19 @@ export function esFormatoActual(x: unknown): x is FilmLocations {
   return !!x && typeof x === 'object' && (x as { v?: number }).v === 2;
 }
 
-/** ¿Hay algo que merezca un mapa? Una región suelta no lo merece. */
+/**
+ * ¿Hay algo que dibujar? Basta con una coordenada.
+ *
+ * Las regiones TAMBIÉN cuentan. Antes se excluían para no fingir precisión,
+ * pero eso dejaba sin mapa a películas de las que sí se sabe algo —«El
+ * padrino» se rodó en Sicilia y no salía— y encima sin explicar el hueco. Lo
+ * que resuelve el problema no es esconderlas, sino decir en el mapa cuáles son
+ * exactas y cuáles aproximadas: la ficha las pinta con otra forma y la leyenda
+ * lo cuenta.
+ */
 export function hayMapa(loc: FilmLocations | null | undefined): boolean {
   if (!loc) return false;
-  return [...loc.filming, ...loc.narrative].some(
-    (p) => p.lat != null && p.lon != null && p.kind !== 'region',
-  );
+  return [...loc.filming, ...loc.narrative].some((p) => p.lat != null && p.lon != null);
 }
 
 interface Fila {
