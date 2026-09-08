@@ -8,6 +8,7 @@ import { periodicals, journals } from '../../lib/periodicals';
 import { pdFilms, pdThumbUrl } from '../../lib/pdfilms';
 import { books, bookCoverUrl } from '../../lib/library';
 import { collections, collectionTitle, collectionBlurb } from '../../lib/collections';
+import { dossiers, dossierCopy } from '../../lib/dossiers';
 import { figures } from '../../lib/figures';
 import { profileUrl } from '../../lib/tmdb';
 import { getFilmOfDay } from '../../lib/featured';
@@ -41,6 +42,8 @@ const sample = <T,>(arr: T[], n: number): T[] => {
 };
 const cinemaPicks = sample(pdFilms, 4);
 const collectionPicks = collections.slice(0, 3);
+// Dosieres especiales: son dos y van los dos, no se recorta ninguno.
+const dossierPicks = dossiers.map((d) => ({ slug: d.slug, c: dossierCopy(d, lang) }));
 const figurePicks = sample(figures, 6);
 const bookPicks = sample(books, 4);
 // En la portada solo las 3 revistas más recientes (por año de fundación). La
@@ -175,6 +178,36 @@ const homeJsonLd = [
       </div>
       <span class="label shrink-0 text-ink group-hover:text-muted">{t('cines.searchBtn')} →</span>
     </a>
+  </section>
+
+  {/* DOSIERES ESPECIALES (cine palestino · cine saharaui) */}
+  <section class="frame py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('dossiers.title')}</h2>
+      <a href={localizePath(lang, 'dossiers')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+    </div>
+    <p class="mb-8 max-w-2xl text-body-md text-charcoal">{t('dossiers.intro')}</p>
+
+    <div class="grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+      {
+        dossierPicks.map(({ slug, c }) => (
+          <a
+            href={localizePath(lang, `dossiers/${slug}`)}
+            class="group flex flex-col bg-surface p-6 no-underline transition-colors hover:bg-film-white"
+          >
+            <span class="label">{c.kicker}</span>
+            <h3 class="mt-3 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">
+              {c.title}
+            </h3>
+            <p class="mt-3 text-body-md text-charcoal">{c.blurb}</p>
+            <p class="mt-auto pt-6 font-mono text-meta-data text-muted">
+              {c.chronology[0].year} — {c.chronology[c.chronology.length - 1].year} · {c.films.length} {t('collections.films')}
+            </p>
+            <span class="label mt-2 text-ink">{t('dossiers.view')} →</span>
+          </a>
+        ))
+      }
+    </div>
   </section>
 
   {/* DOSIERES */}

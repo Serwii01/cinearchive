@@ -1,0 +1,197 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { dossiers, dossierBySlug, dossierCopy } from '../../../lib/dossiers';
+import { getFilmsBrief } from '../../../lib/films';
+import { normalizeLang, useTranslations, localizePath } from '../../../i18n/ui';
+import { filmSlug } from '../../../lib/slug';
+import { articleLd, breadcrumbLd } from '../../../lib/seo';
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+
+const dossier = dossierBySlug(Astro.params.slug ?? '');
+if (!dossier) return Astro.redirect(localizePath(lang, 'dossiers'));
+
+const c = dossierCopy(dossier, lang);
+
+// La nota es del dosier y la ficha (título, cartel, año) de TMDB: se cruzan por
+// tmdbId y se descartan las que no resuelvan, conservando el orden curado.
+const briefs = await getFilmsBrief(c.films.map((f) => f.tmdbId), lang);
+const peliculas = c.films
+  .map((f) => ({ note: f.note, brief: briefs.get(f.tmdbId) }))
+  .filter((p) => p.brief != null);
+
+// El otro dosier, para no dejar la página sin salida al final.
+const otro = dossiers.find((d) => d.slug !== dossier.slug);
+const otroCopy = otro ? dossierCopy(otro, lang) : null;
+
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = [
+  articleLd({
+    url,
+    headline: c.title,
+    description: c.blurb,
+    image: peliculas[0]?.brief?.poster ?? undefined,
+    inLanguage: lang,
+  }),
+  breadcrumbLd([
+    { name: t('dossiers.title'), url: new URL(localizePath(lang, 'dossiers'), Astro.site).href },
+    { name: c.title, url },
+  ]),
+];
+---
+
+<BaseLayout title={c.title} description={c.blurb} jsonLd={jsonLd}>
+  <section class="frame py-12">
+    <a href={localizePath(lang, 'dossiers')} class="label no-underline hover:text-ink">← {t('dossiers.back')}</a>
+
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{c.kicker}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{c.title}</h1>
+      <p class="mt-4 max-w-3xl text-body-lg text-charcoal">{c.lead}</p>
+    </header>
+
+    {/* CUERPO + CITA */}
+    <div class="grid grid-cols-1 gap-10 pt-8 md:grid-cols-12">
+      <div class="prose-archive md:col-span-7 md:border-r md:border-ink md:pr-10">
+        {c.body.map((p) => <p>{p}</p>)}
+      </div>
+      <figure class="md:col-span-5 md:self-start md:border-t-2 md:border-ink md:pt-6">
+        <blockquote class="font-display text-headline-lg leading-tight text-ink">«{c.quote.text}»</blockquote>
+        <figcaption class="mt-3 font-mono text-meta-data text-muted">{c.quote.source}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  {/* CRONOLOGÍA */}
+  <section class="frame py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('dossiers.chronology')}</h2>
+      <span class="label">{c.chronology.length} {t('dossiers.milestones')}</span>
+    </div>
+
+    <ol class="border border-ink bg-surface">
+      {
+        c.chronology.map((h, i) => (
+          <li class:list={['grid grid-cols-1 gap-1 p-4 md:grid-cols-12 md:gap-6', i > 0 && 'border-t border-ink']}>
+            <span class="font-mono text-meta-data text-muted md:col-span-1">{h.year}</span>
+            <div class="md:col-span-11">
+              <h3 class="font-display text-headline-md leading-tight text-ink">{h.title}</h3>
+              <p class="mt-1 text-body-md text-charcoal">{h.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  {/* FESTIVAL */}
+  <section class="frame py-12">
+    <div class="mb-6 border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('dossiers.festival')}</h2>
+    </div>
+
+    <div class="border border-ink bg-surface">
+      <div class="border-b border-ink p-5">
+        <p class="font-display text-headline-lg leading-tight text-ink">{c.festival.name}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-12">
+        <div class="prose-archive border-ink p-5 md:col-span-7 md:border-r">
+          {c.festival.body.map((p) => <p>{p}</p>)}
+        </div>
+        <dl class="md:col-span-5">
+          {
+            c.festival.facts.map(([term, desc], i) => (
+              <div class:list={['flex flex-wrap items-baseline gap-x-3 p-5 py-3', i > 0 && 'border-t border-outline-variant']}>
+                <dt class="label">{term}</dt>
+                <dd class="text-body-md text-charcoal">{desc}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  {/* PELÍCULAS */}
+  <section class="frame py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('dossiers.films')}</h2>
+      <span class="label">{peliculas.length} {t('collections.films')}</span>
+    </div>
+    <p class="mb-8 max-w-2xl text-body-md text-charcoal">{c.filmsIntro}</p>
+
+    <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+      {
+        peliculas.map(({ note, brief }) => (
+          <a
+            href={localizePath(lang, `film/${filmSlug(brief!.tmdbId, brief!.title)}`)}
+            class="group flex gap-4 bg-surface p-4 no-underline transition-colors hover:bg-film-white"
+          >
+            <div class="aspect-[2/3] w-24 shrink-0 border border-ink bg-charcoal">
+              {/* alt vacío: el título va justo al lado y el lector de pantalla lo repetiría. */}
+              {brief!.poster ? (
+                <img src={brief!.poster} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+              ) : (
+                <div class="film-grain h-full w-full" />
+              )}
+            </div>
+            <div class="min-w-0">
+              <h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{brief!.title}</h3>
+              <p class="mt-1 font-mono text-meta-data text-muted">{[brief!.director, brief!.year].filter(Boolean).join(' · ')}</p>
+              <p class="mt-2 text-body-md text-charcoal">{note}</p>
+            </div>
+          </a>
+        ))
+      }
+      {/* La rejilla dibuja sus líneas con el fondo de tinta, así que un hueco en
+          la última fila se ve como una mancha negra. Cada anchura deja un resto
+          distinto, y cada relleno solo aparece en la suya: los de dos columnas
+          se esconden a partir de lg y los de tres no existen antes. */}
+      {
+        Array.from({ length: (2 - (peliculas.length % 2)) % 2 }).map(() => (
+          <div class="hidden bg-surface sm:block lg:hidden" />
+        ))
+      }
+      {
+        Array.from({ length: (3 - (peliculas.length % 3)) % 3 }).map(() => (
+          <div class="hidden bg-surface lg:block" />
+        ))
+      }
+    </div>
+  </section>
+
+  {/* FUENTES + SALIDA AL OTRO DOSIER */}
+  <section class="frame py-12">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12">
+      <div class="md:col-span-7">
+        <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('dossiers.sources')}</h2>
+        <ul class="mt-4 space-y-2">
+          {
+            dossier.sources.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener noreferrer" class="text-body-md text-charcoal hover:text-ink">
+                  {s.label} ↗
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      {
+        otro && otroCopy && (
+          <a
+            href={localizePath(lang, `dossiers/${otro.slug}`)}
+            class="group flex flex-col border border-ink bg-surface p-5 no-underline transition-colors hover:bg-film-white md:col-span-5 md:self-start"
+          >
+            <span class="label">{t('dossiers.other')}</span>
+            <h2 class="mt-2 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{otroCopy.title}</h2>
+            <p class="mt-2 text-body-md text-charcoal">{otroCopy.blurb}</p>
+            <span class="label mt-4 text-ink">{t('dossiers.view')} →</span>
+          </a>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

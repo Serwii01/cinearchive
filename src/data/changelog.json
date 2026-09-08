@@ -1,5 +1,43 @@
 [
   {
+    "version": "1.7",
+    "date": "2026-09-08",
+    "title": {
+      "es": "Dosieres especiales: cine palestino y cine saharaui",
+      "en": "Special dossiers: Palestinian and Sahrawi cinema",
+      "gl": "Dosieres especiais: cine palestino e cine saharauí",
+      "eu": "Dosier bereziak: zinema palestinarra eta saharauia",
+      "ca": "Dossiers especials: cinema palestí i cinema sahrauí"
+    },
+    "changes": {
+      "es": [
+        "Nueva sección en portada, entre «Encuentra tu cine» y los dosieres: los dosieres especiales, piezas de fondo sobre una cinematografía concreta y las condiciones en las que existe.",
+        "Los dos primeros: cine palestino —de la Unidad de Cine Palestino de 1968 al archivo saqueado en Beirut— y cine saharaui, con FiSahara y la escuela de cine de los campamentos de Tinduf.",
+        "Cada dosier trae cronología, festival, fuentes citadas y una selección de películas comentada que enlaza con sus fichas. Todo escrito entero en los cinco idiomas."
+      ],
+      "en": [
+        "A new section on the front page, between “Find your cinema” and the dossiers: the special dossiers, in-depth pieces on a particular cinema and the conditions it exists in.",
+        "The first two: Palestinian cinema —from the 1968 Palestine Film Unit to the archive looted in Beirut— and Sahrawi cinema, with FiSahara and the film school in the Tindouf camps.",
+        "Each dossier brings a chronology, a festival, cited sources and an annotated selection of films linking to their pages. All of it written in full in the five languages."
+      ],
+      "gl": [
+        "Nova sección na portada, entre «Atopa o teu cine» e os dosieres: os dosieres especiais, pezas de fondo sobre unha cinematografía concreta e as condicións nas que existe.",
+        "Os dous primeiros: cine palestino —da Unidade de Cine Palestino de 1968 ao arquivo saqueado en Beirut— e cine saharauí, con FiSahara e a escola de cine dos campamentos de Tinduf.",
+        "Cada dosier trae cronoloxía, festival, fontes citadas e unha selección de películas comentada que enlaza coas súas fichas. Todo escrito enteiro nos cinco idiomas."
+      ],
+      "eu": [
+        "Atal berria hasierako orrian, «Aurkitu zure zinema» eta dosierren artean: dosier bereziak, zinematografia jakin bati eta existitzeko dituen baldintzei buruzko sakoneko lanak.",
+        "Lehen biak: zinema palestinarra —1968ko Palestinako Zinema Unitatetik Beiruten lapurtutako artxiboraino— eta zinema saharauia, FiSaharekin eta Tindufeko esparruetako zinema-eskolarekin.",
+        "Dosier bakoitzak kronologia, jaialdia, aipatutako iturriak eta iruzkindutako film-hautaketa bat dakartza, filmen fitxetara estekatuta. Dena osorik idatzita bost hizkuntzetan."
+      ],
+      "ca": [
+        "Nova secció a la portada, entre «Troba el teu cinema» i els dossiers: els dossiers especials, peces de fons sobre una cinematografia concreta i les condicions en què existeix.",
+        "Els dos primers: cinema palestí —de la Unitat de Cinema Palestí del 1968 a l’arxiu saquejat a Beirut— i cinema sahrauí, amb FiSahara i l’escola de cinema dels campaments de Tinduf.",
+        "Cada dossier porta cronologia, festival, fonts citades i una selecció de pel·lícules comentada que enllaça amb les seves fitxes. Tot escrit sencer en els cinc idiomes."
+      ]
+    }
+  },
+  {
     "version": "1.6",
     "date": "2026-09-08",
     "title": {
