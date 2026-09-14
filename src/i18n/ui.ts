@@ -239,6 +239,7 @@ export const ui = {
     'archive.backToArchive': 'Volver a la hemeroteca',
     'archive.credit':
       'Cortesía de Media History Digital Library · Internet Archive · Dominio público',
+    'archive.creditCC': 'Cortesía de Internet Archive · Licencia',
     'archive.current': 'Revistas actuales · acceso abierto',
     'archive.currentIntro':
       'Publicaciones de cine vigentes y de acceso abierto. Por derechos de autor no se pueden incrustar aquí, así que estas fichas enlazan a su web oficial.',
@@ -246,7 +247,7 @@ export const ui = {
     'archive.openAccess': 'Acceso abierto',
     'archive.currentCredit':
       'Enlaces a revistas de acceso abierto; el contenido se aloja en el sitio de cada publicación.',
-    'home.latestIssues': 'Últimos números',
+    'home.latestIssues': 'Novedades en la hemeroteca',
     'home.readManifesto': 'Leer el manifiesto',
     'article.backToArchive': 'Volver al archivo',
     'article.metadata': 'Ficha técnica',
@@ -900,6 +901,7 @@ export const ui = {
     'archive.backToArchive': 'Back to periodicals',
     'archive.credit':
       'Courtesy of the Media History Digital Library · Internet Archive · Public domain',
+    'archive.creditCC': 'Courtesy of Internet Archive · Licence',
     'archive.current': 'Current journals · open access',
     'archive.currentIntro':
       'Active, open-access film journals. Copyright means they can’t be embedded here, so these cards link out to each journal’s official site.',
@@ -907,7 +909,7 @@ export const ui = {
     'archive.openAccess': 'Open access',
     'archive.currentCredit':
       'Links to open-access journals; content is hosted on each publication’s own site.',
-    'home.latestIssues': 'Latest issues',
+    'home.latestIssues': 'New in the archive',
     'home.readManifesto': 'Read the manifesto',
     'article.backToArchive': 'Back to archive',
     'article.metadata': 'Technical sheet',
@@ -1561,6 +1563,7 @@ export const ui = {
     'archive.backToArchive': 'Volver á hemeroteca',
     'archive.credit':
       'Cortesía de Media History Digital Library · Internet Archive · Dominio público',
+    'archive.creditCC': 'Cortesía de Internet Archive · Licenza',
     'archive.current': 'Revistas actuais · acceso aberto',
     'archive.currentIntro':
       'Publicacións de cine vixentes e de acceso aberto. Por dereitos de autor non se poden incrustar aquí, así que estas fichas ligan á súa web oficial.',
@@ -1568,7 +1571,7 @@ export const ui = {
     'archive.openAccess': 'Acceso aberto',
     'archive.currentCredit':
       'Ligazóns a revistas de acceso aberto; o contido alóxase no sitio de cada publicación.',
-    'home.latestIssues': 'Últimos números',
+    'home.latestIssues': 'Novidades na hemeroteca',
     'home.readManifesto': 'Ler o manifesto',
     'article.backToArchive': 'Volver ao arquivo',
     'article.metadata': 'Ficha técnica',
@@ -2222,6 +2225,7 @@ export const ui = {
     'archive.backToArchive': 'Itzuli hemerotekara',
     'archive.credit':
       'Media History Digital Library-ren kortesia · Internet Archive · Jabari publikoa',
+    'archive.creditCC': 'Internet Archive-ren eskutik · Lizentzia',
     'archive.current': 'Egungo aldizkariak · sarbide irekia',
     'archive.currentIntro':
       'Indarrean dauden sarbide irekiko zinema-argitalpenak. Egile-eskubideengatik ezin dira hemen txertatu; beraz, fitxa hauek haien webgune ofizialera daramate.',
@@ -2229,7 +2233,7 @@ export const ui = {
     'archive.openAccess': 'Sarbide irekia',
     'archive.currentCredit':
       'Sarbide irekiko aldizkarietarako estekak; edukia argitalpen bakoitzaren webgunean dago.',
-    'home.latestIssues': 'Azken aleak',
+    'home.latestIssues': 'Berriak hemerotekan',
     'home.readManifesto': 'Irakurri manifestua',
     'article.backToArchive': 'Itzuli artxibora',
     'article.metadata': 'Fitxa teknikoa',
@@ -2883,6 +2887,7 @@ export const ui = {
     'archive.backToArchive': 'Tornar a l’hemeroteca',
     'archive.credit':
       'Cortesia de Media History Digital Library · Internet Archive · Domini públic',
+    'archive.creditCC': 'Cortesia d’Internet Archive · Llicència',
     'archive.current': 'Revistes actuals · accés obert',
     'archive.currentIntro':
       'Publicacions de cinema vigents i d’accés obert. Per drets d’autor no es poden incrustar aquí, així que aquestes fitxes enllacen al seu web oficial.',
@@ -2890,7 +2895,7 @@ export const ui = {
     'archive.openAccess': 'Accés obert',
     'archive.currentCredit':
       'Enllaços a revistes d’accés obert; el contingut s’allotja al lloc de cada publicació.',
-    'home.latestIssues': 'Darrers números',
+    'home.latestIssues': 'Novetats a l’hemeroteca',
     'home.readManifesto': 'Llegir el manifest',
     'article.backToArchive': 'Tornar a l’arxiu',
     'article.metadata': 'Fitxa tècnica',

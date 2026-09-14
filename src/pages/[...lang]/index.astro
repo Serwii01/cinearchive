@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TmdbSearch from '../../components/TmdbSearch.astro';
 import IssueCard from '../../components/IssueCard.astro';
 import JournalCard from '../../components/JournalCard.astro';
-import { periodicals, journals } from '../../lib/periodicals';
+import { journals, recentIssues } from '../../lib/periodicals';
 import { pdFilms, pdThumbUrl } from '../../lib/pdfilms';
 import { books, bookCoverUrl } from '../../lib/library';
 import { collections, collectionTitle, collectionBlurb } from '../../lib/collections';
@@ -20,19 +20,10 @@ import { websiteLd, organizationLd } from '../../lib/seo';
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
-// Últimos números: el más reciente de 4 publicaciones DISTINTAS (sin repetir título).
-const latestIssues = (() => {
-  const sorted = periodicals.slice().sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
-  const seen = new Set<string>();
-  const out: typeof sorted = [];
-  for (const p of sorted) {
-    if (seen.has(p.title)) continue;
-    seen.add(p.title);
-    out.push(p);
-    if (out.length === 4) break;
-  }
-  return out;
-})();
+// Últimos números: los últimos en entrar en la hemeroteca, sin repetir
+// cabecera. Ocho, dos filas: con una sola fila las cabeceras en castellano
+// se comían a las americanas (o al revés) y nunca se veían las dos cosas.
+const latestIssues = recentIssues(8);
 
 // Selección repartida (variedad) de un conjunto, para los adelantos de portada.
 const sample = <T,>(arr: T[], n: number): T[] => {

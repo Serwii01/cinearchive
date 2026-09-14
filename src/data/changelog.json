@@ -1,5 +1,43 @@
 [
   {
+    "version": "1.8",
+    "date": "2026-09-14",
+    "title": {
+      "es": "La hemeroteca y el cine abierto crecen",
+      "en": "The periodicals library and open cinema grow",
+      "gl": "A hemeroteca e o cine aberto medran",
+      "eu": "Hemeroteka eta zinema irekia hazten dira",
+      "ca": "L’hemeroteca i el cinema obert creixen"
+    },
+    "changes": {
+      "es": [
+        "Quince números nuevos en la hemeroteca: más Shock Cinema (1997–1999), Cult Movies, Filmfax y Jump Cut, y por primera vez revistas en español con licencia libre: Cinéphiles Cine-Files y el Especial de Cine Mexicano (México) y Arquicinema (Bolivia).",
+        "Quince películas nuevas en Cine abierto, más cercanas en el tiempo: de La noche de los muertos vivientes y El último hombre sobre la Tierra a los cortos de Blender Studio (Spring, Sprite Fright, Charge) y documentales en Creative Commons como The Internet’s Own Boy, TPB AFK o ¡Copiad, malditos!",
+        "La portada enseña ahora las novedades de la hemeroteca —lo último en entrar, ocho cabeceras— y cada número o película con licencia Creative Commons la declara tal cual: BY, BY-SA, BY-NC-SA…"
+      ],
+      "en": [
+        "Fifteen new issues in the periodicals library: more Shock Cinema (1997–1999), Cult Movies, Filmfax and Jump Cut, and for the first time Spanish-language magazines under free licences: Cinéphiles Cine-Files and the Especial de Cine Mexicano (Mexico) and Arquicinema (Bolivia).",
+        "Fifteen new films in Open Cinema, closer to the present: from Night of the Living Dead and The Last Man on Earth to the Blender Studio shorts (Spring, Sprite Fright, Charge) and Creative Commons documentaries such as The Internet’s Own Boy, TPB AFK and ¡Copiad, malditos!",
+        "The front page now shows what is new in the periodicals library —the latest additions, eight titles— and every issue or film under a Creative Commons licence states it as is: BY, BY-SA, BY-NC-SA…"
+      ],
+      "gl": [
+        "Quince números novos na hemeroteca: máis Shock Cinema (1997–1999), Cult Movies, Filmfax e Jump Cut, e por primeira vez revistas en castelán con licenza libre: Cinéphiles Cine-Files e o Especial de Cine Mexicano (México) e Arquicinema (Bolivia).",
+        "Quince películas novas en Cine aberto, máis próximas no tempo: de A noite dos mortos viventes e O último home sobre a Terra ás curtas de Blender Studio (Spring, Sprite Fright, Charge) e documentais en Creative Commons como The Internet’s Own Boy, TPB AFK ou ¡Copiad, malditos!",
+        "A portada ensina agora as novidades da hemeroteca —o último en entrar, oito cabeceiras— e cada número ou película con licenza Creative Commons decláraa tal cal: BY, BY-SA, BY-NC-SA…"
+      ],
+      "eu": [
+        "Hamabost ale berri hemerotekan: Shock Cinema gehiago (1997–1999), Cult Movies, Filmfax eta Jump Cut, eta lehen aldiz gaztelaniazko aldizkariak lizentzia librearekin: Cinéphiles Cine-Files eta Especial de Cine Mexicano (Mexiko) eta Arquicinema (Bolivia).",
+        "Hamabost film berri Zinema irekian, garaian hurbilagoak: Night of the Living Dead eta The Last Man on Earth filmetatik Blender Studioren film laburretara (Spring, Sprite Fright, Charge) eta Creative Commons dokumentaletara, hala nola The Internet’s Own Boy, TBP AFK edo ¡Copiad, malditos!",
+        "Hasierako orriak hemerotekako berriak erakusten ditu orain —azkena sartutakoa, zortzi goiburu— eta Creative Commons lizentzia duen ale edo film bakoitzak hala adierazten du: BY, BY-SA, BY-NC-SA…"
+      ],
+      "ca": [
+        "Quinze números nous a l’hemeroteca: més Shock Cinema (1997–1999), Cult Movies, Filmfax i Jump Cut, i per primera vegada revistes en castellà amb llicència lliure: Cinéphiles Cine-Files i l’Especial de Cine Mexicano (Mèxic) i Arquicinema (Bolívia).",
+        "Quinze pel·lícules noves a Cinema obert, més properes en el temps: de La nit dels morts vivents i L’últim home sobre la Terra als curts de Blender Studio (Spring, Sprite Fright, Charge) i documentals en Creative Commons com The Internet’s Own Boy, TPB AFK o ¡Copiad, malditos!",
+        "La portada mostra ara les novetats de l’hemeroteca —l’últim a entrar, vuit capçaleres— i cada número o pel·lícula amb llicència Creative Commons la declara tal com és: BY, BY-SA, BY-NC-SA…"
+      ]
+    }
+  },
+  {
     "version": "1.7",
     "date": "2026-09-08",
     "title": {

@@ -1,6 +1,6 @@
 ---
 import { getLangFromUrl, useTranslations, type Lang } from '../i18n/ui';
-import { periodicals } from '../lib/periodicals';
+import { recentIssues } from '../lib/periodicals';
 import { pdFilms } from '../lib/pdfilms';
 import { books } from '../lib/library';
 import { collections, collectionTitle } from '../lib/collections';
@@ -16,11 +16,7 @@ const sample = <T,>(arr: T[], n: number): T[] => {
 };
 
 // Mezcla "novedades" de varias secciones para el teletipo.
-const periodicalItems = periodicals
-  .slice()
-  .sort((a, b) => b.year - a.year)
-  .slice(0, 4)
-  .map((p) => `${p.title} (${p.year})`);
+const periodicalItems = recentIssues(4).map((p) => `${p.title} (${p.year})`);
 const cinemaItems = sample(pdFilms, 4).map((f) => `${f.title} (${f.year})`);
 const bookItems = sample(books, 3).map((b) => b.title);
 const collectionItems = collections.slice(0, 3).map((c) => collectionTitle(c, lang));
