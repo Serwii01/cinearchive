@@ -64,101 +64,93 @@ const homeJsonLd = [
   {/* HERO — a la izquierda, un carrusel de novedades (artículos, hemeroteca,
       dosieres especiales) que avanza solo con una línea ocre que se va
       llenando; a la derecha, la película del día, comprimida. Sin JavaScript
-      se ve la primera diapositiva y la película, y todo sigue siendo enlace. */}
+      se ve la primera diapositiva y la película, y todo sigue siendo enlace.
+
+      La altura es FIJA en escritorio: las diapositivas se apilan en la misma
+      celda y las inactivas se ocultan con visibility, no con display, así la
+      cabecera no cambia de tamaño al pasar de una a otra. */}
   <section class="border-b border-ink">
     <div class="frame">
-      <div class="grid grid-cols-1 md:grid-cols-12">
-        <home-carousel class="flex flex-col border-ink md:col-span-7 md:border-r" data-interval="7000">
-          <div class="grid flex-1">
-            {/* 1 · Artículos */}
-            <div data-slide class="flex flex-col [grid-area:1/1] p-6 md:p-8">
-              <div class="flex items-end justify-between border-b border-ink pb-2">
+      <div class="grid grid-cols-1 md:grid-cols-12 md:grid-rows-[32rem]">
+        <home-carousel class="flex min-h-0 flex-col border-ink md:col-span-7 md:border-r" data-interval="7000">
+          <div class="grid min-h-0 flex-1 overflow-hidden">
+            {/* Un artículo por diapositiva: título y entradilla, nada más. */}
+            {articlePicks.slice(0, 2).map(({ slug, date, c }, i) => (
+              <a
+                data-slide
+                style={i === 0 ? undefined : 'visibility:hidden'}
+                href={localizePath(lang, `articles/${slug}`)}
+                class="group flex flex-col justify-center [grid-area:1/1] p-6 no-underline md:p-8"
+              >
                 <span class="label">{t('articles.title')}</span>
-                <a href={localizePath(lang, 'articles')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
-              </div>
-              <div class="flex flex-1 flex-col">
-                {articlePicks.slice(0, 2).map(({ slug, date, c }) => (
-                  <a href={localizePath(lang, `articles/${slug}`)} class="group flex flex-1 flex-col justify-center border-b border-outline-variant py-4 no-underline last:border-b-0">
-                    <span class="font-mono text-meta-data text-muted">{c.kicker} · {formatDate(new Date(date), lang)}</span>
-                    <span class="mt-1 block font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted md:text-headline-lg">{c.title}</span>
-                    <span class="mt-2 line-clamp-2 text-body-md text-charcoal">{c.lead}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
+                <span class="mt-4 block font-mono text-meta-data text-muted">{c.kicker} · {formatDate(new Date(date), lang)}</span>
+                <span class="mt-2 block font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{c.title}</span>
+                <span class="mt-4 line-clamp-3 max-w-2xl text-body-md text-charcoal">{c.lead}</span>
+                <span class="label mt-6 text-ink">{t('articles.read')} →</span>
+              </a>
+            ))}
 
-            {/* 2 · Novedades en la hemeroteca */}
-            <div data-slide hidden class="flex flex-col [grid-area:1/1] p-6 md:p-8">
-              <div class="flex items-end justify-between border-b border-ink pb-2">
-                <span class="label">{t('home.latestIssues')}</span>
-                <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">{t('home.viewArchive')} →</a>
-              </div>
-              <div class="mt-4 grid flex-1 grid-cols-4 gap-px border border-ink bg-ink">
+            {/* Novedades en la hemeroteca: solo las portadas. */}
+            <a data-slide style="visibility:hidden" href={localizePath(lang, 'archive')} class="group flex flex-col justify-center [grid-area:1/1] p-6 no-underline md:p-8">
+              <span class="label">{t('home.latestIssues')}</span>
+              <span class="mt-4 grid grid-cols-4 gap-px border border-ink bg-ink">
                 {latestIssues.slice(0, 4).map((item) => (
-                  <a href={localizePath(lang, `archive/${item.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
-                    <div class="aspect-[3/4] overflow-hidden border-b border-ink bg-charcoal">
-                      <img src={coverUrl(item.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
-                    </div>
-                    <div class="p-2">
-                      <span class="block truncate font-display text-body-md leading-tight text-ink group-hover:text-muted">{item.title}</span>
-                      <span class="block font-mono text-meta-data text-muted">{item.year}</span>
-                    </div>
-                  </a>
+                  <span class="block aspect-[3/4] overflow-hidden bg-charcoal">
+                    <img src={coverUrl(item.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
+                  </span>
                 ))}
-              </div>
-            </div>
+              </span>
+              <span class="mt-4 block font-mono text-meta-data text-muted">{latestIssues.slice(0, 4).map((i) => i.title).join(' · ')}</span>
+              <span class="label mt-4 text-ink transition-colors group-hover:text-muted">{t('home.viewArchive')} →</span>
+            </a>
 
-            {/* 3 · Dosieres especiales */}
-            <div data-slide hidden class="flex flex-col [grid-area:1/1] p-6 md:p-8">
-              <div class="flex items-end justify-between border-b border-ink pb-2">
-                <span class="label">{t('dossiers.title')}</span>
-                <a href={localizePath(lang, 'dossiers')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
-              </div>
-              <div class="mt-4 grid flex-1 grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2">
-                {dossierPicks.map(({ slug, c }) => (
-                  <a href={localizePath(lang, `dossiers/${slug}`)} class="group flex flex-col bg-surface p-4 no-underline hover:bg-film-white">
-                    <span class="label">{c.kicker}</span>
-                    <span class="mt-2 block font-display text-headline-lg leading-tight text-ink group-hover:text-muted">{c.title}</span>
-                    <span class="mt-2 line-clamp-3 text-body-md text-charcoal">{c.blurb}</span>
-                  </a>
+            {/* Dosieres especiales: los dos títulos. */}
+            <a data-slide style="visibility:hidden" href={localizePath(lang, 'dossiers')} class="group flex flex-col justify-center [grid-area:1/1] p-6 no-underline md:p-8">
+              <span class="label">{t('dossiers.title')}</span>
+              <span class="mt-4 block max-w-2xl text-body-md text-charcoal">{t('dossiers.intro')}</span>
+              <span class="mt-6 flex flex-col gap-3">
+                {dossierPicks.map(({ c }) => (
+                  <span class="block border-l-2 border-ochre pl-4">
+                    <span class="block font-mono text-meta-data text-muted">{c.kicker}</span>
+                    <span class="block font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{c.title}</span>
+                  </span>
                 ))}
-              </div>
-            </div>
+              </span>
+              <span class="label mt-6 text-ink">{t('home.seeAll')} →</span>
+            </a>
           </div>
 
-          {/* Pestañas + línea de progreso */}
-          <div class="border-t border-ink">
-            <div class="flex" role="tablist" aria-label={t('home.carousel')}>
-              {[t('articles.short'), t('nav.archive'), t('dossiers.title')].map((label, i) => (
-                <button type="button" role="tab" data-tab aria-selected={i === 0 ? 'true' : 'false'} class:list={['label flex-1 truncate border-r border-ink px-3 py-2 text-left transition-colors last:border-r-0 hover:bg-film-white', i === 0 ? 'text-ink' : 'text-muted']}>
-                  {label}
-                </button>
-              ))}
-            </div>
-            <div class="h-[3px] w-full bg-outline-variant" aria-hidden="true">
-              <div data-progress class="h-full w-0 bg-ochre"></div>
-            </div>
+          {/* La línea: un tramo por diapositiva. Los pasados, llenos; el actual
+              se va llenando; los siguientes, vacíos. Cada tramo es un botón. */}
+          <div class="flex gap-1 border-t border-ink px-6 py-4 md:px-10" role="tablist" aria-label={t('home.carousel')}>
+            {Array.from({ length: Math.min(articlePicks.length, 2) + 2 }, (_, k) => k).map((i) => (
+              <button type="button" role="tab" data-tab aria-selected={i === 0 ? 'true' : 'false'} aria-label={`${i + 1}`} class="group/tab h-4 flex-1 cursor-pointer bg-transparent p-0">
+                <span class="block h-[3px] w-full bg-outline-variant transition-colors group-hover/tab:bg-muted">
+                  <span data-fill class="block h-full w-0 bg-ochre"></span>
+                </span>
+              </button>
+            ))}
           </div>
         </home-carousel>
 
         {/* Película del día, comprimida */}
         {
           film ? (
-            <div class="flex flex-col border-t border-ink md:col-span-5 md:border-t-0">
-              <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} class="block border-b border-ink">
+            <div class="flex min-h-0 flex-col border-t border-ink md:col-span-5 md:overflow-hidden md:border-t-0">
+              <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} class="block border-b border-ink md:min-h-0 md:flex-1 md:overflow-hidden">
                 {film.backdrop ? (
-                  <img src={film.backdrop} alt={film.title} width="1280" height="720" decoding="async" class="h-44 w-full object-cover md:h-64" />
+                  <img src={film.backdrop} alt={film.title} width="1280" height="720" decoding="async" class="h-44 w-full object-cover md:h-full" />
                 ) : (
-                  <div class="film-grain h-44 w-full md:h-64" />
+                  <div class="film-grain h-44 w-full md:h-full" />
                 )}
               </a>
-              <div class="flex flex-1 flex-col gap-3 p-6">
+              <div class="flex flex-col gap-2 p-6">
                 <span class="label">{t('home.filmOfDay')}</span>
-                <h1 class="font-display text-headline-lg leading-tight md:text-display-mobile">
+                <h1 class="font-display text-headline-lg leading-tight">
                   <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} class="text-ink no-underline hover:text-muted">{film.title}</a>
                 </h1>
-                <p class="line-clamp-3 text-body-md text-charcoal">{film.overview}</p>
-                <div class="mt-auto flex flex-wrap items-center gap-4 pt-2">
+                <p class="line-clamp-2 text-body-md text-charcoal">{film.overview}</p>
+                <div class="mt-2 flex flex-wrap items-center gap-4">
                   <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} class="btn btn-primary no-underline">{t('home.viewFilm')}</a>
                   <span class="font-mono text-meta-data text-muted">
                     {[film.year, film.voteAverage ? `★ ${film.voteAverage.toFixed(1)}` : null].filter(Boolean).join(' · ')}
@@ -179,29 +171,37 @@ const homeJsonLd = [
 
   <script>
     /**
-     * Carrusel de la portada. Avanza solo cada N ms con una línea ocre que se
-     * llena; se para al pasar el ratón o al perder la pestaña, y no avanza si
-     * el sistema pide menos movimiento. Las pestañas cambian de diapositiva.
+     * Carrusel de la portada. Avanza solo cada N ms; la línea de abajo va por
+     * tramos (uno por diapositiva): los pasados llenos, el actual llenándose.
+     * Se para al pasar el ratón o al perder la pestaña, y no avanza si el
+     * sistema pide menos movimiento. Cada tramo es un botón.
      */
     class HomeCarousel extends HTMLElement {
       connectedCallback() {
         const slides = Array.from(this.querySelectorAll<HTMLElement>('[data-slide]'));
-        const tabs = Array.from(this.querySelectorAll<HTMLButtonElement>('[data-tab]'));
-        const bar = this.querySelector<HTMLElement>('[data-progress]');
+        const tabs = Array.from(this.querySelectorAll<HTMLButtonElement>('[data-tab]')).slice(0, slides.length);
+        // Tramos de más (si hay menos diapositivas que tramos pintados): fuera.
+        this.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((t, k) => { if (k >= slides.length) t.remove(); });
         const interval = Number(this.dataset.interval) || 7000;
         const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         let i = 0;
         let timer: ReturnType<typeof setTimeout> | undefined;
         let paused = false;
 
-        const llenar = () => {
-          if (!bar) return;
-          bar.style.transition = 'none';
-          bar.style.width = '0%';
-          void bar.offsetWidth; // fuerza el reflow: si no, la transición no arranca desde 0
+        const fill = (k: number) => tabs[k]?.querySelector<HTMLElement>('[data-fill]');
+        const pintarLinea = () => {
+          tabs.forEach((_, k) => {
+            const f = fill(k);
+            if (!f) return;
+            f.style.transition = 'none';
+            f.style.width = k < i ? '100%' : '0%';
+          });
+          const actual = fill(i);
+          if (!actual) return;
+          void actual.offsetWidth; // fuerza el reflow para que la transición arranque desde 0
           if (reduce || paused) return;
-          bar.style.transition = `width ${interval}ms linear`;
-          bar.style.width = '100%';
+          actual.style.transition = `width ${interval}ms linear`;
+          actual.style.width = '100%';
         };
         const programar = () => {
           clearTimeout(timer);
@@ -210,13 +210,15 @@ const homeJsonLd = [
         };
         const mostrar = (n: number) => {
           i = n;
-          slides.forEach((s, k) => (s.hidden = k !== n));
-          tabs.forEach((t, k) => {
-            t.setAttribute('aria-selected', String(k === n));
-            t.classList.toggle('text-ink', k === n);
-            t.classList.toggle('text-muted', k !== n);
+          // visibility en vez de display: las diapositivas ocultas siguen
+          // ocupando su celda y la cabecera no cambia de alto.
+          slides.forEach((s, k) => {
+            s.style.visibility = k === n ? 'visible' : 'hidden';
+            s.setAttribute('aria-hidden', String(k !== n));
+            s.tabIndex = k === n ? 0 : -1;
           });
-          llenar();
+          tabs.forEach((t, k) => t.setAttribute('aria-selected', String(k === n)));
+          pintarLinea();
           programar();
         };
 
@@ -224,10 +226,10 @@ const homeJsonLd = [
         this.addEventListener('mouseenter', () => {
           paused = true;
           clearTimeout(timer);
-          if (bar) {
-            // Congela la línea donde está.
-            bar.style.width = getComputedStyle(bar).width;
-            bar.style.transition = 'none';
+          const actual = fill(i);
+          if (actual) {
+            actual.style.width = getComputedStyle(actual).width; // se congela donde está
+            actual.style.transition = 'none';
           }
         });
         this.addEventListener('mouseleave', () => {
