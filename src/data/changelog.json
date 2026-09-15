@@ -1,5 +1,43 @@
 [
   {
+    "version": "1.8.1",
+    "date": "2026-09-15",
+    "title": {
+      "es": "La base de datos adelgaza",
+      "en": "The database slims down",
+      "gl": "A base de datos adelgaza",
+      "eu": "Datu-basea argaltzen da",
+      "ca": "La base de dades s’aprima"
+    },
+    "changes": {
+      "es": [
+        "Las fichas de película se guardan podadas: solo lo que la web enseña (reparto corto, director, similares recortados) en vez de la respuesta entera de TMDB. La caché ocupa cuatro veces menos y las fichas se leen más rápido; no se pierde ningún dato visible.",
+        "Se retiran los restos de Watchmode, que dejó de usarse en la 1.6: una tabla y dos columnas vacías.",
+        "Rotación de los registros de los contenedores en el servidor, que crecían sin límite."
+      ],
+      "en": [
+        "Film entries are now stored trimmed: only what the site shows (short cast, director, trimmed similar films) instead of the whole TMDB response. The cache takes four times less space and entries load faster; no visible data is lost.",
+        "The remains of Watchmode, unused since 1.6, are removed: one table and two empty columns.",
+        "Container logs on the server now rotate instead of growing without limit."
+      ],
+      "gl": [
+        "As fichas de película gárdanse podadas: só o que a web ensina (reparto curto, director, similares recortados) en vez da resposta enteira de TMDB. A caché ocupa catro veces menos e as fichas lense máis rápido; non se perde ningún dato visible.",
+        "Retíranse os restos de Watchmode, que deixou de usarse na 1.6: unha táboa e dúas columnas baleiras.",
+        "Rotación dos rexistros dos contedores no servidor, que medraban sen límite."
+      ],
+      "eu": [
+        "Filmen fitxak inausita gordetzen dira: webguneak erakusten duena bakarrik (aktore-zerrenda laburra, zuzendaria, antzeko moztuak), TMDBren erantzun osoaren ordez. Cacheak lau aldiz leku gutxiago hartzen du eta fitxak azkarrago irakurtzen dira; ez da datu ikusgairik galtzen.",
+        "1.6tik erabiltzen ez zen Watchmoderen hondarrak kentzen dira: taula bat eta bi zutabe huts.",
+        "Zerbitzariko edukiontzien erregistroen errotazioa, mugarik gabe hazten baitziren."
+      ],
+      "ca": [
+        "Les fitxes de pel·lícula es desen podades: només el que el web mostra (repartiment curt, director, similars retallats) en lloc de la resposta sencera de TMDB. La memòria cau ocupa quatre vegades menys i les fitxes es llegeixen més ràpid; no es perd cap dada visible.",
+        "Es retiren les restes de Watchmode, que va deixar d’usar-se a la 1.6: una taula i dues columnes buides.",
+        "Rotació dels registres dels contenidors al servidor, que creixien sense límit."
+      ]
+    }
+  },
+  {
     "version": "1.8",
     "date": "2026-09-14",
     "title": {

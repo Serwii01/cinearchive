@@ -7,6 +7,7 @@ import {
   trailerKey,
   toTmdbLang,
   director,
+  slimMovie,
   discoverMovies,
   TMDB_IMG,
   type TmdbMovie,
@@ -138,5 +139,119 @@ describe('discoverMovies (construcción de la petición)', () => {
     expect(floor.get('vote_count.gte')).toBe('300'); // suelo para "mejor valoradas"
     const raised = await paramsFor({ sort: 'popularity.desc', minVotes: 500 });
     expect(raised.get('vote_count.gte')).toBe('500'); // suelo 50 elevado a 500
+  });
+});
+
+describe('slimMovie', () => {
+  // Una ficha como la devuelve TMDB de verdad: con todo lo que no se usa.
+  const gorda = () =>
+    ({
+      id: 238,
+      imdb_id: 'tt0068646',
+      title: 'El padrino',
+      original_title: 'The Godfather',
+      overview: 'Don Vito…',
+      tagline: 'Una oferta',
+      release_date: '1972-03-14',
+      runtime: 175,
+      budget: 6000000,
+      revenue: 245066411,
+      original_language: 'en',
+      poster_path: '/p.jpg',
+      backdrop_path: '/b.jpg',
+      vote_average: 8.7,
+      vote_count: 20000,
+      genres: [{ id: 18, name: 'Drama' }],
+      production_countries: [{ iso_3166_1: 'US', name: 'United States of America' }],
+      production_companies: [{ id: 4, name: 'Paramount', logo_path: '/x.png', origin_country: 'US' }],
+      // Lo que TMDB manda y nadie lee:
+      adult: false,
+      homepage: 'https://…',
+      popularity: 123.4,
+      spoken_languages: [{ iso_639_1: 'en', name: 'English' }],
+      status: 'Released',
+      belongs_to_collection: { id: 230, name: 'The Godfather Collection' },
+      credits: {
+        cast: Array.from({ length: 40 }, (_, i) => ({
+          id: i, name: `Actor ${i}`, character: `Rol ${i}`, profile_path: null,
+          adult: false, gender: 2, known_for_department: 'Acting', original_name: `Actor ${i}`, popularity: 1, cast_id: i, credit_id: `c${i}`, order: i,
+        })),
+        crew: [
+          { id: 1, job: 'Director', name: 'Francis Ford Coppola', department: 'Directing', credit_id: 'x' },
+          { id: 2, job: 'Screenplay', name: 'Mario Puzo', department: 'Writing', credit_id: 'y' },
+          ...Array.from({ length: 700 }, (_, i) => ({ id: 100 + i, job: 'Grip', name: `Técnico ${i}`, department: 'Crew', credit_id: `z${i}` })),
+        ],
+      },
+      keywords: { keywords: [{ id: 1, name: 'mafia' }] },
+      recommendations: {
+        results: Array.from({ length: 20 }, (_, i) => ({
+          id: 1000 + i, title: `Rec ${i}`, original_title: `Rec ${i}`, release_date: '1990-01-01', poster_path: '/r.jpg',
+          backdrop_path: null, overview: 'x'.repeat(300), vote_average: 7, vote_count: 10, genre_ids: [18], popularity: 5, adult: false, video: false, original_language: 'en',
+        })),
+      },
+      similar: { results: [] },
+      videos: {
+        results: [
+          { key: 'v1', site: 'Vimeo', type: 'Trailer', name: 'no' },
+          { key: 'mk', site: 'YouTube', type: 'Featurette', name: 'making of' },
+          { key: 'tr', site: 'YouTube', type: 'Trailer', name: 'Tráiler', official: true, iso_639_1: 'es', size: 1080 },
+          { key: 'te', site: 'YouTube', type: 'Teaser', name: 'Teaser', official: false },
+        ],
+      },
+      'watch/providers': { results: { ES: {}, US: {} } },
+    }) as unknown as TmdbMovie;
+
+  it('quita lo que la web no lee', () => {
+    const s = slimMovie(gorda()) as unknown as Record<string, unknown>;
+    for (const k of ['adult', 'homepage', 'popularity', 'spoken_languages', 'status', 'belongs_to_collection', 'watch/providers']) {
+      expect(k in s, k).toBe(false);
+    }
+    expect((s.production_companies as { logo_path?: string }[])[0].logo_path).toBeUndefined();
+  });
+
+  it('deja el reparto en 10 y el equipo solo con los oficios que se enseñan', () => {
+    const s = slimMovie(gorda());
+    expect(s.credits!.cast).toHaveLength(10);
+    expect(Object.keys(s.credits!.cast[0]).sort()).toEqual(['character', 'id', 'name', 'profile_path']);
+    expect(s.credits!.crew.map((c) => c.job)).toEqual(['Director', 'Screenplay']);
+    // Lo que la web lee del equipo sigue dando lo mismo.
+    expect(director(s)).toBe('Francis Ford Coppola');
+  });
+
+  it('recorta similares a 12 y les quita la sinopsis', () => {
+    const s = slimMovie(gorda());
+    expect(s.recommendations!.results).toHaveLength(12);
+    expect(s.recommendations!.results[0].overview).toBe('');
+    expect(s.recommendations!.results[0].poster_path).toBe('/r.jpg');
+    expect('popularity' in s.recommendations!.results[0]).toBe(false);
+  });
+
+  it('conserva los vídeos que trailerKey puede elegir, en su orden', () => {
+    const s = slimMovie(gorda());
+    expect(s.videos!.results.map((v) => v.key)).toEqual(['tr', 'te']);
+    expect(trailerKey(s)).toBe(trailerKey(gorda()));
+  });
+
+  it('conserva los campos de la ficha', () => {
+    const s = slimMovie(gorda());
+    expect(s).toMatchObject({
+      id: 238, imdb_id: 'tt0068646', title: 'El padrino', tagline: 'Una oferta', budget: 6000000, revenue: 245066411,
+      runtime: 175, vote_average: 8.7, vote_count: 20000, original_language: 'en',
+      genres: [{ id: 18, name: 'Drama' }], keywords: { keywords: [{ id: 1, name: 'mafia' }] },
+    });
+  });
+
+  it('es pura e idempotente', () => {
+    const g = gorda();
+    const copia = JSON.stringify(g);
+    const una = slimMovie(g);
+    expect(JSON.stringify(g)).toBe(copia); // no toca la entrada
+    expect(JSON.stringify(slimMovie(una))).toBe(JSON.stringify(una)); // segunda pasada, igual
+  });
+
+  it('pesa una fracción de la original', () => {
+    const g = gorda();
+    const ratio = JSON.stringify(slimMovie(g)).length / JSON.stringify(g).length;
+    expect(ratio).toBeLessThan(0.1);
   });
 });

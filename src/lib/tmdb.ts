@@ -104,6 +104,111 @@ export function trailerKey(movie: TmdbMovie): string | null {
   return vids.slice().sort((a, b) => score(b) - score(a))[0]?.key ?? null;
 }
 
+/* ------------------------------------------------------------------ *
+ * Poda de la ficha antes de guardarla en films_cache.
+ * ------------------------------------------------------------------ */
+
+/**
+ * Trabajos del equipo técnico que se conservan en la caché. La web enseña el
+ * director; el resto son los que tendría sentido enseñar algún día (guion,
+ * música, fotografía, montaje, producción) y son una docena de entradas. El
+ * resto del `crew` de TMDB —cientos de entradas en una superproducción, con
+ * departamento, ids de crédito y demás— es lo que más pesa de toda la ficha.
+ */
+const CREW_JOBS: ReadonlySet<string> = new Set([
+  'Director',
+  'Writer',
+  'Screenplay',
+  'Story',
+  'Novel',
+  'Producer',
+  'Original Music Composer',
+  'Director of Photography',
+  'Editor',
+]);
+/** La ficha enseña 8 actores; se guardan 10 por si se amplía. */
+const CAST_MAX = 10;
+/** Similares y recomendaciones: la ficha pinta 12 en total, se guardan 12 de cada. */
+const SIMILAR_MAX = 12;
+/** Vídeos: solo YouTube y solo tráileres/teasers, que es lo que mira trailerKey. */
+const VIDEOS_MAX = 4;
+
+const brief = (r: TmdbSearchResult): TmdbSearchResult => ({
+  id: r.id,
+  title: r.title,
+  original_title: r.original_title,
+  release_date: r.release_date,
+  poster_path: r.poster_path ?? null,
+  backdrop_path: r.backdrop_path ?? null,
+  // La sinopsis de una película similar no se enseña en ningún sitio y son
+  // 300 bytes por entrada: fuera.
+  overview: '',
+  vote_average: r.vote_average,
+  vote_count: r.vote_count,
+  genre_ids: r.genre_ids,
+});
+
+/**
+ * Devuelve una copia de la ficha con SOLO lo que la web lee.
+ *
+ * TMDB devuelve mucho más de lo que el tipo TmdbMovie declara: cada actor trae
+ * quince campos, cada similar trae su sinopsis, el equipo técnico son cientos
+ * de personas. Nada de eso se enseña, pero hasta ahora se guardaba entero en
+ * films_cache (26 kB de media por película, 200 kB en las gordas). Con esto se
+ * queda en unos pocos kB y la tabla deja de crecer a ese ritmo.
+ *
+ * No se pierde nada que se use: los tests de tmdb comprueban que director(),
+ * trailerKey() y los campos de la ficha dan lo mismo antes y después. Es pura
+ * —no toca el objeto de entrada— e idempotente, así que se puede pasar dos
+ * veces sin efecto.
+ */
+export function slimMovie(m: TmdbMovie): TmdbMovie {
+  const out: TmdbMovie = {
+    id: m.id,
+    imdb_id: m.imdb_id ?? null,
+    title: m.title,
+    original_title: m.original_title,
+    overview: m.overview,
+    release_date: m.release_date,
+    runtime: m.runtime ?? null,
+    poster_path: m.poster_path ?? null,
+    backdrop_path: m.backdrop_path ?? null,
+    vote_average: m.vote_average,
+    genres: (m.genres ?? []).map((g) => ({ id: g.id, name: g.name })),
+    production_countries: (m.production_countries ?? []).map((c) => ({ iso_3166_1: c.iso_3166_1, name: c.name })),
+  };
+  // Opcionales: solo se escriben si vienen, para no rellenar la caché de nulos.
+  if (m.tagline) out.tagline = m.tagline;
+  if (m.budget) out.budget = m.budget;
+  if (m.revenue) out.revenue = m.revenue;
+  if (m.original_language) out.original_language = m.original_language;
+  if (m.vote_count != null) out.vote_count = m.vote_count;
+  if (m.production_companies) out.production_companies = m.production_companies.map((c) => ({ id: c.id, name: c.name }));
+  if (m.credits) {
+    out.credits = {
+      cast: (m.credits.cast ?? []).slice(0, CAST_MAX).map((c) => ({
+        id: c.id, name: c.name, character: c.character, profile_path: c.profile_path ?? null,
+      })),
+      crew: (m.credits.crew ?? []).filter((c) => CREW_JOBS.has(c.job)).map((c) => ({ id: c.id, job: c.job, name: c.name })),
+    };
+  }
+  if (m.keywords?.keywords) out.keywords = { keywords: m.keywords.keywords.map((k) => ({ id: k.id, name: k.name })) };
+  if (m.recommendations) out.recommendations = { results: (m.recommendations.results ?? []).slice(0, SIMILAR_MAX).map(brief) };
+  if (m.similar) out.similar = { results: (m.similar.results ?? []).slice(0, SIMILAR_MAX).map(brief) };
+  if (m.videos) {
+    const score = (v: { type: string; official?: boolean }) =>
+      (v.type === 'Trailer' ? 2 : v.type === 'Teaser' ? 1 : 0) + (v.official ? 1 : 0);
+    out.videos = {
+      results: (m.videos.results ?? [])
+        .filter((v) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser'))
+        .sort((a, b) => score(b) - score(a))
+        .slice(0, VIDEOS_MAX)
+        .map((v) => ({ key: v.key, site: v.site, type: v.type, name: v.name, ...(v.official != null ? { official: v.official } : {}) })),
+    };
+  }
+  return out;
+}
+
 export interface TmdbTrending extends TmdbSearchResult {
   backdrop_path: string | null;
 }

@@ -107,6 +107,12 @@ const etiquetaSemana = (iso: string) =>
     data-l-slow={t('admin.statusSlow')}
     data-l-down={t('admin.statusDown')}
     data-l-skipped={t('admin.statusSkipped')}
+    data-l-rows={t('admin.maintRows')}
+    data-l-working={t('admin.working')}
+    data-l-failed={t('admin.failed')}
+    data-l-would-delete={t('admin.wouldDelete')}
+    data-confirm-purge={t('admin.confirmPurge')}
+    data-purge={t('admin.purge')}
   >
     <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
 
@@ -279,6 +285,31 @@ const etiquetaSemana = (iso: string) =>
         </table>
       </div>
     )}
+
+    {/* Mantenimiento de films_cache: ver src/lib/dbmaint.ts. Son botones y no
+        tareas automáticas porque acaban en VACUUM FULL, que bloquea la tabla
+        unos segundos. */}
+    <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+      <div class="flex flex-col gap-3 bg-surface p-4">
+        <span class="label">{t('admin.maintenance')} · {t('admin.compact')}</span>
+        <p class="text-body-md text-charcoal">{t('admin.compactNote')}</p>
+        <div class="mt-auto flex flex-wrap items-center gap-3">
+          <button type="button" id="db-compact" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-background">{t('admin.compact')}</button>
+          <span id="db-compact-out" class="font-mono text-meta-data text-muted" aria-live="polite"></span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-3 bg-surface p-4">
+        <span class="label">{t('admin.maintenance')} · {t('admin.purge')}</span>
+        <p class="text-body-md text-charcoal">{t('admin.purgeNote')}</p>
+        <div class="mt-auto flex flex-wrap items-center gap-3">
+          <label class="label" for="db-purge-days">{t('admin.purgeDays')}</label>
+          <input id="db-purge-days" type="number" min="30" max="3650" value="180" class="w-24 border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none" />
+          <button type="button" id="db-purge-count" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-background">{t('admin.count')}</button>
+          <button type="button" id="db-purge" class="label border border-ink px-3 py-2 text-error transition-colors hover:bg-error hover:text-background">{t('admin.purge')}</button>
+          <span id="db-purge-out" class="font-mono text-meta-data text-muted" aria-live="polite"></span>
+        </div>
+      </div>
+    </div>
 
     {/* ================= FUENTES EXTERNAS ================= */}
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.sources')}</h2>
@@ -628,6 +659,93 @@ const etiquetaSemana = (iso: string) =>
   document.addEventListener('visibilitychange', () => (document.hidden ? parar() : arrancar()));
   window.addEventListener('pagehide', parar);
   arrancar();
+
+  /* ================= Mantenimiento de films_cache ================= */
+
+  const L = {
+    rows: root?.dataset.lRows || 'rows',
+    working: root?.dataset.lWorking || '…',
+    failed: root?.dataset.lFailed || 'failed',
+    wouldDelete: root?.dataset.lWouldDelete || 'would delete',
+    confirmPurge: root?.dataset.confirmPurge || 'Purge?',
+    purge: root?.dataset.purge || 'Purge',
+  };
+
+  async function mantenimiento(body: object) {
+    const res = await fetch('/api/admin/db', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    return (await res.json()) as { filas: number; afectadas?: number; total?: number; bytesAntes?: number; bytesDespues?: number };
+  }
+
+  const resumen = (r: { filas: number; afectadas?: number; bytesAntes?: number; bytesDespues?: number }) =>
+    `${formatNum(r.afectadas ?? 0, nf)} / ${formatNum(r.filas, nf)} ${L.rows} · ${formatBytes(r.bytesAntes ?? null)} → ${formatBytes(r.bytesDespues ?? null)}`;
+
+  const compactOut = document.getElementById('db-compact-out');
+  document.getElementById('db-compact')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    btn.disabled = true;
+    if (compactOut) compactOut.textContent = L.working;
+    try {
+      const r = await mantenimiento({ action: 'compact' });
+      if (compactOut) compactOut.textContent = resumen(r);
+      void tick(); // repinta el tamaño de la BD
+    } catch {
+      if (compactOut) compactOut.textContent = L.failed;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  const purgeOut = document.getElementById('db-purge-out');
+  const diasPurga = () => {
+    const v = Number((document.getElementById('db-purge-days') as HTMLInputElement | null)?.value);
+    return Number.isFinite(v) ? Math.min(3650, Math.max(30, Math.round(v))) : 180;
+  };
+
+  document.getElementById('db-purge-count')?.addEventListener('click', async () => {
+    if (purgeOut) purgeOut.textContent = L.working;
+    try {
+      const r = await mantenimiento({ action: 'purge', days: diasPurga(), dryRun: true });
+      if (purgeOut) purgeOut.textContent = `${L.wouldDelete} ${formatNum(r.filas, nf)} / ${formatNum(r.total ?? 0, nf)} ${L.rows}`;
+    } catch {
+      if (purgeOut) purgeOut.textContent = L.failed;
+    }
+  });
+
+  document.getElementById('db-purge')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const dias = diasPurga();
+    // Primero se cuenta, para que la confirmación diga cuántas se van.
+    let cuantas = 0;
+    try {
+      cuantas = (await mantenimiento({ action: 'purge', days: dias, dryRun: true })).filas;
+    } catch {
+      if (purgeOut) purgeOut.textContent = L.failed;
+      return;
+    }
+    const ok = await confirmModal({
+      title: L.purge,
+      message: `${L.confirmPurge} ${L.wouldDelete} ${formatNum(cuantas, nf)} ${L.rows} (${dias} d).`,
+      confirmLabel: L.purge,
+      cancelLabel,
+    });
+    if (!ok) return;
+    btn.disabled = true;
+    if (purgeOut) purgeOut.textContent = L.working;
+    try {
+      const r = await mantenimiento({ action: 'purge', days: dias });
+      if (purgeOut) purgeOut.textContent = resumen(r);
+      void tick();
+    } catch {
+      if (purgeOut) purgeOut.textContent = L.failed;
+    } finally {
+      btn.disabled = false;
+    }
+  });
 
   /* ================= Vaciar cachés ================= */
 

@@ -94,10 +94,6 @@ export const filmsCache = pgTable(
      * solos con ella: no necesitan marca de tiempo ni TTL propios.
      */
     providers: jsonb('providers'),
-    /** @deprecated Watchmode (cuota de 1000/mes) sustituido por TMDB/JustWatch. */
-    watchmode: jsonb('watchmode'),
-    /** @deprecated Ver `watchmode`. */
-    watchmodeFetchedAt: timestamp('watchmode_fetched_at'),
     wikidata: jsonb('wikidata'),
     wikidataFetchedAt: timestamp('wikidata_fetched_at'),
     fetchedAt: timestamp('fetched_at').notNull().defaultNow(),
@@ -106,25 +102,6 @@ export const filmsCache = pgTable(
     // El sitemap de fichas pide las N más recientes de toda la tabla: sin índice,
     // eso es leerla entera y ordenarla en cada petición del rastreador.
     fetchedIdx: index('films_cache_fetched_idx').on(t.fetchedAt),
-  }),
-);
-
-/**
- * @deprecated Cache de "dónde ver" por película y región, de cuando la fuente era
- * Watchmode y cada consulta gastaba cuota. Ahora el dato llega dentro de la ficha
- * de TMDB y vive en films_cache.providers. La tabla se conserva (vaciarla o
- * borrarla es una decisión aparte, no la fuerza este cambio).
- */
-export const watchCache = pgTable(
-  'watch_cache',
-  {
-    tmdbId: integer('tmdb_id').notNull(),
-    region: text('region').notNull(),
-    data: jsonb('data'),
-    fetchedAt: timestamp('fetched_at').notNull().defaultNow(),
-  },
-  (t) => ({
-    pk: primaryKey({ columns: [t.tmdbId, t.region] }),
   }),
 );
 

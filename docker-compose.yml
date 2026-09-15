@@ -1,5 +1,16 @@
+# Rotación de logs de Docker. Sin esto, el json-file de cada contenedor crece
+# sin límite (Postgres y Caddy escriben mucho) y es de las cosas que más disco
+# se comen en un VPS sin que se vea en ningún sitio.
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: '10m'
+      max-file: '3'
+
 services:
   db:
+    <<: *logging
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
@@ -20,6 +31,7 @@ services:
       retries: 12
 
   app:
+    <<: *logging
     build:
       context: .
       args:
@@ -53,6 +65,7 @@ services:
       - '4321'
 
   caddy:
+    <<: *logging
     build:
       context: .
       dockerfile: Dockerfile.caddy

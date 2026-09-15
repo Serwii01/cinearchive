@@ -11,6 +11,7 @@ import {
   director,
   posterUrl,
   extractWatchProviders,
+  slimMovie,
   type TmdbMovie,
   type WatchAvailability,
 } from './tmdb';
@@ -108,12 +109,16 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
     }
   }
 
+  // A la caché va la ficha PODADA (solo lo que la web lee: ver slimMovie); la
+  // página recibe la completa que acabamos de pedir. Si TMDB falla y se sirve
+  // desde caché, la podada tiene todo lo que la ficha necesita.
+  const guardar = slimMovie(tmdb);
   await db
     .insert(filmsCache)
-    .values({ tmdbId, tmdb, omdb, providers, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() })
+    .values({ tmdbId, tmdb: guardar, omdb, providers, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() })
     .onConflictDoUpdate({
       target: filmsCache.tmdbId,
-      set: { tmdb, omdb, providers, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() },
+      set: { tmdb: guardar, omdb, providers, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() },
     });
 
   return { tmdb, omdb, providers, locations };
@@ -169,10 +174,16 @@ export async function getFilmsBrief(
       try {
         const tmdb = await getMovie(id, locale);
         out.set(id, briefFromTmdb(tmdb));
+        // El «dónde ver» viene dentro de la misma respuesta: se extrae y se
+        // guarda, así el selector de región funciona aunque la ficha completa
+        // nunca se haya visitado. Antes el bloque en bruto (45-90 kB) se
+        // guardaba entero dentro de tmdb y la columna providers quedaba vacía.
+        const providers = extractWatchProviders(tmdb, WATCH_REGIONS);
+        const guardar = slimMovie(tmdb);
         await db
           .insert(filmsCache)
-          .values({ tmdbId: id, tmdb, fetchedAt: new Date() })
-          .onConflictDoUpdate({ target: filmsCache.tmdbId, set: { tmdb, fetchedAt: new Date() } });
+          .values({ tmdbId: id, tmdb: guardar, providers, fetchedAt: new Date() })
+          .onConflictDoUpdate({ target: filmsCache.tmdbId, set: { tmdb: guardar, providers, fetchedAt: new Date() } });
       } catch {
         /* ignorar IDs no resolubles */
       }
