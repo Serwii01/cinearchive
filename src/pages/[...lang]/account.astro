@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Avatar from '../../components/Avatar.astro';
+import Badges from '../../components/Badges.astro';
+import { badgesForUser } from '../../lib/badges';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { GENRES, genreName } from '../../data/genres';
 import { db } from '../../db/client';
@@ -34,6 +36,7 @@ const theme = prefs?.theme ?? 'light';
 
 // Perfil público del usuario y solicitudes de seguimiento pendientes.
 const myProfile = await getMyProfile(user.id);
+const etiquetas = await badgesForUser(user.id);
 const pending = await db
   .select({ id: userTable.id, name: userTable.name, username: profile.username, hasAvatar: profile.avatarType })
   .from(follows)
@@ -75,6 +78,7 @@ const inputCls =
               ) : (
                 <p class="truncate font-mono text-meta-data text-muted">{user.email}</p>
               )}
+              <Badges badges={etiquetas} size="sm" class="mt-2" />
             </div>
           </div>
 

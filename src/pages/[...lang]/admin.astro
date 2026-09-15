@@ -9,6 +9,8 @@ import { getDbStats } from '../../lib/dbstats';
 import { getCrecimiento, getActividad, type PuntoSemana } from '../../lib/growth';
 import { listCaches } from '../../lib/caches';
 import { formatBytes, formatDuration, formatNum, formatPct, pct, SIN_DATO } from '../../lib/format';
+import { listBadges, badgesForUsers, badgeClasses, BADGE_COLORS, BADGE_NAME_MAX, BADGE_DESC_MAX } from '../../lib/badges';
+import Badges from '../../components/Badges.astro';
 
 // El middleware garantiza que solo entran cuentas de ADMIN_EMAILS.
 const lang = normalizeLang(Astro.params.lang);
@@ -32,6 +34,8 @@ const [users, filmCounts, fc, uf, extras, vitals, dbStats, crecimiento, activida
   ]);
 
 const caches = listCaches();
+const [allBadges, badgesByUser] = await Promise.all([listBadges(), badgesForUsers(users.map((u) => u.id))]);
+const COLOR_LABEL = { ochre: t('admin.colorOchre'), ink: t('admin.colorInk'), outline: t('admin.colorOutline') } as const;
 const filmCountMap = new Map(filmCounts.map((r) => [r.userId, r.c]));
 const nf = locales[lang];
 const fmtDate = (d: Date) => new Date(d).toLocaleDateString(nf);
@@ -113,6 +117,13 @@ const etiquetaSemana = (iso: string) =>
     data-l-would-delete={t('admin.wouldDelete')}
     data-confirm-purge={t('admin.confirmPurge')}
     data-purge={t('admin.purge')}
+    data-confirm-badge={t('admin.badgeDeleteConfirm')}
+    data-badge-errors={JSON.stringify({
+      name_required: t('admin.badgeErrName'),
+      name_too_long: t('admin.badgeErrName'),
+      duplicate: t('admin.badgeErrDuplicate'),
+      desc_too_long: t('admin.badgeErrDesc'),
+    })}
   >
     <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
 
@@ -468,6 +479,55 @@ const etiquetaSemana = (iso: string) =>
     )}
 
     {/* ================= USUARIOS ================= */}
+    {/* ================= ETIQUETAS DE USUARIO ================= */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.badges')}</h2>
+    <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.badgesNote')}</p>
+    <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink lg:grid-cols-12">
+      <form id="badge-form" class="flex flex-col gap-3 bg-surface p-4 lg:col-span-5">
+        <label class="block">
+          <span class="label mb-1 block">{t('admin.badgeName')}</span>
+          <input name="name" type="text" required maxlength={BADGE_NAME_MAX} autocomplete="off" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink focus:bg-film-white focus:outline-none" />
+        </label>
+        <label class="block">
+          <span class="label mb-1 block">{t('admin.badgeDesc')}</span>
+          <input name="description" type="text" maxlength={BADGE_DESC_MAX} autocomplete="off" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink focus:bg-film-white focus:outline-none" />
+        </label>
+        <fieldset>
+          <legend class="label mb-1">{t('admin.badgeColor')}</legend>
+          <div class="flex flex-wrap gap-2">
+            {BADGE_COLORS.map((c, i) => (
+              <label class="cursor-pointer">
+                <input type="radio" name="color" value={c} checked={i === 0} class="peer sr-only" />
+                <span class:list={['label inline-block border px-3 py-1 opacity-60 peer-checked:opacity-100 peer-checked:ring-2 peer-checked:ring-ink peer-checked:ring-offset-1', badgeClasses(c)]}>{COLOR_LABEL[c]}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <div class="mt-auto flex items-center gap-3">
+          <button type="submit" class="btn btn-primary">{t('admin.badgeCreate')}</button>
+          <span id="badge-msg" class="font-mono text-meta-data text-muted" aria-live="polite"></span>
+        </div>
+      </form>
+      <div class="bg-surface p-4 lg:col-span-7">
+        <span class="label">{t('admin.badgesExisting')} · {allBadges.length}</span>
+        {allBadges.length === 0 ? (
+          <p class="mt-3 font-mono text-body-md text-muted">{t('admin.badgesNone')}</p>
+        ) : (
+          <ul class="mt-3 flex flex-col gap-2">
+            {allBadges.map((b) => (
+              <li class="flex items-center justify-between gap-3 border-b border-outline-variant pb-2 last:border-b-0">
+                <span class="flex min-w-0 items-center gap-3">
+                  <span class:list={['label inline-block shrink-0 border px-2 py-1', badgeClasses(b.color)]}>{b.name}</span>
+                  {b.description && <span class="truncate font-mono text-meta-data text-muted">{b.description}</span>}
+                </span>
+                <button type="button" data-del-badge={b.id} class="label shrink-0 border border-ink px-2 py-1 transition-colors hover:bg-error hover:text-white">{t('admin.delete')}</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.users')} · {users.length}</h2>
     <div class="mt-4 overflow-x-auto border border-ink">
       <table class="w-full border-collapse text-left">
@@ -477,6 +537,7 @@ const etiquetaSemana = (iso: string) =>
             <th class="label px-3 py-2 font-medium text-background">{t('auth.email')}</th>
             <th class="label hidden px-3 py-2 text-right font-medium text-background sm:table-cell">{t('admin.createdAt')}</th>
             <th class="label px-3 py-2 text-right font-medium text-background">{t('nav.films')}</th>
+            <th class="label px-3 py-2 font-medium text-background">{t('admin.badgeEdit')}</th>
             <th class="px-3 py-2"></th>
           </tr>
         </thead>
@@ -487,6 +548,33 @@ const etiquetaSemana = (iso: string) =>
               <td class="px-3 py-2 font-mono text-meta-data text-charcoal">{u.email}</td>
               <td class="hidden px-3 py-2 text-right font-mono text-meta-data text-muted sm:table-cell">{fmtDate(u.createdAt)}</td>
               <td class="px-3 py-2 text-right font-mono text-meta-data text-charcoal">{filmCountMap.get(u.id) ?? 0}</td>
+              {/* Etiquetas del usuario + editor plegado. Cada usuario lleva su
+                  propio bloque de casillas ya pintado por el servidor; el
+                  script solo lo despliega y manda la lista con PUT. */}
+              <td class="px-3 py-2 align-middle">
+                <div class="flex flex-wrap items-center gap-2" data-badge-cell={u.id}>
+                  <div data-badge-chips><Badges badges={badgesByUser.get(u.id) ?? []} size="sm" /></div>
+                  {allBadges.length > 0 && (
+                    <button type="button" data-badge-edit={u.id} class="label border border-ink px-2 py-1 transition-colors hover:bg-ink hover:text-background">{t('admin.badgeEdit')}</button>
+                  )}
+                </div>
+                {allBadges.length > 0 && (
+                  <div data-badge-editor={u.id} hidden class="mt-2 border border-ink bg-white p-3">
+                    <div class="flex flex-wrap gap-3">
+                      {allBadges.map((b) => (
+                        <label class="flex cursor-pointer items-center gap-2">
+                          <input type="checkbox" value={b.id} checked={(badgesByUser.get(u.id) ?? []).some((x) => x.id === b.id)} />
+                          <span class:list={['label inline-block border px-2 py-0.5 text-[10px]', badgeClasses(b.color)]}>{b.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <div class="mt-3 flex items-center gap-3">
+                      <button type="button" data-badge-save={u.id} class="label border border-ink px-3 py-1 transition-colors hover:bg-ink hover:text-background">{t('controls.save')}</button>
+                      <span data-badge-msg class="font-mono text-meta-data text-muted"></span>
+                    </div>
+                  </div>
+                )}
+              </td>
               <td class="px-3 py-2 text-right">
                 {u.id === me.id ? (
                   <span class="label text-muted">{t('admin.you')}</span>
@@ -822,6 +910,85 @@ const etiquetaSemana = (iso: string) =>
         body: JSON.stringify({ tmdbId }),
       });
       if (res.ok) location.reload();
+    }),
+  );
+
+  /* ================= Etiquetas de usuario ================= */
+
+  const badgeErrors = JSON.parse(root?.dataset.badgeErrors || '{}') as Record<string, string>;
+  const confirmBadge = root?.dataset.confirmBadge || 'Delete?';
+
+  const badgeForm = document.getElementById('badge-form') as HTMLFormElement | null;
+  const badgeMsg = document.getElementById('badge-msg');
+  badgeForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(badgeForm);
+    const res = await fetch('/api/admin/badges', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name: fd.get('name'), description: fd.get('description'), color: fd.get('color') }),
+    });
+    if (res.ok) {
+      location.reload();
+      return;
+    }
+    const data = await res.json().catch(() => ({}));
+    if (badgeMsg) {
+      badgeMsg.classList.add('text-error');
+      badgeMsg.textContent = badgeErrors[data.error] || 'Error';
+    }
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-del-badge]').forEach((b) =>
+    b.addEventListener('click', async () => {
+      const ok = await confirmModal({ title: deleteLabel, message: confirmBadge, confirmLabel: deleteLabel, cancelLabel, danger: true });
+      if (!ok) return;
+      const res = await fetch('/api/admin/badges', {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: Number(b.dataset.delBadge) }),
+      });
+      if (res.ok) location.reload();
+    }),
+  );
+
+  document.querySelectorAll<HTMLButtonElement>('[data-badge-edit]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const editor = document.querySelector<HTMLElement>(`[data-badge-editor="${b.dataset.badgeEdit}"]`);
+      if (editor) editor.hidden = !editor.hidden;
+    }),
+  );
+
+  const chipHtml = (badges: { name: string; color: string; description: string | null }[]) => {
+    if (badges.length === 0) return '';
+    const cls = (c: string) => (c === 'ink' ? 'border-ink bg-ink text-white' : c === 'outline' ? 'border-ink bg-transparent text-ink' : 'border-ink bg-ochre text-on-accent');
+    const esc = (s: string) => s.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]!);
+    return `<ul class="flex flex-wrap gap-1.5">${badges
+      .map((x) => `<li class="label inline-block border px-1.5 py-0.5 text-[10px] ${cls(x.color)}"${x.description ? ` title="${esc(x.description)}"` : ''}>${esc(x.name)}</li>`)
+      .join('')}</ul>`;
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('[data-badge-save]').forEach((b) =>
+    b.addEventListener('click', async () => {
+      const userId = b.dataset.badgeSave!;
+      const editor = document.querySelector<HTMLElement>(`[data-badge-editor="${userId}"]`)!;
+      const badgeIds = Array.from(editor.querySelectorAll<HTMLInputElement>('input[type="checkbox"]:checked')).map((i) => Number(i.value));
+      const out = editor.querySelector('[data-badge-msg]');
+      b.disabled = true;
+      const res = await fetch('/api/admin/badges', {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ userId, badgeIds }),
+      });
+      b.disabled = false;
+      if (!res.ok) {
+        if (out) out.textContent = 'Error';
+        return;
+      }
+      const data = (await res.json()) as { badges: { name: string; color: string; description: string | null }[] };
+      const chips = document.querySelector<HTMLElement>(`[data-badge-cell="${userId}"] [data-badge-chips]`);
+      if (chips) chips.innerHTML = chipHtml(data.badges);
+      editor.hidden = true;
     }),
   );
 

@@ -4,6 +4,7 @@ import {
   boolean,
   timestamp,
   integer,
+  serial,
   smallint,
   jsonb,
   primaryKey,
@@ -274,3 +275,36 @@ export type UserList = typeof userLists.$inferSelect;
 export type UserListFilm = typeof userListFilms.$inferSelect;
 export type Profile = typeof profile.$inferSelect;
 export type Follow = typeof follows.$inferSelect;
+
+/* ------------------------------------------------------------------ *
+ * Etiquetas de usuario: las define el administrador («Fundador», «Crítica
+ * invitada», lo que quiera) y se las pone a quien quiera. Se enseñan junto al
+ * nombre en el perfil público, en las reseñas y en la cuenta.
+ * ------------------------------------------------------------------ */
+
+export const badges = pgTable('badges', {
+  id: serial('id').primaryKey(),
+  /** Texto tal cual se enseña. Único: dos etiquetas iguales serían una. */
+  name: text('name').notNull().unique(),
+  /** Estilo de la pastilla: 'ochre' (acento), 'ink' (tinta) u 'outline' (solo borde). */
+  color: text('color').notNull().default('ochre'),
+  /** Qué significa; sale como tooltip. */
+  description: text('description'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const userBadges = pgTable(
+  'user_badges',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    badgeId: integer('badge_id')
+      .notNull()
+      .references(() => badges.id, { onDelete: 'cascade' }),
+    grantedAt: timestamp('granted_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.badgeId] }),
+  }),
+);

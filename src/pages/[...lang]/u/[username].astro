@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Avatar from '../../../components/Avatar.astro';
+import Badges from '../../../components/Badges.astro';
+import { badgesForUser } from '../../../lib/badges';
 import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../../i18n/ui';
 import { filmSlug } from '../../../lib/slug';
 import { db } from '../../../db/client';
@@ -23,6 +25,7 @@ const t = useTranslations(lang);
 const viewer = Astro.locals.user;
 
 const target = await getProfileByUsername(Astro.params.username ?? '');
+const etiquetas = target ? await badgesForUser(target.userId) : [];
 
 if (!target) {
   return new Response(null, { status: 404 });
@@ -129,6 +132,7 @@ const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lan
         <div class="min-w-0">
           <h1 class="text-display-mobile md:text-display-lg">{target.name}</h1>
           <p class="mt-1 font-mono text-body-md text-muted">@{target.username}</p>
+          <Badges badges={etiquetas} class="mt-2" />
           {target.isPrivate && <p class="label mt-2 inline-block border border-ink px-2 py-1">{t('profile.private')}</p>}
           {target.bio && <p class="mt-3 max-w-prose text-body-md text-charcoal">{target.bio}</p>}
           {target.instagram && (

@@ -1,0 +1,28 @@
+---
+/**
+ * Pastillas de etiquetas de usuario. No carga nada: recibe las etiquetas ya
+ * resueltas (badgesForUser / badgesForUsers) para que una lista de gente no
+ * haga una consulta por persona.
+ */
+import { badgeClasses, type Badge } from '../lib/badges';
+
+interface Props {
+  badges: Badge[];
+  /** 'sm' para junto a nombres pequeños (reseñas, listas). */
+  size?: 'sm' | 'md';
+  class?: string;
+}
+
+const { badges, size = 'md', class: cls = '' } = Astro.props;
+const pad = size === 'sm' ? 'px-1.5 py-0.5 text-[10px]' : 'px-2 py-1';
+---
+
+{badges.length > 0 && (
+  <ul class:list={['flex flex-wrap gap-1.5', cls]} aria-label="Etiquetas">
+    {badges.map((b) => (
+      <li class:list={['label inline-block border', pad, badgeClasses(b.color)]} title={b.description ?? undefined}>
+        {b.name}
+      </li>
+    ))}
+  </ul>
+)}

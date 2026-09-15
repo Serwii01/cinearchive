@@ -1,5 +1,38 @@
 [
   {
+    "version": "1.10",
+    "date": "2026-09-15",
+    "title": {
+      "es": "Etiquetas de usuario y artículos de Cine Archive",
+      "en": "User badges and Cine Archive articles",
+      "gl": "Etiquetas de usuario e artigos de Cine Archive",
+      "eu": "Erabiltzaile-etiketak eta Cine Archive-ren artikuluak",
+      "ca": "Etiquetes d’usuari i articles de Cine Archive"
+    },
+    "changes": {
+      "es": [
+        "Etiquetas junto al nombre de usuario —«Fundador», «Crítica invitada», lo que decida la casa—, visibles en el perfil público, en las reseñas y en la cuenta. Se crean y se asignan desde el panel de administración, con tres estilos y una descripción opcional que sale al pasar el ratón.",
+        "Artículos de Cine Archive: piezas de actualidad firmadas por la casa, con fecha, fuentes y películas enlazadas, al pie de la portada. Los dos primeros: los Emmy 2026 y el año de Robert Pattinson."
+      ],
+      "en": [
+        "Badges next to the user name —“Founder”, “Guest critic”, whatever the house decides—, visible on the public profile, on reviews and in the account. Created and assigned from the admin panel, with three styles and an optional description shown on hover.",
+        "Cine Archive articles: current pieces signed by the house, dated, sourced and linked to their films, at the foot of the front page. The first two: the 2026 Emmys and Robert Pattinson’s year."
+      ],
+      "gl": [
+        "Etiquetas xunto ao nome de usuario —«Fundador», «Crítica invitada», o que decida a casa—, visibles no perfil público, nas reseñas e na conta. Créanse e asígnanse desde o panel de administración, con tres estilos e unha descrición opcional que sae ao pasar o rato.",
+        "Artigos de Cine Archive: pezas de actualidade asinadas pola casa, con data, fontes e películas ligadas, ao pé da portada. Os dous primeiros: os Emmy 2026 e o ano de Robert Pattinson."
+      ],
+      "eu": [
+        "Etiketak erabiltzaile-izenaren ondoan —«Sortzailea», «Kritikari gonbidatua», etxeak erabakitzen duena—, profil publikoan, kritiketan eta kontuan ikusgai. Administrazio-paneletik sortzen eta esleitzen dira, hiru estilorekin eta sagua gainean jartzean agertzen den aukerako deskribapen batekin.",
+        "Cine Archive-ren artikuluak: etxeak sinatutako gaurkotasuneko piezak, datarekin, iturriekin eta filmetara estekatuta, hasierako orriaren oinean. Lehen biak: 2026ko Emmyak eta Robert Pattinsonen urtea."
+      ],
+      "ca": [
+        "Etiquetes al costat del nom d’usuari —«Fundador», «Crítica convidada», el que decideixi la casa—, visibles al perfil públic, a les ressenyes i al compte. Es creen i s’assignen des del panell d’administració, amb tres estils i una descripció opcional que surt en passar el ratolí.",
+        "Articles de Cine Archive: peces d’actualitat signades per la casa, amb data, fonts i pel·lícules enllaçades, al peu de la portada. Els dos primers: els Emmy 2026 i l’any de Robert Pattinson."
+      ]
+    }
+  },
+  {
     "version": "1.9",
     "date": "2026-09-15",
     "title": {

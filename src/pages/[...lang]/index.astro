@@ -9,11 +9,12 @@ import { pdFilms, pdThumbUrl } from '../../lib/pdfilms';
 import { books, bookCoverUrl } from '../../lib/library';
 import { collections, collectionTitle, collectionBlurb } from '../../lib/collections';
 import { dossiers, dossierCopy } from '../../lib/dossiers';
+import { articles, articleCopy } from '../../lib/articles';
 import { figures } from '../../lib/figures';
 import { profileUrl } from '../../lib/tmdb';
 import { getFilmOfDay } from '../../lib/featured';
 import { manifesto } from '../../data/manifesto';
-import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../i18n/ui';
 import { filmSlug } from '../../lib/slug';
 import { websiteLd, organizationLd } from '../../lib/seo';
 
@@ -35,6 +36,8 @@ const cinemaPicks = sample(pdFilms, 4);
 const collectionPicks = collections.slice(0, 3);
 // Dosieres especiales: son dos y van los dos, no se recorta ninguno.
 const dossierPicks = dossiers.map((d) => ({ slug: d.slug, c: dossierCopy(d, lang) }));
+// Artículos: los cuatro más recientes, al pie de la portada.
+const articlePicks = articles.slice(0, 4).map((a) => ({ slug: a.slug, date: a.date, c: articleCopy(a, lang) }));
 const figurePicks = sample(figures, 6);
 const bookPicks = sample(books, 4);
 // En la portada solo las 3 revistas más recientes (por año de fundación). La
@@ -324,6 +327,26 @@ const homeJsonLd = [
           ))
         }
       </dl>
+    </div>
+  </section>
+
+  {/* ARTÍCULOS DE CINE ARCHIVE — al pie, después del manifiesto */}
+  <section class="frame border-t border-ink py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('articles.title')}</h2>
+      <a href={localizePath(lang, 'articles')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+    </div>
+    <div class="grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+      {
+        articlePicks.map(({ slug, date, c }) => (
+          <a href={localizePath(lang, `articles/${slug}`)} class="group flex flex-col bg-surface p-6 no-underline transition-colors hover:bg-film-white">
+            <span class="label">{c.kicker} · {formatDate(new Date(date), lang)}</span>
+            <h3 class="mt-3 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{c.title}</h3>
+            <p class="mt-3 text-body-md text-charcoal">{c.lead}</p>
+            <span class="label mt-auto pt-6 text-ink">{t('articles.read')} →</span>
+          </a>
+        ))
+      }
     </div>
   </section>
 </BaseLayout>

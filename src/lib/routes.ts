@@ -18,6 +18,7 @@ export const TOP_LEVEL_SECTIONS: ReadonlySet<string> = new Set([
   'account',
   'admin',
   'archive',
+  'articles',
   'atlas',
   'awards',
   'changelog',

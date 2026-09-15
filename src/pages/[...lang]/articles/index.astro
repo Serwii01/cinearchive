@@ -1,0 +1,36 @@
+---
+export const prerender = true;
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { articles, articleCopy } from '../../../lib/articles';
+import { useTranslations, localizePath, langStaticPaths, normalizeLang, formatDate } from '../../../i18n/ui';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const lista = articles.map((a) => ({ slug: a.slug, date: a.date, c: articleCopy(a, lang) }));
+---
+
+<BaseLayout title={t('articles.title')} description={t('articles.intro')}>
+  <section class="frame py-12">
+    <a href={localizePath(lang)} class="label no-underline hover:text-ink">← {t('nav.home')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('articles.title')} · {articles.length}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('articles.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('articles.intro')}</p>
+    </header>
+
+    <div class="mt-10 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+      {
+        lista.map(({ slug, date, c }) => (
+          <a href={localizePath(lang, `articles/${slug}`)} class="group flex flex-col bg-surface p-6 no-underline transition-colors hover:bg-film-white">
+            <span class="label">{c.kicker} · {formatDate(new Date(date), lang)}</span>
+            <h2 class="mt-3 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{c.title}</h2>
+            <p class="mt-3 text-body-md text-charcoal">{c.lead}</p>
+            <span class="label mt-auto pt-6 text-ink">{t('articles.read')} →</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
