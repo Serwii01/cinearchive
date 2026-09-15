@@ -238,28 +238,51 @@ export async function discoverByGenres(
   return data.results;
 }
 
-/** Busca una persona por nombre y devuelve su id de TMDB (o null). */
-export async function searchPerson(name: string, locale: string): Promise<number | null> {
-  const data = await tmdbFetch<{ results: { id: number }[] }>('/search/person', {
-    query: name,
-    language: toTmdbLang(locale),
-    include_adult: 'false',
-    page: '1',
-  });
-  return data.results[0]?.id ?? null;
+export interface TmdbPersonHit {
+  id: number;
+  name: string;
+  known_for_department: string | null;
+  profile_path: string | null;
+  popularity: number;
+  /** Títulos por los que TMDB lo conoce; sirven para que el usuario distinga homónimos. */
+  known_for: string[];
 }
 
-/** Películas dirigidas/escritas por una persona (para directores favoritos). */
-export async function discoverByCrew(personId: number, locale: string) {
-  const data = await tmdbFetch<{ results: TmdbSearchResult[] }>('/discover/movie', {
-    language: toTmdbLang(locale),
-    with_crew: String(personId),
-    sort_by: 'vote_average.desc',
-    'vote_count.gte': '50',
-    include_adult: 'false',
-    page: '1',
-  });
-  return data.results;
+/**
+ * Busca personas. Se devuelven primero quienes se dedican a dirigir y, a igual
+ * departamento, por popularidad: «Ozu» a secas daba tres actrices antes que a
+ * Yasujirō, y «Tarkovski» al poeta Arseni antes que a Andréi.
+ */
+export async function searchPeople(query: string, locale: string, limit = 8): Promise<TmdbPersonHit[]> {
+  const data = await tmdbFetch<{
+    results: {
+      id: number;
+      name: string;
+      known_for_department?: string | null;
+      profile_path?: string | null;
+      popularity?: number;
+      known_for?: { title?: string; name?: string }[];
+    }[];
+  }>('/search/person', { query, language: toTmdbLang(locale), include_adult: 'false', page: '1' });
+  const rank = (d: string | null | undefined) => (d === 'Directing' ? 2 : d === 'Writing' ? 1 : 0);
+  return data.results
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      known_for_department: p.known_for_department ?? null,
+      profile_path: p.profile_path ?? null,
+      popularity: p.popularity ?? 0,
+      known_for: (p.known_for ?? []).map((k) => k.title ?? k.name ?? '').filter(Boolean).slice(0, 3),
+    }))
+    .sort((a, b) => rank(b.known_for_department) - rank(a.known_for_department) || b.popularity - a.popularity)
+    .slice(0, limit);
+}
+
+/** El director más probable para un nombre escrito a mano, o null. */
+export async function findDirector(name: string, locale: string): Promise<{ id: number; name: string } | null> {
+  const hits = await searchPeople(name, locale, 5);
+  const d = hits.find((h) => h.known_for_department === 'Directing') ?? hits[0];
+  return d ? { id: d.id, name: d.name } : null;
 }
 
 /** Populares (arranque en frío / relleno hasta el mínimo de recomendaciones). */
@@ -284,12 +307,18 @@ export function directorPerson(movie: TmdbMovie): { id: number; name: string } |
 export interface TmdbPersonCredit {
   id: number;
   title?: string;
+  original_title?: string;
   poster_path: string | null;
+  backdrop_path?: string | null;
   release_date?: string;
+  overview?: string;
   character?: string;
   job?: string;
   department?: string;
+  vote_average?: number;
   vote_count?: number;
+  genre_ids?: number[];
+  popularity?: number;
 }
 
 export interface TmdbPerson {

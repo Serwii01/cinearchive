@@ -15,6 +15,17 @@ try {
   recs = [];
 }
 
+// El motivo se enseña con un prefijo según su tipo: «Porque viste El padrino»,
+// «Porque te gusta Agnès Varda», «Género favorito · Terror».
+const prefijos: Record<string, string> = {
+  film: t('recs.becauseFilm'),
+  director: t('recs.because'),
+  genre: t('recs.becauseGenre'),
+  popular: '',
+};
+const motivo = (r: { because: { kind: string; label: string } } | null) =>
+  r && r.because.label ? `${prefijos[r.because.kind] ?? ''} ${r.because.label}`.trim() : '';
+
 const hero = recs[0] ?? null;
 const filmBase = localizePath(lang, 'film'); // /es/film  → el script añade /nombre-{id}
 const heroHref = hero ? `${filmBase}/${filmSlug(hero.tmdbId, hero.title)}` : filmBase;
@@ -26,7 +37,7 @@ const heroData = JSON.stringify(
     year: r.year,
     overview: r.overview,
     backdrop: r.backdrop,
-    because: r.because,
+    because: motivo(r),
   })),
 ).replace(/</g, '\\u003c');
 ---
@@ -48,13 +59,13 @@ const heroData = JSON.stringify(
     ) : (
       <>
         {/* PELÍCULA GRANDE RECOMENDADA + BOTÓN "OTRA" */}
-        <section id="rec-hero" class="mt-10 border border-ink" data-base={filmBase} data-because={t('recs.because')}>
+        <section id="rec-hero" class="mt-10 border border-ink" data-base={filmBase}>
           <div class="grid grid-cols-1 md:grid-cols-12">
             <div class="order-2 flex flex-col justify-between gap-6 border-t border-ink px-5 py-8 md:order-none md:col-span-5 md:border-t-0 md:border-r md:px-8 md:py-10">
               <div class="flex items-center justify-between gap-4">
                 <span class="label">{t('recs.heroLabel')}</span>
                 <span id="rec-because" class="font-mono text-meta-data text-ochre-dim">
-                  {hero?.because ? `${t('recs.because')} ${hero.because}` : ''}
+                  {motivo(hero)}
                 </span>
               </div>
               <h2 class="text-display-mobile md:text-headline-lg lg:text-display-mobile">
@@ -113,7 +124,7 @@ const heroData = JSON.stringify(
               <div class="flex flex-1 flex-col p-2">
                 <p class="font-display text-body-lg leading-tight text-ink">{r.title}</p>
                 <p class="font-mono text-meta-data text-muted">{r.year}</p>
-                {r.because && <p class="mt-auto pt-2 font-mono text-meta-data text-ochre-dim">{t('recs.because')} {r.because}</p>}
+                {r.because.label && <p class="mt-auto pt-2 font-mono text-meta-data text-ochre-dim">{motivo(r)}</p>}
               </div>
             </a>
           ))}
@@ -130,7 +141,6 @@ const heroData = JSON.stringify(
     if (el && raw) {
       const data = JSON.parse(raw);
       const base = el.dataset.base ?? '';
-      const becausePrefix = el.dataset.because ?? '';
       const $ = (id: string) => document.getElementById(id) as HTMLElement;
       let i = 0;
 
@@ -144,7 +154,7 @@ const heroData = JSON.stringify(
         $('rec-imglink').setAttribute('href', href);
         $('rec-overview').textContent = r.overview ?? '';
         $('rec-year').textContent = r.year ?? '';
-        $('rec-because').textContent = r.because ? `${becausePrefix} ${r.because}` : '';
+        $('rec-because').textContent = r.because ?? '';
         const img = $('rec-img');
         const grain = $('rec-grain');
         if (r.backdrop) {

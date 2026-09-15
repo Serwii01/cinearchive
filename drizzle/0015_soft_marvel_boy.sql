@@ -1,0 +1,1 @@
+ALTER TABLE "user_preferences" ADD COLUMN "favorite_people" jsonb DEFAULT '[]'::jsonb NOT NULL;

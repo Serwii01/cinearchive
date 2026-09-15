@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Avatar from '../../components/Avatar.astro';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
-import { GENRES } from '../../data/genres';
+import { GENRES, genreName } from '../../data/genres';
 import { db } from '../../db/client';
 import { userPreferences, follows, user as userTable, profile } from '../../db/schema';
 import { and, eq, desc } from 'drizzle-orm';
@@ -21,7 +21,15 @@ const [prefs] = await db
   .limit(1);
 
 const favGenres = new Set(prefs?.favoriteGenres ?? []);
-const favDirectors = (prefs?.favoriteDirectors ?? []).join(', ');
+// Directores: los elegidos con el buscador llevan id. Los que un usuario
+// escribió a mano en la versión anterior (solo nombre) se enseñan igual, sin
+// id, y al guardar se conservan tal cual hasta que los cambie.
+const conId: { id: number | null; name: string }[] = prefs?.favoritePeople ?? [];
+const nombresConId = new Set(conId.map((p) => p.name.toLowerCase()));
+const people = [
+  ...conId,
+  ...(prefs?.favoriteDirectors ?? []).filter((n) => !nombresConId.has(n.toLowerCase())).map((name) => ({ id: null, name })),
+];
 const theme = prefs?.theme ?? 'light';
 
 // Perfil público del usuario y solicitudes de seguimiento pendientes.
@@ -33,230 +41,292 @@ const pending = await db
   .leftJoin(profile, eq(profile.userId, follows.followerId))
   .where(and(eq(follows.followingId, user.id), eq(follows.status, 'pending')))
   .orderBy(desc(follows.createdAt));
+
+const actividad = [
+  ...(myProfile ? [{ href: localizePath(lang, `u/${myProfile.username}`), label: t('profile.viewProfile') }] : []),
+  { href: localizePath(lang, 'recommendations'), label: t('nav.recommendations') },
+  { href: localizePath(lang, 'watchlist'), label: t('nav.lists') },
+  { href: localizePath(lang, 'stats'), label: t('nav.stats') },
+  { href: localizePath(lang, 'notifications'), label: t('nav.notifications') },
+  { href: localizePath(lang, 'search'), label: t('search.title') },
+  ...(admin ? [{ href: localizePath(lang, 'admin'), label: t('nav.admin') }] : []),
+];
+
+const inputCls =
+  'w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none';
 ---
 
 <BaseLayout title={t('account.title')} noindex>
-  <section class="frame py-12">
-    <header class="border-b border-ink pb-6">
-      <span class="label">{t('account.title')}</span>
-      <h1 class="mt-3 text-display-mobile md:text-display-lg">{user.name}</h1>
-      <p class="mt-3 font-mono text-meta-data text-muted">{user.email}</p>
-      <button id="logout" type="button" class="btn btn-secondary mt-5" data-home={localizePath(lang)}>
-        {t('nav.logout')}
-      </button>
-    </header>
-
-    {/* Hub: accesos a la actividad del usuario */}
-    <nav class="mt-10" aria-label={t('account.sections')}>
-      <h2 class="label mb-3">{t('account.sections')}</h2>
-      <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
-        {[
-          ...(myProfile ? [{ href: localizePath(lang, `u/${myProfile.username}`), label: t('profile.viewProfile') }] : []),
-          { href: localizePath(lang, 'notifications'), label: t('nav.notifications') },
-          { href: localizePath(lang, 'watchlist'), label: t('nav.lists') },
-          { href: localizePath(lang, 'stats'), label: t('nav.stats') },
-          { href: localizePath(lang, 'recommendations'), label: t('nav.recommendations') },
-          { href: localizePath(lang, 'search'), label: t('search.title') },
-          ...(admin ? [{ href: localizePath(lang, 'admin'), label: t('nav.admin') }] : []),
-        ].map((s) => (
-          <a
-            href={s.href}
-            class="flex items-center justify-between bg-surface p-4 font-display text-headline-md text-ink no-underline transition-colors hover:bg-ink hover:text-white"
-          >
-            {s.label}
-            <span aria-hidden="true">→</span>
-          </a>
-        ))}
-      </div>
-    </nav>
-
-    {/* Perfil público (username, avatar, bio, privacidad) */}
-    <section
-      class="mt-12 max-w-3xl"
-      id="profile-editor"
-      data-has-profile={myProfile ? '1' : '0'}
-      data-errors={JSON.stringify({
-        format: t('profile.errFormat'),
-        reserved: t('profile.errReserved'),
-        taken: t('profile.errTaken'),
-        username_required: t('profile.errRequired'),
-        bad_instagram: t('profile.errInstagram'),
-        too_large: t('profile.errTooLarge'),
-        bad_type: t('profile.errBadType'),
-        heic: t('profile.errHeic'),
-      })}
-      data-processing={t('profile.avatarProcessing')}
-      data-crop={JSON.stringify({
-        title: t('profile.cropTitle'),
-        zoom: t('profile.cropZoom'),
-        cancel: t('profile.cancel'),
-        save: t('controls.save'),
-      })}
-    >
-      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.yours')}</h2>
-
-      {!myProfile && <p class="mt-3 font-mono text-body-md text-muted">{t('profile.setUsernameFirst')}</p>}
-
-      <div class="mt-6 flex flex-col gap-6 sm:flex-row sm:items-start">
-        {/* Avatar */}
-        <div class="flex flex-col items-center gap-3">
-          <Avatar userId={user.id} name={user.name} hasAvatar={!!myProfile?.avatarType} size={112} class="h-28 w-28" />
-          <input id="avatar-input" type="file" accept="image/*" class="hidden" />
-          <div class="flex gap-2">
-            <button id="avatar-upload" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white" disabled={!myProfile}>{t('profile.uploadAvatar')}</button>
-            <button id="avatar-remove" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white" disabled={!myProfile?.avatarType}>{t('profile.removeAvatar')}</button>
+  {/* En escritorio, dos columnas: a la izquierda quién eres y a dónde ir (fija
+      al hacer scroll); a la derecha, los paneles que se editan. Antes todo iba
+      apilado en una columna estrecha y el 40 % derecho de la pantalla quedaba
+      vacío. En móvil sigue siendo una sola columna. */}
+  <section class="frame py-10 md:py-12">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+      <aside class="lg:col-span-4 lg:sticky lg:top-6 lg:self-start">
+        <div class="border border-ink bg-surface">
+          <div class="flex items-center gap-4 border-b border-ink p-5">
+            <Avatar userId={user.id} name={user.name} hasAvatar={!!myProfile?.avatarType} size={72} class="h-[72px] w-[72px] shrink-0" />
+            <div class="min-w-0">
+              <span class="label">{t('account.title')}</span>
+              <h1 class="mt-1 truncate font-display text-headline-lg leading-tight text-ink">{user.name}</h1>
+              {myProfile ? (
+                <p class="truncate font-mono text-meta-data text-muted">@{myProfile.username}</p>
+              ) : (
+                <p class="truncate font-mono text-meta-data text-muted">{user.email}</p>
+              )}
+            </div>
           </div>
-          <p class="text-center font-mono text-meta-data text-muted">{t('profile.avatarHint')}</p>
 
-          {/* Alerta con estilo si la foto no se puede subir */}
-          <div id="avatar-alert" role="alert" hidden class="w-full max-w-xs border-2 border-error bg-surface p-3" data-title={t('profile.avatarErrorTitle')}>
-            <p class="label flex items-center gap-2 text-error"><span aria-hidden="true">▲</span> {t('profile.avatarErrorTitle')}</p>
-            <p id="avatar-alert-msg" class="mt-1 font-mono text-meta-data text-charcoal"></p>
+          <nav aria-label={t('account.sections')}>
+            <p class="label border-b border-outline-variant px-5 py-2 text-muted">{t('account.sections')}</p>
+            {actividad.map((s) => (
+              <a
+                href={s.href}
+                class="flex items-center justify-between border-b border-outline-variant px-5 py-3 font-display text-headline-md text-ink no-underline transition-colors last:border-b-0 hover:bg-ink hover:text-white"
+              >
+                {s.label}
+                <span aria-hidden="true">→</span>
+              </a>
+            ))}
+          </nav>
+
+          <div class="flex items-center justify-between gap-3 border-t border-ink p-4">
+            <span class="min-w-0 truncate font-mono text-meta-data text-muted">{user.email}</span>
+            <button id="logout" type="button" class="label shrink-0 border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white" data-home={localizePath(lang)}>
+              {t('nav.logout')}
+            </button>
           </div>
         </div>
+      </aside>
 
-        {/* Datos */}
-        <form id="profile-form" class="min-w-0 flex-1">
-          <label class="block">
-            <span class="label mb-2 block">{t('profile.username')}</span>
-            <div class="flex items-center border border-ink bg-white focus-within:bg-film-white">
-              <span class="px-3 font-mono text-body-md text-muted">@</span>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                value={myProfile?.username ?? ''}
-                maxlength="20"
-                autocomplete="off"
-                autocapitalize="off"
-                autocorrect="off"
-                spellcheck="false"
-                inputmode="text"
-                enterkeyhint="done"
-                placeholder="usuario"
-                class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
-              />
-            </div>
-            <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.usernameHint')}</span>
-          </label>
-
-          <label class="mt-5 block">
-            <span class="label mb-2 block">{t('profile.bio')}</span>
-            <textarea id="bio" name="bio" rows="3" maxlength="300" placeholder={t('profile.bioPlaceholder')} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none">{myProfile?.bio ?? ''}</textarea>
-          </label>
-
-          <label class="mt-5 block">
-            <span class="label mb-2 block">{t('profile.instagram')}</span>
-            <div class="flex items-center border border-ink bg-white focus-within:bg-film-white">
-              <span class="px-3 font-mono text-body-md text-muted">@</span>
-              <input
-                id="instagram"
-                name="instagram"
-                type="text"
-                value={myProfile?.instagram ?? ''}
-                maxlength="30"
-                autocomplete="off"
-                autocapitalize="off"
-                autocorrect="off"
-                spellcheck="false"
-                inputmode="text"
-                placeholder="tu_usuario"
-                class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
-              />
-            </div>
-            <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.instagramHint')}</span>
-          </label>
-
-          <fieldset class="mt-5">
-            <legend class="label mb-2">{t('profile.privacy')}</legend>
-            <label class="flex items-start gap-3">
-              <input id="is-private" type="checkbox" checked={myProfile?.isPrivate ?? true} class="mt-1" />
-              <span>
-                <span class="block font-body text-body-md text-ink">{t('profile.makePrivate')}</span>
-                <span class="block font-mono text-meta-data text-muted">{t('profile.privacyHint')}</span>
-              </span>
-            </label>
-          </fieldset>
-
-          <div class="mt-6 flex flex-wrap items-center gap-4">
-            <button type="submit" class="btn btn-primary">{t('profile.save')}</button>
+      <div class="flex flex-col gap-8 lg:col-span-8">
+        {/* ============ Perfil público ============ */}
+        <section
+          class="border border-ink bg-surface"
+          id="profile-editor"
+          data-has-profile={myProfile ? '1' : '0'}
+          data-errors={JSON.stringify({
+            format: t('profile.errFormat'),
+            reserved: t('profile.errReserved'),
+            taken: t('profile.errTaken'),
+            username_required: t('profile.errRequired'),
+            bad_instagram: t('profile.errInstagram'),
+            too_large: t('profile.errTooLarge'),
+            bad_type: t('profile.errBadType'),
+            heic: t('profile.errHeic'),
+          })}
+          data-processing={t('profile.avatarProcessing')}
+          data-crop={JSON.stringify({
+            title: t('profile.cropTitle'),
+            zoom: t('profile.cropZoom'),
+            cancel: t('profile.cancel'),
+            save: t('controls.save'),
+          })}
+        >
+          <header class="flex items-center justify-between gap-4 border-b border-ink px-5 py-3">
+            <h2 class="font-display text-headline-md text-ink">{t('profile.yours')}</h2>
             {myProfile && <a href={localizePath(lang, `u/${myProfile.username}`)} class="label no-underline hover:text-ink">{t('profile.viewProfile')} →</a>}
-            <span id="profile-msg" class="font-mono text-meta-data text-muted"></span>
+          </header>
+
+          <div class="p-5">
+            {!myProfile && <p class="mb-5 font-mono text-body-md text-muted">{t('profile.setUsernameFirst')}</p>}
+
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-12">
+              {/* Avatar */}
+              <div class="flex flex-col items-center gap-3 md:col-span-4">
+                <Avatar userId={user.id} name={user.name} hasAvatar={!!myProfile?.avatarType} size={144} class="h-36 w-36" />
+                <input id="avatar-input" type="file" accept="image/*" class="hidden" />
+                <div class="flex gap-2">
+                  <button id="avatar-upload" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white" disabled={!myProfile}>{t('profile.uploadAvatar')}</button>
+                  <button id="avatar-remove" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white" disabled={!myProfile?.avatarType}>{t('profile.removeAvatar')}</button>
+                </div>
+                <p class="text-center font-mono text-meta-data text-muted">{t('profile.avatarHint')}</p>
+
+                {/* Alerta con estilo si la foto no se puede subir */}
+                <div id="avatar-alert" role="alert" hidden class="w-full border-2 border-error bg-surface p-3" data-title={t('profile.avatarErrorTitle')}>
+                  <p class="label flex items-center gap-2 text-error"><span aria-hidden="true">▲</span> {t('profile.avatarErrorTitle')}</p>
+                  <p id="avatar-alert-msg" class="mt-1 font-mono text-meta-data text-charcoal"></p>
+                </div>
+              </div>
+
+              {/* Datos */}
+              <form id="profile-form" class="min-w-0 md:col-span-8">
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <label class="block">
+                    <span class="label mb-2 block">{t('profile.username')}</span>
+                    <div class="flex items-center border border-ink bg-white focus-within:bg-film-white">
+                      <span class="px-3 font-mono text-body-md text-muted">@</span>
+                      <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        value={myProfile?.username ?? ''}
+                        maxlength="20"
+                        autocomplete="off"
+                        autocapitalize="off"
+                        autocorrect="off"
+                        spellcheck="false"
+                        inputmode="text"
+                        enterkeyhint="done"
+                        placeholder="usuario"
+                        class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
+                      />
+                    </div>
+                    <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.usernameHint')}</span>
+                  </label>
+
+                  <label class="block">
+                    <span class="label mb-2 block">{t('profile.instagram')}</span>
+                    <div class="flex items-center border border-ink bg-white focus-within:bg-film-white">
+                      <span class="px-3 font-mono text-body-md text-muted">@</span>
+                      <input
+                        id="instagram"
+                        name="instagram"
+                        type="text"
+                        value={myProfile?.instagram ?? ''}
+                        maxlength="30"
+                        autocomplete="off"
+                        autocapitalize="off"
+                        autocorrect="off"
+                        spellcheck="false"
+                        inputmode="text"
+                        placeholder="tu_usuario"
+                        class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
+                      />
+                    </div>
+                    <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.instagramHint')}</span>
+                  </label>
+                </div>
+
+                <label class="mt-5 block">
+                  <span class="label mb-2 block">{t('profile.bio')}</span>
+                  <textarea id="bio" name="bio" rows="3" maxlength="300" placeholder={t('profile.bioPlaceholder')} class={inputCls}>{myProfile?.bio ?? ''}</textarea>
+                </label>
+
+                <fieldset class="mt-5">
+                  <legend class="label mb-2">{t('profile.privacy')}</legend>
+                  <label class="flex items-start gap-3">
+                    <input id="is-private" type="checkbox" checked={myProfile?.isPrivate ?? true} class="mt-1" />
+                    <span>
+                      <span class="block font-body text-body-md text-ink">{t('profile.makePrivate')}</span>
+                      <span class="block font-mono text-meta-data text-muted">{t('profile.privacyHint')}</span>
+                    </span>
+                  </label>
+                </fieldset>
+
+                <div class="mt-6 flex flex-wrap items-center gap-4">
+                  <button type="submit" class="btn btn-primary">{t('profile.save')}</button>
+                  <span id="profile-msg" class="font-mono text-meta-data text-muted"></span>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ Preferencias ============ */}
+        <form
+          id="prefs-form"
+          class="border border-ink bg-surface"
+          data-saved={t('account.saved')}
+          data-lang={lang}
+          data-people={JSON.stringify(people)}
+          data-l-remove={t('account.remove')}
+          data-l-none={t('account.noDirectors')}
+          data-l-searching={t('tmdb.searching')}
+          data-l-noresults={t('tmdb.noResults')}
+        >
+          <header class="flex items-center justify-between gap-4 border-b border-ink px-5 py-3">
+            <h2 class="font-display text-headline-md text-ink">{t('account.preferences')}</h2>
+            <a href={localizePath(lang, 'recommendations')} class="label no-underline hover:text-ink">{t('nav.recommendations')} →</a>
+          </header>
+
+          <div class="p-5">
+            <p class="font-mono text-meta-data text-muted">{t('account.prefsHint')}</p>
+
+            <fieldset class="mt-5">
+              <legend class="label mb-3">{t('account.favoriteGenres')}</legend>
+              <div class="flex flex-wrap gap-2">
+                {GENRES.map((g) => (
+                  <label class="cursor-pointer">
+                    <input type="checkbox" name="genre" value={g.id} checked={favGenres.has(g.id)} class="peer sr-only" />
+                    <span class="label inline-block border border-ink px-3 py-2 transition-colors peer-checked:bg-ochre peer-checked:text-on-accent hover:bg-ink hover:text-white peer-checked:hover:bg-ochre peer-checked:hover:text-on-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-ochre">
+                      {genreName(g.id, lang)}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            {/* Directores: se eligen del buscador de TMDB, con id. Escribir
+                «Ozu» a mano daba tres actrices antes que a Yasujirō. */}
+            <div class="mt-8" id="directors-picker">
+              <span class="label mb-2 block">{t('account.favoriteDirectors')}</span>
+              <div data-chips class="mb-3 flex flex-wrap gap-2"></div>
+              <div class="relative">
+                <input
+                  data-input
+                  type="search"
+                  autocomplete="off"
+                  placeholder={t('account.directorsPlaceholder')}
+                  class={inputCls}
+                />
+                <ul data-results class="absolute left-0 right-0 z-10 mt-px hidden max-h-80 overflow-auto border border-ink bg-white" role="listbox"></ul>
+              </div>
+              <p class="mt-1 font-mono text-meta-data text-muted">{t('account.directorsHint')}</p>
+            </div>
+
+            <fieldset class="mt-8">
+              <legend class="label mb-3">{t('account.theme')}</legend>
+              <div class="inline-flex border border-ink">
+                <label class="cursor-pointer">
+                  <input type="radio" name="theme" value="light" checked={theme === 'light'} class="peer sr-only" />
+                  <span class="label inline-block border-r border-ink px-4 py-2 peer-checked:bg-ink peer-checked:text-white">{t('account.themeLight')}</span>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="theme" value="dark" checked={theme === 'dark'} class="peer sr-only" />
+                  <span class="label inline-block px-4 py-2 peer-checked:bg-ink peer-checked:text-white">{t('account.themeDark')}</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="mt-8 flex flex-wrap items-center gap-4">
+              <button type="submit" class="btn btn-primary">{t('account.save')}</button>
+              <span data-msg class="font-mono text-meta-data text-muted"></span>
+            </div>
           </div>
         </form>
+
+        {/* ============ Solicitudes de seguimiento ============ */}
+        <section class="border border-ink bg-surface" id="requests">
+          <header class="flex items-center justify-between gap-4 border-b border-ink px-5 py-3">
+            <h2 class="font-display text-headline-md text-ink">{t('profile.requests')}</h2>
+            <span class="label">{pending.length}</span>
+          </header>
+          {pending.length === 0 ? (
+            <p class="p-5 font-mono text-body-md text-muted">{t('profile.noRequests')}</p>
+          ) : (
+            <ul>
+              {pending.map((r) => (
+                <li class="flex items-center justify-between gap-3 border-b border-outline-variant p-4 last:border-b-0" data-requester={r.id}>
+                  <a href={r.username ? localizePath(lang, `u/${r.username}`) : '#'} class="flex min-w-0 items-center gap-3 no-underline">
+                    <Avatar userId={r.id} name={r.name} hasAvatar={!!r.hasAvatar} size={40} class="h-10 w-10" />
+                    <span class="min-w-0">
+                      <span class="block truncate font-display text-headline-md text-ink">{r.name}</span>
+                      {r.username && <span class="block font-mono text-meta-data text-muted">@{r.username}</span>}
+                    </span>
+                  </a>
+                  <div class="flex shrink-0 gap-2">
+                    <button type="button" data-accept class="label border border-ink px-3 py-1 transition-colors hover:bg-ink hover:text-white">{t('profile.accept')}</button>
+                    <button type="button" data-reject class="label border border-ink px-3 py-1 transition-colors hover:bg-error hover:text-white">{t('profile.reject')}</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </div>
-    </section>
-
-    {/* Solicitudes de seguimiento */}
-    <section class="mt-12 max-w-3xl" id="requests">
-      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.requests')} <span class="label">· {pending.length}</span></h2>
-      {pending.length === 0 ? (
-        <p class="mt-3 font-mono text-body-md text-muted">{t('profile.noRequests')}</p>
-      ) : (
-        <ul class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink">
-          {pending.map((r) => (
-            <li class="flex items-center justify-between gap-3 bg-surface p-3" data-requester={r.id}>
-              <a href={r.username ? localizePath(lang, `u/${r.username}`) : '#'} class="flex min-w-0 items-center gap-3 no-underline">
-                <Avatar userId={r.id} name={r.name} hasAvatar={!!r.hasAvatar} size={40} class="h-10 w-10" />
-                <span class="min-w-0">
-                  <span class="block truncate font-display text-headline-md text-ink">{r.name}</span>
-                  {r.username && <span class="block font-mono text-meta-data text-muted">@{r.username}</span>}
-                </span>
-              </a>
-              <div class="flex shrink-0 gap-2">
-                <button type="button" data-accept class="label border border-ink px-3 py-1 transition-colors hover:bg-ink hover:text-white">{t('profile.accept')}</button>
-                <button type="button" data-reject class="label border border-ink px-3 py-1 transition-colors hover:bg-error hover:text-white">{t('profile.reject')}</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-
-    <form id="prefs-form" class="mt-12 max-w-3xl" data-saved={t('account.saved')}>
-      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('account.preferences')}</h2>
-
-      <!-- Géneros favoritos -->
-      <fieldset class="mt-6">
-        <legend class="label mb-3">{t('account.favoriteGenres')}</legend>
-        <div class="flex flex-wrap gap-2">
-          {GENRES.map((g) => (
-            <label class="cursor-pointer">
-              <input type="checkbox" name="genre" value={g.id} checked={favGenres.has(g.id)} class="peer sr-only" />
-              <span class="label inline-block border border-ink px-3 py-2 transition-colors peer-checked:bg-ochre peer-checked:text-on-accent hover:bg-ink hover:text-white peer-checked:hover:bg-ochre peer-checked:hover:text-on-accent">
-                {g[lang]}
-              </span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <!-- Directores favoritos -->
-      <label class="mt-8 block">
-        <span class="label mb-2 block">{t('account.favoriteDirectors')}</span>
-        <input id="directors" type="text" value={favDirectors} placeholder="Tarkovsky, Varda, Ozu" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md focus:bg-film-white focus:outline-none" />
-      </label>
-
-      <!-- Tema -->
-      <fieldset class="mt-8">
-        <legend class="label mb-3">{t('account.theme')}</legend>
-        <div class="inline-flex border border-ink">
-          <label class="cursor-pointer">
-            <input type="radio" name="theme" value="light" checked={theme === 'light'} class="peer sr-only" />
-            <span class="label inline-block border-r border-ink px-4 py-2 peer-checked:bg-ink peer-checked:text-white">{t('account.themeLight')}</span>
-          </label>
-          <label class="cursor-pointer">
-            <input type="radio" name="theme" value="dark" checked={theme === 'dark'} class="peer sr-only" />
-            <span class="label inline-block px-4 py-2 peer-checked:bg-ink peer-checked:text-white">{t('account.themeDark')}</span>
-          </label>
-        </div>
-      </fieldset>
-
-      <div class="mt-8 flex items-center gap-4">
-        <button type="submit" class="btn btn-primary">{t('account.save')}</button>
-        <span data-msg class="font-mono text-meta-data text-muted"></span>
-      </div>
-    </form>
+    </div>
   </section>
 </BaseLayout>
 
@@ -275,16 +345,107 @@ const pending = await db
 
   const form = document.getElementById('prefs-form') as HTMLFormElement;
   const msg = form.querySelector('[data-msg]') as HTMLElement;
+  const lang = form.dataset.lang || 'es';
 
+  /* ---------- Directores favoritos: buscador con id ---------- */
+  type Persona = { id: number | null; name: string };
+  const picker = document.getElementById('directors-picker') as HTMLElement;
+  const chips = picker.querySelector('[data-chips]') as HTMLElement;
+  const input = picker.querySelector('[data-input]') as HTMLInputElement;
+  const results = picker.querySelector('[data-results]') as HTMLElement;
+  let people: Persona[] = JSON.parse(form.dataset.people || '[]');
+
+  const esc = (s: string) =>
+    s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+  const pintarChips = () => {
+    if (people.length === 0) {
+      chips.innerHTML = `<span class="font-mono text-meta-data text-muted">${esc(form.dataset.lNone || '')}</span>`;
+      return;
+    }
+    chips.innerHTML = people
+      .map(
+        (p, i) =>
+          `<span class="inline-flex items-center border border-ink ${p.id ? 'bg-ochre text-on-accent' : 'bg-white text-ink'}">
+             <span class="label px-3 py-2">${esc(p.name)}</span>
+             <button type="button" data-remove="${i}" aria-label="${esc(form.dataset.lRemove || '')}: ${esc(p.name)}" class="label border-l border-ink px-2 py-2 transition-colors hover:bg-ink hover:text-white">×</button>
+           </span>`,
+      )
+      .join('');
+    chips.querySelectorAll<HTMLButtonElement>('[data-remove]').forEach((b) =>
+      b.addEventListener('click', () => {
+        people.splice(Number(b.dataset.remove), 1);
+        pintarChips();
+      }),
+    );
+  };
+
+  const cerrar = () => {
+    results.innerHTML = '';
+    results.classList.add('hidden');
+  };
+
+  let timer: ReturnType<typeof setTimeout>;
+  let controller: AbortController | null = null;
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    const q = input.value.trim();
+    if (q.length < 2) return cerrar();
+    timer = setTimeout(async () => {
+      controller?.abort();
+      controller = new AbortController();
+      results.innerHTML = `<li class="px-3 py-2 font-mono text-meta-data text-muted">${esc(form.dataset.lSearching || '…')}</li>`;
+      results.classList.remove('hidden');
+      try {
+        const res = await fetch(`/api/people/search?q=${encodeURIComponent(q)}&lang=${lang}`, { signal: controller.signal });
+        const data = (await res.json()) as { results: { id: number; name: string; department: string | null; knownFor: string[]; photo: string | null }[] };
+        const hits = (data.results || []).filter((h) => !people.some((p) => p.id === h.id));
+        if (hits.length === 0) {
+          results.innerHTML = `<li class="px-3 py-2 font-mono text-meta-data text-muted">${esc(form.dataset.lNoresults || '—')}</li>`;
+          return;
+        }
+        results.innerHTML = hits
+          .map(
+            (h) => `<li role="option">
+              <button type="button" data-pick="${h.id}" data-name="${esc(h.name)}" class="flex w-full items-center gap-3 border-b border-outline-variant px-3 py-2 text-left transition-colors last:border-b-0 hover:bg-film-white">
+                ${h.photo ? `<img src="${esc(h.photo)}" alt="" width="32" height="48" class="h-12 w-8 shrink-0 object-cover" loading="lazy">` : '<span class="h-12 w-8 shrink-0 bg-charcoal"></span>'}
+                <span class="min-w-0">
+                  <span class="block font-display text-body-lg leading-tight text-ink">${esc(h.name)}</span>
+                  <span class="block truncate font-mono text-meta-data text-muted">${esc([h.department, h.knownFor.join(', ')].filter(Boolean).join(' · '))}</span>
+                </span>
+              </button></li>`,
+          )
+          .join('');
+        results.querySelectorAll<HTMLButtonElement>('[data-pick]').forEach((b) =>
+          b.addEventListener('click', () => {
+            people.push({ id: Number(b.dataset.pick), name: b.dataset.name || '' });
+            pintarChips();
+            input.value = '';
+            cerrar();
+            input.focus();
+          }),
+        );
+      } catch (e) {
+        if ((e as Error).name !== 'AbortError') cerrar();
+      }
+    }, 250);
+  });
+  input.addEventListener('keydown', (e) => {
+    // Enter en el buscador no debe enviar el formulario entero.
+    if (e.key === 'Enter') e.preventDefault();
+    if (e.key === 'Escape') cerrar();
+  });
+  document.addEventListener('click', (e) => {
+    if (!picker.contains(e.target as Node)) cerrar();
+  });
+  pintarChips();
+
+  /* ---------- Guardar preferencias ---------- */
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const genres = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="genre"]:checked')).map((i) =>
       Number(i.value),
     );
-    const directors = (document.getElementById('directors') as HTMLInputElement).value
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
     const theme = (form.querySelector('input[name="theme"]:checked') as HTMLInputElement)?.value || 'light';
 
     // Aplica el tema de inmediato y lo recuerda en este dispositivo.
@@ -295,10 +456,15 @@ const pending = await db
     } catch (e) {}
     document.dispatchEvent(new Event('themechange'));
 
+    // Con id van como personas; los nombres sueltos heredados, como nombres.
+    const favoritePeople = people.filter((p): p is { id: number; name: string } => p.id != null);
+    const favoriteDirectors = people.map((p) => p.name);
+    const body = { locale: lang, favoriteGenres: genres, theme, favoriteDirectors, favoritePeople };
+
     const res = await fetch('/api/me/preferences', {
       method: 'PATCH',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ locale: lang, favoriteGenres: genres, favoriteDirectors: directors, theme }),
+      body: JSON.stringify(body),
     });
     if (res.ok) {
       msg.textContent = form.dataset.saved || 'OK';

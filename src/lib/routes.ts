@@ -82,6 +82,7 @@ const API_ROUTES: ReadonlySet<string> = new Set([
   'health',
   'me',
   'og',
+  'people',
   'places',
   'users',
 ]);

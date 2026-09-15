@@ -201,6 +201,13 @@ export const userPreferences = pgTable('user_preferences', {
   locale: text('locale').notNull().default('es'),
   favoriteGenres: integer('favorite_genres').array().notNull().default([]),
   favoriteDirectors: text('favorite_directors').array().notNull().default([]),
+  /**
+   * Directores favoritos elegidos con el buscador: [{ id, name }] de TMDB. Con el
+   * id no hay que adivinar quién es «Ozu» o «Tarkovski» al recomendar (la
+   * búsqueda por nombre devolvía a una actriz y a un poeta). favoriteDirectors
+   * se mantiene con los nombres, por compatibilidad.
+   */
+  favoritePeople: jsonb('favorite_people').$type<{ id: number; name: string }[]>().notNull().default([]),
   theme: text('theme').notNull().default('light'),
   privacy: jsonb('privacy').notNull().default({}),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),

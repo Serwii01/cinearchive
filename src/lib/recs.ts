@@ -1,31 +1,47 @@
 /**
  * Recomendaciones por filtrado de contenido (SOLO SERVIDOR).
  *
- * Construye un "perfil de gusto" a partir de las preferencias del usuario (géneros y
- * directores favoritos) y de sus valoraciones, y puntúa películas candidatas de TMDB:
- *   - recomendaciones/similares de lo que le gusta,
- *   - películas de sus directores favoritos,
- *   - discover por sus géneros con más peso (clásicos + populares).
- * Resta peso a los géneros de lo que ha valorado bajo y excluye lo que ya tiene en
- * su lista. Si no hay señal (usuario nuevo), recurre a populares (arranque en frío).
+ * Tres fuentes de candidatos, cada una con su MOTIVO, que es lo que el usuario
+ * ve debajo de cada cartel:
+ *   - lo que ha valorado alto → «Porque viste El padrino» (similares de TMDB);
+ *   - sus directores favoritos → «Porque te gusta Agnès Varda» (su filmografía
+ *     como directora, no cualquier crédito);
+ *   - sus géneros favoritos → «Género favorito · Terror» (discover por género).
+ * Sin ninguna señal (usuario nuevo), populares.
+ *
+ * Lo que había antes puntuaba todo en un mismo saco sumando pesos de género sin
+ * tope, y un usuario con cuatro películas de crimen valoradas acababa con 47
+ * recomendaciones de crimen y ninguna de sus directores. Ahora la selección va
+ * por turnos entre motivos: cada director, cada película valorada y cada género
+ * colocan su mejor candidato antes de que ninguno coloque el segundo. Las
+ * funciones de puntuar y repartir son puras y tienen tests (tests/recs.test.ts).
+ *
  * El resultado se cachea en memoria por usuario unos minutos.
  */
-import { and, eq, gte, lte } from 'drizzle-orm';
+import { and, desc, eq, gte, lte } from 'drizzle-orm';
 import { db } from '../db/client';
 import { userFilms, userPreferences } from '../db/schema';
 import {
   getMovie,
   discoverByGenres,
-  discoverByCrew,
-  searchPerson,
+  findDirector,
   popularMovies,
   backdropUrl,
   posterUrl,
   posterSrcset,
   type TmdbSearchResult,
 } from './tmdb';
+import { getPersonCached } from './people';
 import { genreName } from '../data/genres';
 import { registerCache } from './cache-registry';
+
+export type ReasonKind = 'film' | 'director' | 'genre' | 'popular';
+
+export interface Reason {
+  kind: ReasonKind;
+  /** Título de la película, nombre del director o del género. Vacío en «popular». */
+  label: string;
+}
 
 export interface Recommendation {
   tmdbId: number;
@@ -35,13 +51,22 @@ export interface Recommendation {
   poster: string | null;
   posterSrcset: string | null;
   backdrop: string | null;
-  because: string | null;
+  because: Reason;
 }
 
-const DIRECTOR_BONUS = 10; // empuje fuerte para películas de un director favorito
-const MIN_RESULTS = 30; // mínimo garantizado por usuario
-const MAX_RESULTS = 48; // tope superior
-const CACHE_TTL = 10 * 60_000; // 10 min
+/** Candidato con la fuente que lo trajo. */
+export interface Candidate {
+  film: TmdbSearchResult;
+  reason: Reason;
+  /** Fuerza de la fuente: cuánto fía el motor de ese motivo (0–1). */
+  strength: number;
+}
+
+const MAX_RESULTS = 48;
+const MIN_RESULTS = 24;
+/** Menos votos que esto y TMDB no sabe si la película es buena o mala. */
+const MIN_VOTES = 50;
+const CACHE_TTL = 10 * 60_000;
 const cache = new Map<string, { at: number; data: Recommendation[] }>();
 
 registerCache({
@@ -67,82 +92,120 @@ export function invalidateRecommendations(userId: string): void {
   for (const key of cache.keys()) if (key.startsWith(`${userId}:`)) cache.delete(key);
 }
 
+/* ------------------------------------------------------------------ *
+ * Puntuación y reparto: funciones puras.
+ * ------------------------------------------------------------------ */
+
 /**
- * Intercala las recomendaciones por su "motivo" (director/género) en round-robin,
- * para que no salgan 7 seguidas de "porque te gusta Fincher" y luego 7 de "Terror".
- * Conserva el orden por puntuación dentro de cada motivo.
+ * Afinidad de género normalizada a [0, 1]: los pesos brutos (preferencias +
+ * valoraciones) se dividen por el mayor, así ningún género puede aplastar al
+ * resto por mucho que se repita. Los negativos (lo valorado bajo) restan.
  */
-function interleaveByReason(recs: Recommendation[]): Recommendation[] {
-  const groups = new Map<string, Recommendation[]>();
-  for (const r of recs) {
-    const key = r.because ?? '—';
-    let list = groups.get(key);
-    if (!list) groups.set(key, (list = []));
-    list.push(r);
+export function affinity(genreIds: number[] | undefined, weights: Map<number, number>): number {
+  if (!genreIds?.length || weights.size === 0) return 0;
+  let max = 0;
+  for (const w of weights.values()) if (w > max) max = w;
+  if (max <= 0) return 0;
+  let sum = 0;
+  for (const g of genreIds) sum += (weights.get(g) ?? 0) / max;
+  // Media sobre los géneros de la película, para no premiar a las que tienen cinco.
+  return Math.max(-1, Math.min(1, sum / Math.min(genreIds.length, 3)));
+}
+
+/**
+ * Puntuación de un candidato: motivo + afinidad + calidad. La calidad es la
+ * nota de TMDB atenuada por cuánta gente ha votado: un corto de estudiante con
+ * 60 votos y un 7,8 no debe adelantar a «Sacrificio» con miles.
+ */
+export function score(c: Candidate, weights: Map<number, number>): number {
+  const f = c.film;
+  const confianza = Math.min(1, Math.log10(Math.max(1, f.vote_count ?? 0)) / 4);
+  const quality = ((f.vote_average ?? 0) / 10) * confianza;
+  return c.strength + affinity(f.genre_ids, weights) * 0.8 + quality * 0.6;
+}
+
+/**
+ * Reparto por turnos entre motivos. Los grupos se ordenan por la fuerza de su
+ * mejor candidato; en cada vuelta cada grupo coloca su siguiente mejor. Así
+ * ningún motivo copa la lista y todos aparecen desde el principio.
+ */
+export function selectBalanced(candidates: Candidate[], weights: Map<number, number>, max: number): Candidate[] {
+  const grupos = new Map<string, Candidate[]>();
+  for (const c of candidates) {
+    const key = `${c.reason.kind}:${c.reason.label}`;
+    (grupos.get(key) ?? grupos.set(key, []).get(key)!).push(c);
   }
-  const lists = [...groups.values()]; // en orden de aparición ≈ de mayor a menor fuerza
-  const out: Recommendation[] = [];
-  let added = true;
-  while (added) {
-    added = false;
-    for (const list of lists) {
-      const next = list.shift();
-      if (next) {
-        out.push(next);
-        added = true;
-      }
+  const listas = [...grupos.values()].map((l) => l.sort((a, b) => score(b, weights) - score(a, weights)));
+  listas.sort((a, b) => score(b[0], weights) - score(a[0], weights));
+
+  const out: Candidate[] = [];
+  const vistos = new Set<number>();
+  let alguno = true;
+  while (alguno && out.length < max) {
+    alguno = false;
+    for (const lista of listas) {
+      let next = lista.shift();
+      while (next && vistos.has(next.film.id)) next = lista.shift();
+      if (!next) continue;
+      vistos.add(next.film.id);
+      out.push(next);
+      alguno = true;
+      if (out.length >= max) break;
     }
   }
   return out;
 }
 
+/* ------------------------------------------------------------------ *
+ * Cálculo.
+ * ------------------------------------------------------------------ */
+
+const usable = (f: TmdbSearchResult, exclude: Set<number>) =>
+  !exclude.has(f.id) && !!f.poster_path && (f.vote_count ?? 0) >= MIN_VOTES;
+
 async function computeRecommendations(userId: string, locale: string): Promise<Recommendation[]> {
-  const [prefs] = await db
-    .select()
-    .from(userPreferences)
-    .where(eq(userPreferences.userId, userId))
-    .limit(1);
+  const [prefs] = await db.select().from(userPreferences).where(eq(userPreferences.userId, userId)).limit(1);
 
   const liked = await db
     .select()
     .from(userFilms)
-    .where(and(eq(userFilms.userId, userId), gte(userFilms.rating, 4)));
-
+    .where(and(eq(userFilms.userId, userId), gte(userFilms.rating, 4)))
+    .orderBy(desc(userFilms.updatedAt))
+    .limit(8);
   const disliked = await db
     .select()
     .from(userFilms)
-    .where(and(eq(userFilms.userId, userId), lte(userFilms.rating, 2)));
-
-  const listed = await db
-    .select({ tmdbId: userFilms.tmdbId })
-    .from(userFilms)
-    .where(eq(userFilms.userId, userId));
+    .where(and(eq(userFilms.userId, userId), lte(userFilms.rating, 2)))
+    .limit(8);
+  const listed = await db.select({ tmdbId: userFilms.tmdbId }).from(userFilms).where(eq(userFilms.userId, userId));
   const exclude = new Set(listed.map((r) => r.tmdbId));
 
-  // --- Pesos de género: preferencias + valoraciones (positivas y negativas). ---
-  const genreWeights = new Map<number, number>();
-  const addWeight = (id: number, w: number) => genreWeights.set(id, (genreWeights.get(id) ?? 0) + w);
+  const weights = new Map<number, number>();
+  const addWeight = (id: number, w: number) => weights.set(id, (weights.get(id) ?? 0) + w);
   for (const g of prefs?.favoriteGenres ?? []) addWeight(g, 3);
 
-  const candidates = new Map<number, TmdbSearchResult>();
-  const fromDirector = new Map<number, string>(); // tmdbId -> nombre del director
-  const fromGenre = new Map<number, number>(); // tmdbId -> id del género que lo trajo
+  const candidates: Candidate[] = [];
+  const add = (film: TmdbSearchResult, reason: Reason, strength: number) => {
+    if (usable(film, exclude)) candidates.push({ film, reason, strength });
+  };
 
-  // Candidatos a partir de lo valorado alto (recomendaciones + similares de TMDB).
-  for (const row of liked.slice(0, 8)) {
+  // 1) Lo valorado alto: similares y recomendaciones de TMDB, con la película
+  //    como motivo. Una de 5 estrellas fía más que una de 4.
+  for (const row of liked) {
     try {
       const m = await getMovie(row.tmdbId, locale);
       for (const g of m.genres) addWeight(g.id, row.rating ?? 4);
+      const strength = 0.7 + ((row.rating ?? 4) - 4) * 0.3;
       for (const r of [...(m.recommendations?.results ?? []), ...(m.similar?.results ?? [])]) {
-        if (!exclude.has(r.id)) candidates.set(r.id, r);
+        add(r, { kind: 'film', label: m.title }, strength);
       }
     } catch {
-      /* ignorar fallos puntuales de TMDB */
+      /* fallo puntual de TMDB: se sigue con el resto */
     }
   }
 
-  // Señal negativa: restar peso a los géneros de lo valorado bajo.
-  for (const row of disliked.slice(0, 8)) {
+  // 2) Lo valorado bajo solo resta peso a sus géneros.
+  for (const row of disliked) {
     try {
       const m = await getMovie(row.tmdbId, locale);
       for (const g of m.genres) addWeight(g.id, -2);
@@ -151,38 +214,56 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
     }
   }
 
-  // --- Candidatos de TODOS los directores favoritos (cada uno con su motivo). ---
-  // Antes se usaban solo 3; ahora se recorren todos (con un tope de seguridad) para
-  // que cada director del usuario aporte películas y aparezca como motivo.
-  for (const name of (prefs?.favoriteDirectors ?? []).slice(0, 8)) {
+  // 3) Directores favoritos: su filmografía COMO DIRECTOR. Con el id guardado
+  //    desde el buscador no hay que adivinar; para los nombres sueltos de
+  //    antes, findDirector prefiere a quien se dedica a dirigir.
+  const people: { id: number; name: string }[] = [...(prefs?.favoritePeople ?? [])];
+  const conId = new Set(people.map((p) => p.name.toLowerCase()));
+  for (const name of prefs?.favoriteDirectors ?? []) {
+    if (conId.has(name.toLowerCase())) continue;
     try {
-      const personId = await searchPerson(name, locale);
-      if (!personId) continue;
-      for (const r of await discoverByCrew(personId, locale)) {
-        if (exclude.has(r.id)) continue;
-        candidates.set(r.id, r);
-        if (!fromDirector.has(r.id)) fromDirector.set(r.id, name);
+      const d = await findDirector(name, locale);
+      if (d && !people.some((p) => p.id === d.id)) people.push(d);
+    } catch {
+      /* ignorar */
+    }
+  }
+  for (const p of people.slice(0, 10)) {
+    try {
+      const person = await getPersonCached(p.id, locale);
+      for (const c of person.movie_credits.crew) {
+        if (c.job !== 'Director' || !c.title) continue;
+        add(
+          {
+            id: c.id,
+            title: c.title,
+            original_title: c.original_title ?? c.title,
+            release_date: c.release_date,
+            poster_path: c.poster_path,
+            backdrop_path: c.backdrop_path ?? null,
+            overview: c.overview ?? '',
+            vote_average: c.vote_average ?? 0,
+            vote_count: c.vote_count,
+            genre_ids: c.genre_ids,
+            popularity: c.popularity,
+          },
+          { kind: 'director', label: person.name },
+          1,
+        );
       }
     } catch {
       /* ignorar */
     }
   }
 
-  // --- Discover género a género (no combinados) para que CADA género favorito
-  // aporte candidatos y salga como motivo. Antes solo se consultaban los 3 mejores
-  // en un único OR, y casi todo terminaba etiquetado con 2 géneros. ---
-  const topGenres = [...genreWeights.entries()]
-    .filter(([, w]) => w > 0)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8)
-    .map(([id]) => id);
-  for (const genreId of topGenres) {
+  // 4) Géneros favoritos, uno a uno, para que cada uno aporte y salga como
+  //    motivo. Los mejor valorados (con muchos votos) y los populares.
+  const favGenres = [...(prefs?.favoriteGenres ?? [])].slice(0, 8);
+  for (const genreId of favGenres) {
     for (const sort of ['vote_average.desc', 'popularity.desc'] as const) {
       try {
         for (const r of await discoverByGenres([genreId], locale, sort)) {
-          if (exclude.has(r.id)) continue;
-          if (!candidates.has(r.id)) candidates.set(r.id, r);
-          if (!fromDirector.has(r.id) && !fromGenre.has(r.id)) fromGenre.set(r.id, genreId);
+          add(r, { kind: 'genre', label: genreName(genreId, locale) }, 0.55);
         }
       } catch {
         /* ignorar */
@@ -190,78 +271,26 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
     }
   }
 
-  // --- Arranque en frío: sin ninguna señal, recurrir a populares. ---
-  if (candidates.size === 0) {
-    try {
-      for (const r of await popularMovies(locale)) {
-        if (!exclude.has(r.id)) candidates.set(r.id, r);
-      }
-    } catch {
-      /* ignorar */
-    }
-  }
-
-  // Construye una recomendación a partir de un candidato (motivo = director o género).
-  const toRec = (c: TmdbSearchResult, directorName?: string): Recommendation => {
-    // Género que trajo al candidato (discover género a género); si no, el de más peso.
-    let topGenre: number | null = fromGenre.get(c.id) ?? null;
-    if (topGenre === null) {
-      let topW = 0;
-      for (const g of c.genre_ids ?? []) {
-        const w = genreWeights.get(g) ?? 0;
-        if (w > topW) {
-          topW = w;
-          topGenre = g;
-        }
-      }
-    }
-    return {
-      tmdbId: c.id,
-      title: c.title,
-      year: c.release_date ? c.release_date.slice(0, 4) : '',
-      overview: c.overview ?? '',
-      poster: posterUrl(c.poster_path, 'w342'),
-      posterSrcset: posterSrcset(c.poster_path, 'w342', 'w500'),
-      backdrop: backdropUrl(c.backdrop_path ?? null, 'w1280'),
-      because: directorName ?? (topGenre ? genreName(topGenre, locale as 'es' | 'en') : null),
-    };
-  };
-
-  // --- Puntuar: solapamiento de géneros + bonus de director + nota + popularidad. ---
-  const scored = [...candidates.values()]
-    .map((c) => {
-      let score = 0;
-      for (const g of c.genre_ids ?? []) score += genreWeights.get(g) ?? 0;
-      const directorName = fromDirector.get(c.id);
-      if (directorName) score += DIRECTOR_BONUS;
-      score += (c.vote_average ?? 0) * 0.2;
-      score += Math.min(c.popularity ?? 0, 100) * 0.01;
-      return { c, score, directorName };
-    })
-    .filter((s) => s.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, MAX_RESULTS);
-
-  const recs = scored.map((s) => toRec(s.c, s.directorName));
-
-  // --- Mínimo garantizado: rellenar con populares hasta MIN_RESULTS. ---
-  if (recs.length < MIN_RESULTS) {
-    const chosen = new Set(recs.map((r) => r.tmdbId));
-    for (const page of [1, 2, 3]) {
-      if (recs.length >= MIN_RESULTS) break;
+  // 5) Arranque en frío o lista corta: populares.
+  if (candidates.length < MIN_RESULTS) {
+    for (const page of [1, 2]) {
       try {
-        for (const r of await popularMovies(locale, page)) {
-          if (recs.length >= MIN_RESULTS) break;
-          if (exclude.has(r.id) || chosen.has(r.id)) continue;
-          chosen.add(r.id);
-          recs.push(toRec(r));
-        }
+        for (const r of await popularMovies(locale, page)) add(r, { kind: 'popular', label: '' }, 0.3);
       } catch {
         /* ignorar */
       }
+      if (candidates.length >= MIN_RESULTS) break;
     }
   }
 
-  // Mezcla por motivo para que las recomendaciones no salgan agrupadas.
-  return interleaveByReason(recs);
+  return selectBalanced(candidates, weights, MAX_RESULTS).map(({ film, reason }) => ({
+    tmdbId: film.id,
+    title: film.title,
+    year: film.release_date ? film.release_date.slice(0, 4) : '',
+    overview: film.overview ?? '',
+    poster: posterUrl(film.poster_path, 'w342'),
+    posterSrcset: posterSrcset(film.poster_path, 'w342', 'w500'),
+    backdrop: backdropUrl(film.backdrop_path ?? null, 'w1280'),
+    because: reason,
+  }));
 }

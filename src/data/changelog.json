@@ -1,5 +1,48 @@
 [
   {
+    "version": "1.9",
+    "date": "2026-09-15",
+    "title": {
+      "es": "«Para ti» explica cada recomendación, y la cuenta se ordena",
+      "en": "“For you” explains every pick, and the account page gets in order",
+      "gl": "«Para ti» explica cada recomendación, e a conta ordénase",
+      "eu": "«Zuretzat»-ek gomendio bakoitza azaltzen du, eta kontua ordenatzen da",
+      "ca": "«Per a tu» explica cada recomanació, i el compte s’ordena"
+    },
+    "changes": {
+      "es": [
+        "Recomendaciones repartidas por motivo: cada director favorito, cada película que valoraste alto y cada género favorito aporta las suyas por turnos, en vez de que un solo género lo copara todo. Y cada cartel dice por qué está ahí: «Porque viste El padrino», «Porque te gusta Agnès Varda», «Género favorito · Terror».",
+        "Los directores favoritos se eligen ahora con un buscador, de una lista con foto y películas conocidas. Antes se escribían a mano, y «Ozu» a secas se interpretaba como una actriz.",
+        "Los directores recomendados salen de su filmografía como directores, no de cualquier crédito: se acabaron los guiones y producciones ajenas colándose por el nombre.",
+        "Mi cuenta, rehecha para pantallas grandes: quién eres y tu actividad a la izquierda, fijos al hacer scroll; perfil, preferencias y solicitudes a la derecha en paneles. Los géneros aparecen traducidos también en gallego, euskera y catalán."
+      ],
+      "en": [
+        "Recommendations are now shared out by reason: every favourite director, every film you rated highly and every favourite genre contributes its picks in turn, instead of a single genre taking over. And every poster says why it is there: “Because you watched The Godfather”, “Because you like Agnès Varda”, “Favourite genre · Horror”.",
+        "Favourite directors are now chosen with a search box, from a list with photo and known films. Before they were typed by hand, and plain “Ozu” was taken for an actress.",
+        "Recommended directors come from their filmography as directors, not from any credit: no more other people’s scripts and productions sneaking in by name.",
+        "My account, rebuilt for large screens: who you are and your activity on the left, pinned while scrolling; profile, preferences and requests on the right as panels. Genres now show translated in Galician, Basque and Catalan too."
+      ],
+      "gl": [
+        "Recomendacións repartidas por motivo: cada director favorito, cada película que valoraches alto e cada xénero favorito achega as súas por quendas, en vez de que un só xénero o copase todo. E cada cartel di por que está aí: «Porque viches O padriño», «Porque che gusta Agnès Varda», «Xénero favorito · Terror».",
+        "Os directores favoritos escóllense agora cun buscador, dunha lista con foto e películas coñecidas. Antes escribíanse a man, e «Ozu» a secas interpretábase como unha actriz.",
+        "Os directores recomendados saen da súa filmografía como directores, non de calquera crédito: acabáronse os guións e producións alleas coándose polo nome.",
+        "A miña conta, refeita para pantallas grandes: quen es e a túa actividade á esquerda, fixos ao facer scroll; perfil, preferencias e solicitudes á dereita en paneis. Os xéneros aparecen traducidos tamén en galego, éuscaro e catalán."
+      ],
+      "eu": [
+        "Gomendioak arrazoiaren arabera banatuta: gogoko zuzendari bakoitzak, altu baloratu zenuen film bakoitzak eta gogoko genero bakoitzak bereak ekartzen ditu txandaka, genero bakar batek dena hartu beharrean. Eta kartel bakoitzak esaten du zergatik dagoen hor: «Aitabitxia ikusi zenuelako», «Agnès Varda gustatzen zaizulako», «Genero gogokoa · Beldurra».",
+        "Gogoko zuzendariak bilatzaile batekin aukeratzen dira orain, argazkia eta film ezagunak dituen zerrenda batetik. Lehen eskuz idazten ziren, eta «Ozu» hutsa aktore bat bezala hartzen zen.",
+        "Gomendatutako zuzendariak zuzendari gisa duten filmografiatik datoz, ez edozein kreditutik: amaitu dira besteen gidoiak eta ekoizpenak izenagatik sartzea.",
+        "Nire kontua, pantaila handietarako berregina: nor zaren eta zure jarduera ezkerrean, scroll egitean finko; profila, hobespenak eta eskaerak eskuinean paneletan. Generoak galegoz, euskaraz eta katalanez ere itzulita agertzen dira."
+      ],
+      "ca": [
+        "Recomanacions repartides per motiu: cada director preferit, cada pel·lícula que vas valorar alt i cada gènere preferit aporta les seves per torns, en lloc que un sol gènere ho acapari tot. I cada cartell diu per què hi és: «Perquè vas veure El padrí», «Perquè t’agrada Agnès Varda», «Gènere preferit · Terror».",
+        "Els directors preferits es trien ara amb un cercador, d’una llista amb foto i pel·lícules conegudes. Abans s’escrivien a mà, i «Ozu» a seques s’interpretava com una actriu.",
+        "Els directors recomanats surten de la seva filmografia com a directors, no de qualsevol crèdit: s’han acabat els guions i produccions alienes colant-se pel nom.",
+        "El meu compte, refet per a pantalles grans: qui ets i la teva activitat a l’esquerra, fixos en fer scroll; perfil, preferències i sol·licituds a la dreta en panells. Els gèneres apareixen traduïts també en gallec, basc i català."
+      ]
+    }
+  },
+  {
     "version": "1.8.1",
     "date": "2026-09-15",
     "title": {
