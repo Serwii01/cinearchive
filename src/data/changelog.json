@@ -1,5 +1,38 @@
 [
   {
+    "version": "1.11",
+    "date": "2026-09-16",
+    "title": {
+      "es": "Portada con carrusel de novedades",
+      "en": "Front page with a carousel of what’s new",
+      "gl": "Portada con carrusel de novidades",
+      "eu": "Hasierako orria berrien karruselarekin",
+      "ca": "Portada amb carrusel de novetats"
+    },
+    "changes": {
+      "es": [
+        "La cabecera de la portada se parte en dos: a la izquierda, un carrusel con los artículos, las novedades de la hemeroteca y los dosieres especiales, que avanza solo con una línea ocre que se va llenando (se para al pasar el ratón y no se mueve si el sistema pide menos animación); a la derecha, la película del día, más compacta.",
+        "Los artículos ganan apoyo visual: cifras clave en fichas grandes, imagen de cabecera también para series y un muro de carteles con pie («En imágenes»). Los carteles de las películas relacionadas se sirven ahora a tamaño grande: dejaron de verse borrosos."
+      ],
+      "en": [
+        "The front-page header splits in two: on the left, a carousel with the articles, what’s new in the periodicals library and the special dossiers, advancing on its own with an ochre line that fills up (it pauses on hover and stays still if the system asks for less motion); on the right, the film of the day, more compact.",
+        "Articles gain visual support: key figures in large tiles, a header image for TV series too and a wall of posters with captions (“In pictures”). Posters of related films are now served at large size: no more blur."
+      ],
+      "gl": [
+        "A cabeceira da portada pártese en dúas: á esquerda, un carrusel cos artigos, as novidades da hemeroteca e os dosieres especiais, que avanza só cunha liña ocre que se vai enchendo (párase ao pasar o rato e non se move se o sistema pide menos animación); á dereita, a película do día, máis compacta.",
+        "Os artigos gañan apoio visual: cifras clave en fichas grandes, imaxe de cabeceira tamén para series e un muro de carteis con pé («En imaxes»). Os carteis das películas relacionadas sérvense agora a tamaño grande: deixaron de verse borrosos."
+      ],
+      "eu": [
+        "Hasierako orriaren goiburua bitan zatitzen da: ezkerrean, artikuluak, hemerotekako berriak eta dosier bereziak dituen karrusel bat, betetzen doan lerro okre batekin bere kabuz aurrera egiten duena (sagua gainean jartzean gelditzen da eta sistemak animazio gutxiago eskatzen badu ez da mugitzen); eskuinean, eguneko filma, trinkoagoa.",
+        "Artikuluek euskarri bisuala irabazten dute: zifra gakoak fitxa handietan, goiburu-irudia serieentzat ere eta oineko kartelen horma bat («Irudietan»). Erlazionatutako filmen kartelak tamaina handian zerbitzatzen dira orain: lausotuta ikusteari utzi diote."
+      ],
+      "ca": [
+        "La capçalera de la portada es parteix en dues: a l’esquerra, un carrusel amb els articles, les novetats de l’hemeroteca i els dossiers especials, que avança sol amb una línia ocre que es va omplint (s’atura en passar el ratolí i no es mou si el sistema demana menys animació); a la dreta, la pel·lícula del dia, més compacta.",
+        "Els articles guanyen suport visual: xifres clau en fitxes grans, imatge de capçalera també per a sèries i un mur de cartells amb peu («En imatges»). Els cartells de les pel·lícules relacionades se serveixen ara a mida gran: van deixar de veure’s borrosos."
+      ]
+    }
+  },
+  {
     "version": "1.10",
     "date": "2026-09-15",
     "title": {

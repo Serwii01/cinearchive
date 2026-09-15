@@ -17,14 +17,26 @@ export interface ArticleCopy {
   lead: string;
   /** Párrafos. «## Título» = subtítulo. */
   body: string[];
+  /** Cifras clave, en fichas grandes bajo la entradilla. */
+  stats?: { value: string; label: string }[];
+}
+
+export type TmdbKind = 'movie' | 'tv';
+
+export interface ArticleGalleryItem {
+  tmdbId: number;
+  /** Pie de cada cartel, corto: «14 Emmy · mejor comedia». */
+  caption: Record<Lang, string>;
 }
 
 export interface Article {
   slug: string;
   /** Fecha de publicación, AAAA-MM-DD. */
   date: string;
-  /** Película de TMDB cuyo fondo sirve de imagen de cabecera. */
-  cover?: { tmdbId: number };
+  /** Película o serie de TMDB cuyo fondo sirve de imagen de cabecera. */
+  cover?: { tmdbId: number; kind?: TmdbKind };
+  /** Muro de carteles con pie, para artículos sin películas del catálogo (series). */
+  gallery?: { kind: TmdbKind; items: ArticleGalleryItem[] };
   /** Películas relacionadas, para enlazar a sus fichas al pie. */
   related?: number[];
   sources: { label: string; url: string }[];
@@ -34,6 +46,20 @@ export interface Article {
 const emmys2026: Article = {
   slug: 'emmy-2026',
   date: '2026-09-15',
+  cover: { tmdbId: 270476, kind: 'tv' },
+  gallery: {
+    kind: 'tv',
+    items: [
+      { tmdbId: 270476, caption: { es: '14 Emmy · mejor comedia', en: '14 Emmys · best comedy', gl: '14 Emmy · mellor comedia', eu: '14 Emmy · komedia onena', ca: '14 Emmy · millor comèdia' } },
+      { tmdbId: 250307, caption: { es: 'Mejor drama, dos años seguidos', en: 'Best drama, two years running', gl: 'Mellor drama, dous anos seguidos', eu: 'Drama onena, bi urtez jarraian', ca: 'Millor drama, dos anys seguits' } },
+      { tmdbId: 225171, caption: { es: 'Rhea Seehorn · actriz de drama · guion', en: 'Rhea Seehorn · drama actress · writing', gl: 'Rhea Seehorn · actriz de drama · guión', eu: 'Rhea Seehorn · dramako aktoresa · gidoia', ca: 'Rhea Seehorn · actriu de drama · guió' } },
+      { tmdbId: 206828, caption: { es: 'Mejor serie limitada · 5 premios', en: 'Best limited series · 5 awards', gl: 'Mellor serie limitada · 5 premios', eu: 'Serie mugatu onena · 5 sari', ca: 'Millor sèrie limitada · 5 premis' } },
+      { tmdbId: 124101, caption: { es: 'Jean Smart · octavo Emmy', en: 'Jean Smart · eighth Emmy', gl: 'Jean Smart · oitavo Emmy', eu: 'Jean Smart · zortzigarren Emmya', ca: 'Jean Smart · vuitè Emmy' } },
+      { tmdbId: 250504, caption: { es: 'Matthew Rhys · actor de serie limitada', en: 'Matthew Rhys · limited series actor', gl: 'Matthew Rhys · actor de serie limitada', eu: 'Matthew Rhys · serie mugatuko aktorea', ca: 'Matthew Rhys · actor de sèrie limitada' } },
+      { tmdbId: 95480, caption: { es: 'Dirección de drama («Scars»)', en: 'Drama directing (“Scars”)', gl: 'Dirección de drama («Scars»)', eu: 'Dramako zuzendaritza («Scars»)', ca: 'Direcció de drama («Scars»)' } },
+      { tmdbId: 228305, caption: { es: 'Tom Pelphrey · actor de reparto', en: 'Tom Pelphrey · supporting actor', gl: 'Tom Pelphrey · actor de reparto', eu: 'Tom Pelphrey · bigarren mailako aktorea', ca: 'Tom Pelphrey · actor de repartiment' } },
+    ],
+  },
   sources: [
     { label: 'Television Academy · 78th Emmy Awards', url: 'https://www.televisionacademy.com/' },
     { label: 'TV Guide · Emmy Winners 2026: The Full List', url: 'https://www.tvguide.com/news/emmy-winners-2026-full-list-78th-primetime-emmy-awards/' },
@@ -46,6 +72,13 @@ const emmys2026: Article = {
       kicker: 'Artículo · Televisión',
       title: 'Emmy 2026: Apple gana la noche, la comedia ya no es comedia y Colbert se despide con premio',
       lead: 'Catorce estatuillas para una serie de terror que compite como comedia, un actor que gana dos categorías la misma noche, un programa cancelado que sale premiado y la audiencia más baja de la historia de la gala. La 78.ª edición de los Emmy, celebrada el 14 de septiembre en el Peacock Theater de Los Ángeles, dejó un mapa bastante claro de a dónde va la televisión estadounidense: a las plataformas, a las series nuevas y a un público que ya no ve las galas.',
+      stats: [
+        { value: '14', label: 'Emmy para «Widow\'s Bay», récord de una comedia' },
+        { value: '25', label: 'nominaciones de «The Pitt», más que nadie' },
+        { value: '8', label: 'Emmy en la carrera de Jean Smart' },
+        { value: '28', label: 'premios para Apple TV, la plataforma que más' },
+        { value: '5,9 M', label: 'espectadores en NBC, mínimo histórico' },
+      ],
       body: [
         'La noticia de la noche es una serie de la que hace un año nadie hablaba. «Widow\'s Bay» se estrenó en Apple TV el 29 de abril, con críticas excelentes y sin ruido, y cinco meses después se ha llevado **catorce** Emmy entre las ceremonias técnicas y la gala, la cifra más alta que ha conseguido nunca una comedia en una sola edición. Es también una serie de terror: una isla de Nueva Inglaterra sobre la que pesa una maldición de siglos, con criaturas y muertes y un forastero —Matthew Rhys— que llega a un sitio donde todo el mundo sabe algo que él no. Katie Dippold, guionista de «Cazafantasmas» y «The Heat», la ha escrito; Hiro Murai, el director de «Atlanta» y de los vídeos de Childish Gambino, la ha dirigido. Que la Academia la premie como comedia dice más de las categorías que de la serie.',
         '## Una comedia que da miedo',
@@ -72,6 +105,13 @@ const emmys2026: Article = {
       kicker: 'Article · Television',
       title: 'Emmys 2026: Apple takes the night, comedy is no longer comedy and Colbert bows out with a prize',
       lead: 'Fourteen statuettes for a horror series competing as a comedy, an actor winning two categories on the same night, a cancelled show going home with an award and the lowest audience in the history of the ceremony. The 78th Emmys, held on 14 September at the Peacock Theater in Los Angeles, drew a fairly clear map of where American television is heading: to the platforms, to new shows, and to a public that no longer watches award shows.',
+      stats: [
+        { value: '14', label: 'Emmys for “Widow\'s Bay”, a comedy record' },
+        { value: '25', label: 'nominations for “The Pitt”, more than anyone' },
+        { value: '8', label: 'career Emmys for Jean Smart' },
+        { value: '28', label: 'awards for Apple TV, the most of any platform' },
+        { value: '5.9M', label: 'viewers on NBC, an all-time low' },
+      ],
       body: [
         'The story of the night is a series nobody was talking about a year ago. “Widow\'s Bay” premiered on Apple TV on 29 April, to excellent reviews and no noise, and five months later it has taken **fourteen** Emmys across the technical ceremonies and the main show, the most any comedy has ever won in a single year. It is also a horror series: a New England island under a centuries-old curse, with creatures and deaths and an outsider —Matthew Rhys— arriving somewhere everyone knows something he doesn\'t. Katie Dippold, the screenwriter of “Ghostbusters” and “The Heat”, wrote it; Hiro Murai, the director of “Atlanta” and of Childish Gambino\'s videos, directed it. That the Academy rewards it as a comedy says more about the categories than about the show.',
         '## A comedy that scares',
@@ -98,6 +138,13 @@ const emmys2026: Article = {
       kicker: 'Artigo · Televisión',
       title: 'Emmy 2026: Apple gaña a noite, a comedia xa non é comedia e Colbert despídese con premio',
       lead: 'Catorce estatuíñas para unha serie de terror que compite como comedia, un actor que gaña dúas categorías a mesma noite, un programa cancelado que sae premiado e a audiencia máis baixa da historia da gala. A 78.ª edición dos Emmy, celebrada o 14 de setembro no Peacock Theater de Los Ángeles, deixou un mapa bastante claro de a onde vai a televisión estadounidense: ás plataformas, ás series novas e a un público que xa non ve as galas.',
+      stats: [
+        { value: '14', label: 'Emmy para «Widow\'s Bay», récord dunha comedia' },
+        { value: '25', label: 'nominacións de «The Pitt», máis ca ninguén' },
+        { value: '8', label: 'Emmy na carreira de Jean Smart' },
+        { value: '28', label: 'premios para Apple TV, a plataforma que máis' },
+        { value: '5,9 M', label: 'espectadores na NBC, mínimo histórico' },
+      ],
       body: [
         'A noticia da noite é unha serie da que hai un ano ninguén falaba. «Widow\'s Bay» estreouse en Apple TV o 29 de abril, con críticas excelentes e sen ruído, e cinco meses despois levou **catorce** Emmy entre as cerimonias técnicas e a gala, a cifra máis alta que conseguiu nunca unha comedia nunha soa edición. É tamén unha serie de terror: unha illa de Nova Inglaterra sobre a que pesa unha maldición de séculos, con criaturas e mortes e un forasteiro —Matthew Rhys— que chega a un sitio onde todo o mundo sabe algo que el non. Katie Dippold, guionista de «Cazafantasmas» e «The Heat», escribiuna; Hiro Murai, o director de «Atlanta» e dos vídeos de Childish Gambino, dirixiuna. Que a Academia a premie como comedia di máis das categorías ca da serie.',
         '## Unha comedia que dá medo',
@@ -124,6 +171,13 @@ const emmys2026: Article = {
       kicker: 'Artikulua · Telebista',
       title: 'Emmy 2026: Applek gaua irabazi du, komedia ez da jada komedia eta Colbert sariarekin agurtu da',
       lead: 'Hamalau estatuatxo komedia gisa lehiatzen den beldurrezko serie batentzat, gau berean bi kategoria irabazi dituen aktore bat, bertan behera utzitako saio bat saritua eta galaren historiako audientziarik baxuena. Emmy sarien 78. edizioak, irailaren 14an Los Angeleseko Peacock Theaterren ospatuak, mapa nahiko argia utzi zuen Estatu Batuetako telebista norantz doan jakiteko: plataformetara, serie berrietara eta galak jada ikusten ez dituen publiko batengana.',
+      stats: [
+        { value: '14', label: 'Emmy «Widow\'s Bay»-rentzat, komedia baten errekorra' },
+        { value: '25', label: '«The Pitt»-en izendapenak, inork baino gehiago' },
+        { value: '8', label: 'Emmy Jean Smarten karreran' },
+        { value: '28', label: 'sari Apple TVrentzat, plataformarik sarituena' },
+        { value: '5,9 M', label: 'ikusle NBCn, inoizko gutxienak' },
+      ],
       body: [
         'Gaueko albistea duela urtebete inork aipatzen ez zuen serie bat da. «Widow\'s Bay» Apple TVn estreinatu zen apirilaren 29an, kritika bikainekin eta zaratarik gabe, eta bost hilabete geroago **hamalau** Emmy eraman ditu zeremonia teknikoen eta galaren artean, komedia batek edizio bakarrean inoiz lortu duen kopururik handiena. Beldurrezko serie bat ere bada: mendeetako madarikazio bat duen Ingalaterra Berriko uharte bat, izakiekin eta heriotzekin, eta kanpotar bat —Matthew Rhys— denek berak ez dakien zerbait dakiten leku batera iristen dena. Katie Dippoldek idatzi du, «Ghostbusters» eta «The Heat» filmen gidoilariak; Hiro Muraik zuzendu du, «Atlanta»-ren eta Childish Gambinoren bideoen zuzendariak. Akademiak komedia gisa saritzeak kategoriei buruz gehiago esaten du serieari buruz baino.',
         '## Beldurra ematen duen komedia',
@@ -150,6 +204,13 @@ const emmys2026: Article = {
       kicker: 'Article · Televisió',
       title: 'Emmy 2026: Apple guanya la nit, la comèdia ja no és comèdia i Colbert s\'acomiada amb premi',
       lead: 'Catorze estatuetes per a una sèrie de terror que competeix com a comèdia, un actor que guanya dues categories la mateixa nit, un programa cancel·lat que surt premiat i l\'audiència més baixa de la història de la gala. La 78a edició dels Emmy, celebrada el 14 de setembre al Peacock Theater de Los Angeles, va deixar un mapa força clar de cap a on va la televisió nord-americana: a les plataformes, a les sèries noves i a un públic que ja no mira les gales.',
+      stats: [
+        { value: '14', label: 'Emmy per a «Widow\'s Bay», rècord d\'una comèdia' },
+        { value: '25', label: 'nominacions de «The Pitt», més que ningú' },
+        { value: '8', label: 'Emmy en la carrera de Jean Smart' },
+        { value: '28', label: 'premis per a Apple TV, la plataforma que més' },
+        { value: '5,9 M', label: 'espectadors a la NBC, mínim històric' },
+      ],
       body: [
         'La notícia de la nit és una sèrie de la qual fa un any ningú no parlava. «Widow\'s Bay» es va estrenar a Apple TV el 29 d\'abril, amb crítiques excel·lents i sense soroll, i cinc mesos després s\'ha endut **catorze** Emmy entre les cerimònies tècniques i la gala, la xifra més alta que ha aconseguit mai una comèdia en una sola edició. És també una sèrie de terror: una illa de Nova Anglaterra sobre la qual pesa una maledicció de segles, amb criatures i morts i un foraster —Matthew Rhys— que arriba a un lloc on tothom sap una cosa que ell no. Katie Dippold, guionista de «Caçafantasmes» i «The Heat», l\'ha escrit; Hiro Murai, el director d\'«Atlanta» i dels vídeos de Childish Gambino, l\'ha dirigit. Que l\'Acadèmia la premiï com a comèdia diu més de les categories que de la sèrie.',
         '## Una comèdia que fa por',

@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { articles, articleBySlug, articleCopy, renderParagraph, heading } from '../../../lib/articles';
 import { getFilmsBrief } from '../../../lib/films';
-import { getMovie, backdropUrl } from '../../../lib/tmdb';
+import { getMovie, getTv, backdropUrl, posterUrl, posterSrcset } from '../../../lib/tmdb';
 import { normalizeLang, useTranslations, localizePath, formatDate } from '../../../i18n/ui';
 import { filmSlug } from '../../../lib/slug';
 import { articleLd, breadcrumbLd } from '../../../lib/seo';
@@ -19,14 +19,38 @@ const c = articleCopy(article, lang);
 let cover: string | null = null;
 if (article.cover) {
   try {
-    cover = backdropUrl((await getMovie(article.cover.tmdbId, lang)).backdrop_path, 'w1280');
+    const { tmdbId, kind = 'movie' } = article.cover;
+    const path = kind === 'tv' ? (await getTv(tmdbId, lang)).backdrop_path : (await getMovie(tmdbId, lang)).backdrop_path;
+    cover = backdropUrl(path, 'w1280');
   } catch {
     cover = null;
   }
 }
 
+// Galería (series o películas fuera del catálogo): cartel + pie. Una ficha que
+// falle se omite; el muro sigue con las demás.
+const galeria: { name: string; poster: string | null; srcset: string | null; caption: string }[] = [];
+if (article.gallery) {
+  for (const item of article.gallery.items) {
+    try {
+      const b = article.gallery.kind === 'tv'
+        ? await getTv(item.tmdbId, lang).then((t) => ({ name: t.name, poster_path: t.poster_path }))
+        : await getMovie(item.tmdbId, lang).then((m) => ({ name: m.title, poster_path: m.poster_path }));
+      galeria.push({ name: b.name, poster: posterUrl(b.poster_path, 'w342'), srcset: posterSrcset(b.poster_path, 'w342', 'w500'), caption: item.caption[lang] ?? item.caption.es });
+    } catch {
+      /* sin ficha, sin cartel */
+    }
+  }
+}
+
 const briefs = article.related?.length ? await getFilmsBrief(article.related, lang) : new Map();
 const relacionadas = (article.related ?? []).map((id) => briefs.get(id)).filter((f) => f != null);
+// El resumen trae el cartel a w185, pensado para tarjetas pequeñas; aquí las
+// tarjetas son grandes y a ese tamaño el cartel sale borroso. Se pide el
+// mismo cartel a w500 (y w342 para pantallas normales) cambiando el tamaño en
+// la URL, que es como TMDB los sirve.
+const nitido = (poster: string | null) => (poster ? poster.replace('/w185/', '/w500/') : null);
+const nitidoSrcset = (poster: string | null) => (poster ? `${poster.replace('/w185/', '/w342/')} 342w, ${poster.replace('/w185/', '/w500/')} 500w` : undefined);
 
 const otros = articles.filter((a) => a.slug !== article.slug).map((a) => ({ slug: a.slug, c: articleCopy(a, lang) }));
 
@@ -51,6 +75,17 @@ const jsonLd = [
       <p class="mt-4 font-mono text-meta-data text-muted">{t('articles.by')}</p>
     </header>
 
+    {c.stats && c.stats.length > 0 && (
+      <div class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-5">
+        {c.stats.map((st) => (
+          <div class="bg-surface p-4">
+            <p class="font-display text-display-mobile leading-none text-ink">{st.value}</p>
+            <p class="mt-2 font-mono text-meta-data text-muted">{st.label}</p>
+          </div>
+        ))}
+      </div>
+    )}
+
     {cover && (
       <figure class="mt-8 border border-ink">
         <img src={cover} alt="" width="1280" height="720" decoding="async" class="h-64 w-full object-cover sm:h-80 md:h-[28rem]" />
@@ -66,6 +101,29 @@ const jsonLd = [
       }
     </div>
 
+    {galeria.length > 0 && (
+      <section class="mt-12">
+        <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('articles.gallery')}</h2>
+        <div class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
+          {galeria.map((g) => (
+            <figure class="flex flex-col bg-surface">
+              <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+                {g.poster ? (
+                  <img src={g.poster} srcset={g.srcset ?? undefined} sizes="(min-width:640px) 25vw, 50vw" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                ) : (
+                  <div class="film-grain h-full w-full" />
+                )}
+              </div>
+              <figcaption class="p-2">
+                <p class="font-display text-body-lg leading-tight text-ink">{g.name}</p>
+                <p class="mt-1 font-mono text-meta-data text-ochre-dim">{g.caption}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
     {relacionadas.length > 0 && (
       <section class="mt-12">
         <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('articles.related')}</h2>
@@ -73,7 +131,11 @@ const jsonLd = [
           {relacionadas.map((f) => (
             <a href={localizePath(lang, `film/${filmSlug(f!.tmdbId, f!.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
               <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
-                {f!.poster ? <img src={f!.poster} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" /> : <div class="film-grain h-full w-full" />}
+                {f!.poster ? (
+                  <img src={nitido(f!.poster)!} srcset={nitidoSrcset(f!.poster)} sizes="(min-width:640px) 25vw, 50vw" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                ) : (
+                  <div class="film-grain h-full w-full" />
+                )}
               </div>
               <div class="p-2">
                 <p class="font-display text-body-lg leading-tight text-ink">{f!.title}</p>

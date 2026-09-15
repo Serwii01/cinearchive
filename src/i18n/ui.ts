@@ -120,6 +120,8 @@ export const ui = {
     'articles.by': 'Por la redacción de Cine Archive',
     'articles.related': 'Películas del artículo',
     'articles.more': 'Más artículos',
+    'articles.gallery': 'En imágenes',
+    'articles.short': 'Artículos',
     'nav.glossary': 'Glosario',
     'glossary.title': 'Glosario del cine',
     'glossary.intro':
@@ -255,6 +257,7 @@ export const ui = {
     'archive.currentCredit':
       'Enlaces a revistas de acceso abierto; el contenido se aloja en el sitio de cada publicación.',
     'home.latestIssues': 'Novedades en la hemeroteca',
+    'home.carousel': 'Novedades',
     'home.readManifesto': 'Leer el manifiesto',
     'article.backToArchive': 'Volver al archivo',
     'article.metadata': 'Ficha técnica',
@@ -824,6 +827,8 @@ export const ui = {
     'articles.by': 'By the Cine Archive editorial team',
     'articles.related': 'Films in this article',
     'articles.more': 'More articles',
+    'articles.gallery': 'In pictures',
+    'articles.short': 'Articles',
     'nav.glossary': 'Glossary',
     'glossary.title': 'Film Glossary',
     'glossary.intro':
@@ -959,6 +964,7 @@ export const ui = {
     'archive.currentCredit':
       'Links to open-access journals; content is hosted on each publication’s own site.',
     'home.latestIssues': 'New in the archive',
+    'home.carousel': 'What’s new',
     'home.readManifesto': 'Read the manifesto',
     'article.backToArchive': 'Back to archive',
     'article.metadata': 'Technical sheet',
@@ -1528,6 +1534,8 @@ export const ui = {
     'articles.by': 'Pola redacción de Cine Archive',
     'articles.related': 'Películas do artigo',
     'articles.more': 'Máis artigos',
+    'articles.gallery': 'En imaxes',
+    'articles.short': 'Artigos',
     'nav.glossary': 'Glosario',
     'glossary.title': 'Glosario do cine',
     'glossary.intro':
@@ -1663,6 +1671,7 @@ export const ui = {
     'archive.currentCredit':
       'Ligazóns a revistas de acceso aberto; o contido alóxase no sitio de cada publicación.',
     'home.latestIssues': 'Novidades na hemeroteca',
+    'home.carousel': 'Novidades',
     'home.readManifesto': 'Ler o manifesto',
     'article.backToArchive': 'Volver ao arquivo',
     'article.metadata': 'Ficha técnica',
@@ -2232,6 +2241,8 @@ export const ui = {
     'articles.by': 'Cine Archive-ren erredakzioak',
     'articles.related': 'Artikuluko filmak',
     'articles.more': 'Artikulu gehiago',
+    'articles.gallery': 'Irudietan',
+    'articles.short': 'Artikuluak',
     'nav.glossary': 'Glosarioa',
     'glossary.title': 'Zinemaren glosarioa',
     'glossary.intro':
@@ -2367,6 +2378,7 @@ export const ui = {
     'archive.currentCredit':
       'Sarbide irekiko aldizkarietarako estekak; edukia argitalpen bakoitzaren webgunean dago.',
     'home.latestIssues': 'Berriak hemerotekan',
+    'home.carousel': 'Berriak',
     'home.readManifesto': 'Irakurri manifestua',
     'article.backToArchive': 'Itzuli artxibora',
     'article.metadata': 'Fitxa teknikoa',
@@ -2936,6 +2948,8 @@ export const ui = {
     'articles.by': 'Per la redacció de Cine Archive',
     'articles.related': 'Pel·lícules de l’article',
     'articles.more': 'Més articles',
+    'articles.gallery': 'En imatges',
+    'articles.short': 'Articles',
     'nav.glossary': 'Glossari',
     'glossary.title': 'Glossari del cinema',
     'glossary.intro':
@@ -3071,6 +3085,7 @@ export const ui = {
     'archive.currentCredit':
       'Enllaços a revistes d’accés obert; el contingut s’allotja al lloc de cada publicació.',
     'home.latestIssues': 'Novetats a l’hemeroteca',
+    'home.carousel': 'Novetats',
     'home.readManifesto': 'Llegir el manifest',
     'article.backToArchive': 'Tornar a l’arxiu',
     'article.metadata': 'Fitxa tècnica',

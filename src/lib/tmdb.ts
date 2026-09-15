@@ -285,6 +285,30 @@ export async function findDirector(name: string, locale: string): Promise<{ id: 
   return d ? { id: d.id, name: d.name } : null;
 }
 
+/* ------------------------------------------------------------------ *
+ * Series (solo lo básico: nombre e imágenes, para artículos).
+ * ------------------------------------------------------------------ */
+
+export interface TmdbTvBasics {
+  id: number;
+  name: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  first_air_date?: string;
+}
+
+const TV_MEMO_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const tvMemo = createMemo<TmdbTvBasics>(TV_MEMO_TTL_MS, 200);
+registerCache({ id: 'tv', label: 'Series (básico)', ttlMs: TV_MEMO_TTL_MS, maxKeys: 200, size: () => tvMemo.size, clear: () => tvMemo.clear() });
+
+/** Ficha mínima de una serie. Se cachea una semana: un cartel no cambia. */
+export function getTv(id: number, locale: string): Promise<TmdbTvBasics> {
+  return tvMemo.get(`${locale}:${id}`, async () => {
+    const t = await tmdbFetch<TmdbTvBasics>(`/tv/${id}`, { language: toTmdbLang(locale) });
+    return { id: t.id, name: t.name, poster_path: t.poster_path ?? null, backdrop_path: t.backdrop_path ?? null, first_air_date: t.first_air_date };
+  });
+}
+
 /** Populares (arranque en frío / relleno hasta el mínimo de recomendaciones). */
 export async function popularMovies(locale: string, page = 1) {
   const data = await tmdbFetch<{ results: TmdbSearchResult[] }>('/movie/popular', {
