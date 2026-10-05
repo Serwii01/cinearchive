@@ -1,5 +1,99 @@
 [
   {
+    "version": "1.12.1",
+    "date": "2026-10-01",
+    "title": {
+      "es": "Artículo: el palmarés de San Sebastián",
+      "en": "Article: the San Sebastián winners",
+      "gl": "Artigo: o palmarés de San Sebastián",
+      "eu": "Artikulua: Zinemaldiaren palmaresa",
+      "ca": "Article: el palmarès de Sant Sebastià"
+    },
+    "changes": {
+      "es": [
+        "Nuevo artículo sobre el Festival de San Sebastián 2026: la Concha de Oro para la que probablemente sea la última película de Mike Leigh, el resto del palmarés y los dos premios del público, que fueron para «La bola negra» y para «NAZA», el documental sobre los algoritmos que eligen objetivos en Gaza."
+      ],
+      "en": [
+        "New article on the 2026 San Sebastián Film Festival: the Golden Shell for what is probably Mike Leigh’s last film, the rest of the winners and the two audience awards, which went to “La bola negra” and to “NAZA”, the documentary about the algorithms that pick targets in Gaza."
+      ],
+      "gl": [
+        "Novo artigo sobre o Festival de San Sebastián 2026: a Concha de Ouro para a que probablemente sexa a última película de Mike Leigh, o resto do palmarés e os dous premios do público, que foron para «La bola negra» e para «NAZA», o documental sobre os algoritmos que escollen obxectivos en Gaza."
+      ],
+      "eu": [
+        "Artikulu berria 2026ko Zinemaldiari buruz: Urrezko Maskorra Mike Leighen azkena izango den filmarentzat, gainerako palmaresa eta publikoaren bi sariak, «La bola negra»rentzat eta «NAZA»rentzat izan zirenak, Gazan helburuak aukeratzen dituzten algoritmoei buruzko dokumentala."
+      ],
+      "ca": [
+        "Nou article sobre el Festival de Sant Sebastià 2026: la Conquilla d’Or per a la que probablement sigui l’última pel·lícula de Mike Leigh, la resta del palmarès i els dos premis del públic, que van ser per a «La bola negra» i per a «NAZA», el documental sobre els algoritmes que trien objectius a Gaza."
+      ]
+    }
+  },
+  {
+    "version": "1.12",
+    "date": "2026-10-01",
+    "title": {
+      "es": "Cuentas confirmadas por correo",
+      "en": "Accounts confirmed by email",
+      "gl": "Contas confirmadas por correo",
+      "eu": "Kontuak posta bidez berretsita",
+      "ca": "Comptes confirmats per correu"
+    },
+    "changes": {
+      "es": [
+        "Al crear una cuenta hay que confirmar el correo: llega un enlace y, hasta pulsarlo, la cuenta no entra. Así no se pueden registrar direcciones que no son de quien las escribe. Las cuentas que ya existían siguen funcionando igual.",
+        "La recuperación de contraseña vuelve a funcionar: pedía el enlace a una dirección que ya no existía, decía «te hemos enviado un correo» y no enviaba nada. Ahora sale de verdad, caduca en una hora y solo sirve una vez.",
+        "Los correos de la web (confirmar la cuenta, cambiar la contraseña) van maquetados como el sitio y escritos en el idioma desde el que se piden."
+      ],
+      "en": [
+        "Creating an account now requires confirming your email: a link arrives and until you press it the account cannot sign in. Addresses that are not yours can no longer be registered. Existing accounts are unaffected.",
+        "Password recovery works again: it asked a route that no longer existed, said “we have sent you an email” and sent nothing. Now it really goes out, expires in an hour and works only once.",
+        "The site’s emails (confirm account, change password) are laid out like the site and written in the language they were requested from."
+      ],
+      "gl": [
+        "Ao crear unha conta hai que confirmar o correo: chega unha ligazón e, ata premela, a conta non entra. Así non se poden rexistrar enderezos que non son de quen os escribe. As contas que xa existían seguen igual.",
+        "A recuperación de contrasinal volve funcionar: pedía a ligazón a un enderezo que xa non existía, dicía «enviámosche un correo» e non enviaba nada. Agora sae de verdade, caduca nunha hora e só serve unha vez.",
+        "Os correos da web (confirmar a conta, cambiar o contrasinal) van maquetados coma o sitio e escritos no idioma desde o que se piden."
+      ],
+      "eu": [
+        "Kontu bat sortzean helbide elektronikoa berretsi behar da: esteka bat iristen da eta, sakatu arte, kontuak ezin du sartu. Horrela ezin dira norberarenak ez diren helbideak erregistratu. Lehendik zeuden kontuek berdin jarraitzen dute.",
+        "Pasahitza berreskuratzeko aukerak berriro funtzionatzen du: jada existitzen ez zen helbide bati eskatzen zion esteka, «mezu bat bidali dizugu» esaten zuen eta ez zuen ezer bidaltzen. Orain benetan ateratzen da, ordubetean iraungitzen da eta behin bakarrik balio du.",
+        "Webaren mezuak (kontua berretsi, pasahitza aldatu) webgunearen itxurarekin daude maketatuta eta eskatu diren hizkuntzan idatzita."
+      ],
+      "ca": [
+        "En crear un compte cal confirmar el correu: arriba un enllaç i, fins que no el premis, el compte no entra. Així no es poden registrar adreces que no són de qui les escriu. Els comptes que ja existien continuen igual.",
+        "La recuperació de contrasenya torna a funcionar: demanava l’enllaç a una adreça que ja no existia, deia «t’hem enviat un correu» i no enviava res. Ara surt de debò, caduca al cap d’una hora i només serveix una vegada.",
+        "Els correus del web (confirmar el compte, canviar la contrasenya) van maquetats com el lloc i escrits en l’idioma des del qual es demanen."
+      ]
+    }
+  },
+  {
+    "version": "1.11.1",
+    "date": "2026-10-01",
+    "title": {
+      "es": "Artículo: «La bola negra», candidata al Oscar",
+      "en": "Article: “La bola negra”, Oscar candidate",
+      "gl": "Artigo: «La bola negra», candidata ao Oscar",
+      "eu": "Artikulua: «La bola negra», Oscarrerako hautagaia",
+      "ca": "Article: «La bola negra», candidata a l’Oscar"
+    },
+    "changes": {
+      "es": [
+        "Nuevo artículo de Cine Archive sobre «La bola negra», de Los Javis: por qué la eligió la Academia como candidata española al Oscar internacional, la obra de Lorca de la que parte, el premio de Cannes, los premios del público de Toronto y San Sebastián, su estreno en España y el calendario hasta las nominaciones. Con cifras, cabecera y las cuatro películas enlazadas a sus fichas."
+      ],
+      "en": [
+        "New Cine Archive article on “La bola negra”, by Los Javis: why the Academy chose it as Spain’s candidate for the International Feature Oscar, the Lorca play it starts from, the Cannes prize, the audience awards in Toronto and San Sebastián, its release in Spain and the calendar up to the nominations. With key figures, header image and the four films linked to their pages."
+      ],
+      "gl": [
+        "Novo artigo de Cine Archive sobre «La bola negra», de Los Javis: por que a elixiu a Academia como candidata española ao Oscar internacional, a obra de Lorca da que parte, o premio de Cannes, os premios do público de Toronto e San Sebastián, a súa estrea en España e o calendario ata as nominacións. Con cifras, cabeceira e as catro películas ligadas ás súas fichas."
+      ],
+      "eu": [
+        "Cine Archiveren artikulu berria «La bola negra»ri buruz, Los Javisena: zergatik aukeratu zuen Akademiak nazioarteko Oscarrerako Espainiako hautagai gisa, abiapuntu duen Lorcaren obra, Cannesko saria, Torontoko eta Donostiako publikoaren sariak, Espainiako estreinaldia eta izendapenetarainoko egutegia. Zifrekin, goiburuarekin eta lau filmak beren fitxetara lotuta."
+      ],
+      "ca": [
+        "Nou article de Cine Archive sobre «La bola negra», de Los Javis: per què l’Acadèmia la va triar com a candidata espanyola a l’Oscar internacional, l’obra de Lorca de què parteix, el premi de Canes, els premis del públic de Toronto i Sant Sebastià, la seva estrena a Espanya i el calendari fins a les nominacions. Amb xifres, capçalera i les quatre pel·lícules enllaçades a les seves fitxes."
+      ]
+    }
+  },
+  {
     "version": "1.11",
     "date": "2026-09-16",
     "title": {

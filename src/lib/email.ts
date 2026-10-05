@@ -15,11 +15,27 @@ export interface EmailMessage {
   text: string;
 }
 
+/**
+ * ¿Hay forma de enviar correo? De esto depende que se pueda exigir confirmar la
+ * dirección al crear la cuenta: sin remitente, exigirlo dejaría a los nuevos
+ * usuarios registrados y sin poder entrar nunca.
+ */
+export function emailConfigured(): boolean {
+  return Boolean(process.env.RESEND_API_KEY);
+}
+
 export async function sendEmail(msg: EmailMessage): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM || 'Cine Archive <onboarding@resend.dev>';
   if (!key) {
     console.warn(`[email] RESEND_API_KEY no configurada; correo NO enviado: "${msg.subject}"`);
+    // En desarrollo, el enlace a la consola: es la única forma de probar el
+    // registro o el cambio de contraseña sin montar un remitente. En producción
+    // nunca se imprime (allí hay clave, y un enlace en los logs es una llave).
+    if (process.env.NODE_ENV !== 'production') {
+      const enlace = msg.text.match(/https?:\/\/\S+/)?.[0];
+      if (enlace) console.warn(`[email] enlace para ${msg.to}: ${enlace}`);
+    }
     return false;
   }
   try {

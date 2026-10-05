@@ -23,6 +23,8 @@ const next = Astro.url.searchParams.get('next') || localizePath(lang);
         novalidate
         data-errmsg={t('auth.error')}
         data-home={localizePath(lang)}
+        data-unverified={t('auth.verifyNeeded')}
+        data-verifyurl={localizePath(lang, 'verify') + '?resend=1'}
       >
         <label class="block">
           <span class="label mb-1 block">{t('auth.email')}</span>
@@ -63,6 +65,22 @@ const next = Astro.url.searchParams.get('next') || localizePath(lang);
     errEl.classList.remove('hidden');
   };
 
+  /**
+   * Correo sin confirmar: no es un fallo de credenciales, así que se explica y
+   * se enlaza a la página de confirmación. El servidor acaba de enviar un enlace
+   * nuevo al intentar entrar, así que normalmente basta con mirar el correo.
+   */
+  const showUnverified = () => {
+    errEl.textContent = '';
+    errEl.classList.remove('hidden');
+    errEl.append(form.dataset.unverified || 'Confirm your email.', ' ');
+    const a = document.createElement('a');
+    a.href = form.dataset.verifyurl || '/verify?resend=1';
+    a.className = 'text-ink underline decoration-ochre';
+    a.textContent = '→';
+    errEl.append(a);
+  };
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errEl.classList.add('hidden');
@@ -71,7 +89,8 @@ const next = Astro.url.searchParams.get('next') || localizePath(lang);
       email: String(fd.get('email')),
       password: String(fd.get('password')),
     });
-    if (error) showError(error.message || errMsg);
+    if (error?.code === 'EMAIL_NOT_VERIFIED' || error?.status === 403) showUnverified();
+    else if (error) showError(error.message || errMsg);
     else window.location.href = next;
   });
 

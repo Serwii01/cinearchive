@@ -12,7 +12,14 @@ if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
     <div class="mx-auto max-w-md border border-ink bg-surface">
       <h1 class="border-b border-ink px-6 py-4 font-display text-headline-lg text-ink">{t('auth.forgotTitle')}</h1>
 
-      <form id="forgot-form" class="flex flex-col gap-4 p-6" novalidate data-reset={localizePath(lang, 'reset')} data-okmsg={t('auth.checkEmail')}>
+      <form
+        id="forgot-form"
+        class="flex flex-col gap-4 p-6"
+        novalidate
+        data-reset={localizePath(lang, 'reset')}
+        data-okmsg={t('auth.checkEmail')}
+        data-errmsg={t('auth.verifyResendError')}
+      >
         <p class="text-body-md text-charcoal">{t('auth.forgotIntro')}</p>
         <label class="block">
           <span class="label mb-1 block">{t('auth.email')}</span>
@@ -30,18 +37,28 @@ if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
 </BaseLayout>
 
 <script>
-  import { forgetPassword } from '../../lib/auth-client';
+  import { requestPasswordReset } from '../../lib/auth-client';
   const form = document.getElementById('forgot-form') as HTMLFormElement;
   const ok = form.querySelector('[data-ok]') as HTMLElement;
   const resetPath = form.dataset.reset || '/reset';
+  const boton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = String(new FormData(form).get('email'));
-    await forgetPassword({ email, redirectTo: location.origin + resetPath });
-    // Respuesta neutra siempre (no revela si el correo existe).
-    ok.textContent = form.dataset.okmsg || 'OK';
+    boton.disabled = true;
+    const { error } = await requestPasswordReset({ email, redirectTo: location.origin + resetPath });
+    // Si el correo existe o no, no se dice: la respuesta es la misma. Lo que sí
+    // se distingue es que la petición falle (servidor caído, demasiados
+    // intentos); antes se decía «enviado» pasara lo que pasara.
+    if (error) {
+      ok.textContent = form.dataset.errmsg || 'Error';
+      ok.className = 'font-mono text-meta-data text-error';
+      boton.disabled = false;
+    } else {
+      ok.textContent = form.dataset.okmsg || 'OK';
+      ok.className = 'font-mono text-meta-data text-ink';
+    }
     ok.classList.remove('hidden');
-    (form.querySelector('button[type="submit"]') as HTMLButtonElement).disabled = true;
   });
 </script>

@@ -475,6 +475,8 @@ const homeJsonLd = [
           </a>
         ))
       }
+      {/* Con un número impar de artículos, la celda que sobra se rellena para no dejar un hueco de tinta. */}
+      {articlePicks.length % 2 === 1 && <div class="hidden bg-surface md:block" aria-hidden="true" />}
     </div>
   </section>
 </BaseLayout>

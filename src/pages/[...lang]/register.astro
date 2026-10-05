@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import SocialButtons from '../../components/SocialButtons.astro';
+import { requireEmailVerification } from '../../lib/auth';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -14,6 +15,15 @@ if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
     <div class="mx-auto max-w-md border border-ink bg-surface">
       <h1 class="border-b border-ink px-6 py-4 font-display text-headline-lg text-ink">{t('auth.registerTitle')}</h1>
 
+      {/* Tras registrarse, si hay que confirmar el correo, el formulario deja
+          paso a este aviso: no hay sesión hasta pulsar el enlace. */}
+      <div id="register-sent" hidden class="flex flex-col gap-4 border-b border-ink p-6">
+        <span class="label">{t('auth.verifyTitle')}</span>
+        <p class="font-display text-headline-md leading-tight text-ink">{t('auth.verifySentTitle')}</p>
+        <p class="text-body-md text-charcoal">{t('auth.verifySentNote')}</p>
+        <a href={localizePath(lang, 'verify') + '?resend=1'} class="label text-ink no-underline hover:text-muted">{t('auth.verifyResend')} →</a>
+      </div>
+
       <form
         id="register-form"
         class="flex flex-col gap-4 p-6"
@@ -21,6 +31,7 @@ if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
         data-errmsg={t('auth.error')}
         data-acceptmsg={t('auth.mustAccept')}
         data-next={localizePath(lang, 'account')}
+        data-verify={requireEmailVerification ? '1' : ''}
       >
         <label class="block">
           <span class="label mb-1 block">{t('auth.name')}</span>
@@ -86,6 +97,14 @@ if (Astro.locals.user) return Astro.redirect(localizePath(lang, 'account'));
     if (error) {
       errEl.textContent = error.message || errMsg;
       errEl.classList.remove('hidden');
+    } else if (form.dataset.verify) {
+      // Hay que confirmar el correo: no hay sesión todavía, así que en vez de
+      // llevarlo a su cuenta (que lo devolvería al login) se le dice que mire
+      // el correo. El formulario desaparece para que no vuelva a enviarlo.
+      const aviso = document.getElementById('register-sent');
+      if (aviso) aviso.hidden = false;
+      form.hidden = true;
+      aviso?.scrollIntoView({ block: 'center' });
     } else {
       window.location.href = home;
     }

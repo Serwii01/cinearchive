@@ -51,6 +51,7 @@ export const TOP_LEVEL_SECTIONS: ReadonlySet<string> = new Set([
   'terms',
   'timeline',
   'u',
+  'verify',
   'watchlist',
 ]);
 

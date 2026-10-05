@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { normalizeLang, useTranslations, localizePath } from '../../i18n/ui';
+
+/**
+ * Final del enlace de confirmación del correo.
+ *
+ * Better Auth verifica en /api/auth/verify-email y manda aquí: sin parámetros si
+ * fue bien, o con ?error=TOKEN_EXPIRED | INVALID_TOKEN | … si el enlace ya no
+ * vale. También se llega aquí a pedir otro enlace (?resend=1), que es lo que
+ * enlaza el aviso de «confirma tu correo» del registro y del acceso.
+ */
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+
+const error = Astro.url.searchParams.get('error');
+const resend = Astro.url.searchParams.has('resend');
+// Caducado e inválido se cuentan igual de cara al usuario: el remedio es el
+// mismo (pedir otro enlace), y no hace falta explicarle la diferencia.
+const estado: 'ok' | 'error' | 'resend' = error ? 'error' : resend ? 'resend' : 'ok';
+---
+
+<BaseLayout title={t('auth.verifyTitle')} noindex>
+  <section class="frame py-12">
+    <div class="mx-auto max-w-md border border-ink bg-surface">
+      <h1 class="border-b border-ink px-6 py-4 font-display text-headline-lg text-ink">
+        {estado === 'ok' ? t('auth.verifyDone') : t('auth.verifyTitle')}
+      </h1>
+
+      {
+        estado === 'ok' ? (
+          <div class="flex flex-col gap-4 p-6">
+            <p class="text-body-md text-charcoal">{t('auth.verifyDoneNote')}</p>
+            <a href={localizePath(lang, 'account')} class="btn btn-primary justify-center no-underline">{t('auth.verifyGoAccount')}</a>
+          </div>
+        ) : (
+          <form
+            id="verify-form"
+            class="flex flex-col gap-4 p-6"
+            novalidate
+            data-okmsg={t('auth.verifySent')}
+            data-errmsg={t('auth.verifyResendError')}
+          >
+            <p class="text-body-md text-charcoal">{estado === 'error' ? t('auth.verifyExpired') : t('auth.verifyPending')}</p>
+            <label class="block">
+              <span class="label mb-1 block">{t('auth.email')}</span>
+              <input name="email" type="email" required autocomplete="email" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md focus:bg-film-white focus:outline-none" />
+            </label>
+            <p data-msg class="hidden font-mono text-meta-data" aria-live="polite" />
+            <button type="submit" class="btn btn-primary justify-center">{t('auth.verifyResend')}</button>
+          </form>
+        )
+      }
+
+      <a href={localizePath(lang, 'login')} class="block border-t border-ink px-6 py-4 text-center font-mono text-meta-data text-muted no-underline hover:text-ink">
+        {t('auth.backToLogin')}
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { authClient } from '../../lib/auth-client';
+
+  const form = document.getElementById('verify-form') as HTMLFormElement | null;
+  if (form) {
+    const msg = form.querySelector('[data-msg]') as HTMLElement;
+    const boton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = String(new FormData(form).get('email') ?? '').trim();
+      if (!email) return;
+      boton.disabled = true;
+      const { error } = await authClient.sendVerificationEmail({ email, callbackURL: location.pathname });
+      // Respuesta neutra: se diga lo que se diga, no revelamos si esa dirección
+      // tiene cuenta. Solo si la petición falla de verdad se avisa del error.
+      msg.textContent = error && error.status !== 400 ? form.dataset.errmsg || 'Error' : form.dataset.okmsg || 'OK';
+      msg.className = `font-mono text-meta-data ${error && error.status !== 400 ? 'text-error' : 'text-ink'}`;
+      msg.classList.remove('hidden');
+      if (!error || error.status === 400) boton.disabled = true;
+      else boton.disabled = false;
+    });
+  }
+</script>
