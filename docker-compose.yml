@@ -13,6 +13,21 @@ services:
     <<: *logging
     image: postgres:16-alpine
     restart: unless-stopped
+    # Ajustes para un VPS de 1,8 GB: los valores de fábrica de PostgreSQL están
+    # pensados para una máquina mucho más grande. max_connections=100 con el
+    # work_mem de cada una es lo que convierte un pico en un OOM; la app usa un
+    # pool de 10 y el túnel del CRM un par más, así que 20 sobra.
+    command: >
+      postgres
+      -c max_connections=20
+      -c shared_buffers=192MB
+      -c effective_cache_size=640MB
+      -c work_mem=6MB
+      -c maintenance_work_mem=128MB
+    # Techo de memoria: sin él, si algo se desmadra el núcleo elige víctima al
+    # azar y puede llevarse la base de datos por delante. Con techo, el que se
+    # pasa es el que cae, y docker lo reinicia.
+    mem_limit: 640m
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -32,6 +47,7 @@ services:
 
   app:
     <<: *logging
+    mem_limit: 512m
     build:
       context: .
       args:
@@ -66,6 +82,7 @@ services:
 
   caddy:
     <<: *logging
+    mem_limit: 96m
     build:
       context: .
       dockerfile: Dockerfile.caddy
