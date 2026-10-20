@@ -1,12 +1,19 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations, localizePath, langStaticPaths, normalizeLang, type Lang, type UIKey } from '../../i18n/ui';
+import { useTranslations, localizePath, langStaticPaths, normalizeLang, locales, type Lang, type UIKey } from '../../i18n/ui';
+import { VISITAS_INICIALES } from '../../lib/visits';
 
 export const getStaticPaths = langStaticPaths;
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
+
+// Esta página es estática, así que el número de visitas que se compila sería el
+// del día del despliegue. Se pinta el de partida y el navegador lo sustituye por
+// el de verdad (/api/visits): sin JavaScript queda la cifra de la que se arrancó,
+// que es el suelo, no una mentira.
+const visitasBase = new Intl.NumberFormat(locales[lang]).format(VISITAS_INICIALES);
 
 interface Item {
   path: string;
@@ -87,6 +94,21 @@ const groups: Group[] = [
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('info.intro')}</p>
     </header>
 
+    <div class="mt-8 flex flex-col gap-3 border border-ink bg-surface p-6 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="label">{t('info.visits')}</p>
+        <p
+          id="visitas"
+          data-locale={locales[lang]}
+          class="mt-2 font-display text-display-mobile leading-none text-ink"
+          aria-live="polite"
+        >
+          {visitasBase}
+        </p>
+      </div>
+      <p class="max-w-md text-body-md text-charcoal">{t('info.visitsNote')}</p>
+    </div>
+
     <div class="mt-10 flex flex-col gap-12">
       {
         groups.map((g) => (
@@ -109,3 +131,18 @@ const groups: Group[] = [
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  // La cifra compilada es la de partida; aquí se pide la de verdad. Si la
+  // petición falla, se queda la que hay: más vale un número viejo que un hueco.
+  const el = document.getElementById('visitas');
+  if (el) {
+    fetch('/api/visits', { headers: { accept: 'application/json' } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { visits?: number } | null) => {
+        if (!d || typeof d.visits !== 'number') return;
+        el.textContent = new Intl.NumberFormat(el.dataset.locale || 'es-ES').format(d.visits);
+      })
+      .catch(() => {});
+  }
+</script>

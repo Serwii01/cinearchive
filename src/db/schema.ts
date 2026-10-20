@@ -293,6 +293,19 @@ export const badges = pgTable('badges', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
+/* ------------------------------------------------------------------ *
+ * Contadores del sitio. Una fila por contador: hoy solo «visits», que
+ * arrancó con las 30.800 visitas que traía la analítica anterior.
+ * ------------------------------------------------------------------ */
+
+export const siteCounters = pgTable('site_counters', {
+  /** Nombre del contador. Hoy: 'visits'. */
+  key: text('key').primaryKey(),
+  /** Acumulado. Se suma con UPDATE … value = value + n, nunca se recalcula. */
+  value: integer('value').notNull().default(0),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
 export const userBadges = pgTable(
   'user_badges',
   {

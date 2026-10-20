@@ -1,5 +1,38 @@
 [
   {
+    "version": "1.13",
+    "date": "2026-10-20",
+    "title": {
+      "es": "Once artículos nuevos y contador de visitas",
+      "en": "Eleven new articles and a visit counter",
+      "gl": "Once artigos novos e contador de visitas",
+      "eu": "Hamaika artikulu berri eta bisita-kontagailua",
+      "ca": "Onze articles nous i comptador de visites"
+    },
+    "changes": {
+      "es": [
+        "Once artículos nuevos, en los cinco idiomas: por qué las películas de A24 tardan en llegar, la ventana de salas, «Dune: Parte tres», cómo funciona el Oscar internacional, lo que entra en dominio público en 2027, los cincuenta años de «Rocky», el cine mudo perdido, qué hace una filmoteca, por qué España dobla, lo que desaparece de las plataformas y los montajes del director.",
+        "La página de información enseña el contador de visitas del sitio. Cuenta una visita por persona cada media hora —no las páginas que ve—, descarta robots y el panel de administración, y arranca en las 30.800 que traía la analítica anterior."
+      ],
+      "en": [
+        "Eleven new articles, in all five languages: why A24 films take so long to arrive, the theatrical window, “Dune: Part Three”, how the international Oscar works, what enters the public domain in 2027, fifty years of “Rocky”, lost silent cinema, what a film archive does, why Spain dubs, what vanishes from platforms, and director’s cuts.",
+        "The info page now shows the site’s visit counter. It counts one visit per person every half hour —not the pages they look at—, leaves out bots and the admin panel, and starts from the 30,800 the previous analytics reported."
+      ],
+      "gl": [
+        "Once artigos novos, nos cinco idiomas: por que as películas de A24 tardan en chegar, a ventá de salas, «Dune: Parte tres», como funciona o Óscar internacional, o que entra en dominio público en 2027, os cincuenta anos de «Rocky», o cine mudo perdido, que fai unha filmoteca, por que España dobra, o que desaparece das plataformas e as montaxes do director.",
+        "A páxina de información ensina o contador de visitas do sitio. Conta unha visita por persoa cada media hora —non as páxinas que ve—, descarta robots e o panel de administración, e arranca nas 30.800 que traía a analítica anterior."
+      ],
+      "eu": [
+        "Hamaika artikulu berri, bost hizkuntzetan: zergatik berandutzen diren A24ren filmak, aretoen leihoa, «Dune: Hirugarren zatia», nola funtzionatzen duen nazioarteko Oscarrak, zer sartzen den domeinu publikoan 2027an, «Rocky»ren berrogeita hamar urteak, galdutako zinema mutua, zer egiten duen filmoteka batek, zergatik bikoizten duen Espainiak, zer desagertzen den plataformetatik eta zuzendariaren muntaketak.",
+        "Informazio-orrialdeak guneko bisita-kontagailua erakusten du. Bisita bat zenbatzen du pertsonako ordu erdiro —ez ikusten dituen orrialdeak—, robotak eta administrazio-panela baztertzen ditu, eta aurreko analitikak zekarren 30.800etik abiatzen da."
+      ],
+      "ca": [
+        "Onze articles nous, en els cinc idiomes: per què les pel·lícules d’A24 triguen a arribar, la finestra de sales, «Dune: Part tres», com funciona l’Oscar internacional, què entra en domini públic el 2027, els cinquanta anys de «Rocky», el cinema mut perdut, què fa una filmoteca, per què Espanya dobla, el que desapareix de les plataformes i els muntatges del director.",
+        "La pàgina d’informació ensenya el comptador de visites del lloc. Compta una visita per persona cada mitja hora —no les pàgines que mira—, descarta robots i el panell d’administració, i arrenca en les 30.800 que portava l’analítica anterior."
+      ]
+    }
+  },
+  {
     "version": "1.12.1",
     "date": "2026-10-01",
     "title": {

@@ -7,6 +7,7 @@ import { check, clientIp, tooMany } from './lib/ratelimit';
 import { isAdmin } from './lib/admin';
 import { cachePolicy } from './lib/httpcache';
 import { isKnownRoute, legacyDefaultLangRedirect } from './lib/routes';
+import { contarVisita } from './lib/visits';
 import { languages, defaultLang, localizePath, stripLangPrefix, getLangFromUrl } from './i18n/ui';
 
 const LANGS = Object.keys(languages);
@@ -157,6 +158,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
       }
     }
   }
+
+  // Contador de visitas del sitio (ver src/lib/visits.ts). Va después del 404 y
+  // del redirect para no contar lo que no es una página, y antes del retorno de
+  // las prerenderizadas, que también son páginas visitadas. No espera a la BD.
+  contarVisita(request, path);
 
   // Las páginas prerenderizadas (editoriales) no tienen sesión de servidor: su
   // cabecera resuelve el estado de login en el cliente vía /api/auth/get-session.
