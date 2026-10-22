@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { esVisita, VISITAS_INICIALES } from '../src/lib/visits';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { esVisita, esPersonaEnPagina, VISITAS_INICIALES } from '../src/lib/visits';
 
 const NAVEGADOR =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36';
@@ -53,5 +55,58 @@ describe('qué cuenta como visita', () => {
 describe('cifra de partida', () => {
   it('es la que traía la analítica anterior', () => {
     expect(VISITAS_INICIALES).toBe(30800);
+  });
+});
+
+describe('páginas prerenderizadas', () => {
+  // En producción Node las sirve como ficheros sin pasar por el middleware, así
+  // que no se contaban: cine abierto, hemeroteca, biblioteca, info… Avisan
+  // desde el navegador y el servidor aplica la misma regla.
+
+  it('la regla del aviso es la misma: página del sitio, persona, no robot', () => {
+    expect(esPersonaEnPagina('/cinema/Nosferatu', NAVEGADOR)).toBe(true);
+    expect(esPersonaEnPagina('/en/archive/jumpcut59', NAVEGADOR)).toBe(true);
+    expect(esPersonaEnPagina('/api/visits', NAVEGADOR)).toBe(false);
+    expect(esPersonaEnPagina('/admin', NAVEGADOR)).toBe(false);
+    expect(esPersonaEnPagina('https://otro.sitio/', NAVEGADOR)).toBe(false);
+    expect(esPersonaEnPagina('/cinema', 'Mozilla/5.0 (compatible; Googlebot/2.1)')).toBe(false);
+    expect(esPersonaEnPagina('/cinema', null)).toBe(false);
+  });
+
+  it('el layout marca las prerenderizadas y manda el aviso', () => {
+    const layout = readFileSync('src/layouts/BaseLayout.astro', 'utf8');
+    expect(layout).toMatch(/data-contar-visita=\{Astro\.isPrerendered/);
+    expect(layout).toMatch(/fetch\('\/api\/visits', \{\s*method: 'POST'/);
+    // En JSON: Astro rechaza con 403 los POST en texto plano, y sendBeacon con
+    // una cadena manda texto plano. Así estuvo sin contar nada.
+    expect(layout).not.toMatch(/navigator\.sendBeacon/);
+    const api = readFileSync('src/pages/api/visits.ts', 'utf8');
+    expect(api).toMatch(/export const POST/);
+    expect(api).toContain('contarVisitaEstatica');
+  });
+
+  it('todas las páginas prerenderizadas usan el layout que avisa', () => {
+    // Si una página prerenderizada no usa BaseLayout, nadie la cuenta.
+    const sueltas: string[] = [];
+    const recorrer = (dir: string) => {
+      for (const e of readdirSync(dir, { withFileTypes: true })) {
+        const ruta = join(dir, e.name);
+        if (e.isDirectory()) recorrer(ruta);
+        else if (ruta.endsWith('.astro')) {
+          const src = readFileSync(ruta, 'utf8');
+          if (/prerender = true/.test(src) && !src.includes('BaseLayout')) sueltas.push(ruta);
+        }
+      }
+    };
+    recorrer('src/pages');
+    expect(sueltas).toEqual([]);
+  });
+});
+
+describe('el HTML compilado', () => {
+  it('cada página tiene su <body> (un comentario mal puesto se lo comió una vez)', () => {
+    const layout = readFileSync('src/layouts/BaseLayout.astro', 'utf8');
+    const entre = layout.slice(layout.indexOf('</head>') + 7, layout.indexOf('<body'));
+    expect(entre.trim()).toBe('');
   });
 });
