@@ -160,8 +160,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   // Contador de visitas del sitio (ver src/lib/visits.ts). Va después del 404 y
-  // del redirect para no contar lo que no es una página, y antes del retorno de
-  // las prerenderizadas, que también son páginas visitadas. No espera a la BD.
+  // del redirect para no contar lo que no es una página. No espera a la BD.
+  // Ojo: en producción las prerenderizadas no llegan aquí (Node las sirve como
+  // ficheros); esas se cuentan con el aviso del navegador a /api/visits.
   contarVisita(request, path);
 
   // Las páginas prerenderizadas (editoriales) no tienen sesión de servidor: su

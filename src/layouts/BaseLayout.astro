@@ -124,7 +124,7 @@ const ogImage = image
       <script type="application/ld+json" set:html={serializeLd(data)} />
     ))}
   </head>
-  <body class="flex min-h-screen flex-col">
+  <body class="flex min-h-screen flex-col" data-contar-visita={Astro.isPrerendered ? '' : undefined}>
     <Ticker />
     <Header />
     <main class="flex-1">
@@ -133,6 +133,20 @@ const ogImage = image
     <Footer />
     <TabBar />
     <ProfileNudge />
+    <script>
+      // Visita en página prerenderizada (ver src/lib/visits.ts): esas no pasan
+      // por el middleware, que es donde se cuentan las demás, así que avisan
+      // desde aquí. Va en JSON y no con sendBeacon: Astro rechaza con 403 los
+      // POST en texto plano (su protección contra formularios de otros sitios).
+      if (document.body.hasAttribute('data-contar-visita')) {
+        fetch('/api/visits', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ path: location.pathname }),
+          keepalive: true,
+        }).catch(() => {});
+      }
+    </script>
     <script>
       // Registro del service worker. Solo en el sitio compilado: en `npm run
       // dev` estorba, porque serviría versiones viejas de los recursos mientras

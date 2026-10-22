@@ -15,6 +15,12 @@ import { clientIp } from './ratelimit';
  * HTML, los robots conocidos y el panel de administración (que es tráfico
  * propio). Tampoco cuenta dos veces un recargado.
  *
+ * Dos puertas de entrada: las páginas que pinta el servidor se cuentan en el
+ * middleware (contarVisita), pero las prerenderizadas las sirve Node como
+ * ficheros sin pasar por él, así que esas avisan desde el navegador con un
+ * POST a /api/visits (contarVisitaEstatica). Las dos comparten huella, así que
+ * quien pasa por páginas de ambos tipos sigue siendo una sola visita.
+ *
  * Cómo escribe: nunca una consulta por visita. Se acumula en memoria y se vuelca
  * sumando (`value = value + n`), como mucho cada 30 segundos. Si el proceso se
  * reinicia se pierden las visitas no volcadas; a cambio, una visita no cuesta
@@ -49,12 +55,19 @@ const BOTS = /bot|crawl|spider|slurp|facebookexternalhit|embedly|quora link prev
  */
 export function esVisita(opts: { method: string; path: string; accept: string | null; ua: string | null }): boolean {
   if (opts.method !== 'GET') return false;
-  if (opts.path.startsWith('/api/')) return false;
   // Páginas, no recursos: el navegador pide HTML con Accept: text/html.
   if (!opts.accept?.includes('text/html')) return false;
+  return esPersonaEnPagina(opts.path, opts.ua);
+}
+
+/**
+ * La parte de la regla que vale para las dos puertas: una página del sitio
+ * (no la API ni el panel) vista por un navegador que no es un robot conocido.
+ */
+export function esPersonaEnPagina(path: string, ua: string | null): boolean {
+  if (!path.startsWith('/') || path.startsWith('/api/')) return false;
   // El panel es tráfico de casa.
-  if (/^\/(?:[a-z]{2}\/)?admin(?:\/|$)/.test(opts.path)) return false;
-  const ua = opts.ua ?? '';
+  if (/^\/(?:[a-z]{2}\/)?admin(?:\/|$)/.test(path)) return false;
   if (!ua) return false; // sin navegador que se identifique, casi siempre es un script
   if (BOTS.test(ua)) return false;
   return true;
@@ -98,7 +111,19 @@ async function volcar(): Promise<void> {
  */
 export function contarVisita(request: Request, path: string): void {
   if (!esVisita({ method: request.method, path, accept: request.headers.get('accept'), ua: request.headers.get('user-agent') })) return;
+  anotar(request);
+}
 
+/**
+ * Lo mismo para una página prerenderizada, a partir del aviso que manda el
+ * navegador (ver BaseLayout). `path` es la página que se está viendo.
+ */
+export function contarVisitaEstatica(request: Request, path: string): void {
+  if (!esPersonaEnPagina(path, request.headers.get('user-agent'))) return;
+  anotar(request);
+}
+
+function anotar(request: Request): void {
   const ahora = Date.now();
   const k = huella(clientIp(request), request.headers.get('user-agent') ?? '');
   const visto = vistos.get(k);
