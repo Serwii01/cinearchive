@@ -12,6 +12,13 @@
  * redondeadas, borde negro y tipografías propias.
  */
 
+/* Leaflet pone sus capas con z-index de 400 a 1000. Sin un contexto de
+   apilamiento propio, al hacer scroll el mapa pasaría por encima de la barra
+   inferior del móvil (z-40). Así se quedan dentro del mapa. */
+.mapa-archivo {
+  isolation: isolate;
+}
+
 /* --- Teselas: monocromo, para que el color lo pongan los marcadores --- */
 .mapa-archivo .leaflet-tile-pane {
   filter: grayscale(1) contrast(0.92) brightness(1.06);

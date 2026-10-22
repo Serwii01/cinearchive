@@ -145,6 +145,8 @@ const groups: Group[] = [
 </BaseLayout>
 
 <script>
+  import { isStandalone } from '../../lib/ui/standalone';
+
   // La cifra compilada es la de partida; aquí se pide la de verdad. Si la
   // petición falla, se queda la que hay: más vale un número viejo que un hueco.
   // --- Instalar como aplicación ---------------------------------------
@@ -153,10 +155,7 @@ const groups: Group[] = [
   // puede explicar dónde está la opción. Si ya está instalada, no se enseña.
   const caja = document.getElementById('instalar');
   const boton = document.getElementById('instalar-boton') as HTMLButtonElement | null;
-  const yaInstalada =
-    matchMedia('(display-mode: standalone)').matches ||
-    // Safari en iOS no soporta display-mode: standalone en versiones viejas.
-    (navigator as unknown as { standalone?: boolean }).standalone === true;
+  const yaInstalada = isStandalone();
 
   if (caja && !yaInstalada) {
     const esIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||

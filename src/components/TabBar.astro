@@ -1,0 +1,88 @@
+---
+/**
+ * Barra de navegación inferior para móvil (< md).
+ *
+ * Las cinco secciones a las que se vuelve una y otra vez, al alcance del
+ * pulgar. El resto sigue en el menú de la cabecera. Se ve tanto en el
+ * navegador como con la web instalada.
+ *
+ * Funciona sin JavaScript y sin saber quién la pide (va en páginas
+ * prerenderizadas): «Lista» y «Cuenta» apuntan siempre a /watchlist y
+ * /account, y el middleware manda al login a quien no tenga sesión.
+ *
+ * El hueco que ocupa lo reserva global.css en el <body>, contando la zona del
+ * indicador de inicio del iPhone (env(safe-area-inset-bottom)).
+ */
+import { getLangFromUrl, useTranslations, localizePath, type Lang } from '../i18n/ui';
+
+const lang: Lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const home = localizePath(lang);
+const tabs = [
+  { href: home, label: t('tabs.home'), icon: 'home' },
+  { href: localizePath(lang, 'discover'), label: t('tabs.discover'), icon: 'discover' },
+  { href: localizePath(lang, 'search'), label: t('tabs.search'), icon: 'search' },
+  { href: localizePath(lang, 'watchlist'), label: t('tabs.list'), icon: 'list' },
+  { href: localizePath(lang, 'account'), label: t('tabs.account'), icon: 'account' },
+] as const;
+
+// La portada solo está activa en la portada; el resto, también en sus subpáginas.
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => (href === home ? current === home : current === href || current.startsWith(`${href}/`));
+---
+
+<nav class="tabbar fixed inset-x-0 bottom-0 z-40 border-t border-ink bg-background md:hidden" aria-label={t('tabs.label')}>
+  <ul class="grid grid-cols-5">
+    {
+      tabs.map((tab, i) => {
+        const active = isActive(tab.href);
+        return (
+          <li class:list={[i > 0 && 'border-l border-ink']}>
+            <a
+              href={tab.href}
+              aria-current={active ? 'page' : undefined}
+              class:list={[
+                'flex h-14 flex-col items-center justify-center gap-1 px-1 no-underline transition-colors',
+                active ? 'bg-ink text-white' : 'text-ink hover:bg-film-white',
+              ]}
+            >
+              <svg
+                aria-hidden="true"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="square"
+              >
+                {tab.icon === 'home' && <path d="M3 11 12 4l9 7v9h-6v-6H9v6H3z" />}
+                {tab.icon === 'discover' && (
+                  <>
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="m15.5 8.5-2 5-5 2 2-5z" />
+                  </>
+                )}
+                {tab.icon === 'search' && (
+                  <>
+                    <circle cx="11" cy="11" r="7" />
+                    <line x1="16.5" y1="16.5" x2="21" y2="21" />
+                  </>
+                )}
+                {tab.icon === 'list' && <path d="M6 3h12v18l-6-5-6 5z" />}
+                {tab.icon === 'account' && (
+                  <>
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" />
+                  </>
+                )}
+              </svg>
+              <span class="max-w-full truncate font-mono text-[10px] uppercase leading-none tracking-wide">{tab.label}</span>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>

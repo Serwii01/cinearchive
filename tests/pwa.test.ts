@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { isKnownRoute } from '../src/lib/routes';
 import { pickOfflineLang, isOfflinePath } from '../src/lib/offline';
+import { isSameOrigin } from '../src/lib/ui/standalone';
 import { stampVersion, buildFingerprint } from '../integrations/sw-version.mjs';
 import { languages, type Lang } from '../src/i18n/ui';
 
@@ -170,5 +171,32 @@ describe('color de la barra', () => {
     expect(meta).toBeLessThan(layout.indexOf('/theme-init.js'));
     // Sin media queries: el tema lo elige la persona, no el sistema.
     expect(layout).not.toMatch(/name="theme-color"[^>]*media=/);
+  });
+});
+
+describe('barra inferior del móvil', () => {
+  const tabbar = readFileSync('src/components/TabBar.astro', 'utf8');
+
+  it('apunta a secciones que existen', () => {
+    const rutas = Array.from(tabbar.matchAll(/localizePath\(lang, '([^']+)'\)/g), (m) => `/${m[1]}`);
+    expect(rutas.length).toBe(4); // + la portada
+    for (const r of rutas) expect(isKnownRoute(r, LANGS), r).toBe(true);
+  });
+
+  it('el cuerpo reserva su hueco, con la zona segura del iPhone', () => {
+    const css = readFileSync('src/styles/global.css', 'utf8');
+    expect(css).toMatch(/padding-bottom: calc\(3\.5rem \+ env\(safe-area-inset-bottom\)\)/);
+    expect(tabbar).toContain('h-14'); // 3.5rem: si cambia una, cambia la otra
+    const layout = readFileSync('src/layouts/BaseLayout.astro', 'utf8');
+    expect(layout).toContain('viewport-fit=cover'); // sin esto env() vale 0
+  });
+});
+
+describe('volver atrás en la app instalada', () => {
+  it('solo cuenta como «atrás» una página del mismo sitio', () => {
+    expect(isSameOrigin('https://cinearchive.es/films', 'https://cinearchive.es')).toBe(true);
+    expect(isSameOrigin('https://www.google.com/', 'https://cinearchive.es')).toBe(false);
+    expect(isSameOrigin('', 'https://cinearchive.es')).toBe(false);
+    expect(isSameOrigin('basura', 'https://cinearchive.es')).toBe(false);
   });
 });

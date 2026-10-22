@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Ticker from '../components/Ticker.astro';
 import ProfileNudge from '../components/ProfileNudge.astro';
+import TabBar from '../components/TabBar.astro';
 import {
   getLangFromUrl,
   languages,
@@ -60,7 +61,10 @@ const ogImage = image
 <html lang={lang}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* viewport-fit=cover: la página llega hasta los bordes del iPhone y
+        env(safe-area-inset-*) da los márgenes reales (global.css), que es lo
+        que necesita la barra inferior para no quedar bajo el indicador. */}
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     {/* Adelanta la conexión a los hosts de imágenes para acelerar la carga */}
     <link rel="preconnect" href="https://image.tmdb.org" />
     <link rel="dns-prefetch" href="https://archive.org" />
@@ -127,6 +131,7 @@ const ogImage = image
       <slot />
     </main>
     <Footer />
+    <TabBar />
     <ProfileNudge />
     <script>
       // Registro del service worker. Solo en el sitio compilado: en `npm run
