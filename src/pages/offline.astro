@@ -1,39 +1,79 @@
 ---
 export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { useTranslations, localizePath, defaultLang } from '../i18n/ui';
+import { useTranslations, localizePath, defaultLang, languages, type Lang } from '../i18n/ui';
 
 /**
  * Página que sirve el service worker cuando no hay red (ver public/sw.js).
  *
  * Va en la raíz y sin prefijo de idioma: se guarda en caché una sola vez y hay
- * que poder servirla sin saber nada de quien la pide. Por eso está en el idioma
- * por defecto y no lleva nada personal: ni menú de cuenta, ni listas, ni datos
- * que puedan haber cambiado.
+ * que poder servirla sin saber nada de quien la pide. No lleva nada personal:
+ * ni menú de cuenta, ni listas, ni datos que puedan haber cambiado.
+ *
+ * Lleva el texto en los cinco idiomas y el script enseña el que toca (ver
+ * pickOfflineLang). Sin JavaScript se queda el castellano.
  */
 const t = useTranslations(defaultLang);
+const textos = (Object.keys(languages) as Lang[]).map((lang) => {
+  const tl = useTranslations(lang);
+  return { lang, tl, titulo: `${tl('offline.title')} — ${tl('site.title')}` };
+});
 ---
 
 <BaseLayout title={t('offline.title')} noindex>
-  <section class="frame flex min-h-[70vh] flex-col items-center justify-center py-16 text-center">
-    <span class="label">{t('offline.kicker')}</span>
-    <h1 class="mt-4 max-w-2xl text-display-mobile md:text-display-lg">{t('offline.title')}</h1>
-    <p class="mt-6 max-w-xl text-body-lg text-charcoal">{t('offline.text')}</p>
+  {
+    textos.map(({ lang, tl, titulo }) => (
+      // El `hidden` va en un envoltorio sin clases: en la sección, `flex` le
+      // ganaría al [hidden] de Tailwind y se verían los cinco idiomas a la vez.
+      <div data-offline-lang={lang} data-title={titulo} lang={lang} hidden={lang !== defaultLang}>
+        <section class="frame flex min-h-[70vh] flex-col items-center justify-center py-16 text-center">
+          <span class="label">{tl('offline.kicker')}</span>
+          <h1 class="mt-4 max-w-2xl text-display-mobile md:text-display-lg">{tl('offline.title')}</h1>
+          <p class="mt-6 max-w-xl text-body-lg text-charcoal">{tl('offline.text')}</p>
 
-    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-      <button type="button" id="reintentar" class="btn btn-primary">{t('offline.retry')}</button>
-      <a href={localizePath(defaultLang)} class="label text-ink no-underline hover:text-muted">
-        {t('offline.home')} →
-      </a>
-    </div>
+          <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <button type="button" data-reintentar data-home={localizePath(lang)} class="btn btn-primary">
+              {tl('offline.retry')}
+            </button>
+            <a href={localizePath(lang)} class="label text-ink no-underline hover:text-muted">
+              {tl('offline.home')} →
+            </a>
+          </div>
 
-    <p class="mt-10 font-mono text-meta-data text-muted">{t('offline.note')}</p>
-  </section>
+          <p class="mt-10 font-mono text-meta-data text-muted">{tl('offline.note')}</p>
+        </section>
+      </div>
+    ))
+  }
 </BaseLayout>
 
 <script>
-  // Reintentar = volver a pedir la página en la que estaba, no esta.
-  document.getElementById('reintentar')?.addEventListener('click', () => {
-    history.length > 1 ? history.back() : location.replace('/');
-  });
+  import { pickOfflineLang, isOfflinePath } from '../lib/offline';
+
+  const secciones = Array.from(document.querySelectorAll<HTMLElement>('[data-offline-lang]'));
+  const lang = pickOfflineLang(
+    location.pathname,
+    navigator.languages ?? [navigator.language],
+    secciones.map((s) => s.dataset.offlineLang!),
+    secciones.find((s) => !s.hidden)?.dataset.offlineLang ?? 'es',
+  );
+  for (const s of secciones) {
+    const mia = s.dataset.offlineLang === lang;
+    s.hidden = !mia;
+    if (mia) {
+      document.documentElement.lang = lang;
+      if (s.dataset.title) document.title = s.dataset.title;
+    }
+  }
+
+  // Reintentar = volver a pedir la página que falló. El service worker sirve
+  // esta página en la URL que se pidió (la barra sigue diciendo /films, no
+  // /offline), así que basta con recargar. Si se llegó a /offline a propósito,
+  // recargar no lleva a ningún sitio: se va a la portada.
+  for (const b of document.querySelectorAll<HTMLButtonElement>('[data-reintentar]')) {
+    b.addEventListener('click', () => {
+      if (isOfflinePath(location.pathname)) location.replace(b.dataset.home || '/');
+      else location.reload();
+    });
+  }
 </script>

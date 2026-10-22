@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { isKnownRoute } from '../src/lib/routes';
+import { pickOfflineLang, isOfflinePath } from '../src/lib/offline';
+import { stampVersion, buildFingerprint } from '../integrations/sw-version.mjs';
 import { languages, type Lang } from '../src/i18n/ui';
 
 const LANGS = Object.keys(languages) as Lang[];
@@ -90,7 +94,81 @@ describe('service worker', () => {
 
   it('la página sin conexión existe y es una ruta conocida', () => {
     expect(sw).toContain("const OFFLINE = '/offline'");
+    // Y se guarda con su CSS y su JS: sin ellos no cambia de idioma ni reintenta.
+    expect(sw).toMatch(/precargarRecursos\(cache, OFFLINE\)/);
     expect(existsSync('src/pages/offline.astro')).toBe(true);
     expect(isKnownRoute('/offline', LANGS)).toBe(true);
+  });
+});
+
+describe('versión de la caché', () => {
+  it('sw.js trae la línea que el build sustituye', () => {
+    expect(stampVersion(sw, 'abc123def456')).toContain("const VERSION = 'abc123def456';");
+  });
+
+  it('se queja si alguien cambia el formato de la línea', () => {
+    expect(() => stampVersion('const VERSION = "v1";', 'x')).toThrow();
+  });
+
+  it('la huella cambia con el contenido y con la lógica del sw.js, no con su versión', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'sw-'));
+    try {
+      mkdirSync(join(dir, '_astro'));
+      writeFileSync(join(dir, '_astro', 'a.css'), 'body{}');
+      writeFileSync(join(dir, 'sw.js'), "const VERSION = 'dev';");
+      const antes = buildFingerprint(dir);
+      expect(antes).toMatch(/^[0-9a-f]{12}$/);
+
+      writeFileSync(join(dir, 'sw.js'), "const VERSION = 'otra';");
+      expect(buildFingerprint(dir)).toBe(antes);
+
+      writeFileSync(join(dir, 'sw.js'), "const VERSION = 'otra';\nself.skipWaiting();");
+      const conLogicaNueva = buildFingerprint(dir);
+      expect(conLogicaNueva).not.toBe(antes);
+      writeFileSync(join(dir, 'sw.js'), "const VERSION = 'dev';\nself.skipWaiting();");
+      expect(buildFingerprint(dir)).toBe(conLogicaNueva);
+
+      writeFileSync(join(dir, '_astro', 'a.css'), 'body{color:red}');
+      expect(buildFingerprint(dir)).not.toBe(antes);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('página sin conexión', () => {
+  const ES = 'es' as Lang;
+  const idioma = (ruta: string, nav: string[] = []) => pickOfflineLang(ruta, nav, LANGS, ES);
+
+  it('habla el idioma de la página que falló', () => {
+    expect(idioma('/en/films', ['es-ES'])).toBe('en');
+    expect(idioma('/ca', ['en'])).toBe('ca');
+  });
+
+  it('una ruta sin prefijo es castellano, aunque el navegador diga otra cosa', () => {
+    expect(idioma('/films', ['en-US'])).toBe('es');
+  });
+
+  it('en la portada y en /offline a pelo decide el navegador', () => {
+    expect(idioma('/', ['eu-ES', 'es'])).toBe('eu');
+    expect(idioma('/offline', ['gl'])).toBe('gl');
+    expect(idioma('/offline', ['fr-FR', 'de'])).toBe('es');
+  });
+
+  it('el botón de reintentar sabe si está en /offline o en la URL que falló', () => {
+    expect(isOfflinePath('/offline')).toBe(true);
+    expect(isOfflinePath('/offline/')).toBe(true);
+    expect(isOfflinePath('/en/films')).toBe(false);
+  });
+});
+
+describe('color de la barra', () => {
+  it('va antes de theme-init.js, que lo cambia según el tema de la web', () => {
+    const layout = readFileSync('src/layouts/BaseLayout.astro', 'utf8');
+    const meta = layout.indexOf('<meta name="theme-color"');
+    expect(meta).toBeGreaterThan(-1);
+    expect(meta).toBeLessThan(layout.indexOf('/theme-init.js'));
+    // Sin media queries: el tema lo elige la persona, no el sistema.
+    expect(layout).not.toMatch(/name="theme-color"[^>]*media=/);
   });
 });

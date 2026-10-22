@@ -64,6 +64,12 @@ const ogImage = image
     {/* Adelanta la conexión a los hosts de imágenes para acelerar la carga */}
     <link rel="preconnect" href="https://image.tmdb.org" />
     <link rel="dns-prefetch" href="https://archive.org" />
+    {/* Color de la barra del navegador (y de la barra de estado de la app
+        instalada). Sigue al tema de la WEB, no al del sistema: el tema se elige
+        a mano y por defecto es claro, así que con `media="(prefers-color-scheme)"`
+        un móvil en modo claro enseñaba una barra blanca sobre la web en oscuro.
+        theme-init.js lo cambia; por eso tiene que ir ANTES del script. */}
+    <meta name="theme-color" content="#FAFAFA" />
     {/* Aplica el tema guardado antes de pintar (evita parpadeo). */}
     <script is:inline src="/theme-init.js"></script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -79,9 +85,6 @@ const ogImage = image
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Cine Archive" />
     <meta name="mobile-web-app-capable" content="yes" />
-    {/* Color de la barra del navegador; sigue al tema claro/oscuro del sistema. */}
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAFAFA" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D0D0D" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDesc} />
     {noindex && <meta name="robots" content="noindex, follow" />}
