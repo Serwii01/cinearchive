@@ -18,6 +18,12 @@ const LANGS = Object.keys(languages);
  */
 export const GET: APIRoute = async () => {
   const total = await totalVisitas();
+  if (total === null) {
+    return new Response(JSON.stringify({ error: 'unavailable' }), {
+      status: 503,
+      headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
+    });
+  }
   return new Response(JSON.stringify({ visits: total }), {
     headers: {
       'content-type': 'application/json',
