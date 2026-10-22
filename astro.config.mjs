@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import node from '@astrojs/node';
+import swVersion from './integrations/sw-version.mjs';
 
 // Dominio público de la app. En el VPS se sobrescribe con la variable de entorno SITE_URL.
 const SITE = process.env.SITE_URL ?? 'https://cinearchive.es';
@@ -46,5 +47,7 @@ export default defineConfig({
           page,
         ),
     }),
+    // Versiona la caché del service worker con cada build (ver el fichero).
+    swVersion(),
   ],
 });

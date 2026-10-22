@@ -17,9 +17,11 @@
  * cambian de contenido.
  */
 
-// Al cambiar esta versión se tira la caché anterior entera. Conviene subirla
-// cuando cambie lo que se guarda o cómo se guarda.
-const VERSION = 'v1';
+// Al cambiar esta versión se tira la caché anterior entera. NO se toca a mano:
+// el build la sustituye por una huella del contenido publicado
+// (integrations/sw-version.mjs), así que cada despliegue estrena caché y no se
+// acumulan en el móvil los recursos de despliegues anteriores.
+const VERSION = 'dev';
 const CACHE = `cine-archive-${VERSION}`;
 const OFFLINE = '/offline';
 
@@ -35,10 +37,27 @@ self.addEventListener('install', (event) => {
       .open(CACHE)
       // addAll falla entero si un solo recurso falla; aquí se añaden de uno en
       // uno para que un icono que falte no deje al service worker sin instalar.
-      .then((cache) => Promise.allSettled(PRECARGA.map((url) => cache.add(url))))
+      .then((cache) =>
+        Promise.allSettled(PRECARGA.map((url) => cache.add(url))).then(() => precargarRecursos(cache, OFFLINE)),
+      )
       .then(() => self.skipWaiting()),
   );
 });
+
+/**
+ * Guarda los /_astro/* (CSS y JS) que pide una página ya guardada. Sin esto,
+ * /offline salía sin su script —ni idioma ni botón de reintentar— a menos que
+ * la persona la hubiera visitado antes con red, que es justo lo que no pasa.
+ */
+function precargarRecursos(cache, pagina) {
+  return cache
+    .match(pagina)
+    .then((r) => (r ? r.text() : ''))
+    .then((html) => {
+      const urls = new Set(Array.from(html.matchAll(/(?:src|href)="(\/_astro\/[^"]+)"/g), (m) => m[1]));
+      return Promise.allSettled(Array.from(urls, (url) => cache.add(url)));
+    });
+}
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
