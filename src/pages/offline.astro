@@ -1,0 +1,39 @@
+---
+export const prerender = true;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { useTranslations, localizePath, defaultLang } from '../i18n/ui';
+
+/**
+ * Página que sirve el service worker cuando no hay red (ver public/sw.js).
+ *
+ * Va en la raíz y sin prefijo de idioma: se guarda en caché una sola vez y hay
+ * que poder servirla sin saber nada de quien la pide. Por eso está en el idioma
+ * por defecto y no lleva nada personal: ni menú de cuenta, ni listas, ni datos
+ * que puedan haber cambiado.
+ */
+const t = useTranslations(defaultLang);
+---
+
+<BaseLayout title={t('offline.title')} noindex>
+  <section class="frame flex min-h-[70vh] flex-col items-center justify-center py-16 text-center">
+    <span class="label">{t('offline.kicker')}</span>
+    <h1 class="mt-4 max-w-2xl text-display-mobile md:text-display-lg">{t('offline.title')}</h1>
+    <p class="mt-6 max-w-xl text-body-lg text-charcoal">{t('offline.text')}</p>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+      <button type="button" id="reintentar" class="btn btn-primary">{t('offline.retry')}</button>
+      <a href={localizePath(defaultLang)} class="label text-ink no-underline hover:text-muted">
+        {t('offline.home')} →
+      </a>
+    </div>
+
+    <p class="mt-10 font-mono text-meta-data text-muted">{t('offline.note')}</p>
+  </section>
+</BaseLayout>
+
+<script>
+  // Reintentar = volver a pedir la página en la que estaba, no esta.
+  document.getElementById('reintentar')?.addEventListener('click', () => {
+    history.length > 1 ? history.back() : location.replace('/');
+  });
+</script>

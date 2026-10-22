@@ -1,5 +1,43 @@
 [
   {
+    "version": "1.14",
+    "date": "2026-10-22",
+    "title": {
+      "es": "La web se instala como aplicación",
+      "en": "The site installs as an app",
+      "gl": "A web instálase como aplicación",
+      "eu": "Weba aplikazio gisa instalatzen da",
+      "ca": "El web s’instal·la com una aplicació"
+    },
+    "changes": {
+      "es": [
+        "Cine Archive se puede instalar en el móvil y en el escritorio: se abre a pantalla completa, sin barra del navegador, y queda con su icono entre tus aplicaciones. En Android e iPhone, y también en Chrome de escritorio.",
+        "Si te quedas sin conexión, en vez del error del navegador sale una página del propio archivo. Lo que se guarda en el dispositivo es solo esa página y los recursos que nunca cambian: las páginas con tus datos se piden siempre a la red, para que nadie vea una versión vieja ni ajena.",
+        "En «Qué hay en Cine Archive» aparece el botón de instalar cuando el navegador lo permite, y las instrucciones en iPhone y iPad, donde hay que hacerlo desde Compartir."
+      ],
+      "en": [
+        "Cine Archive can be installed on phones and desktops: it opens full screen, with no browser bar, and sits with its own icon among your apps. On Android and iPhone, and on desktop Chrome too.",
+        "If you lose your connection, you get a page from the archive itself instead of the browser error. What is stored on the device is only that page and the assets that never change: pages with your data are always fetched from the network, so nobody sees a stale or somebody else’s version.",
+        "The info page shows an install button when the browser allows it, plus the instructions for iPhone and iPad, where it has to be done from Share."
+      ],
+      "gl": [
+        "Cine Archive pódese instalar no móbil e no escritorio: ábrese a pantalla completa, sen barra do navegador, e queda coa súa icona entre as túas aplicacións. En Android e iPhone, e tamén en Chrome de escritorio.",
+        "Se quedas sen conexión, en vez do erro do navegador sae unha páxina do propio arquivo. O que se garda no dispositivo é só esa páxina e os recursos que nunca cambian: as páxinas cos teus datos pídense sempre á rede.",
+        "En «Que hai en Cine Archive» aparece o botón de instalar cando o navegador o permite, e as instrucións en iPhone e iPad, onde hai que facelo desde Compartir."
+      ],
+      "eu": [
+        "Cine Archive mugikorrean eta mahaigainean instala daiteke: pantaila osoan irekitzen da, nabigatzailearen barrarik gabe, eta bere ikonoarekin geratzen da zure aplikazioen artean. Androiden eta iPhonen, eta mahaigaineko Chromen ere bai.",
+        "Konexiorik gabe geratzen bazara, nabigatzailearen errorearen ordez artxiboaren beraren orrialde bat agertzen da. Gailuan gordetzen dena orrialde hori eta inoiz aldatzen ez diren baliabideak baino ez dira: zure datuak dituzten orrialdeak beti sareari eskatzen zaizkio.",
+        "«Zer dago Cine Archiven» atalean instalatzeko botoia agertzen da nabigatzaileak uzten duenean, eta iPhone eta iPadentzako argibideak, non Partekatu aukeratik egin behar den."
+      ],
+      "ca": [
+        "Cine Archive es pot instal·lar al mòbil i a l’escriptori: s’obre a pantalla completa, sense barra del navegador, i queda amb la seva icona entre les teves aplicacions. A Android i iPhone, i també a Chrome d’escriptori.",
+        "Si et quedes sense connexió, en comptes de l’error del navegador surt una pàgina del mateix arxiu. El que es desa al dispositiu és només aquella pàgina i els recursos que no canvien mai: les pàgines amb les teves dades es demanen sempre a la xarxa.",
+        "A «Què hi ha a Cine Archive» apareix el botó d’instal·lar quan el navegador ho permet, i les instruccions a iPhone i iPad, on s’ha de fer des de Comparteix."
+      ]
+    }
+  },
+  {
     "version": "1.13",
     "date": "2026-10-20",
     "title": {

@@ -68,9 +68,17 @@ const ogImage = image
     <script is:inline src="/theme-init.js"></script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-    {/* Instalable en el móvil como aplicación (sin service worker: la app es SSR
-        y una copia offline mostraría datos de sesión desfasados). */}
+    {/* Instalable como aplicación en Android e iOS. El service worker
+        (public/sw.js) NO guarda HTML: la app es SSR y una página cacheada
+        enseñaría la sesión de otro momento. Solo guarda lo inmutable y sirve
+        /offline cuando no hay red. */}
     <link rel="manifest" href="/manifest.webmanifest" />
+    {/* iOS no lee todo el manifiesto en versiones antiguas: estas tres metas son
+        las que hacen que se abra a pantalla completa y con su nombre. */}
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Cine Archive" />
+    <meta name="mobile-web-app-capable" content="yes" />
     {/* Color de la barra del navegador; sigue al tema claro/oscuro del sistema. */}
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAFAFA" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D0D0D" />
@@ -117,5 +125,20 @@ const ogImage = image
     </main>
     <Footer />
     <ProfileNudge />
+    <script>
+      // Registro del service worker. Solo en el sitio compilado: en `npm run
+      // dev` estorba, porque serviría versiones viejas de los recursos mientras
+      // se edita. Así se puede probar de verdad con `npm run preview`.
+      if ('serviceWorker' in navigator && import.meta.env.PROD) {
+        const registrar = () =>
+          navigator.serviceWorker.register('/sw.js').catch(() => {
+            /* sin service worker la web funciona igual; solo no se instala */
+          });
+        // Los scripts de Astro son módulos, así que van diferidos y la carga
+        // puede haber terminado ya: escuchar 'load' a secas no registraba nada.
+        if (document.readyState === 'complete') registrar();
+        else addEventListener('load', registrar, { once: true });
+      }
+    </script>
   </body>
 </html>

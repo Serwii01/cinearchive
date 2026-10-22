@@ -109,6 +109,18 @@ const groups: Group[] = [
       <p class="max-w-md text-body-md text-charcoal">{t('info.visitsNote')}</p>
     </div>
 
+    {/* Instalar como aplicación. Oculto por defecto: solo aparece si el
+        navegador ofrece instalarla (Android) o si es un iPhone o iPad, donde
+        hay que explicar el camino porque Safari no da botón. */}
+    <div id="instalar" hidden class="mt-px flex flex-col gap-3 border border-ink bg-surface p-6 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <p class="label">{t('install.title')}</p>
+        <p class="mt-2 max-w-xl text-body-md text-charcoal">{t('install.text')}</p>
+        <p id="instalar-ios" hidden class="mt-2 max-w-xl font-mono text-meta-data text-muted">{t('install.ios')}</p>
+      </div>
+      <button type="button" id="instalar-boton" hidden class="btn btn-primary shrink-0">{t('install.button')}</button>
+    </div>
+
     <div class="mt-10 flex flex-col gap-12">
       {
         groups.map((g) => (
@@ -135,6 +147,47 @@ const groups: Group[] = [
 <script>
   // La cifra compilada es la de partida; aquí se pide la de verdad. Si la
   // petición falla, se queda la que hay: más vale un número viejo que un hueco.
+  // --- Instalar como aplicación ---------------------------------------
+  // Android/Chrome avisa con beforeinstallprompt y deja abrir el diálogo
+  // cuando le demos la gana; iOS no tiene nada de eso, así que allí solo se
+  // puede explicar dónde está la opción. Si ya está instalada, no se enseña.
+  const caja = document.getElementById('instalar');
+  const boton = document.getElementById('instalar-boton') as HTMLButtonElement | null;
+  const yaInstalada =
+    matchMedia('(display-mode: standalone)').matches ||
+    // Safari en iOS no soporta display-mode: standalone en versiones viejas.
+    (navigator as unknown as { standalone?: boolean }).standalone === true;
+
+  if (caja && !yaInstalada) {
+    const esIos = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      // iPadOS se hace pasar por Mac; se distingue por el táctil.
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+    if (esIos) {
+      caja.hidden = false;
+      const pista = document.getElementById('instalar-ios');
+      if (pista) pista.hidden = false;
+    }
+
+    let prompt: (Event & { prompt: () => void }) | null = null;
+    addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault(); // nos guardamos el diálogo para el botón
+      prompt = e as Event & { prompt: () => void };
+      caja.hidden = false;
+      if (boton) boton.hidden = false;
+    });
+
+    boton?.addEventListener('click', () => {
+      prompt?.prompt();
+      prompt = null;
+      if (boton) boton.disabled = true;
+    });
+
+    addEventListener('appinstalled', () => {
+      caja.hidden = true;
+    });
+  }
+
   const el = document.getElementById('visitas');
   if (el) {
     fetch('/api/visits', { headers: { accept: 'application/json' } })
