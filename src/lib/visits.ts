@@ -6,8 +6,8 @@ import { clientIp } from './ratelimit';
 /**
  * Contador de visitas del sitio (SOLO SERVIDOR).
  *
- * Qué cuenta: una VISITA, no una página vista. Igual que la analítica de la que
- * salen las 30.800 de partida, varias páginas seguidas del mismo visitante son
+ * Qué cuenta: una VISITA, no una página vista. Igual que en cualquier
+ * analítica, varias páginas seguidas del mismo visitante son
  * una sola visita: se recuerda quién ha pasado (huella de IP + navegador) y no
  * se vuelve a contar hasta que lleva media hora sin aparecer.
  *
@@ -28,9 +28,6 @@ import { clientIp } from './ratelimit';
  */
 
 const CLAVE = 'visits';
-
-/** Lo que traía la analítica anterior el 20 de octubre de 2026. */
-export const VISITAS_INICIALES = 30_800;
 
 /** Media hora sin aparecer = visita nueva. */
 const SESION_MS = 30 * 60 * 1000;
@@ -146,8 +143,11 @@ let cache: { total: number; hasta: number } | null = null;
 /**
  * Total de visitas. Se guarda un minuto en memoria: es un número para enseñar,
  * no hace falta ir a la base de datos en cada petición.
+ *
+ * null si no se puede leer: mejor no enseñar nada que una cifra inventada. (La
+ * fila la crea la migración 0018 con el valor de partida.)
  */
-export async function totalVisitas(): Promise<number> {
+export async function totalVisitas(): Promise<number | null> {
   const ahora = Date.now();
   if (cache && ahora < cache.hasta) return cache.total + pendientes;
   try {
@@ -155,11 +155,11 @@ export async function totalVisitas(): Promise<number> {
       .select({ value: siteCounters.value })
       .from(siteCounters)
       .where(sql`${siteCounters.key} = ${CLAVE}`);
-    const total = fila?.value ?? VISITAS_INICIALES;
-    cache = { total, hasta: ahora + 60_000 };
-    return total + pendientes;
+    if (!fila) return null;
+    cache = { total: fila.value, hasta: ahora + 60_000 };
+    return fila.value + pendientes;
   } catch (e) {
     console.error('[visitas] no se pudo leer el contador:', e);
-    return cache?.total ?? VISITAS_INICIALES;
+    return cache ? cache.total + pendientes : null;
   }
 }

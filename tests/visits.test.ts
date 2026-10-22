@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { esVisita, esPersonaEnPagina, VISITAS_INICIALES } from '../src/lib/visits';
+import { esVisita, esPersonaEnPagina } from '../src/lib/visits';
 
 const NAVEGADOR =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36';
@@ -52,9 +52,11 @@ describe('qué cuenta como visita', () => {
   });
 });
 
-describe('cifra de partida', () => {
-  it('es la que traía la analítica anterior', () => {
-    expect(VISITAS_INICIALES).toBe(30800);
+describe('cifra en /info', () => {
+  it('no compila ningún número: se pinta un guion hasta que llega el real', () => {
+    const info = readFileSync('src/pages/[...lang]/info.astro', 'utf8');
+    expect(info).not.toMatch(/30[.,_]?800/);
+    expect(info).toContain('info.visitsUnavailable');
   });
 });
 

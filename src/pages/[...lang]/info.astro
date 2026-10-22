@@ -2,18 +2,15 @@
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { useTranslations, localizePath, langStaticPaths, normalizeLang, locales, type Lang, type UIKey } from '../../i18n/ui';
-import { VISITAS_INICIALES } from '../../lib/visits';
 
 export const getStaticPaths = langStaticPaths;
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
-// Esta página es estática, así que el número de visitas que se compila sería el
-// del día del despliegue. Se pinta el de partida y el navegador lo sustituye por
-// el de verdad (/api/visits): sin JavaScript queda la cifra de la que se arrancó,
-// que es el suelo, no una mentira.
-const visitasBase = new Intl.NumberFormat(locales[lang]).format(VISITAS_INICIALES);
+// Esta página es estática: cualquier número que se compilara sería el del día
+// del despliegue. Se pinta un guion y el navegador pone la cifra de verdad
+// (/api/visits); si no llega, lo dice en vez de enseñar un número viejo.
 
 interface Item {
   path: string;
@@ -100,10 +97,11 @@ const groups: Group[] = [
         <p
           id="visitas"
           data-locale={locales[lang]}
+          data-unavailable={t('info.visitsUnavailable')}
           class="mt-2 font-display text-display-mobile leading-none text-ink"
           aria-live="polite"
         >
-          {visitasBase}
+          —
         </p>
       </div>
       <p class="max-w-md text-body-md text-charcoal">{t('info.visitsNote')}</p>
@@ -192,9 +190,11 @@ const groups: Group[] = [
     fetch('/api/visits', { headers: { accept: 'application/json' } })
       .then((r) => (r.ok ? r.json() : null))
       .then((d: { visits?: number } | null) => {
-        if (!d || typeof d.visits !== 'number') return;
+        if (!d || typeof d.visits !== 'number') throw new Error('sin cifra');
         el.textContent = new Intl.NumberFormat(el.dataset.locale || 'es-ES').format(d.visits);
       })
-      .catch(() => {});
+      .catch(() => {
+        el.textContent = el.dataset.unavailable || '—';
+      });
   }
 </script>
