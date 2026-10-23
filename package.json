@@ -14,7 +14,8 @@
     "db:push": "drizzle-kit push",
     "db:deploy": "node --env-file-if-exists=.env scripts/migrate.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "wp:build": "node scripts/build-wordpress.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.5",

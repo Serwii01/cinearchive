@@ -7,3 +7,5 @@ dist
 !.env.example
 npm-debug.log*
 .DS_Store
+# El tema y el plugin del blog se instalan en WordPress, no en la app.
+wordpress

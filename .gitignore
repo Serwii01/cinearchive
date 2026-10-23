@@ -14,3 +14,7 @@ pnpm-debug.log*
 .env.production
 # macOS / editor
 .DS_Store
+
+# Blog de WordPress: fuentes copiadas y zips (los genera scripts/build-wordpress.mjs)
+wordpress/cinearchive-theme/assets/fonts/
+wordpress/dist/

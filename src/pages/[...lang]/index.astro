@@ -9,7 +9,7 @@ import { pdFilms, pdThumbUrl } from '../../lib/pdfilms';
 import { books, bookCoverUrl } from '../../lib/library';
 import { collections, collectionTitle, collectionBlurb } from '../../lib/collections';
 import { dossiers, dossierCopy } from '../../lib/dossiers';
-import { articles, articleCopy } from '../../lib/articles';
+import { getBlogPosts } from '../../lib/blog';
 import { figures } from '../../lib/figures';
 import { profileUrl } from '../../lib/tmdb';
 import { getFilmOfDay } from '../../lib/featured';
@@ -36,8 +36,9 @@ const cinemaPicks = sample(pdFilms, 4);
 const collectionPicks = collections.slice(0, 3);
 // Dosieres especiales: son dos y van los dos, no se recorta ninguno.
 const dossierPicks = dossiers.map((d) => ({ slug: d.slug, c: dossierCopy(d, lang) }));
-// Artículos: los cuatro más recientes, al pie de la portada.
-const articlePicks = articles.slice(0, 4).map((a) => ({ slug: a.slug, date: a.date, c: articleCopy(a, lang) }));
+// Artículos: los cuatro más recientes del blog, al pie de la portada. Si el
+// blog no responde, la portada sale sin ellos (ver lib/blog.ts).
+const articlePicks = await getBlogPosts(lang, 4);
 const figurePicks = sample(figures, 6);
 const bookPicks = sample(books, 4);
 // En la portada solo las 3 revistas más recientes (por año de fundación). La
@@ -75,17 +76,17 @@ const homeJsonLd = [
         <home-carousel class="flex min-h-0 flex-col border-ink md:col-span-7 md:border-r" data-interval="7000">
           <div class="grid min-h-0 flex-1 overflow-hidden">
             {/* Un artículo por diapositiva: título y entradilla, nada más. */}
-            {articlePicks.slice(0, 2).map(({ slug, date, c }, i) => (
+            {articlePicks.slice(0, 2).map((a, i) => (
               <a
                 data-slide
                 style={i === 0 ? undefined : 'visibility:hidden'}
-                href={localizePath(lang, `articles/${slug}`)}
+                href={a.url}
                 class="group flex flex-col justify-center [grid-area:1/1] p-6 no-underline md:p-8"
               >
                 <span class="label">{t('articles.title')}</span>
-                <span class="mt-4 block font-mono text-meta-data text-muted">{c.kicker} · {formatDate(new Date(date), lang)}</span>
-                <span class="mt-2 block font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{c.title}</span>
-                <span class="mt-4 line-clamp-3 max-w-2xl text-body-md text-charcoal">{c.lead}</span>
+                <span class="mt-4 block font-mono text-meta-data text-muted">{[a.kicker, a.date && formatDate(new Date(a.date), lang)].filter(Boolean).join(' · ')}</span>
+                <span class="mt-2 block font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{a.title}</span>
+                <span class="mt-4 line-clamp-3 max-w-2xl text-body-md text-charcoal">{a.excerpt}</span>
                 <span class="label mt-6 text-ink">{t('articles.read')} →</span>
               </a>
             ))}
@@ -458,7 +459,9 @@ const homeJsonLd = [
     </div>
   </section>
 
-  {/* ARTÍCULOS DE CINE ARCHIVE — al pie, después del manifiesto */}
+  {/* ARTÍCULOS DE CINE ARCHIVE — al pie, después del manifiesto. Vienen del
+      blog: si no responde, la sección no sale (mejor que una caja vacía). */}
+  {articlePicks.length > 0 && (
   <section class="frame border-t border-ink py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('articles.title')}</h2>
@@ -466,11 +469,11 @@ const homeJsonLd = [
     </div>
     <div class="grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
       {
-        articlePicks.map(({ slug, date, c }) => (
-          <a href={localizePath(lang, `articles/${slug}`)} class="group flex flex-col bg-surface p-6 no-underline transition-colors hover:bg-film-white">
-            <span class="label">{c.kicker} · {formatDate(new Date(date), lang)}</span>
-            <h3 class="mt-3 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{c.title}</h3>
-            <p class="mt-3 text-body-md text-charcoal">{c.lead}</p>
+        articlePicks.map((a) => (
+          <a href={a.url} class="group flex flex-col bg-surface p-6 no-underline transition-colors hover:bg-film-white">
+            <span class="label">{[a.kicker, a.date && formatDate(new Date(a.date), lang)].filter(Boolean).join(' · ')}</span>
+            <h3 class="mt-3 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{a.title}</h3>
+            <p class="mt-3 text-body-md text-charcoal">{a.excerpt}</p>
             <span class="label mt-auto pt-6 text-ink">{t('articles.read')} →</span>
           </a>
         ))
@@ -479,4 +482,5 @@ const homeJsonLd = [
       {articlePicks.length % 2 === 1 && <div class="hidden bg-surface md:block" aria-hidden="true" />}
     </div>
   </section>
+  )}
 </BaseLayout>

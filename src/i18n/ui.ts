@@ -122,6 +122,7 @@ export const ui = {
     'articles.more': 'Más artículos',
     'articles.gallery': 'En imágenes',
     'articles.short': 'Artículos',
+    'articles.openBlog': 'Leer los artículos en el blog',
     'nav.glossary': 'Glosario',
     'glossary.title': 'Glosario del cine',
     'glossary.intro':
@@ -876,6 +877,7 @@ export const ui = {
     'articles.more': 'More articles',
     'articles.gallery': 'In pictures',
     'articles.short': 'Articles',
+    'articles.openBlog': 'Read the articles on the blog',
     'nav.glossary': 'Glossary',
     'glossary.title': 'Film Glossary',
     'glossary.intro':
@@ -1630,6 +1632,7 @@ export const ui = {
     'articles.more': 'Máis artigos',
     'articles.gallery': 'En imaxes',
     'articles.short': 'Artigos',
+    'articles.openBlog': 'Ler os artigos no blog',
     'nav.glossary': 'Glosario',
     'glossary.title': 'Glosario do cine',
     'glossary.intro':
@@ -2384,6 +2387,7 @@ export const ui = {
     'articles.more': 'Artikulu gehiago',
     'articles.gallery': 'Irudietan',
     'articles.short': 'Artikuluak',
+    'articles.openBlog': 'Irakurri artikuluak blogean',
     'nav.glossary': 'Glosarioa',
     'glossary.title': 'Zinemaren glosarioa',
     'glossary.intro':
@@ -3138,6 +3142,7 @@ export const ui = {
     'articles.more': 'Més articles',
     'articles.gallery': 'En imatges',
     'articles.short': 'Articles',
+    'articles.openBlog': 'Llegir els articles al blog',
     'nav.glossary': 'Glossari',
     'glossary.title': 'Glossari del cinema',
     'glossary.intro':
