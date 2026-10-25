@@ -9,7 +9,7 @@ import { filmsCache } from '../db/schema';
 import {
   getMovie,
   director,
-  posterUrl,
+  posterUrl, posterSrcset,
   extractWatchProviders,
   slimMovie,
   type TmdbMovie,
@@ -130,6 +130,8 @@ export interface FilmBrief {
   year: string;
   director: string | null;
   poster: string | null;
+  /** 1x/2x: las rejillas de perfil pintan estos carteles a 145 px, y en retina w185 se queda corto. */
+  posterSrcset: string | null;
   genreIds: number[];
   decade: number | null;
   runtime: number;
@@ -143,6 +145,7 @@ function briefFromTmdb(m: TmdbMovie): FilmBrief {
     year: year ? String(year) : '',
     director: director(m),
     poster: posterUrl(m.poster_path, 'w185'),
+    posterSrcset: posterSrcset(m.poster_path, 'w185', 'w342'),
     genreIds: (m.genres ?? []).map((g) => g.id),
     decade: year ? Math.floor(year / 10) * 10 : null,
     runtime: m.runtime ?? 0,

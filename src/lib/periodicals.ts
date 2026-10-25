@@ -60,7 +60,7 @@ export const journals = journalsData.items as Journal[];
 
 /** URL de la portada: archivo estático local (descargado con scripts/fetch-covers.mjs).
  *  Sirve desde nuestro dominio; en runtime no se toca archive.org para las portadas. */
-export const coverUrl = (id: string) => `/covers/${id}.jpg`;
+export const coverUrl = (id: string) => `/covers/${id}.webp`;
 /** Visor incrustable (BookReader) de Internet Archive. */
 export const embedUrl = (id: string) => `https://archive.org/embed/${id}`;
 /** Página pública del ítem en Internet Archive. */

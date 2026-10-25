@@ -397,6 +397,20 @@ export function profileUrl(path: string | null, size: 'w185' | 'h632' = 'w185') 
   return path ? `${TMDB_IMG}/${size}${path}` : null;
 }
 
+/**
+ * srcset con descriptores de ancho para las fotos del reparto.
+ *
+ * TMDB solo da dos tamaños útiles de perfil: w185 y h632 (que, en 2:3, son 421
+ * de ancho). Las fichas pintan esas fotos a 216 px en escritorio y a 170 en el
+ * móvil, así que w185 se queda corto incluso sin pantalla retina: con los
+ * descriptores de ancho el navegador elige solo, y con `sizes` sabe cuánto va a
+ * ocupar antes de tener la maquetación.
+ */
+export function profileSrcset(path: string | null) {
+  if (!path) return null;
+  return `${TMDB_IMG}/w185${path} 185w, ${TMDB_IMG}/h632${path} 421w`;
+}
+
 /** Ordenaciones admitidas en Descubrir (subconjunto seguro de sort_by de TMDB). */
 export const DISCOVER_SORTS = [
   'popularity.desc',

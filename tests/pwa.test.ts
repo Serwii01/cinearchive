@@ -185,8 +185,12 @@ describe('barra inferior del móvil', () => {
 
   it('el cuerpo reserva su hueco, con la zona segura del iPhone', () => {
     const css = readFileSync('src/styles/global.css', 'utf8');
-    expect(css).toMatch(/padding-bottom: calc\(3\.5rem \+ env\(safe-area-inset-bottom\)\)/);
+    // La reserva tiene que contar TRES cosas: el alto de la barra (h-14), su
+    // línea de arriba (border-t) y la zona del indicador del iPhone. Sin el
+    // 1px del borde, la barra se comía la última línea del pie.
+    expect(css).toMatch(/padding-bottom: calc\(3\.5rem \+ 1px \+ env\(safe-area-inset-bottom\)\)/);
     expect(tabbar).toContain('h-14'); // 3.5rem: si cambia una, cambia la otra
+    expect(tabbar).toContain('border-t'); // el 1px de la reserva es este
     const layout = readFileSync('src/layouts/BaseLayout.astro', 'utf8');
     expect(layout).toContain('viewport-fit=cover'); // sin esto env() vale 0
   });

@@ -13,6 +13,7 @@ import {
   posterUrl,
   posterSrcset,
   profileUrl,
+  profileSrcset,
   backdropUrl,
   trailerKey,
   providerLogoUrl,
@@ -437,7 +438,15 @@ const crumbsJsonLd = breadcrumbLd([
                     <div class="aspect-[2/3] w-full bg-charcoal">
                       {/* alt vacío: el nombre ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
                       {profileUrl(c.profile_path) ? (
-                        <img src={profileUrl(c.profile_path)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                        <img
+                          src={profileUrl(c.profile_path)}
+                          srcset={profileSrcset(c.profile_path) ?? undefined}
+                          sizes="(min-width: 640px) 15vw, 45vw"
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                          class="h-full w-full object-cover"
+                        />
                       ) : (
                         <div class="film-grain h-full w-full"></div>
                       )}

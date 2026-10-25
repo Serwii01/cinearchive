@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { periodicals, recentIssues } from '../src/lib/periodicals';
+import { basename, join } from 'node:path';
+import { coverUrl, periodicals, recentIssues } from '../src/lib/periodicals';
 import { pdFilms, pdLicenseLabel } from '../src/lib/pdfilms';
 
 const PUBLIC = join(process.cwd(), 'public');
@@ -10,8 +10,9 @@ describe('hemeroteca', () => {
   it('cada número tiene su portada descargada en public/covers', () => {
     // Las portadas se sirven desde nuestro dominio, no desde archive.org:
     // si falta una, la tarjeta sale en negro. Se arregla con
-    // `node scripts/fetch-covers.mjs`.
-    const sinPortada = periodicals.filter((p) => !existsSync(join(PUBLIC, 'covers', `${p.id}.jpg`))).map((p) => p.id);
+    // `node scripts/fetch-covers.mjs`. El nombre sale de coverUrl para que
+    // cambiar de formato no obligue a tocar el test en dos sitios.
+    const sinPortada = periodicals.filter((p) => !existsSync(join(PUBLIC, 'covers', basename(coverUrl(p.id))))).map((p) => p.id);
     expect(sinPortada).toEqual([]);
   });
 

@@ -11,7 +11,7 @@ import { collections, collectionTitle, collectionBlurb } from '../../lib/collect
 import { dossiers, dossierCopy } from '../../lib/dossiers';
 import { articles, articleCopy } from '../../lib/articles';
 import { figures } from '../../lib/figures';
-import { profileUrl } from '../../lib/tmdb';
+import { profileUrl, profileSrcset } from '../../lib/tmdb';
 import { getFilmOfDay } from '../../lib/featured';
 import { manifesto } from '../../data/manifesto';
 import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../i18n/ui';
@@ -363,7 +363,15 @@ const homeJsonLd = [
           <a href={localizePath(lang, `person/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
               {profileUrl(f.profile_path, 'w185') ? (
-                <img src={profileUrl(f.profile_path, 'w185')} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                <img
+                  src={profileUrl(f.profile_path, 'w185')}
+                  srcset={profileSrcset(f.profile_path) ?? undefined}
+                  sizes="(min-width: 640px) 15vw, 33vw"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover"
+                />
               ) : (
                 <div class="film-grain h-full w-full" />
               )}
