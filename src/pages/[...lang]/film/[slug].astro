@@ -7,6 +7,7 @@ import { resolveBackLink } from '../../../lib/backlink';
 import { getFilm } from '../../../lib/films';
 import { movieLd, breadcrumbLd } from '../../../lib/seo';
 import { filmSlug, parseFilmId } from '../../../lib/slug';
+import { mentionsOf } from '../../../lib/mentions';
 import {
   director,
   directorPerson,
@@ -56,6 +57,7 @@ if (slugParam !== canonicalSlug) {
 const dir = director(tmdb);
 const dirPerson = directorPerson(tmdb);
 const dirExtra = [tmdb.runtime ? `${tmdb.runtime} min` : null, tmdb.production_countries[0]?.name].filter(Boolean).join(' · ');
+const menciones = mentionsOf(tmdb.id, lang);
 const poster = posterUrl(tmdb.poster_path, 'w500');
 const poster2x = posterSrcset(tmdb.poster_path, 'w500', 'w780');
 const year = tmdb.release_date ? tmdb.release_date.slice(0, 4) : '';
@@ -534,6 +536,29 @@ const crumbsJsonLd = breadcrumbLd([
           </div>
         </section>
     </div>
+
+    {/* En Cine Archive: colecciones, dosieres y artículos que hablan de esta
+        película. Las tres cosas la enlazaban y ella no enlazaba a ninguna: la
+        ficha era el final del camino en vez de un cruce. */}
+    {menciones.length > 0 && (
+      <section class="mt-14">
+        <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('film.mentions')}</h2>
+        <ul class="mt-6 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+          {menciones.map((m) => (
+            <li class="bg-surface">
+              <a href={m.href} class="group flex h-full flex-col p-5 no-underline transition-colors hover:bg-film-white">
+                <span class="label">
+                  {m.kind === 'collection' ? t('nav.collections') : m.kind === 'dossier' ? t('dossiers.title') : t('articles.short')}
+                </span>
+                <span class="mt-2 font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{m.title}</span>
+                {m.note && <span class="mt-2 line-clamp-2 text-body-md text-charcoal">{m.note}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
 
     {/* Películas similares */}
     {similar.length > 0 && (

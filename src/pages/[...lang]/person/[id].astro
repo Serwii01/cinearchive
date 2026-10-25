@@ -5,10 +5,15 @@ import { profileUrl } from '../../../lib/tmdb';
 import { resolveBackLink } from '../../../lib/backlink';
 import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { filmSlug } from '../../../lib/slug';
+import { figures } from '../../../lib/figures';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const id = Number(Astro.params.id);
+
+// Las 32 «Figuras» del archivo son personas, y su página no decía que lo
+// fueran: la sección enlazaba hacia aquí y aquí no se volvía a la sección.
+const esFigura = figures.some((fg) => fg.id === id);
 
 if (!Number.isInteger(id) || id <= 0) return Astro.redirect(localizePath(lang, 'films'));
 
@@ -78,6 +83,11 @@ const facts = [
       <div class="md:col-span-9">
         {person.known_for_department && <span class="label">{person.known_for_department}</span>}
         <h1 class="mt-2 text-display-mobile md:text-display-lg">{person.name}</h1>
+        {esFigura && (
+          <a href={localizePath(lang, 'figures')} class="label mt-3 inline-block border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">
+            {t('nav.figures')} →
+          </a>
+        )}
         {person.biography && (
           <div class="prose-archive mt-5 max-w-3xl">
             {person.biography.split('\n').filter((p) => p.trim()).slice(0, 6).map((p) => <p>{p}</p>)}

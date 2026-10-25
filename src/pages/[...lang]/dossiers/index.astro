@@ -38,5 +38,12 @@ const fichas = dossiers.map((d) => ({ slug: d.slug, c: dossierCopy(d, lang) }));
         ))
       }
     </div>
+    <a href={localizePath(lang, 'articles')} class="group mt-px flex flex-col gap-2 border border-ink bg-surface p-6 no-underline transition-colors hover:bg-film-white sm:flex-row sm:items-center sm:justify-between">
+      <span>
+        <span class="label">{t('articles.short')}</span>
+        <span class="mt-2 block max-w-2xl text-body-md text-charcoal">{t('articles.intro')}</span>
+      </span>
+      <span class="label shrink-0 text-ink group-hover:text-muted">{t('home.seeAll')} →</span>
+    </a>
   </section>
 </BaseLayout>
