@@ -18,7 +18,7 @@
  *
  * El resultado se cachea en memoria por usuario unos minutos.
  */
-import { and, desc, eq, gte, lte } from 'drizzle-orm';
+import { and, desc, eq, gte, isNull, lte, or } from 'drizzle-orm';
 import { db } from '../db/client';
 import { userFilms, userPreferences } from '../db/schema';
 import {
@@ -33,9 +33,12 @@ import {
 } from './tmdb';
 import { getPersonCached } from './people';
 import { genreName } from '../data/genres';
+import { collections, collectionTitle } from './collections';
+import { getFilmsBrief } from './films';
+import { normalizeLang } from '../i18n/ui';
 import { registerCache } from './cache-registry';
 
-export type ReasonKind = 'film' | 'director' | 'genre' | 'popular';
+export type ReasonKind = 'film' | 'director' | 'genre' | 'collection' | 'popular';
 
 export interface Reason {
   kind: ReasonKind;
@@ -113,6 +116,27 @@ export function affinity(genreIds: number[] | undefined, weights: Map<number, nu
 }
 
 /**
+ * Cuánto pesa una valoración según lo reciente que sea. Lo de esta semana dice
+ * más de ti que lo de hace año y medio, pero lo viejo no deja de contar: baja
+ * de 1 a 0,7 a lo largo del primer año y ahí se queda.
+ */
+export function recency(updatedAt: Date, now: Date = new Date()): number {
+  const dias = (now.getTime() - updatedAt.getTime()) / 86_400_000;
+  if (!Number.isFinite(dias) || dias <= 30) return 1;
+  return Math.max(0.7, 1 - ((dias - 30) / 365) * 0.3);
+}
+
+/**
+ * La nota efectiva de una película de la lista. Marcar favorita es una
+ * valoración: antes, una favorita sin estrellas no contaba para nada, que es
+ * justo al revés de lo que significa el gesto.
+ */
+export function effectiveRating(row: { rating: number | null; favorite: boolean }): number {
+  if (row.rating != null) return row.favorite ? Math.min(5, row.rating + 0.5) : row.rating;
+  return row.favorite ? 4.5 : 4;
+}
+
+/**
  * Puntuación de un candidato: motivo + afinidad + calidad. La calidad es la
  * nota de TMDB atenuada por cuánta gente ha votado: un corto de estudiante con
  * 60 votos y un 7,8 no debe adelantar a «Sacrificio» con miles.
@@ -164,14 +188,27 @@ const usable = (f: TmdbSearchResult, exclude: Set<number>) =>
   !exclude.has(f.id) && !!f.poster_path && (f.vote_count ?? 0) >= MIN_VOTES;
 
 async function computeRecommendations(userId: string, locale: string): Promise<Recommendation[]> {
+  const lang = normalizeLang(locale.slice(0, 2));
   const [prefs] = await db.select().from(userPreferences).where(eq(userPreferences.userId, userId)).limit(1);
 
+  // Gusta: lo valorado con 4 o 5 Y lo marcado como favorito. Una favorita sin
+  // estrellas es una recomendación en toda regla y antes no contaba.
   const liked = await db
     .select()
     .from(userFilms)
-    .where(and(eq(userFilms.userId, userId), gte(userFilms.rating, 4)))
+    .where(and(eq(userFilms.userId, userId), or(gte(userFilms.rating, 4), eq(userFilms.favorite, true))))
+    .orderBy(desc(userFilms.favorite), desc(userFilms.updatedAt))
+    .limit(10);
+
+  // Vistas sin valorar: no sirven para traer candidatos (no dicen si gustó),
+  // pero sí dicen qué géneros frecuentas. Sus géneros salen de la caché de
+  // fichas, sin pedirle nada a TMDB.
+  const vistas = await db
+    .select({ tmdbId: userFilms.tmdbId })
+    .from(userFilms)
+    .where(and(eq(userFilms.userId, userId), eq(userFilms.status, 'seen'), isNull(userFilms.rating)))
     .orderBy(desc(userFilms.updatedAt))
-    .limit(8);
+    .limit(20);
   const disliked = await db
     .select()
     .from(userFilms)
@@ -184,6 +221,15 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
   const addWeight = (id: number, w: number) => weights.set(id, (weights.get(id) ?? 0) + w);
   for (const g of prefs?.favoriteGenres ?? []) addWeight(g, 3);
 
+  if (vistas.length) {
+    try {
+      const briefs = await getFilmsBrief(vistas.map((v) => v.tmdbId), lang);
+      for (const b of briefs.values()) for (const g of b.genreIds) addWeight(g, 1);
+    } catch {
+      /* la caché de fichas no está: se sigue sin esta señal */
+    }
+  }
+
   const candidates: Candidate[] = [];
   const add = (film: TmdbSearchResult, reason: Reason, strength: number) => {
     if (usable(film, exclude)) candidates.push({ film, reason, strength });
@@ -194,8 +240,9 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
   for (const row of liked) {
     try {
       const m = await getMovie(row.tmdbId, locale);
-      for (const g of m.genres) addWeight(g.id, row.rating ?? 4);
-      const strength = 0.7 + ((row.rating ?? 4) - 4) * 0.3;
+      const nota = effectiveRating(row);
+      for (const g of m.genres) addWeight(g.id, nota);
+      const strength = (0.7 + (nota - 4) * 0.3) * recency(row.updatedAt);
       for (const r of [...(m.recommendations?.results ?? []), ...(m.similar?.results ?? [])]) {
         add(r, { kind: 'film', label: m.title }, strength);
       }
@@ -256,6 +303,49 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
     }
   }
 
+  // 3bis) Las colecciones de la casa. Si lo que te gustó está en una de las
+  //       doce colecciones, el resto de esa colección es la mejor
+  //       recomendación que puede dar esta web: la eligió una persona, no un
+  //       algoritmo de TMDB, y además lleva a una página nuestra. Se piden
+  //       pocas y con tope, que cada una cuesta una ficha.
+  const gustadas = new Set(liked.map((r) => r.tmdbId));
+  const yaVistasColecciones = new Set<string>();
+  let fichasPedidas = 0;
+  for (const row of liked) {
+    for (const col of collections) {
+      if (fichasPedidas >= 9) break;
+      if (!col.tmdbIds.includes(row.tmdbId) || yaVistasColecciones.has(col.slug)) continue;
+      yaVistasColecciones.add(col.slug);
+      const titulo = collectionTitle(col, lang);
+      const pendientes = col.tmdbIds.filter((id) => !exclude.has(id) && !gustadas.has(id)).slice(0, 3);
+      for (const id of pendientes) {
+        if (fichasPedidas >= 9) break;
+        fichasPedidas++;
+        try {
+          const m = await getMovie(id, locale);
+          add(
+            {
+              id: m.id,
+              title: m.title,
+              original_title: m.original_title ?? m.title,
+              release_date: m.release_date,
+              poster_path: m.poster_path,
+              backdrop_path: m.backdrop_path ?? null,
+              overview: m.overview ?? '',
+              vote_average: m.vote_average ?? 0,
+              vote_count: m.vote_count,
+              genre_ids: m.genres?.map((g) => g.id),
+            },
+            { kind: 'collection', label: titulo },
+            0.9,
+          );
+        } catch {
+          /* una ficha que falla no tumba la lista */
+        }
+      }
+    }
+  }
+
   // 4) Géneros favoritos, uno a uno, para que cada uno aporte y salga como
   //    motivo. Los mejor valorados (con muchos votos) y los populares.
   const favGenres = [...(prefs?.favoriteGenres ?? [])].slice(0, 8);
@@ -271,7 +361,38 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
     }
   }
 
-  // 5) Arranque en frío o lista corta: populares.
+  // 5) Arranque en frío: lo de casa antes que lo de todo el mundo. Una
+  //    película por colección, la mejor valorada que no esté ya en su lista.
+  if (candidates.length < MIN_RESULTS) {
+    for (const col of collections) {
+      if (candidates.length >= MIN_RESULTS) break;
+      const id = col.tmdbIds.find((x) => !exclude.has(x));
+      if (!id) continue;
+      try {
+        const m = await getMovie(id, locale);
+        add(
+          {
+            id: m.id,
+            title: m.title,
+            original_title: m.original_title ?? m.title,
+            release_date: m.release_date,
+            poster_path: m.poster_path,
+            backdrop_path: m.backdrop_path ?? null,
+            overview: m.overview ?? '',
+            vote_average: m.vote_average ?? 0,
+            vote_count: m.vote_count,
+            genre_ids: m.genres?.map((g) => g.id),
+          },
+          { kind: 'collection', label: collectionTitle(col, lang) },
+          0.45,
+        );
+      } catch {
+        /* siguiente colección */
+      }
+    }
+  }
+
+  // 6) Si aun así falta, populares de TMDB.
   if (candidates.length < MIN_RESULTS) {
     for (const page of [1, 2]) {
       try {

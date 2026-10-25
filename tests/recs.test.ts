@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { affinity, score, selectBalanced, type Candidate } from '../src/lib/recs';
+import { affinity, effectiveRating, recency, score, selectBalanced, type Candidate } from '../src/lib/recs';
 import type { TmdbSearchResult } from '../src/lib/tmdb';
 
 const film = (id: number, genre_ids: number[], vote_average = 7): TmdbSearchResult => ({
@@ -94,5 +94,58 @@ describe('selectBalanced', () => {
 
   it('con una lista vacía devuelve vacío', () => {
     expect(selectBalanced([], new Map(), 5)).toEqual([]);
+  });
+});
+
+describe('señales del usuario', () => {
+  it('marcar favorita cuenta aunque no haya estrellas', () => {
+    // Antes una favorita sin valorar no entraba en el motor: el gesto más
+    // claro que puede hacer alguien no servía para nada.
+    expect(effectiveRating({ rating: null, favorite: true })).toBeGreaterThan(
+      effectiveRating({ rating: null, favorite: false }),
+    );
+  });
+
+  it('favorita y cinco estrellas no se pasa de cinco', () => {
+    expect(effectiveRating({ rating: 5, favorite: true })).toBe(5);
+    expect(effectiveRating({ rating: 4, favorite: true })).toBe(4.5);
+  });
+
+  it('lo reciente pesa más, y lo viejo no deja de contar', () => {
+    const hoy = new Date('2026-10-25T00:00:00Z');
+    const ayer = new Date('2026-10-24T00:00:00Z');
+    const haceUnAño = new Date('2025-10-25T00:00:00Z');
+    const haceCinco = new Date('2021-10-25T00:00:00Z');
+    expect(recency(ayer, hoy)).toBe(1);
+    expect(recency(haceUnAño, hoy)).toBeLessThan(1);
+    expect(recency(haceUnAño, hoy)).toBeGreaterThan(0.7);
+    // Suelo: por viejo que sea, sigue valiendo algo.
+    expect(recency(haceCinco, hoy)).toBe(0.7);
+  });
+
+  it('una fecha imposible no rompe el cálculo', () => {
+    expect(recency(new Date('futuro'), new Date())).toBe(1);
+  });
+});
+
+describe('colecciones de la casa', () => {
+  it('pesan más que un género y menos que un director', () => {
+    const w = new Map([[18, 10]]);
+    const coleccion = cand(1, 'collection', 'La Nouvelle Vague', 0.9);
+    const genero = cand(2, 'genre', 'Drama', 0.55);
+    const director = cand(3, 'director', 'Varda', 1);
+    expect(score(coleccion, w)).toBeGreaterThan(score(genero, w));
+    expect(score(coleccion, w)).toBeLessThan(score(director, w));
+  });
+
+  it('el reparto por turnos también las alterna', () => {
+    const lista = [
+      cand(1, 'collection', 'Nouvelle Vague', 0.9),
+      cand(2, 'collection', 'Nouvelle Vague', 0.9),
+      cand(3, 'genre', 'Drama', 0.55),
+    ];
+    const out = selectBalanced(lista, new Map(), 3);
+    // La segunda de la misma colección no puede ir antes que el otro motivo.
+    expect(out.map((c) => c.film.id)).toEqual([1, 3, 2]);
   });
 });

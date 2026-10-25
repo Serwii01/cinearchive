@@ -373,8 +373,9 @@ for (let p = Math.max(1, page - 2); p <= Math.min(results.totalPages, page + 2);
               <p class="max-w-md font-mono text-meta-data text-muted">{t('discover.platformsHint')}</p>
             </div>
 
-            {watchRegion && (
-              <>
+            {/* Se pinta siempre y se enseña cuando hay región: así el guion de
+                abajo puede rellenarlo nada más elegir el país, sin recargar. */}
+            <div id="watch-detalle" hidden={!watchRegion}>
                 <div class="mt-4">
                   <span class="label">{t('discover.watchMode')}</span>
                   <div class="mt-2 flex flex-wrap gap-2">
@@ -387,10 +388,9 @@ for (let p = Math.max(1, page - 2); p <= Math.min(results.totalPages, page + 2);
                   </div>
                 </div>
 
-                {providerOptions.length > 0 && (
-                  <div class="mt-4">
+                <div class="mt-4" id="watch-provs" hidden={providerOptions.length === 0}>
                     <span class="label">{t('discover.platforms')}</span>
-                    <div class="mt-2 flex flex-wrap gap-2">
+                    <div class="mt-2 flex flex-wrap gap-2" id="watch-provs-lista" data-chip={provCls}>
                       {providerOptions.map((pr) => (
                         <label>
                           <input type="checkbox" name="prov" value={pr.id} checked={platforms.includes(pr.id)} class="peer sr-only" />
@@ -414,9 +414,7 @@ for (let p = Math.max(1, page - 2); p <= Math.min(results.totalPages, page + 2);
                       ))}
                     </div>
                   </div>
-                )}
-              </>
-            )}
+            </div>
           </div>
         </details>
 
@@ -589,3 +587,83 @@ for (let p = Math.max(1, page - 2); p <= Math.min(results.totalPages, page + 2);
     )}
   </section>
 </BaseLayout>
+
+<script>
+  // «Dónde ver»: elegir el país enseña sus plataformas al momento.
+  //
+  // Antes la lista la pintaba solo el servidor con la región ya en la URL, así
+  // que había que elegir país → pulsar Aplicar → esperar la recarga → y
+  // entonces aparecían las casillas. Ahora se piden a /api/films/providers en
+  // cuanto cambia el desplegable. Sin JavaScript todo sigue igual que antes.
+  const region = document.querySelector<HTMLSelectElement>('select[name="wr"]');
+  const detalle = document.getElementById('watch-detalle');
+  const caja = document.getElementById('watch-provs');
+  const lista = document.getElementById('watch-provs-lista');
+
+  if (region && detalle && caja && lista) {
+    const clase = lista.dataset.chip ?? '';
+    const lang = document.documentElement.lang || 'es';
+    let ultima = region.value;
+
+    const pintar = (provs: { id: number; name: string; logo: string | null }[], marcados: Set<string>) => {
+      lista.replaceChildren();
+      for (const p of provs) {
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.name = 'prov';
+        input.value = String(p.id);
+        input.className = 'peer sr-only';
+        input.checked = marcados.has(String(p.id));
+        const span = document.createElement('span');
+        span.className = clase;
+        if (p.logo) {
+          const img = document.createElement('img');
+          img.src = p.logo;
+          img.alt = '';
+          img.width = 20;
+          img.height = 20;
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.className = 'h-5 w-5 shrink-0 object-contain';
+          span.append(img);
+        } else {
+          const hueco = document.createElement('span');
+          hueco.className = 'h-5 w-5 shrink-0';
+          span.append(hueco);
+        }
+        span.append(document.createTextNode(p.name));
+        label.append(input, span);
+        lista.append(label);
+      }
+      caja.hidden = provs.length === 0;
+    };
+
+    region.addEventListener('change', async () => {
+      const valor = region.value;
+      if (valor === ultima) return;
+      ultima = valor;
+
+      if (!valor) {
+        detalle.hidden = true;
+        return;
+      }
+      detalle.hidden = false;
+      // Lo que ya estaba marcado se respeta si la plataforma existe también
+      // en el país nuevo (Netflix sigue siendo Netflix al cruzar la frontera).
+      const marcados = new Set(
+        Array.from(lista.querySelectorAll<HTMLInputElement>('input:checked')).map((i) => i.value),
+      );
+      try {
+        const res = await fetch(`/api/films/providers?region=${encodeURIComponent(valor)}&lang=${lang}`, {
+          headers: { accept: 'application/json' },
+        });
+        if (!res.ok) return;
+        const datos = (await res.json()) as { providers?: { id: number; name: string; logo: string | null }[] };
+        pintar(datos.providers ?? [], marcados);
+      } catch {
+        // Si falla, quedan las casillas que hubiera: el filtro se puede aplicar igual.
+      }
+    });
+  }
+</script>
