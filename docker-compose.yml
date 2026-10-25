@@ -119,7 +119,7 @@ services:
     mem_limit: 384m
     environment:
       # Base propia dentro del Postgres compartido. El límite de conexiones
-      # importa: el servidor solo admite 20 en total y la app ya usa 10.
+      # importa: el servidor solo admite 25 en total y la app ya usa 10.
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/umami?connection_limit=4
       APP_SECRET: ${UMAMI_APP_SECRET}
       TWO_FACTOR_ENCRYPTION_KEY: ${UMAMI_2FA_KEY}

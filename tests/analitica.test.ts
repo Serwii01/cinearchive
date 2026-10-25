@@ -4,9 +4,14 @@ import { privacy } from '../src/data/legal';
 import { languages, type Lang } from '../src/i18n/ui';
 
 const LANGS = Object.keys(languages) as Lang[];
-const layout = readFileSync('src/layouts/BaseLayout.astro', 'utf8');
-const caddy = readFileSync('Caddyfile', 'utf8');
-const compose = readFileSync('docker-compose.yml', 'utf8');
+
+// En Windows, git deja CRLF al hacer checkout: sin normalizar, cualquier
+// comparación de varias líneas falla por el retorno de carro y no por lo que
+// dice el fichero.
+const leer = (ruta: string): string => readFileSync(ruta, 'utf8').split('\r\n').join('\n');
+const layout = leer('src/layouts/BaseLayout.astro');
+const caddy = leer('Caddyfile');
+const compose = leer('docker-compose.yml');
 
 describe('guion de medición', () => {
   it('no se emite si no hay sitio configurado', () => {
