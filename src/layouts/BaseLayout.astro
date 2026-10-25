@@ -55,6 +55,14 @@ const ogLocales: Record<Lang, string> = { es: 'es_ES', en: 'en_US', gl: 'gl_ES',
 const ogImage = image
   ? (/^https?:\/\//.test(image) ? image : new URL(image, Astro.site).href)
   : new URL('/og.png', Astro.site).href;
+
+// Analítica propia (Umami, alojada en el VPS). Solo se emite si hay un id de
+// sitio configurado: en local y en cualquier despliegue sin la variable, la web
+// no carga nada y no mide nada. Las páginas prerenderizadas leen el valor del
+// build y las SSR el de process.env; por eso se mira en los dos sitios.
+const umamiId = process.env.UMAMI_WEBSITE_ID || import.meta.env.UMAMI_WEBSITE_ID || '';
+const umamiHost = process.env.UMAMI_HOST || import.meta.env.UMAMI_HOST || '';
+const umamiSrc = umamiId && umamiHost ? `https://${umamiHost}/script.js` : '';
 ---
 
 <!doctype html>
@@ -120,6 +128,18 @@ const ogImage = image
     <meta name="twitter:description" content={pageDesc} />
     <meta name="twitter:image" content={ogImage} />
     <meta name="generator" content={Astro.generator} />
+    {/* Medición de visitas: sin cookies, sin huella y sin datos personales. El
+        atributo do-not-track hace que respete la señal del navegador, y defer
+        la deja fuera del camino crítico de la carga. */}
+    {umamiSrc && (
+      <script
+        is:inline
+        defer
+        src={umamiSrc}
+        data-website-id={umamiId}
+        data-do-not-track="true"
+      />
+    )}
     {jsonLdList.map((data) => (
       <script type="application/ld+json" set:html={serializeLd(data)} />
     ))}

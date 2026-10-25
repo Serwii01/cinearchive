@@ -11,6 +11,32 @@ www.{$DOMAIN} {
 	redir https://{$DOMAIN}{uri} permanent
 }
 
+# Analítica propia (Umami). Va en un subdominio y no en una ruta del sitio porque
+# Next.js fija su prefijo al compilar: servirla bajo /analitica obligaría a
+# construir la imagen en el VPS, y aquí no hay memoria para eso.
+# Requiere un registro A de analitica.{$DOMAIN} apuntando a esta máquina; sin él
+# Caddy no consigue certificado y el resto del sitio sigue igual.
+analitica.{$DOMAIN} {
+	encode gzip zstd
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Que no acabe indexado: es un panel, no contenido.
+		X-Robots-Tag "noindex, nofollow"
+		-Server
+	}
+
+	# Las cabeceras de CORS para /script.js y /api/send las pone Umami, que para
+	# eso está pensado para medir sitios de otro dominio. Si las repitiéramos
+	# aquí, el navegador vería dos y descartaría la petición.
+	reverse_proxy umami:3000 {
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Real-IP {remote_host}
+	}
+}
+
 {$DOMAIN} {
 	encode gzip zstd
 
@@ -53,7 +79,10 @@ www.{$DOMAIN} {
 		# CSP estricta: scripts y estilos propios; imágenes desde TMDB e Internet
 		# Archive; el visor de la hemeroteca se incrusta desde archive.org (frame-src).
 		# (No se necesita 'unsafe-inline' en scripts: no hay scripts inline.)
-		Content-Security-Policy "default-src 'self'; img-src 'self' https://image.tmdb.org https://archive.org https://*.archive.org https://*.tile.openstreetmap.org data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src https://archive.org https://*.archive.org https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+		# analitica.{$DOMAIN} es la analítica propia: de ahí sale el guion de
+		# medición (script-src) y ahí manda los eventos (connect-src). Es el único
+		# tercero con permiso para ejecutar código, y es nuestro.
+		Content-Security-Policy "default-src 'self'; img-src 'self' https://image.tmdb.org https://archive.org https://*.archive.org https://*.tile.openstreetmap.org data:; script-src 'self' https://analitica.{$DOMAIN}; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self' https://analitica.{$DOMAIN}; frame-src https://archive.org https://*.archive.org https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 		-Server
 	}
 

@@ -9,6 +9,12 @@ COPY . .
 # el dominio de ejemplo de astro.config.
 ARG SITE_URL
 ENV SITE_URL=$SITE_URL
+# Analítica: la mitad del sitio es prerenderizada, así que el guion de medición
+# se decide al compilar. Vacío = no se emite nada.
+ARG UMAMI_WEBSITE_ID=""
+ARG UMAMI_HOST=""
+ENV UMAMI_WEBSITE_ID=$UMAMI_WEBSITE_ID \
+    UMAMI_HOST=$UMAMI_HOST
 RUN npm run build
 
 # ---- Runtime stage: solo dependencias de producción + artefactos ----

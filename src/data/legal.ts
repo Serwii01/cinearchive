@@ -103,6 +103,14 @@ export const privacy: Record<Lang, LegalDoc> = {
         ],
       },
       {
+        heading: 'Analítica de visitas',
+        body: [
+          'Medimos cuánta gente entra y qué páginas se leen con Umami, una herramienta de analítica que funciona en nuestro propio servidor. No usa cookies, no crea ningún identificador que te siga entre días ni entre sitios, y no recoge datos personales.',
+          'De cada visita se guardan solo datos agregados: la página, el país del que llega (deducido de la dirección IP, que no se almacena), el idioma, el navegador y el tipo de dispositivo. No sabemos quién eres, ni siquiera si tienes cuenta.',
+          'Si tu navegador envía la señal «Do Not Track», no se mide nada.',
+        ],
+      },
+      {
         heading: 'Conservación',
         body: [
           'Conservamos tus datos mientras tu cuenta esté activa. Si eliminas tu cuenta, borramos tus datos asociados (lista, valoraciones, preferencias y sesiones).',
@@ -174,6 +182,14 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'We use a single technical session cookie, essential to keep you signed in. We use no advertising or analytics cookies.',
           'Your theme preference (light/dark) is stored locally in your browser (localStorage), not in a cookie.',
+        ],
+      },
+      {
+        heading: 'Visit analytics',
+        body: [
+          'We measure how many people come in and which pages get read using Umami, an analytics tool that runs on our own server. It uses no cookies, creates no identifier that follows you across days or across sites, and collects no personal data.',
+          'Only aggregate data is kept for each visit: the page, the country it comes from (derived from the IP address, which is not stored), the language, the browser and the device type. We do not know who you are, not even whether you have an account.',
+          'If your browser sends the “Do Not Track” signal, nothing is measured.',
         ],
       },
       {
@@ -251,6 +267,14 @@ export const privacy: Record<Lang, LegalDoc> = {
         ],
       },
       {
+        heading: 'Analítica de visitas',
+        body: [
+          'Medimos cantas persoas entran e que páxinas se len con Umami, unha ferramenta de analítica que funciona no noso propio servidor. Non usa cookies, non crea ningún identificador que te siga entre días nin entre sitios, e non recolle datos persoais.',
+          'De cada visita gárdanse só datos agregados: a páxina, o país do que chega (deducido do enderezo IP, que non se almacena), o idioma, o navegador e o tipo de dispositivo. Non sabemos quen es, nin sequera se tes conta.',
+          'Se o teu navegador envía o sinal «Do Not Track», non se mide nada.',
+        ],
+      },
+      {
         heading: 'Conservación',
         body: [
           'Conservamos os teus datos mentres a túa conta estea activa. Se eliminas a túa conta, borramos os teus datos asociados (lista, valoracións, preferencias e sesións).',
@@ -325,6 +349,14 @@ export const privacy: Record<Lang, LegalDoc> = {
         ],
       },
       {
+        heading: 'Bisiten analitika',
+        body: [
+          'Zenbat jende sartzen den eta zein orri irakurtzen diren neurtzen dugu Umami-rekin, gure zerbitzarian bertan dabilen analitika-tresna batekin. Ez du cookierik erabiltzen, ez du egunez egun edo gunez gune jarraitzen zaituen identifikatzailerik sortzen, eta ez du datu pertsonalik biltzen.',
+          'Bisita bakoitzeko datu agregatuak baino ez dira gordetzen: orria, zein herrialdetatik datorren (IP helbidetik ondorioztatua, hura gorde gabe), hizkuntza, nabigatzailea eta gailu mota. Ez dakigu nor zaren, ezta konturik duzun ere.',
+          'Zure nabigatzaileak «Do Not Track» seinalea bidaltzen badu, ez da ezer neurtzen.',
+        ],
+      },
+      {
         heading: 'Kontserbazioa',
         body: [
           'Zure datuak zure kontua aktibo dagoen bitartean gordetzen ditugu. Zure kontua ezabatzen baduzu, hari lotutako datuak ezabatzen ditugu (zerrenda, balorazioak, hobespenak eta saioak).',
@@ -396,6 +428,14 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Fem servir una única galeta tècnica de sessió, imprescindible per mantenir el teu inici de sessió. No fem servir galetes de publicitat ni d’analítica.',
           'La teva preferència de tema (clar/fosc) es desa localment al teu navegador (localStorage), no en una galeta.',
+        ],
+      },
+      {
+        heading: 'Analítica de visites',
+        body: [
+          'Mesurem quanta gent entra i quines pàgines es llegeixen amb Umami, una eina d’analítica que funciona al nostre propi servidor. No fa servir galetes, no crea cap identificador que et segueixi entre dies ni entre llocs, i no recull dades personals.',
+          'De cada visita només es desen dades agregades: la pàgina, el país del qual arriba (deduït de l’adreça IP, que no es desa), l’idioma, el navegador i el tipus de dispositiu. No sabem qui ets, ni tan sols si tens compte.',
+          'Si el teu navegador envia el senyal «Do Not Track», no es mesura res.',
         ],
       },
       {

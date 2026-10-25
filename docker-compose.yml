@@ -15,11 +15,12 @@ services:
     restart: unless-stopped
     # Ajustes para un VPS de 1,8 GB: los valores de fábrica de PostgreSQL están
     # pensados para una máquina mucho más grande. max_connections=100 con el
-    # work_mem de cada una es lo que convierte un pico en un OOM; la app usa un
-    # pool de 10 y el túnel del CRM un par más, así que 20 sobra.
+    # work_mem de cada una es lo que convierte un pico en un OOM. El reparto:
+    # la app usa un pool de 10, Umami 4, el túnel del CRM un par, y quedan seis
+    # de margen para mantenimiento y para el contenedor que crea la base.
     command: >
       postgres
-      -c max_connections=20
+      -c max_connections=25
       -c shared_buffers=192MB
       -c effective_cache_size=640MB
       -c work_mem=6MB
@@ -53,12 +54,21 @@ services:
       args:
         # Dominio público en tiempo de build (canonical/sitemap/OpenGraph).
         SITE_URL: ${SITE_URL}
+        # Analítica: el id del sitio en Umami. Va también como argumento de build
+        # porque media web es prerenderizada y ahí el script se decide al compilar.
+        # Vacío = no se emite ningún script (la web funciona igual).
+        UMAMI_WEBSITE_ID: ${UMAMI_WEBSITE_ID:-}
+        UMAMI_HOST: analitica.${DOMAIN}
     restart: unless-stopped
     # Carga las claves (TMDB/OMDb/auth/OAuth) desde .env. Nunca se versiona.
     env_file: .env
     environment:
       # La URL de la BD se compone aquí y tiene prioridad sobre cualquier valor de .env.
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      # Las mismas dos de arriba, ahora en ejecución: las páginas SSR deciden el
+      # script en cada petición, así que las necesitan aquí además de en el build.
+      UMAMI_WEBSITE_ID: ${UMAMI_WEBSITE_ID:-}
+      UMAMI_HOST: analitica.${DOMAIN}
     depends_on:
       db:
         condition: service_healthy
@@ -80,6 +90,54 @@ services:
     expose:
       - '4321'
 
+  # Crea la base de datos de Umami dentro del Postgres que ya hay. Contenedor de
+  # usar y tirar: se ejecuta en cada arranque, no hace nada si la base ya existe
+  # y sale. Umami necesita su propio esquema, no su propio servidor: una segunda
+  # instancia de Postgres se comería 150 MB de un VPS de 1,8 GB.
+  umami-init:
+    <<: *logging
+    image: postgres:16-alpine
+    restart: 'no'
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    command: sh -c "createdb -h db -U ${POSTGRES_USER} umami 2>/dev/null || true"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Analítica propia: sin cookies, sin datos personales y sin salir del VPS.
+  # Caddy la publica en analitica.${DOMAIN}; el panel de administración (CRM)
+  # lee sus números por la API. La versión va clavada a propósito: en la 3.x la
+  # forma de las respuestas ha cambiado ya una vez.
+  umami:
+    <<: *logging
+    image: ghcr.io/umami-software/umami:3.4.0
+    restart: unless-stopped
+    init: true
+    # Techo generoso para el arranque (aplica migraciones de Prisma); en reposo
+    # se queda en torno a 150 MB.
+    mem_limit: 384m
+    environment:
+      # Base propia dentro del Postgres compartido. El límite de conexiones
+      # importa: el servidor solo admite 20 en total y la app ya usa 10.
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/umami?connection_limit=4
+      APP_SECRET: ${UMAMI_APP_SECRET}
+      TWO_FACTOR_ENCRYPTION_KEY: ${UMAMI_2FA_KEY}
+      DISABLE_TELEMETRY: '1'
+    depends_on:
+      db:
+        condition: service_healthy
+      umami-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -fsS http://127.0.0.1:3000/api/heartbeat || exit 1']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    expose:
+      - '3000'
+
   caddy:
     <<: *logging
     mem_limit: 96m
@@ -100,6 +158,10 @@ services:
     depends_on:
       app:
         condition: service_healthy
+      # Sin condición de salud: si la analítica no arranca, la web no se cae con
+      # ella. Caddy devolvería un 502 solo en analitica.${DOMAIN}.
+      umami:
+        condition: service_started
 
 volumes:
   db-data:
