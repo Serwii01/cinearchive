@@ -7,11 +7,17 @@ import ThemeToggle from './ThemeToggle.astro';
 const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
+// Las cinco secciones que la web ES. «Portada» no va: ya se vuelve con la
+// marca, que es lo que todo el mundo pulsa. Artículos y Cines entran porque
+// antes no tenían ni una puerta de navegación: a los artículos solo se llegaba
+// por la portada, y a Cines por el pie. Lo que no está aquí (Cine abierto,
+// Figuras, Colecciones, Atlas) cuelga de Filmoteca, que hace de portadilla.
 const nav = [
-  { href: localizePath(lang), label: t('nav.home') },
   { href: localizePath(lang, 'archive'), label: t('nav.archive') },
   { href: localizePath(lang, 'films'), label: t('nav.films') },
+  { href: localizePath(lang, 'articles'), label: t('articles.short') },
   { href: localizePath(lang, 'discover'), label: t('nav.discover') },
+  { href: localizePath(lang, 'cines'), label: t('nav.cinesShort') },
 ];
 
 const current = Astro.url.pathname.replace(/\/$/, '');

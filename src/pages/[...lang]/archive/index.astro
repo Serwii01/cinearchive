@@ -5,7 +5,7 @@ import IssueCard from '../../../components/IssueCard.astro';
 import JournalCard from '../../../components/JournalCard.astro';
 import { periodicals, journals } from '../../../lib/periodicals';
 import { books, bookCoverUrl } from '../../../lib/library';
-import { sortedGlossary, glossaryTerm, glossaryDef, timeline, movementName, movementDesc } from '../../../lib/reference';
+import { sortedGlossary, timeline, movementName, movementDesc } from '../../../lib/reference';
 import { awards, awardName, awardNote } from '../../../lib/awards';
 import { getFilmsBrief } from '../../../lib/films';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
@@ -22,10 +22,10 @@ const terms = sortedGlossary(lang);
 const allIds = [...new Set(timeline.flatMap((m) => m.keyFilms))];
 const briefs = await getFilmsBrief(allIds, lang);
 
-const sections = [
+const sections: { id?: string; href?: string; label: string }[] = [
   { id: 'hemeroteca', label: t('archive.title') },
   { id: 'biblioteca', label: t('nav.library') },
-  { id: 'glosario', label: t('nav.glossary') },
+  { href: localizePath(lang, 'glossary'), label: t('nav.glossary') },
   { id: 'cronologia', label: t('nav.timeline') },
   { id: 'palmares', label: t('nav.awards') },
 ];
@@ -39,7 +39,7 @@ const sections = [
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('archive.umbrella')}</p>
       <nav class="mt-6 flex flex-wrap gap-2" aria-label={t('nav.archive')}>
         {sections.map((s) => (
-          <a href={`#${s.id}`} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{s.label}</a>
+          <a href={s.href ?? `#${s.id}`} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{s.label}</a>
         ))}
       </nav>
     </header>
@@ -103,22 +103,19 @@ const sections = [
       </div>
     </details>
 
-    {/* ── GLOSARIO ── */}
-    <details open id="glosario" class="arch border-t-2 border-ink">
-      <summary class="arch-sum"><span class="arch-arrow">▸</span><h2 class="text-headline-lg text-ink">{t('nav.glossary')} <span class="label">· {terms.length}</span></h2></summary>
-      <div class="pb-10">
-        <input id="gloss-filter" type="search" autocomplete="off" placeholder={t('archive.searchGloss')} class="w-full max-w-xs border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none" />
-        <dl id="gloss-list" class="mt-6 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
-          {terms.map((g) => (
-            <div class="bg-surface p-4" data-term={`${glossaryTerm(g, lang)} ${g.term_es} ${g.term_en}`.toLowerCase()}>
-              <dt class="font-display text-headline-md text-ink">{glossaryTerm(g, lang)}</dt>
-              <dd class="mt-1 text-body-md text-charcoal">{glossaryDef(g, lang)}</dd>
-            </div>
-          ))}
-        </dl>
-        <p id="gloss-empty" class="mt-8 hidden font-mono text-body-md text-muted">{t('films.noResults')}</p>
-      </div>
-    </details>
+    {/* ── GLOSARIO: tiene página propia ──
+        Son 66 términos, el tercer conjunto más grande de la casa. Plegado aquí
+        dentro no se enlazaba ni se indexaba; ahora vive en /glossary y aquí
+        queda la puerta. */}
+    <section id="glosario" class="arch border-t-2 border-ink py-8">
+      <a href={localizePath(lang, 'glossary')} class="group flex flex-wrap items-baseline justify-between gap-3 no-underline">
+        <h2 class="text-headline-lg text-ink transition-colors group-hover:text-muted">
+          {t('nav.glossary')} <span class="label">· {terms.length} {t('glossary.count')}</span>
+        </h2>
+        <span class="label text-ink">{t('home.seeAll')} →</span>
+      </a>
+      <p class="mt-2 max-w-2xl text-body-md text-charcoal">{t('glossary.intro')}</p>
+    </section>
 
     {/* ── CRONOLOGÍA ── */}
     <details open id="cronologia" class="arch border-t-2 border-ink">
@@ -231,6 +228,5 @@ const sections = [
     });
   };
   textFilter('lib-filter', '#lib-grid > [data-search]', 'search', 'lib-empty');
-  textFilter('gloss-filter', '#gloss-list > [data-term]', 'term', 'gloss-empty');
   textFilter('aw-filter', '.award-row', 'search', 'aw-empty');
 </script>

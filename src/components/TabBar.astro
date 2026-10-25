@@ -21,9 +21,9 @@ const t = useTranslations(lang);
 const home = localizePath(lang);
 const tabs = [
   { href: home, label: t('tabs.home'), icon: 'home' },
+  { href: localizePath(lang, 'archive'), label: t('nav.archive'), icon: 'archive' },
   { href: localizePath(lang, 'discover'), label: t('tabs.discover'), icon: 'discover' },
   { href: localizePath(lang, 'search'), label: t('tabs.search'), icon: 'search' },
-  { href: localizePath(lang, 'watchlist'), label: t('tabs.list'), icon: 'list' },
   { href: localizePath(lang, 'account'), label: t('tabs.account'), icon: 'account' },
 ] as const;
 
@@ -70,7 +70,13 @@ const isActive = (href: string) => (href === home ? current === home : current =
                     <line x1="16.5" y1="16.5" x2="21" y2="21" />
                   </>
                 )}
-                {tab.icon === 'list' && <path d="M6 3h12v18l-6-5-6 5z" />}
+                {tab.icon === 'archive' && (
+                  <>
+                    <path d="M3 4h18v4H3z" />
+                    <path d="M5 8v12h14V8" />
+                    <line x1="10" y1="12" x2="14" y2="12" />
+                  </>
+                )}
                 {tab.icon === 'account' && (
                   <>
                     <circle cx="12" cy="8" r="4" />

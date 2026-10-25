@@ -3,14 +3,14 @@ export const prerender = false; // la película del día se obtiene en cada visi
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TmdbSearch from '../../components/TmdbSearch.astro';
 import IssueCard from '../../components/IssueCard.astro';
-import JournalCard from '../../components/JournalCard.astro';
-import { journals, recentIssues, coverUrl } from '../../lib/periodicals';
+import { recentIssues, coverUrl } from '../../lib/periodicals';
 import { pdFilms, pdThumbUrl } from '../../lib/pdfilms';
 import { books, bookCoverUrl } from '../../lib/library';
 import { collections, collectionTitle, collectionBlurb } from '../../lib/collections';
 import { dossiers, dossierCopy } from '../../lib/dossiers';
 import { articles, articleCopy } from '../../lib/articles';
 import { figures } from '../../lib/figures';
+import { getEphemerides, ephemerisDate, ephemerisText } from '../../lib/ephemerides';
 import { profileUrl, profileSrcset } from '../../lib/tmdb';
 import { getFilmOfDay } from '../../lib/featured';
 import { manifesto } from '../../data/manifesto';
@@ -20,6 +20,13 @@ import { websiteLd, organizationLd } from '../../lib/seo';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
+
+// Efeméride del día. Son 33 fichas escritas y traducidas a los cinco idiomas
+// que no salían en ninguna página: con 33 no se llenan 365 días, así que
+// cuando hoy no toca ninguna se enseña la próxima, que siempre tiene algo que
+// decir. Los textos «un día como hoy» y «próxima efeméride» ya existían.
+const efem = getEphemerides();
+const efemeride = { hoy: efem.onThisDay.length > 0, dato: efem.onThisDay[0] ?? efem.next };
 
 // Últimos números: los últimos en entrar en la hemeroteca, sin repetir
 // cabecera. Ocho, dos filas: con una sola fila las cabeceras en castellano
@@ -42,7 +49,6 @@ const figurePicks = sample(figures, 6);
 const bookPicks = sample(books, 4);
 // En la portada solo las 3 revistas más recientes (por año de fundación). La
 // hemeroteca (/archive) sigue mostrándolas todas.
-const journalPicks = journals.slice().sort((a, b) => b.since - a.since).slice(0, 3);
 
 const manifestoCopy = manifesto[lang];
 
@@ -157,6 +163,14 @@ const homeJsonLd = [
                   </span>
                 </div>
               </div>
+              <div class="border-t border-ink px-6 py-3">
+                <span class="label">{efemeride.hoy ? t('home.onThisDay') : t('home.nextAnniversary')}</span>
+                <p class="mt-1 line-clamp-2 text-body-md text-charcoal">
+                  <span class="font-mono text-meta-data text-ochre-dim">{ephemerisDate(efemeride.dato, lang)}</span>
+                  {' · '}
+                  {ephemerisText(efemeride.dato, lang)}
+                </p>
+              </div>
             </div>
           ) : (
             <div class="flex flex-col justify-center border-t border-ink p-6 md:col-span-5 md:border-t-0">
@@ -169,80 +183,27 @@ const homeJsonLd = [
     </div>
   </section>
 
-  <script>
-    /**
-     * Carrusel de la portada. Avanza solo cada N ms; la línea de abajo va por
-     * tramos (uno por diapositiva): los pasados llenos, el actual llenándose.
-     * Se para al pasar el ratón o al perder la pestaña, y no avanza si el
-     * sistema pide menos movimiento. Cada tramo es un botón.
-     */
-    class HomeCarousel extends HTMLElement {
-      connectedCallback() {
-        const slides = Array.from(this.querySelectorAll<HTMLElement>('[data-slide]'));
-        const tabs = Array.from(this.querySelectorAll<HTMLButtonElement>('[data-tab]')).slice(0, slides.length);
-        // Tramos de más (si hay menos diapositivas que tramos pintados): fuera.
-        this.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((t, k) => { if (k >= slides.length) t.remove(); });
-        const interval = Number(this.dataset.interval) || 7000;
-        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        let i = 0;
-        let timer: ReturnType<typeof setTimeout> | undefined;
-        let paused = false;
-
-        const fill = (k: number) => tabs[k]?.querySelector<HTMLElement>('[data-fill]');
-        const pintarLinea = () => {
-          tabs.forEach((_, k) => {
-            const f = fill(k);
-            if (!f) return;
-            f.style.transition = 'none';
-            f.style.width = k < i ? '100%' : '0%';
-          });
-          const actual = fill(i);
-          if (!actual) return;
-          void actual.offsetWidth; // fuerza el reflow para que la transición arranque desde 0
-          if (reduce || paused) return;
-          actual.style.transition = `width ${interval}ms linear`;
-          actual.style.width = '100%';
-        };
-        const programar = () => {
-          clearTimeout(timer);
-          if (reduce || paused || document.hidden) return;
-          timer = setTimeout(() => mostrar((i + 1) % slides.length), interval);
-        };
-        const mostrar = (n: number) => {
-          i = n;
-          // visibility en vez de display: las diapositivas ocultas siguen
-          // ocupando su celda y la cabecera no cambia de alto.
-          slides.forEach((s, k) => {
-            s.style.visibility = k === n ? 'visible' : 'hidden';
-            s.setAttribute('aria-hidden', String(k !== n));
-            s.tabIndex = k === n ? 0 : -1;
-          });
-          tabs.forEach((t, k) => t.setAttribute('aria-selected', String(k === n)));
-          pintarLinea();
-          programar();
-        };
-
-        tabs.forEach((t, k) => t.addEventListener('click', () => mostrar(k)));
-        this.addEventListener('mouseenter', () => {
-          paused = true;
-          clearTimeout(timer);
-          const actual = fill(i);
-          if (actual) {
-            actual.style.width = getComputedStyle(actual).width; // se congela donde está
-            actual.style.transition = 'none';
-          }
-        });
-        this.addEventListener('mouseleave', () => {
-          paused = false;
-          mostrar(i);
-        });
-        document.addEventListener('visibilitychange', () => (document.hidden ? clearTimeout(timer) : mostrar(i)));
-
-        mostrar(0);
+  {/* ARTÍCULOS DE CINE ARCHIVE — lo vivo de la casa, justo debajo del héroe */}
+  <section class="frame border-t border-ink py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('articles.title')}</h2>
+      <a href={localizePath(lang, 'articles')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+    </div>
+    <div class="grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+      {
+        articlePicks.map(({ slug, date, c }) => (
+          <a href={localizePath(lang, `articles/${slug}`)} class="group flex flex-col bg-surface p-6 no-underline transition-colors hover:bg-film-white">
+            <span class="label">{c.kicker} · {formatDate(new Date(date), lang)}</span>
+            <h3 class="mt-3 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{c.title}</h3>
+            <p class="mt-3 text-body-md text-charcoal">{c.lead}</p>
+            <span class="label mt-auto pt-6 text-ink">{t('articles.read')} →</span>
+          </a>
+        ))
       }
-    }
-    if (!customElements.get('home-carousel')) customElements.define('home-carousel', HomeCarousel);
-  </script>
+      {/* Con un número impar de artículos, la celda que sobra se rellena para no dejar un hueco de tinta. */}
+      {articlePicks.length % 2 === 1 && <div class="hidden bg-surface md:block" aria-hidden="true" />}
+    </div>
+  </section>
 
   {/* BUSCADOR TMDB */}
   <section class="frame py-12">
@@ -258,6 +219,29 @@ const homeJsonLd = [
 
     <div class="grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
       {latestIssues.map((item) => <IssueCard item={item} lang={lang} />)}
+    </div>
+  </section>
+
+  {/* BIBLIOTECA (textos de dominio público) */}
+  <section class="frame py-12">
+    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
+      <h2 class="text-headline-lg text-ink">{t('nav.library')}</h2>
+      <a href={localizePath(lang, 'library')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+    </div>
+    <div class="grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
+      {
+        bookPicks.map((b) => (
+          <a href={localizePath(lang, `library/${b.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+            <div class="aspect-[3/4] overflow-hidden border-b border-ink bg-charcoal">
+              <img src={bookCoverUrl(b.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
+            </div>
+            <div class="p-3">
+              <h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{b.title}</h3>
+              <p class="mt-1 font-mono text-meta-data text-muted">{b.author} · {b.year}</p>
+            </div>
+          </a>
+        ))
+      }
     </div>
   </section>
 
@@ -283,23 +267,6 @@ const homeJsonLd = [
         ))
       }
     </div>
-  </section>
-
-  {/* ENCUENTRA TU CINE (salas reales · OpenStreetMap) */}
-  <section class="frame py-12">
-    <a
-      href={localizePath(lang, 'cines')}
-      class="group flex flex-col justify-between gap-6 border border-ink bg-surface p-6 no-underline transition-colors hover:bg-film-white md:flex-row md:items-center md:p-8"
-    >
-      <div class="max-w-2xl">
-        <span class="label">{t('nav.cines')}</span>
-        <h2 class="mt-2 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">
-          {t('cines.homeTagline')}
-        </h2>
-        <p class="mt-2 text-body-md text-charcoal">{t('cines.intro')}</p>
-      </div>
-      <span class="label shrink-0 text-ink group-hover:text-muted">{t('cines.searchBtn')} →</span>
-    </a>
   </section>
 
   {/* DOSIERES ESPECIALES (cine palestino · cine saharaui) */}
@@ -332,7 +299,7 @@ const homeJsonLd = [
     </div>
   </section>
 
-  {/* DOSIERES */}
+  {/* COLECCIONES (formas de recorrer el catálogo) */}
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('nav.collections')}</h2>
@@ -385,40 +352,21 @@ const homeJsonLd = [
     </div>
   </section>
 
-  {/* REVISTAS ACTUALES · ACCESO ABIERTO */}
+  {/* ENCUENTRA TU CINE (salas reales · OpenStreetMap) */}
   <section class="frame py-12">
-    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
-      <h2 class="text-headline-lg text-ink">{t('archive.current')}</h2>
-      <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">{t('home.viewArchive')} →</a>
-    </div>
-    <p class="mb-8 max-w-2xl text-body-md text-charcoal">{t('archive.currentIntro')}</p>
-
-    <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
-      {journalPicks.map((j) => <JournalCard item={j} lang={lang} />)}
-    </div>
-  </section>
-
-  {/* BIBLIOTECA (textos de dominio público) */}
-  <section class="frame py-12">
-    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
-      <h2 class="text-headline-lg text-ink">{t('nav.library')}</h2>
-      <a href={localizePath(lang, 'library')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
-    </div>
-    <div class="grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
-      {
-        bookPicks.map((b) => (
-          <a href={localizePath(lang, `library/${b.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
-            <div class="aspect-[3/4] overflow-hidden border-b border-ink bg-charcoal">
-              <img src={bookCoverUrl(b.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
-            </div>
-            <div class="p-3">
-              <h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{b.title}</h3>
-              <p class="mt-1 font-mono text-meta-data text-muted">{b.author} · {b.year}</p>
-            </div>
-          </a>
-        ))
-      }
-    </div>
+    <a
+      href={localizePath(lang, 'cines')}
+      class="group flex flex-col justify-between gap-6 border border-ink bg-surface p-6 no-underline transition-colors hover:bg-film-white md:flex-row md:items-center md:p-8"
+    >
+      <div class="max-w-2xl">
+        <span class="label">{t('nav.cines')}</span>
+        <h2 class="mt-2 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">
+          {t('cines.homeTagline')}
+        </h2>
+        <p class="mt-2 text-body-md text-charcoal">{t('cines.intro')}</p>
+      </div>
+      <span class="label shrink-0 text-ink group-hover:text-muted">{t('cines.searchBtn')} →</span>
+    </a>
   </section>
 
   {/* ¿NECESITAS AYUDA? — acceso a la guía de secciones (Info) */}
@@ -463,28 +411,6 @@ const homeJsonLd = [
           ))
         }
       </dl>
-    </div>
-  </section>
-
-  {/* ARTÍCULOS DE CINE ARCHIVE — al pie, después del manifiesto */}
-  <section class="frame border-t border-ink py-12">
-    <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
-      <h2 class="text-headline-lg text-ink">{t('articles.title')}</h2>
-      <a href={localizePath(lang, 'articles')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
-    </div>
-    <div class="grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
-      {
-        articlePicks.map(({ slug, date, c }) => (
-          <a href={localizePath(lang, `articles/${slug}`)} class="group flex flex-col bg-surface p-6 no-underline transition-colors hover:bg-film-white">
-            <span class="label">{c.kicker} · {formatDate(new Date(date), lang)}</span>
-            <h3 class="mt-3 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{c.title}</h3>
-            <p class="mt-3 text-body-md text-charcoal">{c.lead}</p>
-            <span class="label mt-auto pt-6 text-ink">{t('articles.read')} →</span>
-          </a>
-        ))
-      }
-      {/* Con un número impar de artículos, la celda que sobra se rellena para no dejar un hueco de tinta. */}
-      {articlePicks.length % 2 === 1 && <div class="hidden bg-surface md:block" aria-hidden="true" />}
     </div>
   </section>
 </BaseLayout>
