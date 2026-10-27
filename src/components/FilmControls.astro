@@ -47,6 +47,8 @@ const t = useTranslations(lang);
 </film-controls>
 
 <script>
+  import { nextRating, starFill, formatRating } from '../lib/stars';
+
   class FilmControls extends HTMLElement {
     connectedCallback() {
       const d = this.dataset;
@@ -81,10 +83,14 @@ const t = useTranslations(lang);
             status === val ? 'bg-ink text-white' : 'hover:bg-ink hover:text-white'
           }">${label}</button>`;
 
-        const star = (n: number) =>
-          `<button type="button" data-rate="${n}" aria-label="${n}" class="h-7 w-7 border-r border-ink font-mono text-meta-data transition-colors ${
-            rating >= n ? 'bg-ochre text-on-accent' : 'hover:bg-ochre hover:text-on-accent'
+        // Pulsar la misma estrella otra vez la deja en media, y una tercera la
+        // quita (ver nextRating). La media se pinta con la mitad en ochre.
+        const star = (n: number) => {
+          const fill = starFill(rating, n);
+          return `<button type="button" data-rate="${n}" aria-label="${n}" class="h-7 w-7 border-r border-ink font-mono text-meta-data transition-colors last:border-r-0 ${
+            fill === 'full' ? 'bg-ochre text-on-accent' : fill === 'half' ? 'star-half' : 'hover:bg-ochre hover:text-on-accent'
           }">${n}</button>`;
+        };
 
         this.innerHTML = `
           <div class="flex border-b border-ink">
@@ -96,6 +102,7 @@ const t = useTranslations(lang);
           <div class="flex items-center gap-2 border-b border-ink px-3 py-2">
             <span class="label">${L.rate}</span>
             <span class="flex border border-ink">${[1, 2, 3, 4, 5].map(star).join('')}</span>
+            <span class="font-mono text-meta-data text-ink" aria-live="polite">${rating ? formatRating(rating, lang) : ''}</span>
           </div>
           <div class="flex items-center gap-2 border-b border-ink px-3 py-2">
             <label class="label" for="fc-fecha-${tmdbId}">${L.watched}</label>
@@ -181,14 +188,14 @@ const t = useTranslations(lang);
         });
         // Puntuar es haberla visto. La fecha se manda siempre: si no, el
         // servidor la volvería a sellar con la de hoy y se perdería la que el
-        // usuario había puesto.
+        // usuario había puesto. Quitar la nota (0) no toca el estado.
         this.querySelectorAll<HTMLButtonElement>('[data-rate]').forEach((b) =>
           b.addEventListener('click', async () => {
-            const next = Number(b.dataset.rate);
+            const next = nextRating(rating, Number(b.dataset.rate));
             const fecha = leerFecha();
-            if (await post({ rating: next, ...(fecha ? { reviewedAt: fecha } : {}) })) {
+            if (await post({ rating: next || null, ...(fecha ? { reviewedAt: fecha } : {}) })) {
               rating = next;
-              status = 'seen';
+              if (next) status = 'seen';
               if (fecha) reviewed = fecha;
               render();
               flash();

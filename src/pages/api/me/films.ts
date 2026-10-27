@@ -25,7 +25,8 @@ const upsertSchema = z.object({
   // 'favorite' ya no es un estado: es un flag propio (campo `favorite`).
   status: z.enum(['want', 'seen']).optional(),
   favorite: z.boolean().optional(),
-  rating: z.number().int().min(1).max(5).nullable().optional(),
+  // De ½ en ½ estrella, de 0,5 a 5 (ver src/lib/stars.ts).
+  rating: z.number().min(0.5).max(5).multipleOf(0.5).nullable().optional(),
   note: z.string().max(2000).nullable().optional(),
   /** Cuándo la vio, en YYYY-MM-DD. Es el usuario quien la fija; no puede ser futura. */
   reviewedAt: z

@@ -3,6 +3,7 @@ import BaseLayout from '../../../../../layouts/BaseLayout.astro';
 import Badges from '../../../../../components/Badges.astro';
 import { badgesForUser } from '../../../../../lib/badges';
 import Avatar from '../../../../../components/Avatar.astro';
+import Stars from '../../../../../components/Stars.astro';
 import { normalizeLang, useTranslations, localizePath, formatDate } from '../../../../../i18n/ui';
 import { aInputDate } from '../../../../../lib/filmstate';
 import { db } from '../../../../../db/client';
@@ -100,9 +101,7 @@ const canShareStory = isOwner && !target.isPrivate;
         {isOwner ? (
           <div id="review-view">
             <p id="view-stars" class:list={['mt-5 font-mono text-headline-md text-ink', !row.rating && 'hidden']}>
-              {row.rating ? (
-                <Fragment>{'★'.repeat(row.rating)}<span class="text-outline-variant">{'★'.repeat(5 - row.rating)}</span></Fragment>
-              ) : ''}
+              {row.rating ? <Stars rating={row.rating} lang={lang} /> : ''}
             </p>
             <p id="view-note" class:list={['mt-4 max-w-prose whitespace-pre-line text-body-lg text-charcoal', !row.note && 'hidden']}>{row.note}</p>
           </div>
@@ -110,7 +109,7 @@ const canShareStory = isOwner && !target.isPrivate;
           <Fragment>
             {row.rating && (
               <p class="mt-5 font-mono text-headline-md text-ink">
-                {'★'.repeat(row.rating)}<span class="text-outline-variant">{'★'.repeat(5 - row.rating)}</span>
+                <Stars rating={row.rating} lang={lang} />
               </p>
             )}
             {row.note && <p class="mt-4 max-w-prose whitespace-pre-line text-body-lg text-charcoal">{row.note}</p>}
@@ -192,6 +191,7 @@ const canShareStory = isOwner && !target.isPrivate;
 
   <script>
     import { shareStoryImage } from '../../../../../lib/ui/share';
+    import { nextRating, starFill, starParts } from '../../../../../lib/stars';
     const shareBtn = document.getElementById('share-story') as HTMLButtonElement | null;
     if (shareBtn) shareStoryImage(shareBtn);
 
@@ -227,14 +227,15 @@ const canShareStory = isOwner && !target.isPrivate;
 
       const paint = () =>
         stars.forEach((b) => {
-          const on = Number(b.dataset.star) <= rating;
-          b.classList.toggle('bg-ochre', on);
-          b.classList.toggle('text-on-accent', on);
+          const fill = starFill(rating, Number(b.dataset.star));
+          b.classList.toggle('bg-ochre', fill === 'full');
+          b.classList.toggle('text-on-accent', fill === 'full');
+          b.classList.toggle('star-half', fill === 'half');
         });
+      // Misma estrella otra vez = media; una tercera la quita (ver nextRating).
       stars.forEach((b) =>
         b.addEventListener('click', () => {
-          const n = Number(b.dataset.star);
-          rating = rating === n ? 0 : n; // volver a pulsar la misma quita la estrella
+          rating = nextRating(rating, Number(b.dataset.star));
           paint();
         }),
       );
@@ -256,8 +257,9 @@ const canShareStory = isOwner && !target.isPrivate;
         }
         if (viewStars) {
           viewStars.classList.toggle('hidden', r === 0);
+          const p = starParts(r);
           viewStars.innerHTML = r
-            ? '★'.repeat(r) + '<span class="text-outline-variant">' + '★'.repeat(5 - r) + '</span>'
+            ? p.full + (p.half ? '½' : '') + '<span class="text-outline-variant">' + p.empty + '</span>'
             : '';
         }
         if (viewNote) {

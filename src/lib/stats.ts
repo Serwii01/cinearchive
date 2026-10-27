@@ -11,6 +11,7 @@ import { userFilms } from '../db/schema';
 import { getFilmsBrief } from './films';
 import { genreName } from '../data/genres';
 import { registerCache } from './cache-registry';
+import { isValidRating } from './stars';
 
 export interface CountItem {
   label: string;
@@ -24,7 +25,7 @@ export interface UserStats {
   hoursWatched: number;
   rated: number;
   avgRating: number | null;
-  ratingHistogram: number[]; // índices 0..4 → notas 1..5
+  ratingHistogram: number[]; // índices 0..9 → notas 0,5..5 (índice = nota·2 − 1)
   topGenres: CountItem[];
   topDirectors: CountItem[];
   byDecade: { decade: number; count: number }[];
@@ -59,7 +60,7 @@ export async function getUserStats(userId: string, locale: string): Promise<User
   const genres = new Map<number, number>();
   const directors = new Map<string, number>();
   const decades = new Map<number, number>();
-  const histogram = [0, 0, 0, 0, 0];
+  const histogram: number[] = Array(10).fill(0);
   let hoursMin = 0;
   let ratingSum = 0;
   let rated = 0;
@@ -72,8 +73,8 @@ export async function getUserStats(userId: string, locale: string): Promise<User
     if (row.status === 'want') counts.want++;
     else counts.seen++;
     if (row.favorite || row.status === 'favorite') counts.favorite++;
-    if (row.rating && row.rating >= 1 && row.rating <= 5) {
-      histogram[row.rating - 1]++;
+    if (isValidRating(row.rating)) {
+      histogram[row.rating * 2 - 1]++;
       ratingSum += row.rating;
       rated++;
     }

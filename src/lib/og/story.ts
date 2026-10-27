@@ -206,15 +206,21 @@ function starsPng(rating: number): { src: string; w: number; h: number } {
   const gap = 14;
   const w = size * 5 + gap * 4;
   const path = 'M12 2l2.9 6.9 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z';
+  // La media estrella es el contorno apagado más la mitad izquierda rellena,
+  // recortada con un clipPath en coordenadas de la propia estrella (24×24).
   let stars = '';
   for (let i = 0; i < 5; i++) {
     const x = i * (size + gap);
-    const on = i < rating;
+    const on = i + 1 <= rating;
+    const half = !on && i + 0.5 === rating;
     stars +=
       `<g transform="translate(${x},0) scale(${size / 24})">` +
-      `<path d="${path}" fill="${on ? OCHRE : 'none'}" stroke="${on ? OCHRE : 'rgba(255,255,255,0.5)'}" stroke-width="1.5" stroke-linejoin="round"/></g>`;
+      `<path d="${path}" fill="${on ? OCHRE : 'none'}" stroke="${on ? OCHRE : 'rgba(255,255,255,0.5)'}" stroke-width="1.5" stroke-linejoin="round"/>` +
+      (half ? `<path d="${path}" fill="${OCHRE}" stroke="${OCHRE}" stroke-width="1.5" stroke-linejoin="round" clip-path="url(#half)"/>` : '') +
+      `</g>`;
   }
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${size}" viewBox="0 0 ${w} ${size}">${stars}</svg>`;
+  const defs = '<defs><clipPath id="half"><rect x="0" y="0" width="12" height="24"/></clipPath></defs>';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${size}" viewBox="0 0 ${w} ${size}">${defs}${stars}</svg>`;
   const png = new Resvg(svg, { background: 'rgba(0,0,0,0)' }).render().asPng();
   return { src: `data:image/png;base64,${png.toString('base64')}`, w, h: size };
 }

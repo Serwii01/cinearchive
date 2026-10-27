@@ -111,6 +111,11 @@
     @apply inline-flex min-h-[44px] items-center;
   }
 
+  /* Botón de estrella con media nota: la mitad izquierda en ochre. */
+  .star-half {
+    background: linear-gradient(90deg, var(--c-ochre) 50%, transparent 50%);
+  }
+
   /* Botón primario: relleno ochre, hover invertido a negro. */
   .btn {
     @apply inline-flex items-center gap-2 border border-ink px-5 py-3 font-mono text-label-caps uppercase tracking-[0.1em] transition-colors duration-150;

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Stars from '../../components/Stars.astro';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { filmSlug } from '../../lib/slug';
 import { db } from '../../db/client';
@@ -100,7 +101,7 @@ const isEmpty = rows.length === 0 && lists.length === 0;
                   <div class="min-w-0">
                     <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${r.tmdbId}`}</p>
                     <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
-                    {r.rating && <p class="mt-1 font-mono text-meta-data text-ink">{'★'.repeat(r.rating)}<span class="text-outline-variant">{'★'.repeat(5 - r.rating)}</span></p>}
+                    {r.rating && <p class="mt-1 font-mono text-meta-data text-ink"><Stars rating={r.rating} lang={lang} /></p>}
                     {r.note && <p class="mt-1 line-clamp-2 text-body-md text-charcoal/80">{r.note}</p>}
                   </div>
                 </a>

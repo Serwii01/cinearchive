@@ -5,7 +5,7 @@ import {
   timestamp,
   integer,
   serial,
-  smallint,
+  real,
   jsonb,
   primaryKey,
   pgEnum,
@@ -139,7 +139,10 @@ export const userFilms = pgTable(
     status: filmStatus('status').notNull().default('want'),
     /** Favorita: flag independiente del estado (una película valorada puede ser favorita a la vez). */
     favorite: boolean('favorite').notNull().default(false),
-    rating: smallint('rating'), // 1-5, nullable
+    // Estrellas de ½ en ½ (0,5 a 5), nullable. Es `real` y no un entero de
+    // medias estrellas para que el número guardado sea el que se ve; 0,5 es
+    // exacto en coma flotante, así que no hay redondeos.
+    rating: real('rating'),
     note: text('note'),
     // Fecha en que se escribió la reseña (nota o valoración) por última vez.
     // Null si la película nunca ha tenido reseña (solo estado). Distinta de

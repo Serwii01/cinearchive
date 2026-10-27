@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Stars from '../../../components/Stars.astro';
 import Avatar from '../../../components/Avatar.astro';
 import Badges from '../../../components/Badges.astro';
 import { badgesForUser } from '../../../lib/badges';
@@ -237,7 +238,7 @@ const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lan
                     <div class="min-w-0">
                       <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${r.tmdbId}`}</p>
                       <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
-                      {r.rating && <p class="mt-1 font-mono text-meta-data text-ink">{'★'.repeat(r.rating)}<span class="text-outline-variant">{'★'.repeat(5 - r.rating)}</span></p>}
+                      {r.rating && <p class="mt-1 font-mono text-meta-data text-ink"><Stars rating={r.rating} lang={lang} /></p>}
                       {r.note && <p class="mt-1 line-clamp-3 text-body-md text-charcoal/80">{r.note}</p>}
                       <p class="mt-1 font-mono text-meta-data text-outline">{formatDate(r.reviewedAt, lang)}</p>
                     </div>

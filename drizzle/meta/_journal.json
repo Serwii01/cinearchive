@@ -134,6 +134,13 @@
       "when": 1792505722419,
       "tag": "0018_noisy_rhino",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1793129777747,
+      "tag": "0019_half_star_ratings",
+      "breakpoints": true
     }
   ]
 }

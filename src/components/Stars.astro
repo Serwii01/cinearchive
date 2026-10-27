@@ -1,0 +1,19 @@
+---
+/**
+ * Una nota pintada como estrellas: llenas, «½» si la hay y apagadas hasta
+ * cinco. Antes cada página repetía su propio '★'.repeat, que con medias
+ * estrellas ya no basta.
+ */
+import { starParts, formatRating } from '../lib/stars';
+
+interface Props {
+  rating: number;
+  lang: string;
+  class?: string;
+}
+
+const { rating, lang, class: cls } = Astro.props;
+const { full, half, empty } = starParts(rating);
+---
+
+<span class={cls} aria-label={`${formatRating(rating, lang)} / 5`}><span aria-hidden="true">{full}{half && '½'}<span class="text-outline-variant">{empty}</span></span></span>

@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { getUserStats } from '../../lib/stats';
+import Stars from '../../components/Stars.astro';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -16,6 +17,10 @@ try {
 
 const pct = (count: number, max: number) => (max > 0 ? Math.round((count / max) * 100) : 0);
 const histMax = stats ? Math.max(1, ...stats.ratingHistogram) : 1;
+// Las filas de media estrella solo aparecen si el usuario ha usado alguna:
+// quien puntúa con enteras sigue viendo cinco barras, no diez con huecos.
+const usesHalves = stats ? stats.ratingHistogram.some((n, i) => i % 2 === 0 && n > 0) : false;
+const ratingRows = usesHalves ? [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5] : [5, 4, 3, 2, 1];
 const genreMax = stats ? Math.max(1, ...stats.topGenres.map((g) => g.count)) : 1;
 const dirMax = stats ? Math.max(1, ...stats.topDirectors.map((d) => d.count)) : 1;
 const decadeMax = stats ? Math.max(1, ...stats.byDecade.map((d) => d.count)) : 1;
@@ -112,11 +117,11 @@ const isEmpty = !stats || stats.total === 0;
             <section>
               <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.ratings')}</h2>
               <ul class="mt-4 flex flex-col gap-2">
-                {[5, 4, 3, 2, 1].map((star) => (
+                {ratingRows.map((star) => (
                   <li class="grid grid-cols-[5.5rem_1fr_2rem] items-center gap-3 sm:grid-cols-[8rem_1fr_2rem]">
-                    <span class="font-mono text-meta-data text-charcoal">{'★'.repeat(star)}</span>
-                    <span class="h-4 bg-ochre" style={`width:${pct(stats.ratingHistogram[star - 1], histMax)}%`}></span>
-                    <span class="text-right font-mono text-meta-data text-muted">{stats.ratingHistogram[star - 1]}</span>
+                    <Stars rating={star} lang={lang} class="font-mono text-meta-data text-charcoal" />
+                    <span class="h-4 bg-ochre" style={`width:${pct(stats.ratingHistogram[star * 2 - 1], histMax)}%`}></span>
+                    <span class="text-right font-mono text-meta-data text-muted">{stats.ratingHistogram[star * 2 - 1]}</span>
                   </li>
                 ))}
               </ul>
