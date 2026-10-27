@@ -55,6 +55,19 @@ export async function searchMovies(query: string, locale: string) {
   return data.results.slice(0, 20);
 }
 
+/**
+ * Búsqueda para emparejar títulos de fuera (la importación de Letterboxd).
+ * Va en inglés porque Letterboxd guarda el título inglés, y con el año como
+ * filtro si se sabe. TMDB busca también en títulos alternativos y traducidos,
+ * así que un título original o español también aparece.
+ */
+export async function searchMoviesForMatch(query: string, year?: number): Promise<TmdbSearchResult[]> {
+  const params: Record<string, string> = { query, language: 'en-US', include_adult: 'false', page: '1' };
+  if (year) params.year = String(year);
+  const data = await tmdbFetch<{ results: TmdbSearchResult[] }>('/search/movie', params);
+  return data.results.slice(0, 8);
+}
+
 export interface TmdbMovie {
   id: number;
   imdb_id: string | null;

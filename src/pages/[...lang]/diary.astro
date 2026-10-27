@@ -43,6 +43,9 @@ const base = localizePath(lang, 'diary');
       <span class="label">{t('diary.title')}{year ? ` · ${year} · ${viewings.length}` : ''}</span>
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('diary.title')}</h1>
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('diary.intro')}</p>
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <a href={`${localizePath(lang, 'account')}#letterboxd`} class="tap label hover:text-ink">{t('import.cta')} →</a>
+      </div>
     </header>
 
     {years.length > 1 && (

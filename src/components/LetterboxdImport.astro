@@ -1,0 +1,243 @@
+---
+/**
+ * «Importar desde Letterboxd», en la cuenta. Todo el trabajo pesado va en el
+ * navegador: leer el ZIP, juntar los CSV y mandar las películas en tandas a
+ * /api/me/import/letterboxd-match y -commit, con su barra de progreso.
+ */
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const L = {
+  reading: t('import.reading'),
+  matching: t('import.matching'),
+  found: t('import.found'),
+  likely: t('import.likely'),
+  missing: t('import.missing'),
+  likelyHelp: t('import.likelyHelp'),
+  none: t('import.none'),
+  missingHelp: t('import.missingHelp'),
+  likes: t('import.likes'),
+  go: t('import.go'),
+  saving: t('import.saving'),
+  done: t('import.done'),
+  clipped: t('import.clipped'),
+  error: t('import.error'),
+  netError: t('import.netError'),
+  empty: t('import.empty'),
+  toDiary: t('import.toDiary'),
+  diaryUrl: localizePath(lang, 'diary'),
+};
+---
+
+<section id="letterboxd" class="border border-ink bg-surface">
+  <div class="border-b border-ink px-5 py-4">
+    <h2 class="font-display text-headline-md text-ink">{t('import.title')}</h2>
+  </div>
+  <div class="p-5">
+    <p class="max-w-prose text-body-md text-charcoal">{t('import.intro')}</p>
+    <p class="mt-2 max-w-prose font-mono text-meta-data text-muted">{t('import.how')}</p>
+    <letterboxd-import class="mt-4 block" data-l={JSON.stringify(L)}>
+      <label class="btn btn-primary cursor-pointer">
+        {t('import.choose')}
+        <input type="file" accept=".zip,application/zip" class="sr-only" data-file />
+      </label>
+      <div data-out class="mt-4" aria-live="polite"></div>
+    </letterboxd-import>
+  </div>
+</section>
+
+<script>
+  import { listZip } from '../lib/unzip';
+  import { collectFilms, lbFileKind, type LbFiles, type LbFilm, type MatchCandidate } from '../lib/letterboxd';
+
+  type Matched = { film: LbFilm; id: number | null; confidence: 'exact' | 'likely' | 'none'; candidates: MatchCandidate[] };
+
+  const MATCH_BATCH = 50;
+  const COMMIT_BATCH = 100;
+
+  class LetterboxdImport extends HTMLElement {
+    connectedCallback() {
+      const L = JSON.parse(this.dataset.l || '{}') as Record<string, string>;
+      const out = this.querySelector<HTMLElement>('[data-out]')!;
+      const input = this.querySelector<HTMLInputElement>('[data-file]')!;
+      const lang = document.documentElement.lang || 'es';
+      const nf = new Intl.NumberFormat(lang);
+      const fill = (s: string, v: Record<string, number | string>) =>
+        s.replace(/\{(\w+)\}/g, (_, k) => (typeof v[k] === 'number' ? nf.format(v[k] as number) : String(v[k] ?? '')));
+      const esc = (s: string) =>
+        s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+      const progress = (label: string, n: number, total: number) => {
+        out.innerHTML = `
+          <p class="font-mono text-meta-data text-ink">${esc(fill(label, { n, total }))}</p>
+          <div class="mt-2 h-2 w-full border border-ink"><div class="h-full bg-ochre" style="width:${total ? Math.round((n / total) * 100) : 0}%"></div></div>`;
+      };
+      const fail = (msg: string) => {
+        out.innerHTML = `<p role="alert" class="border-2 border-error bg-surface px-3 py-2 font-mono text-meta-data text-error">${esc(msg)}</p>`;
+        input.disabled = false;
+      };
+      const post = async (url: string, body: unknown) => {
+        // Si el servidor pide calma (429), se espera lo que diga y se repite.
+        for (let i = 0; i < 4; i++) {
+          const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+          if (res.status === 429) {
+            await new Promise((r) => setTimeout(r, (Number(res.headers.get('retry-after')) || 5) * 1000));
+            continue;
+          }
+          if (!res.ok) throw new Error(String(res.status));
+          return res.json();
+        }
+        throw new Error('429');
+      };
+
+      input.addEventListener('change', async () => {
+        const file = input.files?.[0];
+        if (!file) return;
+        input.disabled = true;
+        out.innerHTML = `<p class="font-mono text-meta-data text-ink">${esc(L.reading)}</p>`;
+
+        // 1. Leer el ZIP y juntar los CSV.
+        let films: LbFilm[];
+        try {
+          const files: LbFiles = {};
+          for (const e of listZip(await file.arrayBuffer())) {
+            const kind = lbFileKind(e.name);
+            if (kind) files[kind] = new TextDecoder().decode(await e.read());
+          }
+          films = collectFilms(files);
+        } catch {
+          return fail(L.error);
+        }
+        if (films.length === 0) return fail(L.empty);
+
+        // 2. Emparejar con TMDB, de 50 en 50.
+        const matched: Matched[] = [];
+        try {
+          for (let i = 0; i < films.length; i += MATCH_BATCH) {
+            progress(L.matching, i, films.length);
+            const batch = films.slice(i, i + MATCH_BATCH);
+            const { results } = await post('/api/me/import/letterboxd-match', {
+              items: batch.map((f) => ({ key: f.key, name: f.name, year: f.year })),
+            });
+            const byKey = new Map((results as (Omit<Matched, 'film'> & { key: string })[]).map((r) => [r.key, r]));
+            for (const f of batch) {
+              const r = byKey.get(f.key);
+              matched.push({ film: f, id: r?.id ?? null, confidence: r?.confidence ?? 'none', candidates: r?.candidates ?? [] });
+            }
+          }
+        } catch {
+          return fail(L.netError);
+        }
+        preview(matched);
+      });
+
+      // 3. Vista previa: cuántas, cuáles dudosas y cuáles no.
+      const preview = (matched: Matched[]) => {
+        const exact = matched.filter((m) => m.confidence === 'exact');
+        const likely = matched.filter((m) => m.confidence === 'likely');
+        const missing = matched.filter((m) => m.confidence === 'none');
+        const liked = matched.filter((m) => m.film.liked).length;
+        const yr = (c: MatchCandidate) => (c.release_date ? c.release_date.slice(0, 4) : '—');
+        const poster = (c: MatchCandidate) =>
+          c.poster_path ? `<img src="https://image.tmdb.org/t/p/w92${c.poster_path}" alt="" class="h-12 w-8 border border-ink object-cover" loading="lazy">` : '<span class="h-12 w-8 border border-ink bg-charcoal"></span>';
+
+        out.innerHTML = `
+          <ul class="grid grid-cols-3 gap-px border border-ink bg-ink text-center">
+            <li class="bg-film-white p-3"><span class="block font-display text-headline-lg text-ink">${nf.format(exact.length)}</span><span class="label">${esc(fill(L.found, { n: '' }).trim())}</span></li>
+            <li class="bg-film-white p-3"><span class="block font-display text-headline-lg text-ink">${nf.format(likely.length)}</span><span class="label">${esc(fill(L.likely, { n: '' }).trim())}</span></li>
+            <li class="bg-film-white p-3"><span class="block font-display text-headline-lg text-ink">${nf.format(missing.length)}</span><span class="label">${esc(fill(L.missing, { n: '' }).trim())}</span></li>
+          </ul>
+          ${likely.length ? `
+            <details class="mt-4 border border-ink bg-film-white" open>
+              <summary class="tap cursor-pointer px-3 label">${esc(fill(L.likely, { n: likely.length }))}</summary>
+              <p class="px-3 pb-2 font-mono text-meta-data text-muted">${esc(L.likelyHelp)}</p>
+              <ul class="divide-y divide-outline-variant">
+                ${likely.map((m, i) => `
+                  <li class="flex flex-col gap-2 px-3 py-2 sm:flex-row sm:items-center">
+                    <span class="min-w-0 flex-1 font-mono text-meta-data text-ink">${esc(m.film.name)} (${m.film.year ?? '—'})</span>
+                    <select data-pick="${i}" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink sm:max-w-[60%]">
+                      ${m.candidates.map((c) => `<option value="${c.id}" ${c.id === m.id ? 'selected' : ''}>${esc(c.title)} (${yr(c)})${c.original_title !== c.title ? ` · ${esc(c.original_title)}` : ''}</option>`).join('')}
+                      <option value="">${esc(L.none)}</option>
+                    </select>
+                    ${poster(m.candidates.find((c) => c.id === m.id) ?? m.candidates[0])}
+                  </li>`).join('')}
+              </ul>
+            </details>` : ''}
+          ${missing.length ? `
+            <details class="mt-4 border border-ink bg-film-white">
+              <summary class="tap cursor-pointer px-3 label">${esc(fill(L.missing, { n: missing.length }))}</summary>
+              <p class="px-3 pb-2 font-mono text-meta-data text-muted">${esc(L.missingHelp)}</p>
+              <ul class="px-3 pb-3 font-mono text-meta-data text-charcoal">
+                ${missing.map((m) => `<li>${esc(m.film.name)} (${m.film.year ?? '—'})</li>`).join('')}
+              </ul>
+            </details>` : ''}
+          ${liked ? `
+            <label class="mt-4 flex items-start gap-2 text-body-md text-charcoal">
+              <input type="checkbox" data-likes class="mt-1">
+              <span>${esc(fill(L.likes, { n: liked }))}</span>
+            </label>` : ''}
+          <button type="button" data-go class="btn btn-primary mt-4">${esc(L.go)}</button>`;
+
+        // El cartel de al lado sigue a lo que se elige en el desplegable.
+        out.querySelectorAll<HTMLSelectElement>('[data-pick]').forEach((sel) =>
+          sel.addEventListener('change', () => {
+            const m = likely[Number(sel.dataset.pick)];
+            m.id = sel.value ? Number(sel.value) : null;
+            const c = m.candidates.find((x) => x.id === m.id);
+            const img = sel.nextElementSibling;
+            if (img) img.outerHTML = c ? poster(c) : '<span class="h-12 w-8 border border-ink bg-charcoal"></span>';
+          }),
+        );
+        out.querySelector('[data-go]')!.addEventListener('click', () => {
+          const likes = !!out.querySelector<HTMLInputElement>('[data-likes]')?.checked;
+          commit([...exact, ...likely].filter((m) => m.id != null), likes);
+        });
+      };
+
+      // 4. Guardar, de 100 en 100.
+      const commit = async (list: Matched[], likesAsFavorites: boolean) => {
+        // Dos títulos de Letterboxd pueden caer en la misma película de TMDB
+        // (un remake mal emparejado, una versión del director): se juntan para
+        // no mandar la misma película dos veces en una tanda.
+        const byId = new Map<number, Matched['film']>();
+        for (const m of list) {
+          const prev = byId.get(m.id!);
+          if (!prev) { byId.set(m.id!, { ...m.film, viewings: [...m.film.viewings] }); continue; }
+          prev.watched ||= m.film.watched;
+          prev.watchlist = !prev.watched && (prev.watchlist || m.film.watchlist);
+          prev.liked ||= m.film.liked;
+          prev.rating ??= m.film.rating;
+          prev.review ??= m.film.review;
+          for (const v of m.film.viewings) if (!prev.viewings.some((x) => x.date === v.date)) prev.viewings.push(v);
+        }
+        const films = [...byId.entries()].map(([tmdbId, f]) => ({
+          tmdbId, watched: f.watched, watchlist: f.watchlist, liked: f.liked, rating: f.rating, review: f.review,
+          viewings: f.viewings.slice(-500),
+        }));
+
+        let saved = 0, viewings = 0, clipped = 0;
+        try {
+          for (let i = 0; i < films.length; i += COMMIT_BATCH) {
+            progress(L.saving, i, films.length);
+            const r = await post('/api/me/import/letterboxd-commit', { likesAsFavorites, films: films.slice(i, i + COMMIT_BATCH) });
+            saved += r.films; viewings += r.viewings; clipped += r.clipped;
+          }
+        } catch {
+          return fail(L.netError);
+        }
+        out.innerHTML = `
+          <p class="border-2 border-ink bg-film-white px-3 py-2 font-mono text-meta-data text-ink">${esc(fill(L.done, { films: saved, viewings }))}</p>
+          ${clipped ? `<p class="mt-2 font-mono text-meta-data text-muted">${esc(fill(L.clipped, { n: clipped }))}</p>` : ''}
+          <a href="${L.diaryUrl}" class="btn btn-primary mt-4 no-underline">${esc(L.toDiary)}</a>`;
+        input.disabled = false;
+        input.value = '';
+      };
+    }
+  }
+  if (!customElements.get('letterboxd-import')) customElements.define('letterboxd-import', LetterboxdImport);
+</script>

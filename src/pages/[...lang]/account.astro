@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Avatar from '../../components/Avatar.astro';
 import Badges from '../../components/Badges.astro';
+import LetterboxdImport from '../../components/LetterboxdImport.astro';
 import { badgesForUser } from '../../lib/badges';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { GENRES, genreName } from '../../data/genres';
@@ -334,6 +335,8 @@ const inputCls =
             </ul>
           )}
         </section>
+
+        <LetterboxdImport lang={lang} />
 
         {/* ============ Seguridad y datos ============
             Lo que prometen la política de privacidad y las condiciones:

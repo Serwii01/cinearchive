@@ -152,6 +152,8 @@ function briefFromTmdb(m: TmdbMovie): FilmBrief {
   };
 }
 
+const BRIEF_CONCURRENCY = 8;
+
 /**
  * Resúmenes para una lista de IDs. Usa films_cache; para los que falten, los
  * pide a TMDB (y de paso los cachea). Devuelve un mapa id → FilmBrief.
@@ -171,9 +173,14 @@ export async function getFilmsBrief(
 
   // Para los que falten pedimos SOLO a TMDB (no OMDb ni Wikidata, que son
   // lentos y aquí no se usan) y en paralelo; se cachea el tmdb para la ficha completa.
+  // Con tope de peticiones a la vez: tras importar de Letterboxd, el diario o
+  // la lista pueden traer cientos de películas sin cachear, y lanzarlas todas
+  // de golpe chocaba con el límite de TMDB y llenaba la memoria del contenedor.
   const missing = tmdbIds.filter((id) => !out.has(id));
-  await Promise.all(
-    missing.map(async (id) => {
+  let next = 0;
+  const worker = async () => {
+    while (next < missing.length) {
+      const id = missing[next++];
       try {
         const tmdb = await getMovie(id, locale);
         out.set(id, briefFromTmdb(tmdb));
@@ -190,7 +197,8 @@ export async function getFilmsBrief(
       } catch {
         /* ignorar IDs no resolubles */
       }
-    }),
-  );
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(BRIEF_CONCURRENCY, missing.length) }, worker));
   return out;
 }
