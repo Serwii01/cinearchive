@@ -39,6 +39,20 @@ export interface Article {
   gallery?: { kind: TmdbKind; items: ArticleGalleryItem[] };
   /** Películas relacionadas, para enlazar a sus fichas al pie. */
   related?: number[];
+  /**
+   * Imagen de cabecera propia (en public/), para lo que no está en TMDB: un
+   * videojuego, un festival. Si está, gana a `cover`.
+   */
+  image?: { src: string; width: number; height: number; credit: string };
+  /** Vídeo de YouTube que se incrusta al pulsar (privacidad: nada carga antes). */
+  video?: { youtubeId: string; credit: string };
+  /**
+   * Fotogramas citados para el análisis, en hoja de contactos: cada uno con su
+   * código de tiempo y un pie. Van a su tamaño real; no se agrandan.
+   */
+  stills?: { credit: Record<Lang, string>; items: { src: string; time: string; caption: Record<Lang, string> }[] };
+  /** Firma, si el artículo es de alguien en concreto y no de la redacción. */
+  author?: string;
   sources: { label: string; url: string }[];
   copy: Record<Lang, ArticleCopy>;
 }

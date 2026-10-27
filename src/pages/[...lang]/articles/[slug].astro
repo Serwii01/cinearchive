@@ -16,8 +16,8 @@ const c = articleCopy(article, lang);
 
 // Imagen de cabecera: el fondo de una película de TMDB. Si TMDB no responde,
 // la página sale sin imagen; un artículo no puede caerse por un fondo.
-let cover: string | null = null;
-if (article.cover) {
+let cover: string | null = article.image?.src ?? null;
+if (!cover && article.cover) {
   try {
     const { tmdbId, kind = 'movie' } = article.cover;
     const path = kind === 'tv' ? (await getTv(tmdbId, lang)).backdrop_path : (await getMovie(tmdbId, lang)).backdrop_path;
@@ -56,7 +56,7 @@ const otros = articles.filter((a) => a.slug !== article.slug).map((a) => ({ slug
 
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const jsonLd = [
-  articleLd({ url, headline: c.title, description: c.lead, image: cover ?? undefined, inLanguage: lang }),
+  articleLd({ url, headline: c.title, description: c.lead, image: cover ? new URL(cover, Astro.site).href : undefined, inLanguage: lang }),
   breadcrumbLd([
     { name: t('articles.title'), url: new URL(localizePath(lang, 'articles'), Astro.site).href },
     { name: c.title, url },
@@ -64,7 +64,7 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout title={c.title} description={c.lead} jsonLd={jsonLd}>
+<BaseLayout title={c.title} description={c.lead} image={cover ?? undefined} ogType="article" jsonLd={jsonLd}>
   <article class="frame py-12">
     <a href={localizePath(lang, 'articles')} class="label no-underline hover:text-ink">← {t('articles.back')}</a>
 
@@ -72,7 +72,7 @@ const jsonLd = [
       <span class="label">{c.kicker} · {formatDate(new Date(article.date), lang)}</span>
       <h1 class="mt-3 max-w-4xl text-display-mobile md:text-display-lg">{c.title}</h1>
       <p class="mt-4 max-w-3xl text-body-lg text-charcoal">{c.lead}</p>
-      <p class="mt-4 font-mono text-meta-data text-muted">{t('articles.by')}</p>
+      <p class="mt-4 font-mono text-meta-data text-muted">{article.author ? t('articles.byAuthor').replace('{name}', article.author) : t('articles.by')}</p>
     </header>
 
     {c.stats && c.stats.length > 0 && (
@@ -86,9 +86,31 @@ const jsonLd = [
       </div>
     )}
 
-    {cover && (
+    {/* Con vídeo, la portada pasa a ser su póster: pintarla además arriba la repetiría. */}
+    {cover && !article.video && (
       <figure class="mt-8 border border-ink">
-        <img src={cover} alt="" width="1280" height="720" decoding="async" class="h-64 w-full object-cover sm:h-80 md:h-[28rem]" />
+        <img src={cover} alt="" width={article.image?.width ?? 1280} height={article.image?.height ?? 720} decoding="async" class="h-64 w-full object-cover sm:h-80 md:h-[28rem]" />
+        {article.image && <figcaption class="border-t border-ink px-3 py-2 font-mono text-meta-data text-muted">{article.image.credit}</figcaption>}
+      </figure>
+    )}
+
+    {/* El vídeo no se carga hasta que se pulsa: ni YouTube ni sus cookies
+        entran en la página por leer el artículo. */}
+    {article.video && (
+      <figure class="mt-8 border border-ink">
+        <div id="article-video" data-key={article.video.youtubeId}>
+          <button type="button" id="article-video-btn" class="group relative block w-full" aria-label={t('articles.playVideo')}>
+            {cover ? (
+              <img src={cover} alt="" width="1280" height="720" loading="lazy" decoding="async" class="aspect-video w-full object-cover" />
+            ) : (
+              <div class="film-grain aspect-video w-full"></div>
+            )}
+            <span class="absolute inset-0 flex items-center justify-center bg-ink/40 transition-colors group-hover:bg-ink/60">
+              <span class="btn btn-primary pointer-events-none">▶ {t('articles.playVideo')}</span>
+            </span>
+          </button>
+        </div>
+        <figcaption class="border-t border-ink px-3 py-2 font-mono text-meta-data text-muted">{article.video.credit} · {t('articles.videoNote')}</figcaption>
       </figure>
     )}
 
@@ -100,6 +122,24 @@ const jsonLd = [
         })
       }
     </div>
+
+    {article.stills && (
+      <section class="mt-12">
+        <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('articles.stills')}</h2>
+        <p class="mt-3 max-w-3xl font-mono text-meta-data text-muted">{article.stills.credit[lang] ?? article.stills.credit.es}</p>
+        <ol class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+          {article.stills.items.map((s) => (
+            <li class="flex flex-col bg-surface">
+              <img src={s.src} alt={s.caption[lang] ?? s.caption.es} width="320" height="180" loading="lazy" decoding="async" class="aspect-video w-full border-b border-ink bg-ink object-cover" />
+              <p class="p-2 text-body-md leading-snug text-charcoal">
+                <span class="mr-1 font-mono text-meta-data text-ochre-dim">{s.time}</span>
+                {s.caption[lang] ?? s.caption.es}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )}
 
     {galeria.length > 0 && (
       <section class="mt-12">
@@ -175,4 +215,21 @@ const jsonLd = [
       )}
     </section>
   </article>
+
+  <script>
+    // Vídeo: el iframe de YouTube (sin cookies) se crea solo al pulsar.
+    const vw = document.getElementById('article-video');
+    document.getElementById('article-video-btn')?.addEventListener('click', () => {
+      const key = vw?.dataset.key;
+      if (!vw || !key) return;
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${key}?autoplay=1`;
+      f.title = 'YouTube';
+      f.allow = 'autoplay; encrypted-media; fullscreen';
+      f.setAttribute('allowfullscreen', '');
+      f.className = 'aspect-video w-full';
+      f.style.border = '0';
+      vw.replaceChildren(f);
+    });
+  </script>
 </BaseLayout>
