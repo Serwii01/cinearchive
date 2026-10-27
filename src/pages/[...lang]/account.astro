@@ -10,6 +10,7 @@ import { userPreferences, follows, user as userTable, profile } from '../../db/s
 import { and, eq, desc } from 'drizzle-orm';
 import { isAdmin } from '../../lib/admin';
 import { getMyProfile } from '../../lib/social';
+import { hasPassword } from '../../lib/account';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -54,6 +55,9 @@ const actividad = [
   { href: localizePath(lang, 'search'), label: t('search.title') },
   ...(admin ? [{ href: localizePath(lang, 'admin'), label: t('nav.admin') }] : []),
 ];
+
+const conPassword = await hasPassword(user.id);
+const deleteWord = t('account.deleteWord');
 
 const inputCls =
   'w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none';
@@ -329,10 +333,144 @@ const inputCls =
             </ul>
           )}
         </section>
+
+        {/* ============ Seguridad y datos ============
+            Lo que prometen la política de privacidad y las condiciones:
+            cambiar la contraseña, llevarte tus datos y borrar la cuenta tú
+            mismo, sin escribir a nadie. */}
+        <section
+          class="border border-ink bg-surface"
+          id="security"
+          data-l-changed={t('account.passwordChanged')}
+          data-l-wrong={t('account.passwordWrong')}
+          data-l-short={t('account.passwordShort')}
+          data-l-fresh={t('account.deleteFresh')}
+          data-l-error={t('account.genericError')}
+          data-delete-word={deleteWord}
+          data-home={localizePath(lang)}
+        >
+          <header class="border-b border-ink px-5 py-3">
+            <h2 class="font-display text-headline-md text-ink">{t('account.security')}</h2>
+          </header>
+
+          <div class="border-b border-outline-variant p-5">
+            <h3 class="label text-ink">{t('account.changePassword')}</h3>
+            {conPassword ? (
+              <form id="password-form" class="mt-4 flex flex-col gap-3">
+                <label class="flex flex-col gap-1">
+                  <span class="label">{t('account.currentPassword')}</span>
+                  <input name="current" type="password" autocomplete="current-password" required class={inputCls} />
+                </label>
+                <label class="flex flex-col gap-1">
+                  <span class="label">{t('account.newPassword')}</span>
+                  <input name="next" type="password" autocomplete="new-password" minlength="8" required class={inputCls} />
+                </label>
+                <div class="flex flex-wrap items-center gap-4">
+                  <button type="submit" class="btn btn-primary">{t('account.changePassword')}</button>
+                  <span data-msg role="status" class="font-mono text-meta-data text-muted"></span>
+                </div>
+              </form>
+            ) : (
+              <p class="mt-3 font-mono text-meta-data text-muted">{t('account.noPassword')}</p>
+            )}
+          </div>
+
+          <div class="border-b border-outline-variant p-5">
+            <h3 class="label text-ink">{t('account.exportTitle')}</h3>
+            <p class="mt-2 text-body-md text-charcoal">{t('account.exportDesc')}</p>
+            <a href="/api/me/export" class="btn mt-4 no-underline" download>{t('account.exportBtn')}</a>
+          </div>
+
+          <div class="p-5">
+            <h3 class="label text-error">{t('account.deleteTitle')}</h3>
+            <p class="mt-2 text-body-md text-charcoal">{t('account.deleteDesc')}</p>
+            <form id="delete-form" class="mt-4 flex flex-col gap-3">
+              {conPassword && (
+                <label class="flex flex-col gap-1">
+                  <span class="label">{t('account.deletePassword')}</span>
+                  <input name="password" type="password" autocomplete="current-password" required class={inputCls} />
+                </label>
+              )}
+              <label class="flex flex-col gap-1">
+                <span class="label">{t('account.deleteConfirm').replace('{word}', deleteWord)}</span>
+                <input name="confirm" type="text" autocomplete="off" required class={inputCls} />
+              </label>
+              <div class="flex flex-wrap items-center gap-4">
+                <button type="submit" class="btn border-error text-error hover:bg-error hover:text-white" disabled>
+                  {t('account.deleteBtn')}
+                </button>
+                <span data-msg role="status" class="font-mono text-meta-data text-error"></span>
+              </div>
+            </form>
+          </div>
+        </section>
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { authClient } from '../../lib/auth-client';
+
+  const sec = document.getElementById('security') as HTMLElement | null;
+  if (sec) {
+    const L = sec.dataset;
+
+    // --- Cambiar la contraseña ---
+    const pwForm = document.getElementById('password-form') as HTMLFormElement | null;
+    pwForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = pwForm.querySelector('[data-msg]') as HTMLElement;
+      const btn = pwForm.querySelector('button') as HTMLButtonElement;
+      const current = (pwForm.elements.namedItem('current') as HTMLInputElement).value;
+      const next = (pwForm.elements.namedItem('next') as HTMLInputElement).value;
+      if (next.length < 8) {
+        msg.textContent = L.lShort!;
+        return;
+      }
+      btn.disabled = true;
+      msg.textContent = '';
+      const { error } = await authClient
+        .changePassword({ currentPassword: current, newPassword: next, revokeOtherSessions: true })
+        .catch(() => ({ error: { code: 'NETWORK' } }));
+      btn.disabled = false;
+      if (!error) {
+        pwForm.reset();
+        msg.textContent = L.lChanged!;
+      } else {
+        msg.textContent = error.code === 'INVALID_PASSWORD' ? L.lWrong! : error.code === 'PASSWORD_TOO_SHORT' ? L.lShort! : L.lError!;
+      }
+    });
+
+    // --- Borrar la cuenta ---
+    // El botón solo se activa al escribir la palabra exacta: un clic suelto no
+    // puede borrar nada.
+    const delForm = document.getElementById('delete-form') as HTMLFormElement;
+    const delBtn = delForm.querySelector('button') as HTMLButtonElement;
+    const confirmInput = delForm.elements.namedItem('confirm') as HTMLInputElement;
+    confirmInput.addEventListener('input', () => {
+      delBtn.disabled = confirmInput.value.trim().toUpperCase() !== L.deleteWord!.toUpperCase();
+    });
+    delForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (delBtn.disabled) return;
+      const msg = delForm.querySelector('[data-msg]') as HTMLElement;
+      const password = (delForm.elements.namedItem('password') as HTMLInputElement | null)?.value;
+      delBtn.disabled = true;
+      msg.textContent = '';
+      const { error } = await authClient
+        .deleteUser(password ? { password } : {})
+        .catch(() => ({ error: { code: 'NETWORK' } }));
+      if (!error) {
+        location.href = L.home!;
+        return;
+      }
+      delBtn.disabled = false;
+      msg.textContent =
+        error.code === 'INVALID_PASSWORD' ? L.lWrong! : error.code === 'SESSION_EXPIRED' ? L.lFresh! : L.lError!;
+    });
+  }
+</script>
 
 <script>
   import { signOut } from '../../lib/auth-client';

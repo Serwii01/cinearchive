@@ -110,6 +110,13 @@ export const auth = betterAuth({
     },
   },
   socialProviders,
+  // Borrar la cuenta desde «Tu cuenta», como prometen las condiciones de uso.
+  // Better Auth pide la contraseña si la cuenta tiene; a las de Google/GitHub
+  // les exige una sesión reciente. El resto de los datos (lista, perfil,
+  // avatar, seguidores…) cae en cascada con la fila del usuario.
+  user: {
+    deleteUser: { enabled: true },
+  },
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 días
     updateAge: 60 * 60 * 24, // refresco diario
