@@ -1,17 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCatalog } from '../../lib/catalog';
+import { getCatalog, localTitle } from '../../lib/catalog';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { filmSlug } from '../../lib/slug';
 import { pdFilms } from '../../lib/pdfilms';
 import { collections } from '../../lib/collections';
 import { figures } from '../../lib/figures';
-import { getAtlas } from '../../lib/atlas';
+import { getAtlas, countryLabel } from '../../lib/atlas';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
-const films = (await getCatalog()).sort((a, b) => a.year - b.year || a.title.localeCompare(b.title));
+// Título y país en el idioma de la página. El filtro busca también por el
+// título de referencia y el original: «Tokyo Story», «Cuentos de Tokio» y
+// «東京物語» llevan a la misma fila.
+const films = (await getCatalog())
+  .map((f) => ({ ...f, shown: localTitle(f, lang), countryShown: countryLabel(f.country, lang) }))
+  .sort((a, b) => a.year - b.year || a.shown.localeCompare(b.shown, lang));
 const intro = t('films.intro').replace('{count}', String(films.length));
 
 // Filmoteca hace de portadilla: desde aquí se entra a las cuatro secciones que
@@ -86,22 +91,22 @@ const secciones = [
             films.map((f) => (
               <tr
                 class="border-b border-outline-variant align-top transition-colors last:border-b-0 hover:bg-film-white"
-                data-search={`${f.title} ${f.original_title} ${f.director}`.toLowerCase()}
+                data-search={`${f.shown} ${f.title} ${f.original_title} ${f.director}`.toLowerCase()}
               >
                 <td class="px-3 py-3">
                   {f.tmdbId ? (
-                    <a href={localizePath(lang, `film/${filmSlug(f.tmdbId, f.title)}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{f.title}</a>
+                    <a href={localizePath(lang, `film/${filmSlug(f.tmdbId, f.shown)}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{f.shown}</a>
                   ) : (
-                    <span class="font-display text-headline-md leading-tight text-ink">{f.title}</span>
+                    <span class="font-display text-headline-md leading-tight text-ink">{f.shown}</span>
                   )}
-                  {f.original_title !== f.title && (
+                  {f.original_title !== f.shown && (
                     <span class="mt-0.5 block font-mono text-meta-data text-muted">{f.original_title}</span>
                   )}
                   <span class="mt-1 block font-mono text-meta-data text-muted md:hidden">{f.director}</span>
                 </td>
                 <td class="hidden px-3 py-3 font-mono text-meta-data text-charcoal md:table-cell">{f.director}</td>
                 <td class="px-3 py-3 font-mono text-meta-data text-charcoal">{f.year}</td>
-                <td class="hidden px-3 py-3 font-mono text-meta-data text-charcoal sm:table-cell">{f.country}</td>
+                <td class="hidden px-3 py-3 font-mono text-meta-data text-charcoal sm:table-cell">{f.countryShown}</td>
                 <td class="hidden px-3 py-3 text-right font-mono text-meta-data text-charcoal lg:table-cell">{f.runtime_min}′</td>
               </tr>
             ))

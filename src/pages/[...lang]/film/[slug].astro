@@ -5,6 +5,7 @@ import ListPicker from '../../../components/ListPicker.astro';
 import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { resolveBackLink } from '../../../lib/backlink';
 import { getFilm } from '../../../lib/films';
+import { translateAwards } from '../../../lib/omdb';
 import { movieLd, breadcrumbLd } from '../../../lib/seo';
 import { filmSlug, parseFilmId } from '../../../lib/slug';
 import { mentionsOf } from '../../../lib/mentions';
@@ -142,7 +143,7 @@ const facts = [
   { label: t('film.revenue'), value: fmtMoney(tmdb.revenue) },
   { label: t('film.profit'), value: profitVal != null ? fmtMoney(profitVal) : null },
   { label: t('film.boxOffice'), value: cleanOmdb(omdb?.BoxOffice) },
-  { label: t('film.awards'), value: cleanOmdb(omdb?.Awards) },
+  { label: t('film.awards'), value: cleanOmdb(omdb?.Awards) && translateAwards(cleanOmdb(omdb?.Awards)!, lang) },
   { label: t('film.companies'), value: companies.length > 0 ? companies.join(', ') : null },
 ].filter((f) => f.value);
 

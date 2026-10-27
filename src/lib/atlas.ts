@@ -38,7 +38,24 @@ const GEO: Record<string, GeoInfo> = {
   Thailand: { es: 'Tailandia', en: 'Thailand', gl: 'Tailandia', eu: 'Thailandia', ca: 'Tailàndia', lat: 15.9, lon: 100.9, iso: 'TH' },
   Mexico: { es: 'México', en: 'Mexico', gl: 'México', eu: 'Mexiko', ca: 'Mèxic', lat: 23.6, lon: -102.5, iso: 'MX' },
   Poland: { es: 'Polonia', en: 'Poland', gl: 'Polonia', eu: 'Polonia', ca: 'Polònia', lat: 51.9, lon: 19.1, iso: 'PL' },
+  // Solo aparecen como segundo país de una coproducción («France / Algeria»):
+  // no cuentan en el atlas, pero la Filmoteca necesita su nombre.
+  Algeria: { es: 'Argelia', en: 'Algeria', gl: 'Alxeria', eu: 'Aljeria', ca: 'Algèria', lat: 28.0, lon: 1.7, iso: 'DZ' },
+  Switzerland: { es: 'Suiza', en: 'Switzerland', gl: 'Suíza', eu: 'Suitza', ca: 'Suïssa', lat: 46.8, lon: 8.2, iso: 'CH' },
 };
+
+/**
+ * Nombre del país (o países de una coproducción, «France / Algeria») en el
+ * idioma pedido. Lo que no esté en la tabla se deja como viene.
+ */
+export function countryLabel(raw: string, lang: 'es' | 'en' | 'gl' | 'eu' | 'ca'): string {
+  return raw
+    .split('/')
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => GEO[p]?.[lang] ?? p)
+    .join(' / ');
+}
 
 export interface AtlasEntry extends GeoInfo {
   key: string;

@@ -13,7 +13,11 @@
       "language": "es",
       "has_essay": true,
       "essay_pair": "el-espiritu-de-la-colmena",
-      "tmdbId": 4495
+      "tmdbId": 4495,
+      "titles": {
+        "es": "El espíritu de la colmena",
+        "en": "The Spirit of the Beehive"
+      }
     },
     {
       "slug": "stalker",
@@ -26,7 +30,12 @@
       "language": "ru",
       "has_essay": true,
       "essay_pair": "stalker",
-      "tmdbId": 1398
+      "tmdbId": 1398,
+      "titles": {
+        "es": "Stalker",
+        "en": "Stalker",
+        "ca": "Stàlker"
+      }
     },
     {
       "slug": "in-the-mood-for-love",
@@ -39,7 +48,12 @@
       "language": "zh",
       "has_essay": true,
       "essay_pair": "in-the-mood-for-love",
-      "tmdbId": 843
+      "tmdbId": 843,
+      "titles": {
+        "es": "Deseando amar",
+        "en": "In the Mood for Love",
+        "ca": "Desitjant estimar"
+      }
     },
     {
       "slug": "persona",
@@ -65,7 +79,11 @@
       "language": "en",
       "has_essay": true,
       "essay_pair": "2001-a-space-odyssey",
-      "tmdbId": 62
+      "tmdbId": 62,
+      "titles": {
+        "es": "2001. Una odisea del espacio",
+        "ca": "2001: Una odissea de l'espai"
+      }
     },
     {
       "slug": "tokyo-story",
@@ -78,7 +96,12 @@
       "language": "ja",
       "has_essay": true,
       "essay_pair": "tokyo-story",
-      "tmdbId": 18148
+      "tmdbId": 18148,
+      "titles": {
+        "es": "Cuentos de Tokio",
+        "en": "Tokyo Story",
+        "ca": "Contes de Tòquio"
+      }
     },
     {
       "slug": "the-400-blows",
@@ -91,7 +114,11 @@
       "language": "fr",
       "has_essay": true,
       "essay_pair": "the-400-blows",
-      "tmdbId": 147
+      "tmdbId": 147,
+      "titles": {
+        "es": "Los cuatrocientos golpes",
+        "en": "The 400 Blows"
+      }
     },
     {
       "slug": "bicycle-thieves",
@@ -104,7 +131,12 @@
       "language": "it",
       "has_essay": true,
       "essay_pair": "bicycle-thieves",
-      "tmdbId": 5156
+      "tmdbId": 5156,
+      "titles": {
+        "es": "Ladrón de bicicletas",
+        "en": "Bicycle Thieves",
+        "ca": "El lladre de bicicletes"
+      }
     },
     {
       "slug": "mulholland-drive",
@@ -117,7 +149,10 @@
       "language": "en",
       "has_essay": true,
       "essay_pair": "mulholland-drive",
-      "tmdbId": 1018
+      "tmdbId": 1018,
+      "titles": {
+        "es": "Mulholland Drive: Sueños, misterios y secretos"
+      }
     },
     {
       "slug": "au-hasard-balthazar",
@@ -130,7 +165,11 @@
       "language": "fr",
       "has_essay": true,
       "essay_pair": "au-hasard-balthazar",
-      "tmdbId": 20108
+      "tmdbId": 20108,
+      "titles": {
+        "es": "Al azar, Baltasar",
+        "en": "Au Hasard Balthazar"
+      }
     },
     {
       "slug": "seven-samurai",
@@ -143,7 +182,12 @@
       "language": "ja",
       "has_essay": true,
       "essay_pair": "seven-samurai",
-      "tmdbId": 346
+      "tmdbId": 346,
+      "titles": {
+        "es": "Los siete samuráis",
+        "en": "Seven Samurai",
+        "ca": "Els set samurais"
+      }
     },
     {
       "slug": "apocalypse-now",
@@ -156,7 +200,11 @@
       "language": "en",
       "has_essay": true,
       "essay_pair": "apocalypse-now",
-      "tmdbId": 28
+      "tmdbId": 28,
+      "titles": {
+        "es": "Apocalypse Now",
+        "eu": "Apocalypse Now"
+      }
     },
     {
       "slug": "cleo-from-5-to-7",
@@ -169,7 +217,12 @@
       "language": "fr",
       "has_essay": true,
       "essay_pair": "cleo-from-5-to-7",
-      "tmdbId": 499
+      "tmdbId": 499,
+      "titles": {
+        "es": "Cleo de 5 a 7",
+        "en": "Cléo from 5 to 7",
+        "ca": "Cleo de 5 a 7"
+      }
     },
     {
       "slug": "rashomon",
@@ -182,7 +235,13 @@
       "language": "ja",
       "has_essay": true,
       "essay_pair": "rashomon",
-      "tmdbId": 548
+      "tmdbId": 548,
+      "titles": {
+        "es": "Rashomon",
+        "en": "Rashomon",
+        "eu": "Rashōmon",
+        "ca": "Rashōmon"
+      }
     },
     {
       "slug": "sunset-boulevard",
@@ -195,7 +254,11 @@
       "language": "en",
       "has_essay": true,
       "essay_pair": "sunset-boulevard",
-      "tmdbId": 599
+      "tmdbId": 599,
+      "titles": {
+        "es": "El crepúsculo de los dioses",
+        "ca": "El crepuscle dels déus"
+      }
     },
     {
       "slug": "breathless",
@@ -208,7 +271,12 @@
       "language": "fr",
       "has_essay": true,
       "essay_pair": "breathless",
-      "tmdbId": 269
+      "tmdbId": 269,
+      "titles": {
+        "es": "Al final de la escapada",
+        "en": "Breathless",
+        "ca": "Al final de l’escapada"
+      }
     },
     {
       "slug": "la-dolce-vita",
@@ -221,7 +289,12 @@
       "language": "it",
       "has_essay": true,
       "essay_pair": "la-dolce-vita",
-      "tmdbId": 439
+      "tmdbId": 439,
+      "titles": {
+        "es": "La dolce vita",
+        "en": "La Dolce Vita",
+        "ca": "La dolce vita"
+      }
     },
     {
       "slug": "yi-yi",
@@ -234,7 +307,12 @@
       "language": "zh",
       "has_essay": true,
       "essay_pair": "yi-yi",
-      "tmdbId": 25538
+      "tmdbId": 25538,
+      "titles": {
+        "es": "Yi Yi",
+        "en": "Yi Yi",
+        "ca": "Yi Yi"
+      }
     },
     {
       "slug": "come-and-see",
@@ -247,7 +325,11 @@
       "language": "ru",
       "has_essay": true,
       "essay_pair": "come-and-see",
-      "tmdbId": 25237
+      "tmdbId": 25237,
+      "titles": {
+        "es": "Masacre (Ven y mira)",
+        "en": "Come and See"
+      }
     },
     {
       "slug": "the-passion-of-joan-of-arc",
@@ -260,7 +342,12 @@
       "language": "silent",
       "has_essay": true,
       "essay_pair": "the-passion-of-joan-of-arc",
-      "tmdbId": 780
+      "tmdbId": 780,
+      "titles": {
+        "es": "La pasión de Juana de Arco",
+        "en": "The Passion of Joan of Arc",
+        "ca": "La passió de Joana d'Arc"
+      }
     },
     {
       "slug": "citizen-kane",
@@ -273,7 +360,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 15
+      "tmdbId": 15,
+      "titles": {
+        "es": "Ciudadano Kane",
+        "ca": "Ciutadà Kane"
+      }
     },
     {
       "slug": "vertigo",
@@ -286,7 +377,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 426
+      "tmdbId": 426,
+      "titles": {
+        "es": "Vértigo",
+        "ca": "Vertigen (D’entre els morts)"
+      }
     },
     {
       "slug": "psycho",
@@ -299,7 +394,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 539
+      "tmdbId": 539,
+      "titles": {
+        "es": "Psicosis",
+        "ca": "Psicosi"
+      }
     },
     {
       "slug": "rear-window",
@@ -312,7 +411,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 567
+      "tmdbId": 567,
+      "titles": {
+        "es": "La ventana indiscreta",
+        "ca": "La finestra indiscreta"
+      }
     },
     {
       "slug": "the-godfather",
@@ -325,7 +428,12 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 238
+      "tmdbId": 238,
+      "titles": {
+        "es": "El padrino",
+        "eu": "Aitajauna",
+        "ca": "El padrí"
+      }
     },
     {
       "slug": "the-godfather-part-ii",
@@ -338,7 +446,12 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 240
+      "tmdbId": 240,
+      "titles": {
+        "es": "El padrino II",
+        "eu": "Aitajauna 2",
+        "ca": "El padrí 2"
+      }
     },
     {
       "slug": "taxi-driver",
@@ -351,7 +464,10 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 103
+      "tmdbId": 103,
+      "titles": {
+        "ca": "Taxi driver"
+      }
     },
     {
       "slug": "raging-bull",
@@ -364,7 +480,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 1578
+      "tmdbId": 1578,
+      "titles": {
+        "es": "Toro salvaje",
+        "ca": "Toro salvatge"
+      }
     },
     {
       "slug": "goodfellas",
@@ -377,7 +497,12 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 769
+      "tmdbId": 769,
+      "titles": {
+        "es": "Uno de los nuestros",
+        "gl": "Un dos nosos",
+        "ca": "Un dels nostres"
+      }
     },
     {
       "slug": "the-searchers",
@@ -390,7 +515,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 3114
+      "tmdbId": 3114,
+      "titles": {
+        "es": "Centauros del desierto",
+        "ca": "Centaures del desert"
+      }
     },
     {
       "slug": "singin-in-the-rain",
@@ -403,7 +532,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 872
+      "tmdbId": 872,
+      "titles": {
+        "es": "Cantando bajo la lluvia",
+        "ca": "Cantant sota la pluja"
+      }
     },
     {
       "slug": "casablanca",
@@ -416,7 +549,10 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 289
+      "tmdbId": 289,
+      "titles": {
+        "eu": "Casablanca"
+      }
     },
     {
       "slug": "some-like-it-hot",
@@ -429,7 +565,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 239
+      "tmdbId": 239,
+      "titles": {
+        "es": "Con faldas y a lo loco",
+        "ca": "Ningú no és perfecte"
+      }
     },
     {
       "slug": "the-apartment",
@@ -442,7 +582,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 284
+      "tmdbId": 284,
+      "titles": {
+        "es": "El apartamento",
+        "ca": "L'apartament"
+      }
     },
     {
       "slug": "8-and-a-half",
@@ -455,7 +599,11 @@
       "language": "it",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 422
+      "tmdbId": 422,
+      "titles": {
+        "es": "Fellini 8½",
+        "ca": "Fellini 8 1/2"
+      }
     },
     {
       "slug": "la-strada",
@@ -468,7 +616,10 @@
       "language": "it",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 405
+      "tmdbId": 405,
+      "titles": {
+        "en": "La Strada"
+      }
     },
     {
       "slug": "rome-open-city",
@@ -481,7 +632,12 @@
       "language": "it",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 307
+      "tmdbId": 307,
+      "titles": {
+        "es": "Roma. Ciudad abierta",
+        "en": "Rome, Open City",
+        "ca": "Roma, ciutat oberta"
+      }
     },
     {
       "slug": "l-avventura",
@@ -494,7 +650,12 @@
       "language": "it",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 5165
+      "tmdbId": 5165,
+      "titles": {
+        "es": "La aventura",
+        "en": "L'Avventura",
+        "ca": "L’aventura"
+      }
     },
     {
       "slug": "the-conformist",
@@ -507,7 +668,12 @@
       "language": "it",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 8416
+      "tmdbId": 8416,
+      "titles": {
+        "es": "El conformista",
+        "en": "The Conformist",
+        "ca": "El conformista"
+      }
     },
     {
       "slug": "the-leopard",
@@ -520,7 +686,12 @@
       "language": "it",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 1040
+      "tmdbId": 1040,
+      "titles": {
+        "es": "El gatopardo",
+        "en": "The Leopard",
+        "ca": "El Gattopardo"
+      }
     },
     {
       "slug": "wild-strawberries",
@@ -533,7 +704,12 @@
       "language": "sv",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 614
+      "tmdbId": 614,
+      "titles": {
+        "es": "Fresas salvajes",
+        "en": "Wild Strawberries",
+        "ca": "Maduixes silvestres"
+      }
     },
     {
       "slug": "the-seventh-seal",
@@ -546,7 +722,12 @@
       "language": "sv",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 490
+      "tmdbId": 490,
+      "titles": {
+        "es": "El séptimo sello",
+        "en": "The Seventh Seal",
+        "ca": "El setè segell"
+      }
     },
     {
       "slug": "cries-and-whispers",
@@ -559,7 +740,12 @@
       "language": "sv",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 10238
+      "tmdbId": 10238,
+      "titles": {
+        "es": "Gritos y susurros",
+        "en": "Cries and Whispers",
+        "ca": "Crits i murmuris"
+      }
     },
     {
       "slug": "fanny-and-alexander",
@@ -572,7 +758,12 @@
       "language": "sv",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 5961
+      "tmdbId": 5961,
+      "titles": {
+        "es": "Fanny y Alexander",
+        "en": "Fanny and Alexander",
+        "ca": "Fanny i Alexander"
+      }
     },
     {
       "slug": "andrei-rublev",
@@ -585,7 +776,12 @@
       "language": "ru",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 895
+      "tmdbId": 895,
+      "titles": {
+        "es": "Andrei Rublev",
+        "en": "Andrei Rublev",
+        "ca": "Andrei Rublev"
+      }
     },
     {
       "slug": "solaris",
@@ -598,7 +794,12 @@
       "language": "ru",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 593
+      "tmdbId": 593,
+      "titles": {
+        "es": "Solaris",
+        "en": "Solaris",
+        "ca": "Solaris"
+      }
     },
     {
       "slug": "mirror",
@@ -611,7 +812,12 @@
       "language": "ru",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 1396
+      "tmdbId": 1396,
+      "titles": {
+        "es": "El espejo",
+        "en": "Mirror",
+        "ca": "El mirall"
+      }
     },
     {
       "slug": "battleship-potemkin",
@@ -624,7 +830,12 @@
       "language": "silent",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 643
+      "tmdbId": 643,
+      "titles": {
+        "es": "El acorazado Potemkin",
+        "en": "Battleship Potemkin",
+        "ca": "El cuirassat Potemkin"
+      }
     },
     {
       "slug": "ikiru",
@@ -637,7 +848,12 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 3782
+      "tmdbId": 3782,
+      "titles": {
+        "es": "Vivir",
+        "en": "Ikiru",
+        "ca": "Viure"
+      }
     },
     {
       "slug": "ran",
@@ -650,7 +866,12 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 11645
+      "tmdbId": 11645,
+      "titles": {
+        "es": "Ran",
+        "en": "Ran",
+        "ca": "Ran"
+      }
     },
     {
       "slug": "yojimbo",
@@ -663,7 +884,12 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 11878
+      "tmdbId": 11878,
+      "titles": {
+        "es": "Yojimbo. El mercenario",
+        "en": "Yojimbo",
+        "ca": "Mercenari"
+      }
     },
     {
       "slug": "throne-of-blood",
@@ -676,7 +902,12 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 3777
+      "tmdbId": 3777,
+      "titles": {
+        "es": "Trono de sangre",
+        "en": "Throne of Blood",
+        "ca": "Tron de sang"
+      }
     },
     {
       "slug": "late-spring",
@@ -689,7 +920,12 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 20530
+      "tmdbId": 20530,
+      "titles": {
+        "es": "Primavera tardía",
+        "en": "Late Spring",
+        "ca": "Primavera tardana"
+      }
     },
     {
       "slug": "floating-weeds",
@@ -702,7 +938,12 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 46918
+      "tmdbId": 46918,
+      "titles": {
+        "es": "La hierba errante",
+        "en": "Floating Weeds",
+        "ca": "L'herba errant"
+      }
     },
     {
       "slug": "ugetsu",
@@ -715,7 +956,12 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 14696
+      "tmdbId": 14696,
+      "titles": {
+        "es": "Cuentos de la luna pálida",
+        "en": "Ugetsu",
+        "ca": "Els contes de la lluna pàl·lida després de la pluja"
+      }
     },
     {
       "slug": "sansho-the-bailiff",
@@ -728,7 +974,11 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 20532
+      "tmdbId": 20532,
+      "titles": {
+        "es": "El intendente Sansho",
+        "en": "Sansho the Bailiff"
+      }
     },
     {
       "slug": "woman-in-the-dunes",
@@ -741,7 +991,11 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 16672
+      "tmdbId": 16672,
+      "titles": {
+        "es": "La mujer de la arena",
+        "en": "Woman in the Dunes"
+      }
     },
     {
       "slug": "spirited-away",
@@ -754,7 +1008,13 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 129
+      "tmdbId": 129,
+      "titles": {
+        "es": "El viaje de Chihiro",
+        "en": "Spirited Away",
+        "eu": "Chihiroren Bidaia",
+        "ca": "El viatge de Chihiro"
+      }
     },
     {
       "slug": "my-neighbor-totoro",
@@ -767,7 +1027,13 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 8392
+      "tmdbId": 8392,
+      "titles": {
+        "es": "Mi vecino Totoro",
+        "en": "My Neighbor Totoro",
+        "eu": "Totoro Auzokidea",
+        "ca": "El meu veí Totoro"
+      }
     },
     {
       "slug": "grave-of-the-fireflies",
@@ -780,7 +1046,12 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 12477
+      "tmdbId": 12477,
+      "titles": {
+        "es": "La tumba de las luciérnagas",
+        "en": "Grave of the Fireflies",
+        "ca": "La tomba de les lluernes"
+      }
     },
     {
       "slug": "akira",
@@ -793,7 +1064,12 @@
       "language": "ja",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 149
+      "tmdbId": 149,
+      "titles": {
+        "es": "Akira",
+        "en": "Akira",
+        "ca": "Akira"
+      }
     },
     {
       "slug": "pather-panchali",
@@ -806,7 +1082,11 @@
       "language": "bn",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 5801
+      "tmdbId": 5801,
+      "titles": {
+        "es": "Pather Panchali (La canción del camino)",
+        "en": "Pather Panchali"
+      }
     },
     {
       "slug": "the-music-room",
@@ -819,7 +1099,11 @@
       "language": "bn",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 822
+      "tmdbId": 822,
+      "titles": {
+        "es": "El salón de música",
+        "en": "The Music Room"
+      }
     },
     {
       "slug": "metropolis",
@@ -832,7 +1116,11 @@
       "language": "silent",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 19
+      "tmdbId": 19,
+      "titles": {
+        "es": "Metrópolis",
+        "ca": "Metròpolis"
+      }
     },
     {
       "slug": "m",
@@ -845,7 +1133,12 @@
       "language": "de",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 832
+      "tmdbId": 832,
+      "titles": {
+        "es": "M, el vampiro de Düsseldorf",
+        "en": "M",
+        "ca": "M, un assassí entre nosaltres"
+      }
     },
     {
       "slug": "nosferatu",
@@ -858,7 +1151,11 @@
       "language": "silent",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 653
+      "tmdbId": 653,
+      "titles": {
+        "es": "Nosferatu",
+        "en": "Nosferatu"
+      }
     },
     {
       "slug": "the-cabinet-of-dr-caligari",
@@ -871,7 +1168,12 @@
       "language": "silent",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 234
+      "tmdbId": 234,
+      "titles": {
+        "es": "El gabinete del doctor Caligari",
+        "en": "The Cabinet of Dr. Caligari",
+        "ca": "El gabinet del Dr. Caligari"
+      }
     },
     {
       "slug": "aguirre-the-wrath-of-god",
@@ -884,7 +1186,12 @@
       "language": "de",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 2000
+      "tmdbId": 2000,
+      "titles": {
+        "es": "Aguirre, la cólera de Dios",
+        "en": "Aguirre, the Wrath of God",
+        "ca": "Aguirre, la còlera de Déu"
+      }
     },
     {
       "slug": "wings-of-desire",
@@ -897,7 +1204,12 @@
       "language": "de",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 144
+      "tmdbId": 144,
+      "titles": {
+        "es": "El cielo sobre Berlín",
+        "en": "Wings of Desire",
+        "ca": "Cel sobre Berlín"
+      }
     },
     {
       "slug": "the-marriage-of-maria-braun",
@@ -910,7 +1222,11 @@
       "language": "de",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 661
+      "tmdbId": 661,
+      "titles": {
+        "es": "El matrimonio de Maria Braun",
+        "en": "The Marriage of Maria Braun"
+      }
     },
     {
       "slug": "run-lola-run",
@@ -923,7 +1239,11 @@
       "language": "de",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 104
+      "tmdbId": 104,
+      "titles": {
+        "es": "Corre Lola, corre",
+        "en": "Run Lola Run"
+      }
     },
     {
       "slug": "jules-and-jim",
@@ -936,7 +1256,11 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 1628
+      "tmdbId": 1628,
+      "titles": {
+        "es": "Jules y Jim",
+        "en": "Jules and Jim"
+      }
     },
     {
       "slug": "pierrot-le-fou",
@@ -949,7 +1273,12 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 2786
+      "tmdbId": 2786,
+      "titles": {
+        "es": "Pierrot el loco",
+        "en": "Pierrot le Fou",
+        "ca": "Pierrot el boig"
+      }
     },
     {
       "slug": "contempt",
@@ -962,7 +1291,12 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 266
+      "tmdbId": 266,
+      "titles": {
+        "es": "El desprecio",
+        "en": "Contempt",
+        "ca": "El menyspreu"
+      }
     },
     {
       "slug": "the-rules-of-the-game",
@@ -975,7 +1309,11 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 776
+      "tmdbId": 776,
+      "titles": {
+        "es": "La regla del juego",
+        "en": "The Rules of the Game"
+      }
     },
     {
       "slug": "grand-illusion",
@@ -988,7 +1326,12 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 777
+      "tmdbId": 777,
+      "titles": {
+        "es": "La gran ilusión",
+        "en": "Grand Illusion",
+        "ca": "La gran il·lusió"
+      }
     },
     {
       "slug": "children-of-paradise",
@@ -1001,7 +1344,11 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 2457
+      "tmdbId": 2457,
+      "titles": {
+        "es": "Los niños del paraíso",
+        "en": "Children of Paradise"
+      }
     },
     {
       "slug": "beauty-and-the-beast",
@@ -1014,7 +1361,11 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 648
+      "tmdbId": 648,
+      "titles": {
+        "es": "La bella y la bestia",
+        "en": "Beauty and the Beast"
+      }
     },
     {
       "slug": "playtime",
@@ -1027,7 +1378,10 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 10227
+      "tmdbId": 10227,
+      "titles": {
+        "es": "Playtime"
+      }
     },
     {
       "slug": "mon-oncle",
@@ -1040,7 +1394,12 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 427
+      "tmdbId": 427,
+      "titles": {
+        "es": "Mi tío",
+        "en": "Mon Oncle",
+        "ca": "El meu oncle"
+      }
     },
     {
       "slug": "a-man-escaped",
@@ -1053,7 +1412,12 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 15244
+      "tmdbId": 15244,
+      "titles": {
+        "es": "Un condenado a muerte se ha escapado",
+        "en": "A Man Escaped",
+        "ca": "Un condemnat a mort s’escapa"
+      }
     },
     {
       "slug": "pickpocket",
@@ -1079,7 +1443,12 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 5967
+      "tmdbId": 5967,
+      "titles": {
+        "es": "Los paraguas de Cherburgo",
+        "en": "The Umbrellas of Cherbourg",
+        "ca": "Els paraigües de Cherbourg"
+      }
     },
     {
       "slug": "belle-de-jour",
@@ -1092,7 +1461,12 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 649
+      "tmdbId": 649,
+      "titles": {
+        "es": "Bella de día",
+        "en": "Belle de Jour",
+        "ca": "Belle de jour"
+      }
     },
     {
       "slug": "un-chien-andalou",
@@ -1105,7 +1479,12 @@
       "language": "silent",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 626
+      "tmdbId": 626,
+      "titles": {
+        "es": "Un perro andaluz",
+        "en": "Un Chien Andalou",
+        "ca": "Un chien andalou"
+      }
     },
     {
       "slug": "viridiana",
@@ -1131,7 +1510,11 @@
       "language": "es",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 29264
+      "tmdbId": 29264,
+      "titles": {
+        "es": "El ángel exterminador",
+        "en": "The Exterminating Angel"
+      }
     },
     {
       "slug": "pans-labyrinth",
@@ -1144,7 +1527,10 @@
       "language": "es",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 1417
+      "tmdbId": 1417,
+      "titles": {
+        "en": "Pan's Labyrinth"
+      }
     },
     {
       "slug": "all-about-my-mother",
@@ -1157,7 +1543,11 @@
       "language": "es",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 99
+      "tmdbId": 99,
+      "titles": {
+        "es": "Todo sobre mi madre",
+        "en": "All About My Mother"
+      }
     },
     {
       "slug": "talk-to-her",
@@ -1170,7 +1560,11 @@
       "language": "es",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 64
+      "tmdbId": 64,
+      "titles": {
+        "es": "Hable con ella",
+        "en": "Talk to Her"
+      }
     },
     {
       "slug": "the-battle-of-algiers",
@@ -1183,7 +1577,11 @@
       "language": "ar",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 17295
+      "tmdbId": 17295,
+      "titles": {
+        "es": "La batalla de Argel",
+        "en": "The Battle of Algiers"
+      }
     },
     {
       "slug": "z",
@@ -1209,7 +1607,12 @@
       "language": "cs",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 46919
+      "tmdbId": 46919,
+      "titles": {
+        "es": "Las margaritas",
+        "en": "Daisies",
+        "ca": "Les margarides"
+      }
     },
     {
       "slug": "closely-watched-trains",
@@ -1222,7 +1625,11 @@
       "language": "cs",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 789
+      "tmdbId": 789,
+      "titles": {
+        "es": "Trenes rigurosamente vigilados",
+        "en": "Closely Watched Trains"
+      }
     },
     {
       "slug": "ashes-and-diamonds",
@@ -1235,7 +1642,11 @@
       "language": "pl",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 5055
+      "tmdbId": 5055,
+      "titles": {
+        "es": "Cenizas y diamantes",
+        "en": "Ashes and Diamonds"
+      }
     },
     {
       "slug": "the-double-life-of-veronique",
@@ -1248,7 +1659,12 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 1600
+      "tmdbId": 1600,
+      "titles": {
+        "es": "La doble vida de Verónica",
+        "en": "The Double Life of Véronique",
+        "ca": "La doble vida de Véronique"
+      }
     },
     {
       "slug": "three-colours-blue",
@@ -1261,7 +1677,12 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 108
+      "tmdbId": 108,
+      "titles": {
+        "es": "Tres colores. Azul",
+        "en": "Three Colors: Blue",
+        "ca": "Tres colors: Blau"
+      }
     },
     {
       "slug": "three-colours-red",
@@ -1274,7 +1695,12 @@
       "language": "fr",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 110
+      "tmdbId": 110,
+      "titles": {
+        "es": "Tres colores: Rojo",
+        "en": "Three Colors: Red",
+        "ca": "Tres colors: Vermell"
+      }
     },
     {
       "slug": "satantango",
@@ -1287,7 +1713,11 @@
       "language": "hu",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 31414
+      "tmdbId": 31414,
+      "titles": {
+        "es": "Sátántangó",
+        "en": "Satantango"
+      }
     },
     {
       "slug": "werckmeister-harmonies",
@@ -1300,7 +1730,12 @@
       "language": "hu",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 23160
+      "tmdbId": 23160,
+      "titles": {
+        "es": "Armonías de Werckmeister",
+        "en": "Werckmeister Harmonies",
+        "ca": "Les harmonies de Werckmeister"
+      }
     },
     {
       "slug": "oldboy",
@@ -1313,7 +1748,12 @@
       "language": "ko",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 670
+      "tmdbId": 670,
+      "titles": {
+        "es": "Old Boy",
+        "en": "Oldboy",
+        "ca": "Old Boy"
+      }
     },
     {
       "slug": "memories-of-murder",
@@ -1326,7 +1766,11 @@
       "language": "ko",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 11423
+      "tmdbId": 11423,
+      "titles": {
+        "es": "Memories of Murder (Crónica de un asesino en serie)",
+        "en": "Memories of Murder"
+      }
     },
     {
       "slug": "parasite",
@@ -1339,7 +1783,12 @@
       "language": "ko",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 496243
+      "tmdbId": 496243,
+      "titles": {
+        "es": "Parásitos",
+        "en": "Parasite",
+        "ca": "Paràsits"
+      }
     },
     {
       "slug": "a-brighter-summer-day",
@@ -1352,7 +1801,11 @@
       "language": "zh",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 15804
+      "tmdbId": 15804,
+      "titles": {
+        "es": "Un día de verano",
+        "en": "A Brighter Summer Day"
+      }
     },
     {
       "slug": "a-city-of-sadness",
@@ -1365,7 +1818,12 @@
       "language": "zh",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 49982
+      "tmdbId": 49982,
+      "titles": {
+        "es": "Ciudad doliente",
+        "en": "A City of Sadness",
+        "ca": "La ciutat de la tristesa"
+      }
     },
     {
       "slug": "chungking-express",
@@ -1378,7 +1836,12 @@
       "language": "zh",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 11104
+      "tmdbId": 11104,
+      "titles": {
+        "es": "Chungking Express",
+        "en": "Chungking Express",
+        "ca": "Chungking Express"
+      }
     },
     {
       "slug": "happy-together",
@@ -1391,7 +1854,12 @@
       "language": "zh",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 18329
+      "tmdbId": 18329,
+      "titles": {
+        "es": "Happy Together",
+        "en": "Happy Together",
+        "ca": "Tots contents"
+      }
     },
     {
       "slug": "farewell-my-concubine",
@@ -1404,7 +1872,12 @@
       "language": "zh",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 10997
+      "tmdbId": 10997,
+      "titles": {
+        "es": "Adiós a mi concubina",
+        "en": "Farewell My Concubine",
+        "ca": "Adéu a la meva concubina"
+      }
     },
     {
       "slug": "raise-the-red-lantern",
@@ -1417,7 +1890,11 @@
       "language": "zh",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 10404
+      "tmdbId": 10404,
+      "titles": {
+        "es": "La linterna roja",
+        "en": "Raise the Red Lantern"
+      }
     },
     {
       "slug": "close-up",
@@ -1430,7 +1907,11 @@
       "language": "fa",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 30017
+      "tmdbId": 30017,
+      "titles": {
+        "es": "Primer plano",
+        "en": "Close-Up"
+      }
     },
     {
       "slug": "taste-of-cherry",
@@ -1443,7 +1924,11 @@
       "language": "fa",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 30020
+      "tmdbId": 30020,
+      "titles": {
+        "es": "El sabor de las cerezas",
+        "en": "Taste of Cherry"
+      }
     },
     {
       "slug": "a-separation",
@@ -1456,7 +1941,12 @@
       "language": "fa",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 60243
+      "tmdbId": 60243,
+      "titles": {
+        "es": "Nader y Simin. Una separación",
+        "en": "A Separation",
+        "ca": "Nader i Simin, una separació"
+      }
     },
     {
       "slug": "the-mirror-tarr",
@@ -1469,7 +1959,11 @@
       "language": "th",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 11534
+      "tmdbId": 11534,
+      "titles": {
+        "es": "Tropical Malady",
+        "en": "Tropical Malady"
+      }
     },
     {
       "slug": "uncle-boonmee",
@@ -1482,7 +1976,12 @@
       "language": "th",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 38368
+      "tmdbId": 38368,
+      "titles": {
+        "es": "Tío Boonmee recuerda sus vidas pasadas",
+        "en": "Uncle Boonmee Who Can Recall His Past Lives",
+        "ca": "L’oncle Boonmee recorda les seves vides anteriors"
+      }
     },
     {
       "slug": "the-turin-horse",
@@ -1495,7 +1994,12 @@
       "language": "hu",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 81401
+      "tmdbId": 81401,
+      "titles": {
+        "es": "El caballo de Turín",
+        "en": "The Turin Horse",
+        "ca": "El cavall de Torí"
+      }
     },
     {
       "slug": "stroszek",
@@ -1508,7 +2012,10 @@
       "language": "de",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 11698
+      "tmdbId": 11698,
+      "titles": {
+        "en": "Stroszek"
+      }
     },
     {
       "slug": "the-night-of-the-hunter",
@@ -1521,7 +2028,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 3112
+      "tmdbId": 3112,
+      "titles": {
+        "es": "La noche del cazador",
+        "ca": "La nit del caçador"
+      }
     },
     {
       "slug": "12-angry-men",
@@ -1534,7 +2045,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 389
+      "tmdbId": 389,
+      "titles": {
+        "es": "Doce hombres sin piedad",
+        "ca": "Dotze homes sense pietat"
+      }
     },
     {
       "slug": "dr-strangelove",
@@ -1547,7 +2062,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 935
+      "tmdbId": 935,
+      "titles": {
+        "es": "¿Teléfono rojo? Volamos hacia Moscú",
+        "ca": "Doctor Strangelove"
+      }
     },
     {
       "slug": "barry-lyndon",
@@ -1560,7 +2079,10 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 3175
+      "tmdbId": 3175,
+      "titles": {
+        "es": "Barry Lyndon"
+      }
     },
     {
       "slug": "the-shining",
@@ -1573,7 +2095,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 694
+      "tmdbId": 694,
+      "titles": {
+        "es": "El resplandor",
+        "ca": "La resplendor"
+      }
     },
     {
       "slug": "blade-runner",
@@ -1586,7 +2112,11 @@
       "language": "en",
       "has_essay": false,
       "essay_pair": null,
-      "tmdbId": 78
+      "tmdbId": 78,
+      "titles": {
+        "es": "Blade Runner",
+        "ca": "Blade Runner"
+      }
     }
   ]
 }
