@@ -6,6 +6,7 @@ import { userFilms } from '../../../db/schema';
 import { invalidateRecommendations } from '../../../lib/recs';
 import { invalidateStats } from '../../../lib/stats';
 import { aplicarReglas, fechaVista } from '../../../lib/filmstate';
+import { ensureFirstViewing } from '../../../lib/viewings';
 
 export const prerender = false;
 
@@ -92,6 +93,10 @@ export const POST: APIRoute = async ({ locals, request }) => {
         updatedAt: now,
       },
     });
+
+  if (typeof parsed.data.reviewedAt === 'string') {
+    await ensureFirstViewing(locals.user.id, tmdbId, parsed.data.reviewedAt);
+  }
 
   invalidateRecommendations(locals.user.id);
   invalidateStats(locals.user.id);

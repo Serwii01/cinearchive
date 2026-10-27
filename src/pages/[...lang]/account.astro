@@ -50,6 +50,7 @@ const actividad = [
   ...(myProfile ? [{ href: localizePath(lang, `u/${myProfile.username}`), label: t('profile.viewProfile') }] : []),
   { href: localizePath(lang, 'recommendations'), label: t('nav.recommendations') },
   { href: localizePath(lang, 'watchlist'), label: t('nav.lists') },
+  { href: localizePath(lang, 'diary'), label: t('diary.title') },
   { href: localizePath(lang, 'stats'), label: t('nav.stats') },
   { href: localizePath(lang, 'notifications'), label: t('nav.notifications') },
   { href: localizePath(lang, 'search'), label: t('search.title') },

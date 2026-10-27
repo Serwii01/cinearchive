@@ -26,6 +26,7 @@ export const TOP_LEVEL_SECTIONS: ReadonlySet<string> = new Set([
   'cines',
   'collections',
   'discover',
+  'diary',
   'dossiers',
   'faq',
   'figures',

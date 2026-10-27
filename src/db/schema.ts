@@ -6,11 +6,13 @@ import {
   integer,
   serial,
   real,
+  date,
   jsonb,
   primaryKey,
   pgEnum,
   customType,
   index,
+  uniqueIndex,
 } from 'drizzle-orm/pg-core';
 
 /** Tipo `bytea` de Postgres (Drizzle no lo trae de serie). Guarda/lee Buffer. */
@@ -194,6 +196,38 @@ export const userListFilms = pgTable(
     pk: primaryKey({ columns: [t.listId, t.tmdbId] }),
     // El detalle de la lista muestra las películas en el orden en que se añadieron.
     listAddedIdx: index('user_list_films_list_added_idx').on(t.listId, t.addedAt),
+  }),
+);
+
+/**
+ * Diario de visionados: una fila por cada vez que el usuario ve una película.
+ * user_films guarda una sola fila por película (estado, nota, reseña), así que
+ * no podía decir «la he visto tres veces» ni en qué fechas; de aquí salen el
+ * diario y «Tu año en cine».
+ */
+export const userViewings = pgTable(
+  'user_viewings',
+  {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    tmdbId: integer('tmdb_id').notNull(),
+    /** El día, sin hora: un visionado no tiene huso horario. */
+    watchedOn: date('watched_on', { mode: 'string' }).notNull(),
+    rewatch: boolean('rewatch').notNull().default(false),
+    /** La nota de ese visionado, si se dio (Letterboxd la guarda por entrada). */
+    rating: real('rating'),
+    /** 'manual' | 'letterboxd'. */
+    source: text('source').notNull().default('manual'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    // Una película no se ve dos veces el mismo día a efectos del diario, y así
+    // reimportar Letterboxd no duplica nada.
+    uniq: uniqueIndex('user_viewings_user_film_day_uq').on(t.userId, t.tmdbId, t.watchedOn),
+    // El diario y el resumen anual piden «los visionados de este usuario por fecha».
+    userDayIdx: index('user_viewings_user_day_idx').on(t.userId, t.watchedOn),
   }),
 );
 

@@ -13,6 +13,7 @@ import {
   user,
   userBadges,
   userFilms,
+  userViewings,
   userListFilms,
   userLists,
   userPreferences,
@@ -36,6 +37,8 @@ export interface ExportInput {
   profile: Row | null;
   preferences: Row | null;
   films: Row[];
+  /** Diario de visionados. */
+  viewings?: Row[];
   lists: Row[];
   listFilms: Row[];
   following: Row[];
@@ -61,6 +64,7 @@ export function shapeExport(d: ExportInput, now = new Date()) {
       : null,
     preferences: pick(d.preferences, ['locale', 'favoriteGenres', 'favoriteDirectors', 'favoritePeople', 'theme', 'privacy']),
     films: d.films.map((f) => pick(f, ['tmdbId', 'status', 'favorite', 'rating', 'note', 'reviewedAt', 'updatedAt'])),
+    diary: (d.viewings ?? []).map((v) => pick(v, ['tmdbId', 'watchedOn', 'rewatch', 'rating', 'source'])),
     lists: d.lists.map((l) => ({
       ...pick(l, ['name', 'isPublic', 'createdAt']),
       films: d.listFilms.filter((lf) => lf.listId === l.id).map((lf) => pick(lf, ['tmdbId', 'addedAt'])),
@@ -76,6 +80,7 @@ export async function exportUserData(userId: string) {
   const [p] = await db.select().from(profile).where(eq(profile.userId, userId)).limit(1);
   const [prefs] = await db.select().from(userPreferences).where(eq(userPreferences.userId, userId)).limit(1);
   const films = await db.select().from(userFilms).where(eq(userFilms.userId, userId));
+  const viewings = await db.select().from(userViewings).where(eq(userViewings.userId, userId)).orderBy(userViewings.watchedOn);
   const lists = await db.select().from(userLists).where(eq(userLists.userId, userId));
   const listFilms = lists.length
     ? await db.select().from(userListFilms).where(inArray(userListFilms.listId, lists.map((l) => l.id)))
@@ -110,6 +115,7 @@ export async function exportUserData(userId: string) {
     profile: (p as Row) ?? null,
     preferences: (prefs as Row) ?? null,
     films: films as Row[],
+    viewings: viewings as Row[],
     lists: lists as Row[],
     listFilms: listFilms as Row[],
     following,

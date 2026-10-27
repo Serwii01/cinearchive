@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Stars from '../../components/Stars.astro';
+import { normalizeLang, useTranslations, localizePath } from '../../i18n/ui';
+import { filmSlug } from '../../lib/slug';
+import { db } from '../../db/client';
+import { userFilms } from '../../db/schema';
+import { eq } from 'drizzle-orm';
+import { getFilmsBrief } from '../../lib/films';
+import { listViewings, viewingYears } from '../../lib/viewings';
+import { groupByMonth, monthLabel } from '../../lib/diary';
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+
+// El middleware ya garantiza sesión en /diary.
+const userId = Astro.locals.user!.id;
+
+const years = await viewingYears(userId);
+const asked = Number(Astro.url.searchParams.get('year'));
+// Sin año en la URL se abre el más reciente con visionados: un diario de diez
+// años entero de golpe serían miles de carteles.
+const year = years.includes(asked) ? asked : years[0];
+const viewings = year ? await listViewings(userId, year) : [];
+
+// La nota de cada visionado si la tiene (Letterboxd la guarda por entrada); si
+// no, la de la película.
+const filmRows = await db
+  .select({ tmdbId: userFilms.tmdbId, rating: userFilms.rating })
+  .from(userFilms)
+  .where(eq(userFilms.userId, userId));
+const filmRating = new Map(filmRows.map((r) => [r.tmdbId, r.rating]));
+
+const briefs = await getFilmsBrief([...new Set(viewings.map((v) => v.tmdbId))], lang);
+const months = groupByMonth(viewings);
+const base = localizePath(lang, 'diary');
+---
+
+<BaseLayout title={t('diary.title')} noindex>
+  <section class="frame py-12">
+    <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('diary.title')}{year ? ` · ${year} · ${viewings.length}` : ''}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('diary.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('diary.intro')}</p>
+    </header>
+
+    {years.length > 1 && (
+      <nav class="mt-6 flex w-fit max-w-full flex-wrap gap-px border border-ink bg-ink" aria-label={t('diary.years')}>
+        {years.map((y) => (
+          <a
+            href={`${base}?year=${y}`}
+            aria-current={y === year ? 'page' : undefined}
+            class:list={['tap justify-center px-4 font-mono text-meta-data no-underline', y === year ? 'bg-ink text-white' : 'bg-surface text-ink hover:bg-film-white']}
+          >{y}</a>
+        ))}
+      </nav>
+    )}
+
+    {viewings.length === 0 ? (
+      <p class="mt-10 max-w-2xl font-mono text-body-md text-muted">{t('diary.empty')}</p>
+    ) : (
+      months.map((m) => (
+        <div class="mt-10">
+          <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">
+            {monthLabel(m.month, lang)} <span class="label">· {m.items.length}</span>
+          </h2>
+          <ol class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+            {m.items.map((v) => {
+              const b = briefs.get(v.tmdbId);
+              const r = v.rating ?? filmRating.get(v.tmdbId) ?? null;
+              return (
+                <li class="bg-surface">
+                  <a href={localizePath(lang, `film/${filmSlug(v.tmdbId, b?.title)}`)} class="flex gap-3 p-3 no-underline hover:bg-film-white">
+                    <span class="w-10 shrink-0 font-display text-headline-lg leading-none text-ink">{Number(v.watchedOn.slice(8, 10))}</span>
+                    <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
+                      {b?.poster && <img src={b.poster} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+                    </div>
+                    <div class="min-w-0">
+                      <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${v.tmdbId}`}</p>
+                      <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
+                      {r && <p class="mt-1 font-mono text-meta-data text-ink"><Stars rating={r} lang={lang} /></p>}
+                      {v.rewatch && <p class="mt-1 font-mono text-meta-data text-muted">↻ {t('diary.rewatch')}</p>}
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      ))
+    )}
+  </section>
+</BaseLayout>

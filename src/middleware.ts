@@ -17,7 +17,7 @@ const LANGS = Object.keys(languages);
 // El prefijo de idioma es OPCIONAL: en castellano estas páginas viven en la raíz
 // (/account), y sin `(?:xx/)?` se quedaban sin la cabecera.
 const NOINDEX_PATH = new RegExp(
-  `^/api/|^/(?:(?:${LANGS.join('|')})/)?(?:account|watchlist|notifications|stats|recommendations|login|register|forgot|reset|admin)(?:/|$)`,
+  `^/api/|^/(?:(?:${LANGS.join('|')})/)?(?:account|watchlist|diary|notifications|stats|recommendations|login|register|forgot|reset|admin)(?:/|$)`,
 );
 
 /**
@@ -30,7 +30,7 @@ const NOINDEX_PATH = new RegExp(
 // '/lists' NO va aquí: el detalle de lista (/lists/[id]) es accesible si la lista
 // es pública (con comprobación de permisos dentro de la página). '/lists' (índice)
 // redirige a /watchlist, que sí está protegido.
-const PROTECTED = ['/account', '/watchlist', '/recommendations', '/stats', '/notifications'];
+const PROTECTED = ['/account', '/watchlist', '/diary', '/recommendations', '/stats', '/notifications'];
 
 // Recursos baratos (assets, portadas cacheadas): no se cuentan en el límite por IP
 // para no penalizar una carga de página normal (que dispara muchas imágenes).

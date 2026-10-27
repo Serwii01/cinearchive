@@ -2,6 +2,8 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import FilmControls from '../../../components/FilmControls.astro';
 import ListPicker from '../../../components/ListPicker.astro';
+import ViewingsPanel from '../../../components/ViewingsPanel.astro';
+import { filmViewings, type Viewing } from '../../../lib/viewings';
 import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { resolveBackLink } from '../../../lib/backlink';
 import { getFilm } from '../../../lib/films';
@@ -89,7 +91,9 @@ let userState: {
   note: string | null;
   reviewedAt: Date | null;
 } | null = null;
+let viewings: Viewing[] = [];
 if (Astro.locals.user) {
+  viewings = await filmViewings(Astro.locals.user.id, tmdbId);
   const [row] = await db
     .select()
     .from(userFilms)
@@ -259,6 +263,7 @@ const crumbsJsonLd = breadcrumbLd([
                 note={userState?.note ?? null}
                 reviewedAt={userState?.reviewedAt ?? null}
               />
+              <ViewingsPanel tmdbId={tmdbId} lang={lang} viewings={viewings} />
               <ListPicker tmdbId={tmdbId} lang={lang} />
             </div>
           ) : (

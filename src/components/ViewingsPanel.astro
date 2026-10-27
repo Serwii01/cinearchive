@@ -1,0 +1,142 @@
+---
+/**
+ * «Tus visionados» en la ficha de una película: cuántas veces la has visto,
+ * cuándo, y un botón para apuntar otra. Debajo de los controles de siempre.
+ */
+import { useTranslations, localizePath, formatDate, type Lang } from '../i18n/ui';
+import type { Viewing } from '../lib/viewings';
+
+interface Props {
+  tmdbId: number;
+  lang: Lang;
+  viewings: Viewing[];
+}
+
+const { tmdbId, lang, viewings } = Astro.props;
+const t = useTranslations(lang);
+const fecha = (iso: string) => formatDate(new Date(`${iso}T12:00:00Z`), lang);
+---
+
+<viewings-panel
+  class="block border border-ink bg-film-white"
+  data-tmdb-id={tmdbId}
+  data-l-rewatch={t('diary.rewatch')}
+  data-l-delete={t('diary.delete')}
+  data-l-dup={t('diary.duplicate')}
+  data-l-error={t('diary.error')}
+>
+  <div class="flex items-center justify-between border-b border-ink px-3 py-2">
+    <span class="label">{t('diary.yourViewings')} · <span data-count>{viewings.length}</span></span>
+    <a href={localizePath(lang, 'diary')} class="tap label hover:text-ink">{t('diary.title')} →</a>
+  </div>
+  <ul data-list class="divide-y divide-outline-variant">
+    {viewings.map((v) => (
+      <li class="flex items-center justify-between gap-2 px-3" data-id={v.id} data-day={v.watchedOn}>
+        <span class="font-mono text-meta-data text-ink">
+          {fecha(v.watchedOn)}
+          {v.rewatch && <span class="ml-2 text-muted">↻ {t('diary.rewatch')}</span>}
+        </span>
+        <button type="button" data-del class="tap px-2 font-mono text-meta-data text-muted hover:text-error" aria-label={t('diary.delete')}>×</button>
+      </li>
+    ))}
+  </ul>
+  <form data-add class="flex flex-wrap items-center gap-2 border-t border-ink px-3 py-2">
+    <label class="label" for={`vw-day-${tmdbId}`}>{t('diary.add')}</label>
+    <input
+      id={`vw-day-${tmdbId}`}
+      type="date"
+      required
+      class="ml-auto border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none"
+    />
+    <button type="submit" class="btn btn-primary">+</button>
+    <p data-msg role="status" class="w-full font-mono text-meta-data text-muted empty:hidden"></p>
+  </form>
+</viewings-panel>
+
+<script>
+  class ViewingsPanel extends HTMLElement {
+    connectedCallback() {
+      const d = this.dataset;
+      const tmdbId = Number(d.tmdbId);
+      const list = this.querySelector<HTMLUListElement>('[data-list]')!;
+      const count = this.querySelector('[data-count]')!;
+      const form = this.querySelector<HTMLFormElement>('[data-add]')!;
+      const input = form.querySelector<HTMLInputElement>('input[type=date]')!;
+      const msg = form.querySelector('[data-msg]')!;
+      const lang = document.documentElement.lang || 'es';
+
+      // Hoy en la hora LOCAL (como en «cuándo la vi»): con la de UTC, de
+      // madrugada no se podría elegir el día de verdad.
+      const n = new Date();
+      const hoy = new Date(n.getTime() - n.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      input.max = hoy;
+      input.value = hoy;
+
+      const fmt = (iso: string) =>
+        new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(
+          new Date(`${iso}T12:00:00Z`),
+        );
+      const recount = () => (count.textContent = String(list.children.length));
+      const say = (s: string) => {
+        msg.textContent = s;
+        setTimeout(() => (msg.textContent = ''), 2500);
+      };
+
+      const wireDelete = (li: HTMLElement) =>
+        li.querySelector('[data-del]')?.addEventListener('click', async () => {
+          const res = await fetch('/api/me/viewings', {
+            method: 'DELETE',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ id: Number(li.dataset.id) }),
+          });
+          if (res.ok) { li.remove(); recount(); } else say(d.lError!);
+        });
+      list.querySelectorAll<HTMLElement>('li').forEach(wireDelete);
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const day = input.value;
+        if (!day) return;
+        const res = await fetch('/api/me/viewings', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ tmdbId, watchedOn: day }),
+        });
+        if (res.status === 409) return say(d.lDup!);
+        if (!res.ok) return say(d.lError!);
+        // Se vuelve a pedir la lista de la película y se repinta: es corta, y
+        // así el id nuevo y la marca de revisionado salen del servidor.
+        const all = await fetch(`/api/me/viewings?tmdbId=${tmdbId}`).then((r) => r.json()).catch(() => null);
+        const mine: { id: number; watchedOn: string; rewatch: boolean }[] = all?.viewings ?? [];
+        list.replaceChildren(
+          ...mine.map((v) => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center justify-between gap-2 px-3';
+            li.dataset.id = String(v.id);
+            li.dataset.day = v.watchedOn;
+            const span = document.createElement('span');
+            span.className = 'font-mono text-meta-data text-ink';
+            span.textContent = fmt(v.watchedOn);
+            if (v.rewatch) {
+              const r = document.createElement('span');
+              r.className = 'ml-2 text-muted';
+              r.textContent = `↻ ${d.lRewatch}`;
+              span.append(r);
+            }
+            const del = document.createElement('button');
+            del.type = 'button';
+            del.dataset.del = '';
+            del.className = 'tap px-2 font-mono text-meta-data text-muted hover:text-error';
+            del.setAttribute('aria-label', d.lDelete!);
+            del.textContent = '×';
+            li.append(span, del);
+            wireDelete(li);
+            return li;
+          }),
+        );
+        recount();
+      });
+    }
+  }
+  if (!customElements.get('viewings-panel')) customElements.define('viewings-panel', ViewingsPanel);
+</script>

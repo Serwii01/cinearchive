@@ -141,6 +141,13 @@
       "when": 1793129777747,
       "tag": "0019_half_star_ratings",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1793129928759,
+      "tag": "0020_viewings_diary",
+      "breakpoints": true
     }
   ]
 }
