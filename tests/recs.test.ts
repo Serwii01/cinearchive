@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { affinity, effectiveRating, recency, score, selectBalanced, type Candidate } from '../src/lib/recs';
+import { affinity, consensus, effectiveRating, mapLimit, recency, score, selectBalanced, type Candidate } from '../src/lib/recs';
 import type { TmdbSearchResult } from '../src/lib/tmdb';
 
 const film = (id: number, genre_ids: number[], vote_average = 7): TmdbSearchResult => ({
@@ -147,5 +147,56 @@ describe('colecciones de la casa', () => {
     const out = selectBalanced(lista, new Map(), 3);
     // La segunda de la misma colección no puede ir antes que el otro motivo.
     expect(out.map((c) => c.film.id)).toEqual([1, 3, 2]);
+  });
+});
+
+describe('coincidencias y parecidos', () => {
+  it('lo que traen varios motivos a la vez sube, con tope', () => {
+    expect(consensus(1)).toBe(0);
+    expect(consensus(2)).toBeGreaterThan(0);
+    expect(consensus(3)).toBeGreaterThan(consensus(2));
+    expect(consensus(10)).toBeCloseTo(consensus(4));
+  });
+
+  it('dentro de un motivo, la que también sugiere otra película va primero', () => {
+    // La 2 la traen El padrino y Uno de los nuestros; la 1 solo El padrino y
+    // tiene algo más de nota. Antes ganaba la 1 y la coincidencia se perdía.
+    const cs = [
+      cand(1, 'film', 'El padrino', 0.7, [80], 7.6),
+      cand(2, 'film', 'El padrino', 0.7, [80], 7.2),
+      cand(2, 'film', 'Uno de los nuestros', 0.7, [80], 7.2),
+    ];
+    expect(selectBalanced(cs, new Map(), 3)[0].film.id).toBe(2);
+  });
+
+  it('lo parecido a lo que no gustó baja', () => {
+    const cs = [cand(1, 'genre', 'Acción', 0.55, [28], 8), cand(2, 'genre', 'Acción', 0.55, [28], 7)];
+    expect(selectBalanced(cs, new Map(), 2).map((c) => c.film.id)).toEqual([1, 2]);
+    expect(selectBalanced(cs, new Map(), 2, new Set([1])).map((c) => c.film.id)).toEqual([2, 1]);
+  });
+
+  it('sin coincidencias ni parecidos, la puntuación es la de siempre', () => {
+    const c = cand(1, 'genre', 'Drama', 0.55);
+    expect(score(c, new Map(), 0)).toBe(score(c, new Map()));
+  });
+});
+
+describe('mapLimit', () => {
+  it('respeta el orden y no pasa del tope de peticiones a la vez', async () => {
+    let enCurso = 0;
+    let maximo = 0;
+    const out = await mapLimit([5, 1, 4, 2, 3, 0, 6], 3, async (n) => {
+      enCurso++;
+      maximo = Math.max(maximo, enCurso);
+      await new Promise((r) => setTimeout(r, n));
+      enCurso--;
+      return n * 10;
+    });
+    expect(out).toEqual([50, 10, 40, 20, 30, 0, 60]);
+    expect(maximo).toBe(3);
+  });
+
+  it('con una lista vacía no hace nada', async () => {
+    expect(await mapLimit([], 4, async () => 1)).toEqual([]);
   });
 });
