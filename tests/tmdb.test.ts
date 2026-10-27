@@ -10,6 +10,8 @@ import {
   slimMovie,
   discoverMovies,
   TMDB_IMG,
+  localizeMovie,
+  nativeLang,
   type TmdbMovie,
 } from '../src/lib/tmdb';
 
@@ -253,5 +255,37 @@ describe('slimMovie', () => {
     const g = gorda();
     const ratio = JSON.stringify(slimMovie(g)).length / JSON.stringify(g).length;
     expect(ratio).toBeLessThan(0.1);
+  });
+});
+
+describe('localizeMovie (gallego, euskera, catalán)', () => {
+  const base = { id: 1, title: 'Cuentos de Tokio', overview: 'Una pareja de ancianos…', tagline: 'Lema' } as unknown as TmdbMovie;
+  const tr = (lang: string, data: Record<string, string>) => ({ iso_639_1: lang, iso_3166_1: 'ES', data });
+
+  it('pone encima lo que esté traducido', () => {
+    const m = localizeMovie(base, [tr('ca', { title: 'Contes de Tòquio', overview: 'Una parella gran…', tagline: '' })], 'ca');
+    expect(m.title).toBe('Contes de Tòquio');
+    expect(m.overview).toBe('Una parella gran…');
+    expect(m.tagline).toBe('Lema'); // vacío en catalán: se queda el castellano
+    expect(m.translated).toBe(true);
+  });
+
+  it('sin sinopsis traducida, marca la ficha como no traducida', () => {
+    const m = localizeMovie(base, [tr('gl', { title: 'Contos de Toquio', overview: '  ' })], 'gl');
+    expect(m.title).toBe('Contos de Toquio');
+    expect(m.overview).toBe('Una pareja de ancianos…');
+    expect(m.translated).toBe(false);
+  });
+
+  it('no mezcla idiomas', () => {
+    const m = localizeMovie(base, [tr('ca', { title: 'Contes de Tòquio', overview: 'x' })], 'eu');
+    expect(m.title).toBe('Cuentos de Tokio');
+    expect(m.translated).toBe(false);
+  });
+
+  it('nativeLang solo reconoce los tres idiomas sin ficha propia en TMDB', () => {
+    expect(nativeLang('gl')).toBe('gl');
+    expect(nativeLang('es')).toBeNull();
+    expect(nativeLang('en')).toBeNull();
   });
 });

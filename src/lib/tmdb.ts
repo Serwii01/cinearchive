@@ -62,6 +62,11 @@ export interface TmdbMovie {
   original_title: string;
   overview: string;
   tagline?: string;
+  /**
+   * Solo en gallego, euskera y catalán: true si la sinopsis está en ese
+   * idioma; false si se ha quedado la del castellano por falta de traducción.
+   */
+  translated?: boolean;
   release_date?: string;
   runtime: number | null;
   budget?: number;
@@ -87,12 +92,72 @@ export interface TmdbMovie {
 }
 
 export async function getMovie(id: number, locale: string) {
-  return tmdbFetch<TmdbMovie>(`/movie/${id}`, {
+  const base = tmdbFetch<TmdbMovie>(`/movie/${id}`, {
     language: toTmdbLang(locale),
     // 'watch/providers' viene EN ESTA MISMA petición (append_to_response): el
     // "dónde ver" no cuesta ni una llamada extra ni tiene cuota propia.
     append_to_response: 'credits,keywords,recommendations,similar,videos,watch/providers',
   });
+  const lang = nativeLang(locale);
+  if (!lang) return base;
+  // Gallego, euskera y catalán: la ficha completa se pide en castellano (es la
+  // que trae reparto, similares y demás en un idioma legible) y encima se pone
+  // lo que TMDB tenga traducido. Antes se servía todo en castellano con la
+  // etiqueta de otro idioma.
+  const [movie, translations] = await Promise.all([base, getTranslations(id).catch(() => [])]);
+  return localizeMovie(movie, translations, lang);
+}
+
+/* ------------------------------------------------------------------ *
+ * Traducciones (gallego, euskera, catalán).
+ * ------------------------------------------------------------------ */
+
+export type NativeLang = 'gl' | 'eu' | 'ca';
+export function nativeLang(locale: string): NativeLang | null {
+  return locale === 'gl' || locale === 'eu' || locale === 'ca' ? locale : null;
+}
+
+export interface TmdbTranslation {
+  iso_639_1: string;
+  iso_3166_1: string;
+  data?: { title?: string; overview?: string; tagline?: string };
+}
+
+// Una sola petición por película sirve a los tres idiomas, y las traducciones
+// cambian poco: un día en memoria.
+const TRANSLATIONS_TTL_MS = 24 * 60 * 60 * 1000;
+const translationsMemo = createMemo<TmdbTranslation[]>(TRANSLATIONS_TTL_MS, 500);
+registerCache({
+  id: 'tmdb-translations',
+  label: 'Traducciones de fichas (gl/eu/ca)',
+  ttlMs: TRANSLATIONS_TTL_MS,
+  maxKeys: 500,
+  size: () => translationsMemo.size,
+  clear: () => translationsMemo.clear(),
+});
+
+export function getTranslations(id: number): Promise<TmdbTranslation[]> {
+  return translationsMemo.get(String(id), async () =>
+    (await tmdbFetch<{ translations?: TmdbTranslation[] }>(`/movie/${id}/translations`)).translations ?? [],
+  );
+}
+
+/**
+ * Pone encima de la ficha en castellano el título, la sinopsis y el lema en el
+ * idioma pedido, campo a campo: lo que no esté traducido se queda en
+ * castellano. Pura (tiene tests).
+ */
+export function localizeMovie(movie: TmdbMovie, translations: TmdbTranslation[], lang: NativeLang): TmdbMovie {
+  const tr = translations.find((t) => t.iso_639_1 === lang)?.data ?? {};
+  const pick = (v?: string) => (v && v.trim() ? v.trim() : undefined);
+  const overview = pick(tr.overview);
+  return {
+    ...movie,
+    title: pick(tr.title) ?? movie.title,
+    overview: overview ?? movie.overview,
+    tagline: pick(tr.tagline) ?? movie.tagline,
+    translated: !!overview,
+  };
 }
 
 /** Clave de YouTube del mejor tráiler (oficial > tráiler > teaser), o null. */

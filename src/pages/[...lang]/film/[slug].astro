@@ -135,6 +135,10 @@ const fmtMoney = (n?: number) =>
       }).format(n)
     : null;
 const cleanOmdb = (v?: string) => (v && v !== 'N/A' ? v : null);
+// En gallego, euskera y catalán, una ficha sin sinopsis traducida es la del
+// castellano con otra etiqueta: se sirve igual a quien entra, pero no se
+// ofrece a los buscadores como si fuera otra página.
+const untranslated = (lang === 'gl' || lang === 'eu' || lang === 'ca') && !tmdb.translated;
 const profitVal = tmdb.budget && tmdb.revenue && tmdb.budget > 0 && tmdb.revenue > 0 ? tmdb.revenue - tmdb.budget : null;
 const companies = (tmdb.production_companies ?? []).map((c) => c.name).slice(0, 4);
 
@@ -207,6 +211,7 @@ const crumbsJsonLd = breadcrumbLd([
   image={socialImg ?? undefined}
   ogType="article"
   jsonLd={[movieJsonLd, crumbsJsonLd]}
+  noindex={untranslated}
 >
   <article class="frame py-12">
     <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>
