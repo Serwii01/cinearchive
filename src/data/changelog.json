@@ -1,5 +1,63 @@
 [
   {
+    "version": "1.15",
+    "date": "2026-10-25",
+    "title": {
+      "es": "Una web mejor ordenada y recomendaciones más finas",
+      "en": "A better-organised site and sharper recommendations",
+      "gl": "Unha web mellor ordenada e recomendacións máis finas",
+      "eu": "Hobeto antolatutako weba eta gomendio finagoak",
+      "ca": "Un web més ben ordenat i recomanacions més fines"
+    },
+    "changes": {
+      "es": [
+        "El menú pasa a cinco secciones: Archivo, Filmoteca, Artículos, Descubrir y Cines. La Filmoteca es ahora la puerta de Cine abierto, Colecciones, Figuras y Atlas, cada una con su recuento. Colecciones y Dosieres especiales ya no comparten nombre, el glosario vuelve a tener página propia con índice alfabético, los artículos suben al principio de la portada y vuelven las efemérides: si hoy no toca ninguna, se enseña la próxima.",
+        "En el móvil hay una barra fija abajo con Portada, Archivo, Descubrir, Buscar y Cuenta, que no queda tapada por el notch ni por el indicador de inicio del iPhone. Con la web instalada, la cabecera lleva un botón de volver. La página sin conexión sale en tu idioma, su botón «Reintentar» funciona y la barra del navegador sigue el tema de la web.",
+        "La ficha de cada película enseña en qué colecciones, dosieres y artículos de Cine Archive aparece, y la de una persona dice si es una de las figuras del archivo. Artículos y dosieres se enlazan entre sí.",
+        "Recomendaciones más finas: cuentan tus favoritas aunque no tengan estrellas, lo que has visto dice qué géneros frecuentas y lo reciente pesa algo más que lo antiguo. Si algo que te gustó está en una de nuestras colecciones, el resto de la colección entra como sugerencia, y quien empieza sin historial recibe una película de cada colección.",
+        "En Descubrir, las plataformas de «dónde ver» aparecen en cuanto eliges el país, sin pulsar «Aplicar».",
+        "Las portadas de la hemeroteca y las fotos del reparto se ven nítidas, también en pantallas de alta resolución.",
+        "Analítica propia en nuestro servidor: sin cookies, sin guardar la IP y respetando «Do Not Track». La política de privacidad lo explica. El contador de visitas cuenta también las páginas de cine abierto, hemeroteca y biblioteca, y mientras carga enseña un guion en vez de una cifra."
+      ],
+      "en": [
+        "The menu now has five sections: Archive, Filmography, Articles, Discover and Cinemas. Filmography is now the way into Open Cinema, Collections, Figures and Atlas, each with its count. Collections and Special dossiers no longer share a name, the glossary has its own page again with an alphabetical index, articles move to the top of the home page, and the anniversaries are back: if none falls today, the next one is shown.",
+        "On phones there is a fixed bar at the bottom with Home, Archive, Discover, Search and Account, kept clear of the iPhone notch and home indicator. With the site installed, the header has a back button. The offline page appears in your language, its “Try again” button works, and the browser bar follows the site’s theme.",
+        "Each film page shows the Cine Archive collections, dossiers and articles it appears in, and a person’s page says whether they are one of the archive’s figures. Articles and dossiers link to each other.",
+        "Sharper recommendations: your favourites count even without stars, what you have watched tells which genres you go for, and recent activity weighs a little more than old. If something you liked is in one of our collections, the rest of that collection comes in as a suggestion, and anyone starting with no history gets one film from each collection.",
+        "In Discover, the “where to watch” platforms appear as soon as you pick a country, without pressing “Apply”.",
+        "Periodical covers and cast photos are now sharp, on high-resolution screens too.",
+        "Our own analytics, on our own server: no cookies, no stored IP and Do Not Track respected. The privacy policy explains it. The visit counter now also counts the Open Cinema, periodicals and library pages, and shows a dash instead of a number while it loads."
+      ],
+      "gl": [
+        "O menú pasa a cinco seccións: Arquivo, Filmoteca, Artigos, Descubrir e Cines. A Filmoteca é agora a porta de Cine aberto, Coleccións, Figuras e Atlas, cada unha co seu reconto. Coleccións e Dosieres especiais xa non comparten nome, o glosario volve ter páxina propia con índice alfabético, os artigos soben ao comezo da portada e volven as efemérides: se hoxe non toca ningunha, ensínase a seguinte.",
+        "No móbil hai unha barra fixa abaixo con Portada, Arquivo, Descubrir, Buscar e Conta, que non queda tapada polo notch nin polo indicador de inicio do iPhone. Coa web instalada, a cabeceira leva un botón de volver. A páxina sen conexión sae no teu idioma, o seu botón «Reintentar» funciona e a barra do navegador segue o tema da web.",
+        "A ficha de cada película ensina en que coleccións, dosieres e artigos de Cine Archive aparece, e a dunha persoa di se é unha das figuras do arquivo. Artigos e dosieres enlázanse entre si.",
+        "Recomendacións máis finas: contan as túas favoritas aínda que non teñan estrelas, o que viches di que xéneros frecuentas e o recente pesa algo máis ca o antigo. Se algo que che gustou está nunha das nosas coleccións, o resto da colección entra como suxestión, e quen comeza sen historial recibe unha película de cada colección.",
+        "En Descubrir, as plataformas de «onde ver» aparecen en canto escolles o país, sen premer «Aplicar».",
+        "As portadas da hemeroteca e as fotos do reparto vense nítidas, tamén en pantallas de alta resolución.",
+        "Analítica propia no noso servidor: sen cookies, sen gardar a IP e respectando «Do Not Track». A política de privacidade explícao. O contador de visitas conta tamén as páxinas de cine aberto, hemeroteca e biblioteca, e mentres carga ensina un guión en vez dunha cifra."
+      ],
+      "eu": [
+        "Menuak bost atal ditu orain: Artxiboa, Filmoteka, Artikuluak, Aurkitu eta Zinemak. Filmoteka da orain Zinema irekia, Bildumak, Figurak eta Atlasa ataletarako sarbidea, bakoitza bere kopuruarekin. Bildumek eta Dosier bereziek ez dute izen bera partekatzen, glosarioak bere orrialdea du berriro indize alfabetikoarekin, artikuluak azalaren hasierara igotzen dira eta efemerideak itzuli dira: gaur bat ere ez badago, hurrengoa erakusten da.",
+        "Mugikorrean barra finko bat dago behean Azala, Artxiboa, Aurkitu, Bilatu eta Kontua aukerekin, iPhonearen notch-ak eta hasierako adierazleak estali gabe. Weba instalatuta dagoenean, goiburuak atzera egiteko botoia du. Konexiorik gabeko orrialdea zure hizkuntzan agertzen da, «Saiatu berriro» botoiak funtzionatzen du eta nabigatzailearen barrak webaren gaiari jarraitzen dio.",
+        "Film bakoitzaren fitxak erakusten du Cine Archiveko zein bilduma, dosier eta artikulutan agertzen den, eta pertsona baten fitxak esaten du artxiboko figuretako bat den. Artikuluak eta dosierrak elkarri lotuta daude.",
+        "Gomendio finagoak: zure gogokoek zenbatzen dute izarrik ez badute ere, ikusi duzunak esaten du zein generotara jotzen duzun, eta berriak zaharrak baino pixka bat gehiago pisatzen du. Gustatu zitzaizun zerbait gure bildumetako batean badago, bilduma horretako gainerakoak iradokizun gisa sartzen dira, eta historiarik gabe hasten denak bilduma bakoitzeko film bat jasotzen du.",
+        "Aurkitu atalean, «non ikusi» plataformak herrialdea aukeratu bezain laster agertzen dira, «Aplikatu» sakatu gabe.",
+        "Hemerotekako azalak eta aktoreen argazkiak garbi ikusten dira, bereizmen handiko pantailetan ere bai.",
+        "Analitika propioa gure zerbitzarian: cookierik gabe, IPa gorde gabe eta «Do Not Track» errespetatuz. Pribatutasun-politikak azaltzen du. Bisita-kontagailuak zinema irekiko, hemerotekako eta liburutegiko orrialdeak ere zenbatzen ditu, eta kargatzen ari den bitartean marratxo bat erakusten du zifra baten ordez."
+      ],
+      "ca": [
+        "El menú passa a cinc seccions: Arxiu, Filmoteca, Articles, Descobrir i Cinemes. La Filmoteca és ara la porta de Cinema obert, Col·leccions, Figures i Atles, cadascuna amb el seu recompte. Col·leccions i Dossiers especials ja no comparteixen nom, el glossari torna a tenir pàgina pròpia amb índex alfabètic, els articles pugen al principi de la portada i tornen les efemèrides: si avui no en toca cap, s’ensenya la següent.",
+        "Al mòbil hi ha una barra fixa a baix amb Portada, Arxiu, Descobrir, Cercar i Compte, que no queda tapada pel notch ni per l’indicador d’inici de l’iPhone. Amb el web instal·lat, la capçalera porta un botó de tornar enrere. La pàgina sense connexió surt en el teu idioma, el botó «Tornar-ho a provar» funciona i la barra del navegador segueix el tema del web.",
+        "La fitxa de cada pel·lícula ensenya en quines col·leccions, dossiers i articles de Cine Archive apareix, i la d’una persona diu si és una de les figures de l’arxiu. Articles i dossiers s’enllacen entre si.",
+        "Recomanacions més fines: compten les teves preferides encara que no tinguin estrelles, el que has vist diu quins gèneres freqüentes i el recent pesa una mica més que l’antic. Si una cosa que t’ha agradat és en una de les nostres col·leccions, la resta de la col·lecció entra com a suggeriment, i qui comença sense historial rep una pel·lícula de cada col·lecció.",
+        "A Descobrir, les plataformes de «on veure-ho» apareixen tan bon punt tries el país, sense prémer «Aplicar».",
+        "Les portades de l’hemeroteca i les fotos del repartiment es veuen nítides, també en pantalles d’alta resolució.",
+        "Analítica pròpia al nostre servidor: sense galetes, sense desar la IP i respectant «Do Not Track». La política de privadesa ho explica. El comptador de visites compta també les pàgines de cinema obert, hemeroteca i biblioteca, i mentre carrega ensenya un guió en lloc d’una xifra."
+      ]
+    }
+  },
+  {
     "version": "1.14",
     "date": "2026-10-22",
     "title": {

@@ -10,7 +10,7 @@ octubre aún no tiene entrada en el changelog.
 
 ## Siguientes pasos
 - [ ] Comprobar que los commits del 23–25 oct están desplegados en el VPS (`git pull && docker compose up -d --build`).
-- [ ] Anotar la **v1.15** en `src/data/changelog.json` (5 idiomas): barra inferior en móvil, analítica propia sin cookies, Descubrir con plataformas por país, recomendaciones con mejor memoria y el repaso de portadas, enlaces y textos.
+- [x] Anotar la **v1.15** en `src/data/changelog.json` (5 idiomas): barra inferior en móvil, analítica propia sin cookies, Descubrir con plataformas por país, recomendaciones con mejor memoria y el repaso de portadas, enlaces y textos.
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
 
 ## Última sesión
