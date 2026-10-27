@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { looksLikeCinema, isCinema, isClosed, dedupe, inSpain, type Cinema } from '../src/lib/cinemas';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { looksLikeCinema, isCinema, isClosed, dedupe, inSpain, nearest, snapToGrid, findCinemas, type Cinema } from '../src/lib/cinemas';
 
 const cine = (over: Partial<Cinema>): Cinema => ({
   id: 'node/1',
@@ -160,5 +160,85 @@ describe('inSpain', () => {
   it('rechaza fuera del país', () => {
     expect(inSpain(48.8566, 2.3522)).toBe(false); // París
     expect(inSpain(0, 0)).toBe(false);
+  });
+});
+
+describe('snapToGrid', () => {
+  it('dos lecturas de GPS a unos metros caen en la misma celda', () => {
+    // Puerta del Sol y la esquina de al lado: antes eran dos consultas a Overpass.
+    expect(snapToGrid(40.41693, -3.70357)).toEqual(snapToGrid(40.41712, -3.70401));
+  });
+
+  it('ajusta a centésimas sin arrastrar decimales de coma flotante', () => {
+    expect(snapToGrid(37.38264, -5.99629)).toEqual({ lat: 37.38, lon: -6 });
+    expect(String(snapToGrid(28.123456, -15.437).lat)).toBe('28.12');
+  });
+});
+
+describe('nearest', () => {
+  const salas = [
+    cine({ id: 'a', lat: 40.0, lon: -3.0 }),
+    cine({ id: 'b', lat: 40.1, lon: -3.0 }), // ~11 km al norte
+    cine({ id: 'c', lat: 40.3, lon: -3.0 }), // ~33 km
+  ];
+
+  it('mide desde el punto exacto y ordena de cerca a lejos', () => {
+    const out = nearest([salas[1], salas[0]], 40.0, -3.0, 25000);
+    expect(out.map((c) => c.id)).toEqual(['a', 'b']);
+    expect(out[0].distanceKm).toBe(0);
+    expect(out[1].distanceKm).toBeCloseTo(11.1, 0);
+  });
+
+  it('recorta lo que la consulta trajo de más por el margen de la rejilla', () => {
+    expect(nearest(salas, 40.0, -3.0, 25000).map((c) => c.id)).toEqual(['a', 'b']);
+    expect(nearest(salas, 40.0, -3.0, 50000).map((c) => c.id)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('respeta el tope de resultados', () => {
+    expect(nearest(salas, 40.0, -3.0, 50000, 2)).toHaveLength(2);
+  });
+});
+
+describe('findCinemas con espejos de Overpass', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
+  const respuesta = (elements: unknown[]) => new Response(JSON.stringify({ elements }), { status: 200 });
+  const sala = { type: 'node', id: 77, lat: 36.72, lon: -4.42, tags: { amenity: 'cinema', name: 'Cine Albéniz' } };
+
+  it('si el primer espejo se cuelga, no espera a su timeout: pregunta al siguiente', async () => {
+    vi.useFakeTimers();
+    const llamadas: string[] = [];
+    vi.stubGlobal('fetch', (url: string, init: RequestInit) => {
+      llamadas.push(url);
+      if (llamadas.length === 1) {
+        // Colgado: solo termina si se aborta.
+        return new Promise((_, reject) => init.signal?.addEventListener('abort', () => reject(new Error('abort'))));
+      }
+      return Promise.resolve(respuesta([sala]));
+    });
+    const pendiente = findCinemas(36.7213, -4.4214, 5000);
+    await vi.advanceTimersByTimeAsync(6100);
+    const out = await pendiente;
+    expect(llamadas).toHaveLength(2);
+    expect(out.map((c) => c.name)).toEqual(['Cine Albéniz']);
+  });
+
+  it('si un espejo responde con error, pasa al siguiente sin esperar', async () => {
+    const llamadas: string[] = [];
+    vi.stubGlobal('fetch', async (url: string) => {
+      llamadas.push(url);
+      return llamadas.length === 1 ? new Response('busy', { status: 429 }) : respuesta([sala]);
+    });
+    const out = await findCinemas(36.7313, -4.4314, 5000);
+    expect(llamadas).toHaveLength(2);
+    expect(out).toHaveLength(1);
+  });
+
+  it('si fallan todos, lanza (y el endpoint responde un error reintentable)', async () => {
+    vi.stubGlobal('fetch', async () => new Response('down', { status: 504 }));
+    await expect(findCinemas(36.7413, -4.4414, 5000)).rejects.toThrow();
   });
 });

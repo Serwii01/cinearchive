@@ -30,6 +30,10 @@ const t = useTranslations(lang);
     data-l-maparia={t('cines.mapAria')}
     data-l-you={t('cines.youAreHere')}
     data-l-unnamed={t('cines.unnamed')}
+    data-l-found={t('cines.found')}
+    data-l-found-one={t('cines.foundOne')}
+    data-l-widening={t('cines.widening')}
+    data-l-show-on-map={t('cines.showOnMap')}
   >
     <header class="border-b border-ink pb-6">
       <span class="label">{t('nav.cines')}</span>
@@ -150,7 +154,14 @@ const t = useTranslations(lang);
       widen: root.dataset.lWiden!,
       you: root.dataset.lYou!,
       unnamed: root.dataset.lUnnamed!,
+      found: root.dataset.lFound!,
+      foundOne: root.dataset.lFoundOne!,
+      widening: root.dataset.lWidening!,
+      showOnMap: root.dataset.lShowOnMap!,
     };
+    const fill = (tpl: string, vars: Record<string, string | number>) =>
+      tpl.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m));
+    const km = (metros: number) => Math.round(metros / 1000);
     const form = document.getElementById('cines-form') as HTMLFormElement;
     const input = document.getElementById('cines-q') as HTMLInputElement;
     const suggestBox = document.getElementById('cines-suggest') as HTMLUListElement;
@@ -247,7 +258,7 @@ const t = useTranslations(lang);
       input.value = shortLabel(s.label);
       closeSuggest();
       geoAccuracy = null;
-      query(`lat=${s.lat}&lon=${s.lon}`, DEFAULT_RADIUS);
+      query(`lat=${s.lat}&lon=${s.lon}`, DEFAULT_RADIUS, { q: input.value, lat: s.lat, lon: s.lon });
     };
 
     input.addEventListener('input', () => {
@@ -293,6 +304,8 @@ const t = useTranslations(lang);
     // ================= Mapa (Leaflet, carga perezosa) =================
     let map: LType.Map | null = null;
     let layer: LType.LayerGroup | null = null;
+    /** Marcador de cada sala, para que «Ver en el mapa» abra el suyo. */
+    const markers = new Map<string, LType.Marker>();
     /*
      * "Buscar en esta zona" solo debe salir cuando el mapa lo ha movido el
      * USUARIO. El problema es que Leaflet dispara `moveend` también por su
@@ -356,6 +369,7 @@ const t = useTranslations(lang);
         });
       }
       layer!.clearLayers();
+      markers.clear();
 
       // Círculo de precisión si la posición vino del GPS del dispositivo.
       if (geoAccuracy && geoAccuracy > 0) {
@@ -389,7 +403,7 @@ const t = useTranslations(lang);
           (c.address ? `${esc(c.address)}<br>` : '') +
           `<a href="${directionsUrl(c)}" target="_blank" rel="noopener noreferrer">${esc(L_.directions)}</a> · ` +
           `<a href="${carteleraUrl(c)}" target="_blank" rel="noopener noreferrer">${esc(L_.cartelera)}</a>`;
-        Lm.marker([c.lat, c.lon], {
+        const marker = Lm.marker([c.lat, c.lon], {
           icon: Lm.divIcon({
             className: 'cine-pin cine-pin--sala',
             iconSize: [16, 16],
@@ -399,6 +413,7 @@ const t = useTranslations(lang);
         })
           .bindPopup(popup)
           .addTo(layer!);
+        markers.set(c.id, marker);
       }
       // Ajusta el encuadre a todos los puntos (movimiento programático).
       suppressMove();
@@ -423,6 +438,7 @@ const t = useTranslations(lang);
             `<div class="mt-1 flex flex-wrap gap-x-4 gap-y-1">` +
             `<a href="${directionsUrl(c)}" target="_blank" rel="noopener noreferrer" class="label no-underline text-ink hover:text-muted">${esc(L_.directions)} →</a>` +
             `<a href="${carteleraUrl(c)}" target="_blank" rel="noopener noreferrer" class="label no-underline text-ink hover:text-muted">${esc(L_.cartelera)} →</a>` +
+            `<button type="button" data-map-id="${esc(c.id)}" class="label text-ink hover:text-muted">${esc(L_.showOnMap)}</button>` +
             `</div>` +
             `</div>`
           );
@@ -430,36 +446,78 @@ const t = useTranslations(lang);
         .join('');
     };
 
+    // ================= La búsqueda en la URL =================
+    // Así se puede compartir («cines en Cáceres»), recargar sin perderla y volver
+    // atrás desde la web de una sala sin tener que buscar otra vez. La posición
+    // del GPS NO se escribe nunca en la URL: es tuya, y una URL se copia y se
+    // pega sin mirarla. Sí van las coordenadas de una ciudad elegida o del
+    // centro del mapa, que no dicen dónde está nadie.
+    type Share = { q?: string; lat?: number; lon?: number } | null;
+    const writeUrl = (share: Share, radius: number) => {
+      const u = new URL(location.href);
+      for (const k of ['q', 'lat', 'lon', 'r']) u.searchParams.delete(k);
+      if (share) {
+        if (share.q) u.searchParams.set('q', share.q);
+        if (share.lat != null && share.lon != null) {
+          u.searchParams.set('lat', share.lat.toFixed(4));
+          u.searchParams.set('lon', share.lon.toFixed(4));
+        }
+        if (radius !== DEFAULT_RADIUS) u.searchParams.set('r', String(radius));
+      }
+      history.replaceState(history.state, '', u);
+    };
+
     // ================= Consulta al backend =================
-    // `params` ya incluye q= o lat/lon; `radius` es opcional.
-    const query = async (params: string, radius = DEFAULT_RADIUS) => {
+    // `params` ya incluye q= o lat/lon; `radius` es opcional. Si no sale ninguna
+    // sala, se amplía la zona UNA vez sin que haya que pedirlo: antes se quedaba
+    // en «no hay salas» con un botón, y lo único razonable era pulsarlo.
+    let querySeq = 0; // descarta respuestas de búsquedas ya sustituidas
+    let lastShare: Share = null;
+    // `widenedFrom`: el radio que no dio nada, cuando esta búsqueda es la
+    // ampliación automática (y entonces ya no se vuelve a ampliar sola).
+    const query = async (params: string, radius = DEFAULT_RADIUS, share: Share = null, widenedFrom?: number) => {
+      const seq = ++querySeq;
       lastRadius = radius;
+      lastShare = share;
       closeSuggest();
       results.innerHTML = '';
       widenBtn.hidden = true;
-      setStatus(L_.loading);
+      setStatus(widenedFrom ? fill(L_.widening, { km: km(widenedFrom), km2: km(radius) }) : L_.loading);
       try {
         const res = await fetch(`${API}?${params}&radius=${radius}`, {
           headers: { accept: 'application/json' },
         });
         const data = await res.json().catch(() => null);
+        if (seq !== querySeq) return;
         if (!data) return setStatus(L_.error);
         if (data.error === 'out_of_area') return setStatus(L_.out);
         if (!res.ok || data.error) return setStatus(L_.error); // 503/error: reintentable
         if (data.center) lastCenter = { lat: data.center.lat, lon: data.center.lon };
-        if (!data.cinemas || data.cinemas.length === 0) {
+        const cinemas = (data.cinemas ?? []) as Cinema[];
+        if (cinemas.length === 0) {
+          const next = Math.min(MAX_RADIUS, radius * 2);
+          if (!widenedFrom && lastCenter && next > radius) {
+            const c = lastCenter;
+            return query(`lat=${c.lat}&lon=${c.lon}`, next, share && { ...share, lat: c.lat, lon: c.lon }, radius);
+          }
+          writeUrl(share, radius);
           setStatus(L_.empty);
           // Ofrecer ampliar si aún no estamos en el radio máximo.
           widenBtn.hidden = radius >= MAX_RADIUS || !lastCenter;
           if (lastCenter) drawMap(lastCenter, []).catch(() => mapEl.classList.add('hidden'));
           return;
         }
-        setStatus('');
-        render(data.cinemas as Cinema[]);
+        writeUrl(share, radius);
+        setStatus(
+          cinemas.length === 1
+            ? fill(L_.foundOne, { km: km(radius) })
+            : fill(L_.found, { count: cinemas.length, km: km(radius) }),
+        );
+        render(cinemas);
         // El mapa es un extra: si Leaflet fallara, la lista ya está pintada.
-        drawMap(data.center, data.cinemas as Cinema[]).catch(() => mapEl.classList.add('hidden'));
+        drawMap(data.center, cinemas).catch(() => mapEl.classList.add('hidden'));
       } catch {
-        setStatus(L_.error);
+        if (seq === querySeq) setStatus(L_.error);
       }
     };
 
@@ -474,13 +532,14 @@ const t = useTranslations(lang);
       const q = input.value.trim();
       if (q.length < 2) return;
       geoAccuracy = null;
-      query(`q=${encodeURIComponent(q)}`);
+      query(`q=${encodeURIComponent(q)}`, DEFAULT_RADIUS, { q });
     });
 
     widenBtn.addEventListener('click', () => {
       if (!lastCenter) return;
       const next = Math.min(MAX_RADIUS, lastRadius * 2);
-      query(`lat=${lastCenter.lat}&lon=${lastCenter.lon}`, next);
+      const { lat, lon } = lastCenter;
+      query(`lat=${lat}&lon=${lon}`, next, lastShare && { ...lastShare, lat, lon });
     });
 
     areaBtn.addEventListener('click', () => {
@@ -488,7 +547,18 @@ const t = useTranslations(lang);
       const c = map.getCenter();
       areaBtn.hidden = true;
       geoAccuracy = null;
-      query(`lat=${c.lat}&lon=${c.lng}`, currentRadiusFromMap(map));
+      query(`lat=${c.lat}&lon=${c.lng}`, currentRadiusFromMap(map), { lat: c.lat, lon: c.lng });
+    });
+
+    // «Ver en el mapa»: sube al mapa y abre el globo de esa sala.
+    results.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('[data-map-id]') as HTMLElement | null;
+      const marker = btn && markers.get(btn.dataset.mapId!);
+      if (!marker || !map) return;
+      mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      suppressMove();
+      map.setView(marker.getLatLng(), Math.max(map.getZoom(), 15));
+      marker.openPopup();
     });
 
     geoBtn.addEventListener('click', () => {
@@ -530,5 +600,23 @@ const t = useTranslations(lang);
         { enableHighAccuracy: true, timeout: 25000, maximumAge: 60000 },
       );
     });
+
+    // ================= Búsqueda que llega en la URL =================
+    // Un enlace compartido, una recarga o volver atrás: se repite la búsqueda.
+    {
+      const sp = new URLSearchParams(location.search);
+      const q = sp.get('q')?.trim().slice(0, 120) ?? '';
+      const lat = Number(sp.get('lat'));
+      const lon = Number(sp.get('lon'));
+      const r = Number(sp.get('r'));
+      const radius = Number.isFinite(r) && r >= 1000 ? Math.min(MAX_RADIUS, r) : DEFAULT_RADIUS;
+      const conCoords = sp.has('lat') && sp.has('lon') && Number.isFinite(lat) && Number.isFinite(lon);
+      if (q) input.value = q;
+      if (conCoords) {
+        query(`lat=${lat}&lon=${lon}`, radius, { q: q || undefined, lat, lon });
+      } else if (q.length >= 2) {
+        query(`q=${encodeURIComponent(q)}`, radius, { q });
+      }
+    }
   }
 </script>

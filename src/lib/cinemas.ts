@@ -373,7 +373,10 @@ export function dedupe(list: Cinema[]): Cinema[] {
   return out;
 }
 
-/** Convierte la respuesta de Overpass en cines ordenados por distancia. */
+/**
+ * Convierte la respuesta de Overpass en cines (sin distancia todavía: la pone
+ * `nearest`, desde el punto exacto de quien busca).
+ */
 function parseCinemas(
   elements: OverpassElement[],
   lat: number,
@@ -430,28 +433,119 @@ function parseCinemas(
     }
   }
 
-  return dedupe(list)
+  return dedupe(list);
+}
+
+/**
+ * Rejilla a la que se ajusta el punto de búsqueda antes de preguntar a
+ * Overpass: 0,01° son ~1,1 km. Con GPS cada lectura cae unos metros más allá y
+ * la caché (que iba por milésimas, ~100 m) casi nunca acertaba: cada visita era
+ * otra consulta de 3 s a un servicio público. Con la rejilla, todo un barrio
+ * comparte resultado. Para no perder salas en el borde, se pide un poco más de
+ * radio (`GRID_MARGIN_M`, más que la diagonal de media celda) y luego se
+ * recorta desde el punto exacto.
+ */
+const GRID = 0.01;
+const GRID_MARGIN_M = 1500;
+
+export function snapToGrid(lat: number, lon: number): { lat: number; lon: number } {
+  const snap = (v: number) => Math.round(Math.round(v / GRID) * GRID * 100) / 100;
+  return { lat: snap(lat), lon: snap(lon) };
+}
+
+/**
+ * Las salas dentro del radio pedido, con su distancia desde el punto exacto de
+ * quien busca, de la más cercana a la más lejana. Pura (tiene tests).
+ */
+export function nearest(list: Cinema[], lat: number, lon: number, radius: number, max = 60): Cinema[] {
+  return list
     .map((c) => ({ ...c, distanceKm: Math.round(haversineKm(lat, lon, c.lat, c.lon) * 10) / 10 }))
+    .filter((c) => c.distanceKm * 1000 <= radius)
     .sort((a, b) => a.distanceKm - b.distanceKm)
-    .slice(0, 60);
+    .slice(0, max);
+}
+
+/**
+ * Cuánto se espera a un espejo de Overpass antes de lanzar el siguiente en
+ * paralelo. Una consulta normal tarda ~3 s; si a los 6 no ha contestado, lo
+ * normal es que esté saturado. Antes se esperaba a su timeout entero (25 s) y,
+ * con dos espejos atascados, la página se pasaba casi un minuto en «Buscando».
+ */
+const HEDGE_MS = 6000;
+
+async function queryOverpass(q: string): Promise<OverpassElement[]> {
+  const ask = async (endpoint: string): Promise<OverpassElement[]> => {
+    const res = await fetchWithTimeout(
+      endpoint,
+      {
+        method: 'POST',
+        headers: { 'User-Agent': UA, 'content-type': 'application/x-www-form-urlencoded' },
+        body: 'data=' + encodeURIComponent(q),
+      },
+      // Por encima del timeout de la consulta (20 s): si no, abortaríamos
+      // antes de que Overpass llegue a contestar.
+      25000,
+    );
+    // 429/504…: cuenta como fallo y deja paso al siguiente espejo.
+    if (!res.ok) throw new Error(`overpass http ${res.status}`);
+    const json = (await res.json()) as { elements?: OverpassElement[] };
+    return json.elements ?? [];
+  };
+
+  return new Promise((resolve, reject) => {
+    let lanzados = 0;
+    let fallidos = 0;
+    let terminado = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let lastError: unknown = new Error('overpass unavailable');
+
+    const lanzar = () => {
+      if (terminado || lanzados >= OVERPASS_MIRRORS.length) return;
+      const endpoint = OVERPASS_MIRRORS[lanzados++];
+      // Si este tarda, el siguiente sale sin esperar a que falle.
+      clearTimeout(timer);
+      timer = setTimeout(lanzar, HEDGE_MS);
+      ask(endpoint).then(
+        (elements) => {
+          if (terminado) return;
+          terminado = true;
+          clearTimeout(timer);
+          resolve(elements);
+        },
+        (err) => {
+          if (terminado) return;
+          lastError = err;
+          fallidos++;
+          if (fallidos >= OVERPASS_MIRRORS.length) {
+            terminado = true;
+            clearTimeout(timer);
+            reject(lastError);
+          } else if (fallidos >= lanzados) {
+            lanzar(); // todos los lanzados han fallado: no hay que esperar
+          }
+        },
+      );
+    };
+    lanzar();
+  });
 }
 
 /**
  * Salas de cine alrededor de un punto, ordenadas por distancia.
  *
- * Prueba los espejos de Overpass en orden y usa el primero que responda. Solo se
- * cachea un resultado EFECTIVO (24 h si hay salas, 10 min si vino vacío); si todos
- * los espejos fallan se LANZA una excepción (el endpoint la traduce a un error
- * reintentable) y **no** se cachea, para no dejar un vacío pegado durante horas.
+ * Pregunta a los espejos de Overpass en orden, lanzando el siguiente si uno
+ * tarda, y usa la primera respuesta buena. Solo se cachea un resultado EFECTIVO
+ * (24 h si hay salas, 10 min si vino vacío); si todos los espejos fallan se
+ * LANZA una excepción (el endpoint la traduce a un error reintentable) y **no**
+ * se cachea, para no dejar un vacío pegado durante horas.
  */
 export async function findCinemas(lat: number, lon: number, radius = 25000): Promise<Cinema[]> {
-  const key = `${lat.toFixed(3)},${lon.toFixed(3)},${radius}`;
+  const grid = snapToGrid(lat, lon);
+  const key = `${grid.lat},${grid.lon},${radius}`;
   const cached = cinemaCache.get(key);
-  if (cached && Date.now() < cached.expires) return cached.data;
+  if (cached && Date.now() < cached.expires) return nearest(cached.data, lat, lon, radius);
+  const around = radius + GRID_MARGIN_M;
 
-  // El timeout del cliente (15 s) debe superar el de la consulta Overpass (12 s),
-  // si no se abortaría la petición antes de que el servidor responda.
-  //
   // Se piden también los teatros: en OSM hay multicines etiquetados como
   // `amenity=theatre` (el del CC Los Arcos, en Sevilla, entre otros). El filtro
   // por nombre se hace AQUÍ, en isCinema(), y no en la consulta: probado con un
@@ -460,39 +554,16 @@ export async function findCinemas(lat: number, lon: number, radius = 25000): Pro
   // vista y con tests.
   const q =
     `[out:json][timeout:20];` +
-    `(nwr[amenity=cinema](around:${radius},${lat},${lon});` +
-    `nwr[amenity=theatre](around:${radius},${lat},${lon}););` +
+    `(nwr[amenity=cinema](around:${around},${grid.lat},${grid.lon});` +
+    `nwr[amenity=theatre](around:${around},${grid.lat},${grid.lon}););` +
     `out center tags;`;
 
-  let lastError: unknown = new Error('overpass unavailable');
-  for (const endpoint of OVERPASS_MIRRORS) {
-    try {
-      const res = await fetchWithTimeout(
-        endpoint,
-        {
-          method: 'POST',
-          headers: { 'User-Agent': UA, 'content-type': 'application/x-www-form-urlencoded' },
-          body: 'data=' + encodeURIComponent(q),
-        },
-        // Por encima del timeout de la consulta (20 s): si no, abortaríamos
-        // antes de que Overpass llegue a contestar.
-        25000,
-      );
-      if (!res.ok) {
-        lastError = new Error(`overpass http ${res.status}`);
-        continue; // 429/504…: prueba el siguiente espejo
-      }
-      const json = (await res.json()) as { elements: OverpassElement[] };
-      const out = parseCinemas(json.elements ?? [], lat, lon, radius);
-      cinemaCache.set(key, {
-        expires: Date.now() + (out.length ? DAY_MS : EMPTY_TTL_MS),
-        data: out,
-      });
-      return out;
-    } catch (err) {
-      lastError = err; // red/timeout/JSON: prueba el siguiente espejo
-    }
-  }
-  // Ningún espejo respondió: se propaga para responder "error" reintentable.
-  throw lastError;
+  // Si ningún espejo responde, queryOverpass lanza y el endpoint responde un
+  // error reintentable.
+  const all = parseCinemas(await queryOverpass(q), grid.lat, grid.lon, around);
+  cinemaCache.set(key, {
+    expires: Date.now() + (all.length ? DAY_MS : EMPTY_TTL_MS),
+    data: all,
+  });
+  return nearest(all, lat, lon, radius);
 }
