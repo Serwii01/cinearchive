@@ -107,6 +107,21 @@
       "blurb_ca": "Douglas Fairbanks funda el cinema de capa i espasa amb el seu Zorro acrobàtic i burleta."
     },
     {
+      "id": "Brzdac1921",
+      "title": "The Kid",
+      "original_title": "The Kid",
+      "director": "Charles Chaplin",
+      "year": 1921,
+      "country": "EE. UU.",
+      "runtime": 68,
+      "lang": "en",
+      "blurb_es": "El primer largometraje de Chaplin: Charlot recoge a un bebé abandonado y lo cría a golpe de cristal roto. El montaje original de 1921.",
+      "blurb_en": "Chaplin’s first feature: the Tramp takes in an abandoned baby and raises him one broken window at a time. The original 1921 cut.",
+      "blurb_gl": "A primeira longametraxe de Chaplin: Charlot recolle un bebé abandonado e críao a golpe de cristal roto. A montaxe orixinal de 1921.",
+      "blurb_eu": "Chaplinen lehen film luzea: Charlotek haur abandonatu bat jaso eta kristal hautsiz kristal hautsi hazten du. 1921eko jatorrizko muntaketa.",
+      "blurb_ca": "El primer llargmetratge de Chaplin: Charlot recull un nadó abandonat i el cria a cop de vidre trencat. El muntatge original de 1921."
+    },
+    {
       "id": "Haxan_tinted_and_subtitled",
       "title": "Häxan",
       "original_title": "Häxan",
@@ -120,6 +135,21 @@
       "blurb_gl": "Ensaio-documental sobre a bruxería de Benjamin Christensen, entre o tratado e a alucinación.",
       "blurb_eu": "Benjamin Christensenen sorginkeriari buruzko saiakera-dokumentala, tratatuaren eta haluzinazioaren artean.",
       "blurb_ca": "Assaig-documental sobre la bruixeria de Benjamin Christensen, entre el tractat i l'al·lucinació."
+    },
+    {
+      "id": "nanookOfTheNorth1922",
+      "title": "Nanook of the North",
+      "original_title": "Nanook of the North",
+      "director": "Robert J. Flaherty",
+      "year": 1922,
+      "country": "EE. UU.",
+      "runtime": 78,
+      "lang": "en",
+      "blurb_es": "La película que inventó el documental de largometraje: un año de vida de una familia inuit en la bahía de Hudson.",
+      "blurb_en": "The film that invented the feature documentary: a year in the life of an Inuit family on Hudson Bay.",
+      "blurb_gl": "A película que inventou o documental de longametraxe: un ano de vida dunha familia inuit na baía de Hudson.",
+      "blurb_eu": "Film luze dokumentala asmatu zuen filma: inuit familia baten urtebeteko bizitza Hudson badian.",
+      "blurb_ca": "La pel·lícula que va inventar el documental de llargmetratge: un any de vida d’una família inuit a la badia de Hudson."
     },
     {
       "id": "Nosferatu_most_complete_version_93_mins.",
@@ -137,6 +167,21 @@
       "blurb_ca": "La simfonia de l'horror de Murnau: el comte Orlok i la seva ombra continuen sent la imatge del vampir al cinema."
     },
     {
+      "id": "silent-safety-last",
+      "title": "Safety Last!",
+      "original_title": "Safety Last!",
+      "director": "Fred C. Newmeyer, Sam Taylor",
+      "year": 1923,
+      "country": "EE. UU.",
+      "runtime": 74,
+      "lang": "en",
+      "blurb_es": "Harold Lloyd colgado de las agujas de un reloj a doce pisos de altura: la imagen más famosa de la comedia muda.",
+      "blurb_en": "Harold Lloyd hanging from the hands of a clock twelve storeys up: the most famous image in silent comedy.",
+      "blurb_gl": "Harold Lloyd colgado das agullas dun reloxo a doce andares de altura: a imaxe máis famosa da comedia muda.",
+      "blurb_eu": "Harold Lloyd erloju baten orratzetatik zintzilik, hamabi solairuko altueran: komedia mutuko irudirik ospetsuena.",
+      "blurb_ca": "Harold Lloyd penjat de les agulles d’un rellotge a dotze pisos d’alçada: la imatge més famosa de la comèdia muda."
+    },
+    {
       "id": "sherlock-jr-buster-keaton-1924",
       "title": "Sherlock Jr.",
       "original_title": "Sherlock Jr.",
@@ -152,6 +197,21 @@
       "blurb_ca": "Buster Keaton s'endinsa literalment dins la pantalla: un dels cims del cinema còmic i metacinematogràfic."
     },
     {
+      "id": "BillSpragueCollection-THELASTLAUGH-F.W.MURNAU-1924PUBLICDOMAIN",
+      "title": "The Last Laugh",
+      "original_title": "Der letzte Mann",
+      "director": "F. W. Murnau",
+      "year": 1924,
+      "country": "Alemania",
+      "runtime": 88,
+      "lang": "en",
+      "blurb_es": "Un portero de hotel pierde su uniforme y con él su lugar en el mundo. Murnau la cuenta casi sin rótulos, solo con la cámara.",
+      "blurb_en": "A hotel doorman loses his uniform and with it his place in the world. Murnau tells it almost without intertitles, through the camera alone.",
+      "blurb_gl": "Un porteiro de hotel perde o seu uniforme e con el o seu lugar no mundo. Murnau cóntaa case sen rótulos, só coa cámara.",
+      "blurb_eu": "Hoteleko atezain batek uniformea galtzen du, eta harekin batera munduan zuen tokia. Murnauk ia errotulurik gabe kontatzen du, kamerarekin bakarrik.",
+      "blurb_ca": "Un porter d’hotel perd l’uniforme i amb ell el seu lloc al món. Murnau l’explica gairebé sense rètols, només amb la càmera."
+    },
+    {
       "id": "BattleshipPotemkin",
       "title": "Battleship Potemkin",
       "original_title": "Bronenosets Potyomkin",
@@ -165,6 +225,21 @@
       "blurb_gl": "A montaxe de atraccións de Eisenstein e a escena da escalinata de Odesa, lección viva de cine.",
       "blurb_eu": "Eisensteinen erakarpen-muntaia eta Odessako eskaileren eszena, zinemaren ikasgai bizia.",
       "blurb_ca": "El muntatge d'atraccions d'Eisenstein i l'escena de l'escalinata d'Odessa, lliçó viva de cinema."
+    },
+    {
+      "id": "the-gold-rush-film-1925",
+      "title": "The Gold Rush",
+      "original_title": "The Gold Rush",
+      "director": "Charles Chaplin",
+      "year": 1925,
+      "country": "EE. UU.",
+      "runtime": 87,
+      "lang": "en",
+      "blurb_es": "Charlot en la fiebre del oro de Alaska: la bota hervida, el baile de los panecillos y la cabaña al borde del abismo. Versión muda de 1925.",
+      "blurb_en": "The Tramp in the Alaskan gold rush: the boiled boot, the dance of the rolls and the cabin on the edge of the abyss. The 1925 silent version.",
+      "blurb_gl": "Charlot na febre do ouro de Alasca: a bota fervida, o baile dos bolos e a cabana á beira do abismo. Versión muda de 1925.",
+      "blurb_eu": "Charlot Alaskako urre-sukarrean: bota egosia, ogi-opilen dantza eta amildegiaren ertzeko etxola. 1925eko bertsio mutua.",
+      "blurb_ca": "Charlot a la febre de l’or d’Alaska: la bota bullida, el ball dels panets i la cabana a la vora de l’abisme. Versió muda de 1925."
     },
     {
       "id": "TheLostWorld1925",
@@ -195,6 +270,81 @@
       "blurb_gl": "Lon Chaney e o seu rostro descuberto: o terror gótico de Hollywood en estado puro.",
       "blurb_eu": "Lon Chaney eta haren aurpegi agerian: Hollywoodeko izu gotikoa egoera puruan.",
       "blurb_ca": "Lon Chaney i el seu rostre descobert: el terror gòtic de Hollywood en estat pur."
+    },
+    {
+      "id": "TheGeneral_201312",
+      "title": "The General",
+      "original_title": "The General",
+      "director": "Buster Keaton, Clyde Bruckman",
+      "year": 1926,
+      "country": "EE. UU.",
+      "runtime": 79,
+      "lang": "en",
+      "blurb_es": "Keaton persigue una locomotora robada en plena guerra de Secesión. Cada acrobacia es real, y el tren que cae del puente también.",
+      "blurb_en": "Keaton chases a stolen locomotive in the middle of the Civil War. Every stunt is real, and so is the train that falls off the bridge.",
+      "blurb_gl": "Keaton persegue unha locomotora roubada en plena guerra de Secesión. Cada acrobacia é real, e o tren que cae da ponte tamén.",
+      "blurb_eu": "Keatonek lapurtutako lokomotora bat atzetik darama Sezesio Gerraren erdian. Akrobazia guztiak benetakoak dira, baita zubitik erortzen den trena ere.",
+      "blurb_ca": "Keaton persegueix una locomotora robada en plena guerra de Secessió. Cada acrobàcia és real, i el tren que cau del pont també."
+    },
+    {
+      "id": "Metropolis1927EnglishVersion",
+      "title": "Metropolis",
+      "original_title": "Metropolis",
+      "director": "Fritz Lang",
+      "year": 1927,
+      "country": "Alemania",
+      "runtime": 119,
+      "lang": "en",
+      "blurb_es": "La ciudad vertical, los obreros bajo tierra y la robot María: la ciencia ficción que diseñó el futuro del cine. Copia con rótulos en inglés.",
+      "blurb_en": "The vertical city, the workers underground and the robot Maria: the science fiction that designed cinema’s future. Print with English intertitles.",
+      "blurb_gl": "A cidade vertical, os obreiros baixo terra e a robot María: a ciencia ficción que deseñou o futuro do cine. Copia con rótulos en inglés.",
+      "blurb_eu": "Hiri bertikala, lur azpiko langileak eta Maria robota: zinemaren etorkizuna diseinatu zuen zientzia-fikzioa. Ingelesezko errotuludun kopia.",
+      "blurb_ca": "La ciutat vertical, els obrers sota terra i la robot Maria: la ciència-ficció que va dissenyar el futur del cinema. Còpia amb rètols en anglès."
+    },
+    {
+      "id": "sunrise-a-song-of-two-humans-f.-w.-murnau-1927",
+      "title": "Sunrise: A Song of Two Humans",
+      "original_title": "Sunrise: A Song of Two Humans",
+      "director": "F. W. Murnau",
+      "year": 1927,
+      "country": "EE. UU.",
+      "runtime": 94,
+      "lang": "en",
+      "blurb_es": "Un campesino tentado de ahogar a su mujer y una noche en la ciudad que los reconcilia. El primer trabajo de Murnau en Hollywood.",
+      "blurb_en": "A farmer tempted to drown his wife, and a night in the city that reconciles them. Murnau’s first Hollywood picture.",
+      "blurb_gl": "Un labrego tentado de afogar a súa muller e unha noite na cidade que os reconcilia. O primeiro traballo de Murnau en Hollywood.",
+      "blurb_eu": "Bere emaztea itotzeko tentazioa duen nekazari bat, eta biak adiskidetzen dituen gau bat hirian. Murnauren lehen lana Hollywooden.",
+      "blurb_ca": "Un pagès temptat d’ofegar la seva dona i una nit a la ciutat que els reconcilia. El primer treball de Murnau a Hollywood."
+    },
+    {
+      "id": "SteamboatBillJr",
+      "title": "Steamboat Bill, Jr.",
+      "original_title": "Steamboat Bill, Jr.",
+      "director": "Charles Reisner, Buster Keaton",
+      "year": 1928,
+      "country": "EE. UU.",
+      "runtime": 69,
+      "lang": "en",
+      "blurb_es": "El ciclón final y la fachada de dos toneladas que cae sobre Keaton dejándolo justo en el hueco de la ventana.",
+      "blurb_en": "The final cyclone, and the two-ton house front that falls on Keaton leaving him standing exactly in the window gap.",
+      "blurb_gl": "O ciclón final e a fachada de dúas toneladas que cae sobre Keaton deixándoo xusto no oco da fiestra.",
+      "blurb_eu": "Azken zikloia, eta Keatonen gainera erortzen den bi tonako fatxada, bera leihoaren hutsunean bertan utziz.",
+      "blurb_ca": "El cicló final i la façana de dues tones que cau sobre Keaton i el deixa just al forat de la finestra."
+    },
+    {
+      "id": "ChelovekskinoapparatomManWithAMovieCamera",
+      "title": "Man with a Movie Camera",
+      "original_title": "Человек с киноаппаратом",
+      "director": "Dziga Vertov",
+      "year": 1929,
+      "country": "URSS",
+      "runtime": 67,
+      "lang": "en",
+      "blurb_es": "Un día en una ciudad soviética sin actores, sin guion y sin rótulos: solo la cámara, el montaje y la mujer que monta la película.",
+      "blurb_en": "A day in a Soviet city with no actors, no script and no intertitles: just the camera, the editing and the woman who edits the film.",
+      "blurb_gl": "Un día nunha cidade soviética sen actores, sen guión e sen rótulos: só a cámara, a montaxe e a muller que monta a película.",
+      "blurb_eu": "Egun bat hiri sobietar batean, aktorerik, gidoirik eta errotulurik gabe: kamera, muntaketa eta filma muntatzen duen emakumea baino ez.",
+      "blurb_ca": "Un dia en una ciutat soviètica sense actors, sense guió i sense rètols: només la càmera, el muntatge i la dona que munta la pel·lícula."
     },
     {
       "id": "white_zombie",
@@ -317,6 +467,36 @@
       "blurb_ca": "Ida Lupino, única dona que va dirigir un cinema negre clàssic d'estudi: tensió seca en ple desert."
     },
     {
+      "id": "plan-9-from-outer-space",
+      "title": "Plan 9 from Outer Space",
+      "original_title": "Plan 9 from Outer Space",
+      "director": "Ed Wood",
+      "year": 1957,
+      "country": "EE. UU.",
+      "runtime": 78,
+      "lang": "en",
+      "blurb_es": "Extraterrestres que resucitan a los muertos, platillos colgados de un hilo y la última aparición de Bela Lugosi. La película de culto por excelencia.",
+      "blurb_en": "Aliens who raise the dead, flying saucers on strings and Bela Lugosi’s last appearance. The cult film par excellence.",
+      "blurb_gl": "Extraterrestres que resucitan os mortos, pratos voadores colgados dun fío e a última aparición de Bela Lugosi. A película de culto por excelencia.",
+      "blurb_eu": "Hildakoak berpizten dituzten estralurtarrak, haritik zintzilik dauden plater hegalariak eta Bela Lugosiren azken agerraldia. Kultuzko filma bikaina.",
+      "blurb_ca": "Extraterrestres que ressusciten els morts, plats voladors penjats d’un fil i l’última aparició de Bela Lugosi. La pel·lícula de culte per excel·lència."
+    },
+    {
+      "id": "HouseOnHauntedHill1959",
+      "title": "House on Haunted Hill",
+      "original_title": "House on Haunted Hill",
+      "director": "William Castle",
+      "year": 1959,
+      "country": "EE. UU.",
+      "runtime": 75,
+      "lang": "en",
+      "blurb_es": "Vincent Price ofrece diez mil dólares a quien aguante una noche en su mansión. William Castle en estado puro.",
+      "blurb_en": "Vincent Price offers ten thousand dollars to anyone who lasts a night in his mansion. Pure William Castle.",
+      "blurb_gl": "Vincent Price ofrece dez mil dólares a quen aguante unha noite na súa mansión. William Castle en estado puro.",
+      "blurb_eu": "Vincent Pricek hamar mila dolar eskaintzen dizkio bere jauregian gau bat igarotzen duenari. William Castle bere onenean.",
+      "blurb_ca": "Vincent Price ofereix deu mil dòlars a qui aguanti una nit a la seva mansió. William Castle en estat pur."
+    },
+    {
       "id": "TheLittleShopOfHorrors1960",
       "title": "The Little Shop of Horrors",
       "original_title": "The Little Shop of Horrors",
@@ -345,6 +525,21 @@
       "blurb_gl": "Pesadelo independente de atmosfera hipnótica que influíu en todo o cine de terror posterior.",
       "blurb_eu": "Giro hipnotikoko amesgaizto independentea, ondorengo izu-zinema guztian eragina izan zuena.",
       "blurb_ca": "Malson independent d'atmosfera hipnòtica que va influir en tot el cinema de terror posterior."
+    },
+    {
+      "id": "charade-1963-cary-grant-audrey-hepburn-comedy-mystery-romance-thriller-full-movie",
+      "title": "Charade",
+      "original_title": "Charade",
+      "director": "Stanley Donen",
+      "year": 1963,
+      "country": "EE. UU.",
+      "runtime": 113,
+      "lang": "en",
+      "blurb_es": "Audrey Hepburn, Cary Grant y un botín escondido en París. Es de dominio público por un descuido: los créditos olvidaron el símbolo ©.",
+      "blurb_en": "Audrey Hepburn, Cary Grant and loot hidden in Paris. It is public domain through an oversight: the credits left out the © symbol.",
+      "blurb_gl": "Audrey Hepburn, Cary Grant e un botín agochado en París. É de dominio público por un descoido: os créditos esqueceron o símbolo ©.",
+      "blurb_eu": "Audrey Hepburn, Cary Grant eta Parisen ezkutatutako harrapakin bat. Domeinu publikokoa da ahanztura batengatik: kredituetan © ikurra falta zen.",
+      "blurb_ca": "Audrey Hepburn, Cary Grant i un botí amagat a París. És de domini públic per un descuit: els crèdits van oblidar el símbol ©."
     },
     {
       "id": "Dementia13withSpanishSubtitles",
