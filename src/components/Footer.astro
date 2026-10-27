@@ -21,21 +21,21 @@ const year = new Date().getFullYear();
     </div>
 
     {/* Fila inferior: navegación a todo el ancho */}
-    <nav class="mt-8 flex flex-wrap gap-x-6 gap-y-3 border-t border-outline pt-6" aria-label="Pie">
-      <a href={localizePath(lang)} class="label text-background no-underline hover:text-ochre">{t('nav.home')}</a>
-      <a href={localizePath(lang, 'archive')} class="label text-background no-underline hover:text-ochre">{t('nav.archive')}</a>
-      <a href={localizePath(lang, 'films')} class="label text-background no-underline hover:text-ochre">{t('nav.films')}</a>
-      <a href={localizePath(lang, 'discover')} class="label text-background no-underline hover:text-ochre">{t('nav.discover')}</a>
-      <a href={localizePath(lang, 'cines')} class="label text-background no-underline hover:text-ochre">{t('nav.cines')}</a>
-      <a href={localizePath(lang, 'about')} class="label text-background no-underline hover:text-ochre">{t('nav.about')}</a>
-      <a href={localizePath(lang, 'info')} class="label text-background no-underline hover:text-ochre">{t('footer.info')}</a>
-      <a href={localizePath(lang, 'faq')} class="label text-background no-underline hover:text-ochre">{t('nav.faq')}</a>
-      <a href={localizePath(lang, 'privacy')} class="label text-background no-underline hover:text-ochre">{t('nav.privacy')}</a>
-      <a href={localizePath(lang, 'terms')} class="label text-background no-underline hover:text-ochre">{t('nav.terms')}</a>
-      <a href={localizePath(lang, 'accessibility')} class="label text-background no-underline hover:text-ochre">{t('nav.accessibility')}</a>
-      <a href={localizePath(lang, 'changelog')} class="label text-background no-underline hover:text-ochre">{t('nav.changelog')} · v{CURRENT_VERSION}</a>
+    <nav class="mt-8 flex flex-wrap gap-x-6 gap-y-0 border-t border-outline pt-3" aria-label="Pie">
+      <a href={localizePath(lang)} class="label tap text-background no-underline hover:text-ochre">{t('nav.home')}</a>
+      <a href={localizePath(lang, 'archive')} class="label tap text-background no-underline hover:text-ochre">{t('nav.archive')}</a>
+      <a href={localizePath(lang, 'films')} class="label tap text-background no-underline hover:text-ochre">{t('nav.films')}</a>
+      <a href={localizePath(lang, 'discover')} class="label tap text-background no-underline hover:text-ochre">{t('nav.discover')}</a>
+      <a href={localizePath(lang, 'cines')} class="label tap text-background no-underline hover:text-ochre">{t('nav.cines')}</a>
+      <a href={localizePath(lang, 'about')} class="label tap text-background no-underline hover:text-ochre">{t('nav.about')}</a>
+      <a href={localizePath(lang, 'info')} class="label tap text-background no-underline hover:text-ochre">{t('footer.info')}</a>
+      <a href={localizePath(lang, 'faq')} class="label tap text-background no-underline hover:text-ochre">{t('nav.faq')}</a>
+      <a href={localizePath(lang, 'privacy')} class="label tap text-background no-underline hover:text-ochre">{t('nav.privacy')}</a>
+      <a href={localizePath(lang, 'terms')} class="label tap text-background no-underline hover:text-ochre">{t('nav.terms')}</a>
+      <a href={localizePath(lang, 'accessibility')} class="label tap text-background no-underline hover:text-ochre">{t('nav.accessibility')}</a>
+      <a href={localizePath(lang, 'changelog')} class="label tap text-background no-underline hover:text-ochre">{t('nav.changelog')} · v{CURRENT_VERSION}</a>
       {/* Feed de novedades: el único canal de retorno sin cuentas ni rastreadores. */}
-      <a href={localizePath(lang, 'rss.xml')} class="label text-background no-underline hover:text-ochre">RSS</a>
+      <a href={localizePath(lang, 'rss.xml')} class="label tap text-background no-underline hover:text-ochre">RSS</a>
     </nav>
   </div>
 </footer>

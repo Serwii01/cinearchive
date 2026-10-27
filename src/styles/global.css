@@ -104,6 +104,13 @@
     @apply font-mono text-label-caps uppercase tracking-[0.1em] text-muted;
   }
 
+  /* Zona de pulsación de 44 px para enlaces sueltos de texto pequeño («Ver
+     todo», el pie…). Medían 16 px de alto: con el dedo se fallaba o se
+     pulsaba el de al lado. Crece el área, no el texto. */
+  .tap {
+    @apply inline-flex min-h-[44px] items-center;
+  }
+
   /* Botón primario: relleno ochre, hover invertido a negro. */
   .btn {
     @apply inline-flex items-center gap-2 border border-ink px-5 py-3 font-mono text-label-caps uppercase tracking-[0.1em] transition-colors duration-150;

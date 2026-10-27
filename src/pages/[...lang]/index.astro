@@ -128,9 +128,9 @@ const homeJsonLd = [
 
           {/* La línea: un tramo por diapositiva. Los pasados, llenos; el actual
               se va llenando; los siguientes, vacíos. Cada tramo es un botón. */}
-          <div class="flex gap-1 border-t border-ink px-6 py-4 md:px-10" role="tablist" aria-label={t('home.carousel')}>
+          <div class="flex gap-1 border-t border-ink px-6 py-0 md:px-10" role="tablist" aria-label={t('home.carousel')}>
             {Array.from({ length: Math.min(articlePicks.length, 2) + 2 }, (_, k) => k).map((i) => (
-              <button type="button" role="tab" data-tab aria-selected={i === 0 ? 'true' : 'false'} aria-label={`${i + 1}`} class="group/tab h-4 flex-1 cursor-pointer bg-transparent p-0">
+              <button type="button" role="tab" data-tab aria-selected={i === 0 ? 'true' : 'false'} aria-label={`${i + 1}`} class="group/tab flex h-11 flex-1 cursor-pointer items-center bg-transparent p-0">
                 <span class="block h-[3px] w-full bg-outline-variant transition-colors group-hover/tab:bg-muted">
                   <span data-fill class="block h-full w-0 bg-ochre"></span>
                 </span>
@@ -187,7 +187,7 @@ const homeJsonLd = [
   <section class="frame border-t border-ink py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('articles.title')}</h2>
-      <a href={localizePath(lang, 'articles')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+      <a href={localizePath(lang, 'articles')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
     <div class="grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
       {
@@ -226,7 +226,7 @@ const homeJsonLd = [
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('nav.library')}</h2>
-      <a href={localizePath(lang, 'library')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+      <a href={localizePath(lang, 'library')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
     <div class="grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
       {
@@ -249,7 +249,7 @@ const homeJsonLd = [
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('nav.cinema')}</h2>
-      <a href={localizePath(lang, 'cinema')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+      <a href={localizePath(lang, 'cinema')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
     <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
       {
@@ -273,7 +273,7 @@ const homeJsonLd = [
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('dossiers.title')}</h2>
-      <a href={localizePath(lang, 'dossiers')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+      <a href={localizePath(lang, 'dossiers')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
     <p class="mb-8 max-w-2xl text-body-md text-charcoal">{t('dossiers.intro')}</p>
 
@@ -303,7 +303,7 @@ const homeJsonLd = [
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('nav.collections')}</h2>
-      <a href={localizePath(lang, 'collections')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+      <a href={localizePath(lang, 'collections')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
     <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
       {
@@ -322,7 +322,7 @@ const homeJsonLd = [
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('nav.figures')}</h2>
-      <a href={localizePath(lang, 'figures')} class="label no-underline hover:text-ink">{t('home.seeAll')} →</a>
+      <a href={localizePath(lang, 'figures')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
     <div class="grid grid-cols-3 gap-px border border-ink bg-ink sm:grid-cols-6">
       {
@@ -396,7 +396,7 @@ const homeJsonLd = [
     <div class="grid grid-cols-1 gap-10 pt-8 md:grid-cols-12">
       <div class="prose-archive md:col-span-7 md:border-r md:border-ink md:pr-10">
         {manifestoCopy.body.map((p) => <p>{p}</p>)}
-        <a href={localizePath(lang, 'about')} class="label mt-2 inline-block no-underline hover:text-ink">
+        <a href={localizePath(lang, 'about')} class="label tap mt-2 no-underline hover:text-ink">
           {t('home.readManifesto')} →
         </a>
       </div>

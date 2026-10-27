@@ -221,8 +221,11 @@ const crumbsJsonLd = breadcrumbLd([
         queda con el resto. */}
     <div class="mt-6 grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-12 md:grid-rows-[auto_1fr]">
       <!-- Póster + controles -->
-      <div class="mx-auto w-full max-w-[20rem] md:mx-0 md:max-w-none md:col-span-4 md:col-start-1 md:row-start-1">
-        <div class="border border-ink bg-charcoal">
+      {/* En móvil el póster va pequeño: a ancho completo se comía la primera
+          pantalla entera y el título no aparecía hasta bajar. Los controles
+          siguen a todo el ancho, que son botones y necesitan sitio. */}
+      <div class="w-full md:col-span-4 md:col-start-1 md:row-start-1">
+        <div class="mx-auto w-full max-w-[11rem] border border-ink bg-charcoal sm:max-w-[16rem] md:mx-0 md:max-w-none">
           {poster ? (
             <img
               src={poster}
