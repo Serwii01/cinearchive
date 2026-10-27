@@ -27,8 +27,8 @@ export const periodicals = data.items as Periodical[];
  * Antes se ordenaba solo por año, y al meter cuatro Shock Cinema de los
  * noventa la portada no se enteraba: todo lo nuevo era «viejo».
  */
-export function recentIssues(n: number): Periodical[] {
-  const sorted = periodicals
+export function recentIssues(n: number, list: Periodical[] = periodicals): Periodical[] {
+  const sorted = list
     .slice()
     .sort((a, b) => (b.added ?? '').localeCompare(a.added ?? '') || b.year - a.year || a.title.localeCompare(b.title));
   const seen = new Set<string>();
@@ -38,6 +38,28 @@ export function recentIssues(n: number): Periodical[] {
     seen.add(p.title);
     out.push(p);
     if (out.length === n) break;
+  }
+  return out;
+}
+
+/** Hasta este año, «clásica»: la prensa de dominio público que es el fondo del archivo. */
+export const CLASSIC_UNTIL = 1969;
+
+/**
+ * Escaparate de la hemeroteca para la portada: lo último en entrar, pero
+ * alternando clásicas y modernas y empezando por una clásica. Como las últimas
+ * altas fueron revistas de los noventa en adelante, la portada enseñaba solo
+ * Jump Cut, Shock Cinema y compañía —muchas con un índice de texto por
+ * portada— y el fondo de verdad (Photoplay, Variety, Cine-Mundial…) no se veía.
+ * Si falta de un tipo, se completa con el otro. Pura (tiene tests).
+ */
+export function showcaseIssues(n: number, list: Periodical[] = periodicals): Periodical[] {
+  const clasicas = recentIssues(n, list.filter((p) => p.year <= CLASSIC_UNTIL));
+  const modernas = recentIssues(n, list.filter((p) => p.year > CLASSIC_UNTIL));
+  const out: Periodical[] = [];
+  for (let i = 0; out.length < n && (i < clasicas.length || i < modernas.length); i++) {
+    if (clasicas[i]) out.push(clasicas[i]);
+    if (out.length < n && modernas[i]) out.push(modernas[i]);
   }
   return out;
 }

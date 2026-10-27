@@ -14,7 +14,10 @@ import { filmSlug } from '../../../lib/slug';
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
-const issues = periodicals.slice().sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
+// De la más antigua a la más nueva: el fondo del archivo es la prensa de
+// dominio público de los años diez a los cincuenta. Al revés, la primera
+// pantalla eran doce Jump Cut seguidos y parecía otra hemeroteca.
+const issues = periodicals.slice().sort((a, b) => a.year - b.year || a.title.localeCompare(b.title));
 const decades = [...new Set(issues.map((i) => Math.floor(i.year / 10) * 10))].sort((a, b) => b - a);
 const libItems = books.slice().sort((a, b) => a.year - b.year || a.title.localeCompare(b.title));
 const terms = sortedGlossary(lang);

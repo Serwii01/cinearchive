@@ -3,7 +3,7 @@ export const prerender = false; // la película del día se obtiene en cada visi
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TmdbSearch from '../../components/TmdbSearch.astro';
 import IssueCard from '../../components/IssueCard.astro';
-import { recentIssues, coverUrl } from '../../lib/periodicals';
+import { showcaseIssues, coverUrl } from '../../lib/periodicals';
 import { pdFilms, pdThumbUrl } from '../../lib/pdfilms';
 import { books, bookCoverUrl } from '../../lib/library';
 import { collections, collectionTitle, collectionBlurb } from '../../lib/collections';
@@ -31,7 +31,7 @@ const efemeride = { hoy: efem.onThisDay.length > 0, dato: efem.onThisDay[0] ?? e
 // Últimos números: los últimos en entrar en la hemeroteca, sin repetir
 // cabecera. Ocho, dos filas: con una sola fila las cabeceras en castellano
 // se comían a las americanas (o al revés) y nunca se veían las dos cosas.
-const latestIssues = recentIssues(8);
+const latestIssues = showcaseIssues(8);
 
 // Selección repartida (variedad) de un conjunto, para los adelantos de portada.
 const sample = <T,>(arr: T[], n: number): T[] => {

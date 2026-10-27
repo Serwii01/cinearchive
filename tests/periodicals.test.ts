@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { existsSync } from 'node:fs';
 import { basename, join } from 'node:path';
-import { coverUrl, periodicals, recentIssues } from '../src/lib/periodicals';
+import { coverUrl, periodicals, recentIssues, showcaseIssues, CLASSIC_UNTIL, type Periodical } from '../src/lib/periodicals';
 import { pdFilms, pdLicenseLabel } from '../src/lib/pdfilms';
 
 const PUBLIC = join(process.cwd(), 'public');
@@ -76,5 +76,36 @@ describe('cine abierto', () => {
     expect(pdLicenseLabel('cc-by', t)).toBe('Creative Commons');
     expect(pdLicenseLabel('cc-by-nc-sa', t)).toBe('Creative Commons · BY-NC-SA');
     expect(pdLicenseLabel('cc-by-nd', t)).toBe('Creative Commons · BY-ND');
+  });
+});
+
+describe('showcaseIssues (portada)', () => {
+  const p = (id: string, title: string, year: number, added: string) =>
+    ({ id, title, issue: '', year, type: 'magazine', publisher: '', country: '', lang: 'en', added, blurb_es: '', blurb_en: '' }) as Periodical;
+  const lista = [
+    p('j1', 'Jump Cut', 1990, '2026-10-10'),
+    p('j2', 'Jump Cut', 1991, '2026-10-10'),
+    p('s1', 'Shock Cinema', 1995, '2026-10-09'),
+    p('c1', 'Cinéphiles', 2020, '2026-10-08'),
+    p('ph', 'Photoplay', 1925, '2026-09-01'),
+    p('va', 'Variety', 1930, '2026-08-01'),
+  ];
+
+  it('alterna clásicas y modernas, empezando por una clásica', () => {
+    expect(showcaseIssues(4, lista).map((x) => x.id)).toEqual(['ph', 'j2', 'va', 's1']);
+  });
+
+  it('no repite cabecera', () => {
+    const titulos = showcaseIssues(6, lista).map((x) => x.title);
+    expect(new Set(titulos).size).toBe(titulos.length);
+  });
+
+  it('si se acaban las de un tipo, completa con el otro', () => {
+    expect(showcaseIssues(5, lista).map((x) => x.id)).toEqual(['ph', 'j2', 'va', 's1', 'c1']);
+  });
+
+  it('con los datos reales, la mitad de la portada es prensa clásica', () => {
+    const out = showcaseIssues(8);
+    expect(out.filter((x) => x.year <= CLASSIC_UNTIL).length).toBeGreaterThanOrEqual(4);
   });
 });
