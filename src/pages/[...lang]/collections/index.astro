@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CollectionMosaic from '../../../components/CollectionMosaic.astro';
 import { collections, collectionTitle, collectionBlurb } from '../../../lib/collections';
 import { useTranslations, localizePath, langStaticPaths, normalizeLang, type Lang } from '../../../i18n/ui';
 
@@ -27,12 +28,15 @@ const t = useTranslations(lang);
         collections.map((c) => (
           <a
             href={localizePath(lang, `collections/${c.slug}`)}
-            class="group flex flex-col bg-surface p-5 no-underline transition-colors hover:bg-film-white"
+            class="group flex flex-col bg-surface no-underline transition-colors hover:bg-film-white"
           >
-            <span class="label">{c.tmdbIds.length} {t('collections.films')}</span>
-            <h2 class="mt-2 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{collectionTitle(c, lang)}</h2>
-            <p class="mt-2 text-body-md text-charcoal">{collectionBlurb(c, lang)}</p>
-            <span class="label mt-4 text-ink">{t('collections.view')} →</span>
+            <CollectionMosaic posters={c.posters} />
+            <div class="flex flex-1 flex-col p-5">
+              <span class="label">{c.tmdbIds.length} {t('collections.films')}</span>
+              <h2 class="mt-2 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{collectionTitle(c, lang)}</h2>
+              <p class="mt-2 text-body-md text-charcoal">{collectionBlurb(c, lang)}</p>
+              <span class="label mt-auto pt-4 text-ink">{t('collections.view')} →</span>
+            </div>
           </a>
         ))
       }

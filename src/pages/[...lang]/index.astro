@@ -7,6 +7,7 @@ import { showcaseIssues, coverUrl } from '../../lib/periodicals';
 import { pdFilms, pdThumbUrl } from '../../lib/pdfilms';
 import { books, bookCoverUrl } from '../../lib/library';
 import { collections, collectionTitle, collectionBlurb } from '../../lib/collections';
+import CollectionMosaic from '../../components/CollectionMosaic.astro';
 import { dossiers, dossierCopy } from '../../lib/dossiers';
 import { articles, articleCopy } from '../../lib/articles';
 import { figures } from '../../lib/figures';
@@ -308,10 +309,13 @@ const homeJsonLd = [
     <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
       {
         collectionPicks.map((c) => (
-          <a href={localizePath(lang, `collections/${c.slug}`)} class="group flex flex-col bg-surface p-5 no-underline transition-colors hover:bg-film-white">
-            <span class="label">{c.tmdbIds.length} {t('collections.films')}</span>
-            <h3 class="mt-2 font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{collectionTitle(c, lang)}</h3>
-            <p class="mt-2 text-body-md text-charcoal">{collectionBlurb(c, lang)}</p>
+          <a href={localizePath(lang, `collections/${c.slug}`)} class="group flex flex-col bg-surface no-underline transition-colors hover:bg-film-white">
+            <CollectionMosaic posters={c.posters} />
+            <div class="p-5">
+              <span class="label">{c.tmdbIds.length} {t('collections.films')}</span>
+              <h3 class="mt-2 font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{collectionTitle(c, lang)}</h3>
+              <p class="mt-2 text-body-md text-charcoal">{collectionBlurb(c, lang)}</p>
+            </div>
           </a>
         ))
       }

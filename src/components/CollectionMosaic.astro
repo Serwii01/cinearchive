@@ -1,0 +1,34 @@
+---
+/**
+ * Mosaico de cuatro carteles para la tarjeta de una colección. Las colecciones
+ * eran tarjetas de solo texto: doce ciclos con Ozu, Tarkovski o la Nouvelle
+ * Vague sin una sola imagen. Los carteles vienen de collections.json
+ * (scripts/fetch-collection-posters.mjs), así que la página sigue siendo
+ * estática y no pide nada a TMDB.
+ */
+import { posterUrl } from '../lib/tmdb';
+
+interface Props {
+  posters?: string[];
+}
+
+const posters = (Astro.props.posters ?? []).slice(0, 4);
+---
+
+{
+  posters.length > 0 && (
+    <div class="grid grid-cols-4 gap-px border-b border-ink bg-ink" aria-hidden="true">
+      {posters.map((p) => (
+        <img
+          src={posterUrl(p, 'w185')}
+          alt=""
+          width="185"
+          height="278"
+          loading="lazy"
+          decoding="async"
+          class="aspect-[2/3] w-full bg-charcoal object-cover"
+        />
+      ))}
+    </div>
+  )
+}

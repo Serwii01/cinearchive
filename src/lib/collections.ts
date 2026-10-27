@@ -15,6 +15,8 @@ export interface Collection {
   blurb_eu?: string;
   blurb_ca?: string;
   tmdbIds: number[];
+  /** Carteles de las primeras películas, para el mosaico (scripts/fetch-collection-posters.mjs). */
+  posters?: string[];
 }
 
 export const collections = data.items as Collection[];

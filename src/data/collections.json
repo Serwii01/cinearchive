@@ -23,7 +23,13 @@
       "title_ca": "Cims del cinema japonès",
       "blurb_gl": "Da quietude de Ozu ao estrondo épico de Kurosawa: o clasicismo xaponés que ensinou o mundo a mirar.",
       "blurb_eu": "Ozuren geldotasunetik Kurosawaren trumoi epikora: mundua begiratzen irakatsi zuen japoniar klasizismoa.",
-      "blurb_ca": "De la quietud d'Ozu al tro èpic de Kurosawa: el classicisme japonès que va ensenyar el món a mirar."
+      "blurb_ca": "De la quietud d'Ozu al tro èpic de Kurosawa: el classicisme japonès que va ensenyar el món a mirar.",
+      "posters": [
+        "/36G6HwEN3K9BrPEC8icOIOdCUb4.jpg",
+        "/ioAmh4wbyIhc8GeuHJG8jebf3RS.jpg",
+        "/zr4DkzWIMjaWtj6hlsbN6dnNeTX.jpg",
+        "/hTzw4ectHlJw1gZciFNsemTPARM.jpg"
+      ]
     },
     {
       "slug": "nouvelle-vague",
@@ -44,7 +50,13 @@
       "title_ca": "La Nouvelle Vague",
       "blurb_gl": "Cámara na man, montaxe insolente e amor polo cine: a xeración que rompeu as regras a finais dos cincuenta.",
       "blurb_eu": "Kamera eskuan, muntaia lotsagabea eta zinemarako maitasuna: berrogeita hamarreko hamarkadaren amaieran arauak hautsi zituen belaunaldia.",
-      "blurb_ca": "Càmera a la mà, muntatge insolent i amor pel cinema: la generació que va trencar les regles a finals dels cinquanta."
+      "blurb_ca": "Càmera a la mà, muntatge insolent i amor pel cinema: la generació que va trencar les regles a finals dels cinquanta.",
+      "posters": [
+        "/1uqxcqhTNXZLyZoNKeqVkMVzuU4.jpg",
+        "/s5Ok06Q4M2cWAZGqtR5Au8o64YJ.jpg",
+        "/s9Po80JEx6LsvoRK98n9XgeQwBH.jpg",
+        "/suOAqdXi7mEiTLEHmAZlwfqYTzM.jpg"
+      ]
     },
     {
       "slug": "mudo-y-vanguardias",
@@ -65,7 +77,13 @@
       "title_ca": "Cinema mut i avantguardes",
       "blurb_gl": "Expresionismo, montaxe soviética e surrealismo: cando o cine inventaba a súa propia linguaxe sen palabras.",
       "blurb_eu": "Espresionismoa, muntaia sobietarra eta surrealismoa: zinemak bere hizkuntza propioa hitzik gabe asmatzen zuenean.",
-      "blurb_ca": "Expressionisme, muntatge soviètic i surrealisme: quan el cinema inventava el seu propi llenguatge sense paraules."
+      "blurb_ca": "Expressionisme, muntatge soviètic i surrealisme: quan el cinema inventava el seu propi llenguatge sense paraules.",
+      "posters": [
+        "/xehDbRVWuS31FBU73AUIoiVePIe.jpg",
+        "/z45rXmIF0zl4uxRc5XcSfz6hYO6.jpg",
+        "/fCWd45ybxghuvaeSMcBsLFKY6PG.jpg",
+        "/olQ0vHFCK5TzRyNkkT2aJgG2gLz.jpg"
+      ]
     },
     {
       "slug": "negro-y-suspense",
@@ -86,7 +104,13 @@
       "title_ca": "Ombres: cinema negre i suspens",
       "blurb_gl": "Claroscuros, fatalismo e tensión: o lado escuro de Hollywood e os seus herdeiros.",
       "blurb_eu": "Klaroskuroak, fatalismoa eta tentsioa: Hollywooden alde iluna eta haren oinordekoak.",
-      "blurb_ca": "Clarobscurs, fatalisme i tensió: el costat fosc de Hollywood i els seus hereus."
+      "blurb_ca": "Clarobscurs, fatalisme i tensió: el costat fosc de Hollywood i els seus hereus.",
+      "posters": [
+        "/t4kvoLhrVHW5w5Ku7AQBniVExjN.jpg",
+        "/xFbnc2QPG5H5gYWsGbZT4q8Akya.jpg",
+        "/fH1MipE8PXGg0rlI5cUdzxKnyA2.jpg",
+        "/sVILYytrnjsEXBcZyxHMJ5jP74t.jpg"
+      ]
     },
     {
       "slug": "ciencia-ficcion",
@@ -107,7 +131,13 @@
       "title_ca": "Ciència-ficció que pensa",
       "blurb_gl": "Futuros e outros mundos como espello do humano: a ciencia ficción cando é, sobre todo, filosofía.",
       "blurb_eu": "Etorkizunak eta beste mundu batzuk gizakiaren ispilu gisa: zientzia-fikzioa, batez ere, filosofia denean.",
-      "blurb_ca": "Futurs i altres mons com a mirall d'allò humà: la ciència-ficció quan és, sobretot, filosofia."
+      "blurb_ca": "Futurs i altres mons com a mirall d'allò humà: la ciència-ficció quan és, sobretot, filosofia.",
+      "posters": [
+        "/pGabanxaE2YvN4jhZuSN3oXO0mi.jpg",
+        "/c6lF6PYnq6rtYTUM8me0D0DCpwa.jpg",
+        "/69J6Hplvaw5o5lfCRqFRd4nmuH7.jpg",
+        "/pBA2J6iQMiP5Zd4ewMKdOWfq1HV.jpg"
+      ]
     },
     {
       "slug": "nuevo-cine-asiatico",
@@ -129,7 +159,13 @@
       "title_ca": "Nou cinema asiàtic",
       "blurb_gl": "Hong Kong, Corea, Taiwán, Tailandia, Irán: as voces que definiron o cine de autor das últimas décadas.",
       "blurb_eu": "Hong Kong, Korea, Taiwan, Thailandia, Iran: azken hamarkadetako egile-zinema definitu duten ahotsak.",
-      "blurb_ca": "Hong Kong, Corea, Taiwan, Tailàndia, Iran: les veus que han definit el cinema d'autor de les darreres dècades."
+      "blurb_ca": "Hong Kong, Corea, Taiwan, Tailàndia, Iran: les veus que han definit el cinema d'autor de les darreres dècades.",
+      "posters": [
+        "/r1kobz0ceeNdxzCntkSL5Rzkevi.jpg",
+        "/nl246bqCp6lmRF4mHF293F9w42O.jpg",
+        "/45kRW1xgTq3QrZltL9mY9e9iYkH.jpg",
+        "/4N55tgxDW0RRATyrZHbx0q9HUKv.jpg"
+      ]
     },
     {
       "slug": "el-cine-de-bergman",
@@ -149,7 +185,13 @@
       "title_ca": "L'ànima segons Bergman",
       "blurb_gl": "Fe, morte e silencio: o cine de cámara de Ingmar Bergman como introspección sen rede.",
       "blurb_eu": "Fedea, heriotza eta isiltasuna: Ingmar Bergmanen ganbera-zinema, saretik gabeko barne-azterketa gisa.",
-      "blurb_ca": "Fe, mort i silenci: el cinema de cambra d'Ingmar Bergman com a introspecció sense xarxa."
+      "blurb_ca": "Fe, mort i silenci: el cinema de cambra d'Ingmar Bergman com a introspecció sense xarxa.",
+      "posters": [
+        "/pnJMAumh0gaZC02r9t5YmN9HR74.jpg",
+        "/k4f0IpHOJqAK9Cvy3FLH9w90qWX.jpg",
+        "/qo3JypyrkPvH8Na3Ir0IpjCwOCS.jpg",
+        "/sr8qYAG8JP33goQC87Ym4d16njF.jpg"
+      ]
     },
     {
       "slug": "tarkovski",
@@ -168,7 +210,13 @@
       "title_ca": "El temps de Tarkovski",
       "blurb_gl": "Planos longos, auga e memoria: o cine como esculpido do tempo de Andrei Tarkovski.",
       "blurb_eu": "Plano luzeak, ura eta memoria: zinema denboraren zizelkatze gisa, Andrei Tarkovskiren eskutik.",
-      "blurb_ca": "Plans llargs, aigua i memòria: el cinema com a esculpit del temps d'Andrei Tarkovski."
+      "blurb_ca": "Plans llargs, aigua i memòria: el cinema com a esculpit del temps d'Andrei Tarkovski.",
+      "posters": [
+        "/c6lF6PYnq6rtYTUM8me0D0DCpwa.jpg",
+        "/3aodTV8q8iIRtaw9dxeU8DuKlta.jpg",
+        "/69J6Hplvaw5o5lfCRqFRd4nmuH7.jpg",
+        "/hLzhdirfOApuoXoS8SnGNotu1bf.jpg"
+      ]
     },
     {
       "slug": "cine-espanol",
@@ -189,7 +237,13 @@
       "title_ca": "Cinema espanyol essencial",
       "blurb_gl": "De Buñuel a Almodóvar: o cine español que mira a España con ironía, desexo e memoria.",
       "blurb_eu": "Buñuelengandik Almodóvarrengana: Espainia ironiaz, desiraz eta memoriaz begiratzen duen espainiar zinema.",
-      "blurb_ca": "De Buñuel a Almodóvar: el cinema espanyol que mira Espanya amb ironia, desig i memòria."
+      "blurb_ca": "De Buñuel a Almodóvar: el cinema espanyol que mira Espanya amb ironia, desig i memòria.",
+      "posters": [
+        "/ueefcFKn9qoAQqjSWY6H9xjjLU2.jpg",
+        "/dcXpg8ELDUZMb8MikPReiwH3lYY.jpg",
+        "/9uvzmyPGoNRvRQIaNBFAegavkHr.jpg",
+        "/gWPkUFGlO7ZIiArUcWRBmvAwVjB.jpg"
+      ]
     },
     {
       "slug": "cine-italiano",
@@ -212,7 +266,13 @@
       "title_ca": "La gran tradició italiana",
       "blurb_gl": "Do neorrealismo á modernidade de Antonioni e Fellini: medio século de cine italiano.",
       "blurb_eu": "Neorrealismotik Antonioniren eta Felliniren modernitatera: mende erdiko italiar zinema.",
-      "blurb_ca": "Del neorealisme a la modernitat d'Antonioni i Fellini: mig segle de cinema italià."
+      "blurb_ca": "Del neorealisme a la modernitat d'Antonioni i Fellini: mig segle de cinema italià.",
+      "posters": [
+        "/hjo6BPzCuhUkpSzxElOQ68mydrx.jpg",
+        "/mgBiTwHjd9ILQXUCSS4v3eAaCIu.jpg",
+        "/kEbpEJeU1voZ21xzIcm2CUx9hFt.jpg",
+        "/zjtrLL2cFlBWnAL1z4qrokRU0ZT.jpg"
+      ]
     },
     {
       "slug": "europa-del-este",
@@ -235,7 +295,13 @@
       "title_ca": "Veus de l'Europa de l'Est",
       "blurb_gl": "Da montaxe soviética ao rigor de Béla Tarr: o cine que pensou a historia desde o outro lado.",
       "blurb_eu": "Muntaia sobietarretik Béla Tarren zorroztasunera: historia beste aldetik pentsatu zuen zinema.",
-      "blurb_ca": "Del muntatge soviètic al rigor de Béla Tarr: el cinema que va pensar la història des de l'altra banda."
+      "blurb_ca": "Del muntatge soviètic al rigor de Béla Tarr: el cinema que va pensar la història des de l'altra banda.",
+      "posters": [
+        "/olQ0vHFCK5TzRyNkkT2aJgG2gLz.jpg",
+        "/3aodTV8q8iIRtaw9dxeU8DuKlta.jpg",
+        "/j2hzNkmwYT184eP9qYdjViiYxCO.jpg",
+        "/cOrtWdUflqXL9BqoQNjv9WwQiPs.jpg"
+      ]
     },
     {
       "slug": "animacion",
@@ -254,7 +320,13 @@
       "title_ca": "Animació que és art",
       "blurb_gl": "Ghibli e máis alá: a animación como cumbre poética e emocional do cine, non como xénero menor.",
       "blurb_eu": "Ghibli eta harago: animazioa zinemaren gailur poetiko eta emozional gisa, ez genero txiki gisa.",
-      "blurb_ca": "Ghibli i més enllà: l'animació com a cim poètic i emocional del cinema, no com a gènere menor."
+      "blurb_ca": "Ghibli i més enllà: l'animació com a cim poètic i emocional del cinema, no com a gènere menor.",
+      "posters": [
+        "/2RcxjDykOssx4SfqshewyI9vfSl.jpg",
+        "/uu6RaEAfkIQaolf20axWaRU4h3w.jpg",
+        "/xTPa9c7Bgdq1BlZee24QeIx0jyR.jpg",
+        "/2WvrGAnKtHrb20nHLd38RyhIj0Q.jpg"
+      ]
     }
   ]
 }
