@@ -305,3 +305,73 @@ export async function renderReviewStory(data: ReviewStoryData, background: Buffe
   const fg = new Resvg(svg, { background: 'rgba(0,0,0,0)' }).render().asPng();
   return sharp(background).composite([{ input: fg }]).png().toBuffer();
 }
+
+/* ================================================================== *
+ * Historia de «Tu año en cine» (mismo formato 1080×1920).
+ * Fondo: collage de las mejor puntuadas del año. Primer plano: el año en
+ * grande, las cifras, las cinco mejores y el QR a la página pública.
+ * ================================================================== */
+
+export interface YearStoryData {
+  year: number;
+  /** «MI AÑO EN CINE», ya traducido. */
+  kicker: string;
+  username: string;
+  stats: { value: string; label: string }[];
+  /** «Mejor puntuadas», ya traducido, y los títulos (hasta cinco). */
+  topLabel: string;
+  top: string[];
+  qrDataUrl: string;
+}
+
+function yearForeground(d: YearStoryData): Node {
+  const divider = () => el('div', { width: 1, height: 64, background: 'rgba(255,255,255,0.16)' }, '');
+  const statNodes: Node[] = [];
+  d.stats.forEach((s, i) => {
+    if (i > 0) statNodes.push(divider());
+    statNodes.push(statCell(s.value, s.label));
+  });
+
+  return el(
+    'div',
+    {
+      width: STORY_W, height: STORY_H, display: 'flex', flexDirection: 'column',
+      justifyContent: 'space-between', padding: '104px 88px', fontFamily: 'Space Mono', color: INK,
+    },
+    [
+      el('div', { display: 'flex', alignItems: 'center', justifyContent: 'space-between' }, [
+        el('div', { fontFamily: 'Space Mono', fontWeight: 700, fontSize: 28, letterSpacing: '0.28em', color: OCHRE }, 'CINE ARCHIVE'),
+        el('div', { fontFamily: 'Space Mono', fontWeight: 400, fontSize: 22, letterSpacing: '0.22em', color: MUTED }, `@${d.username}`),
+      ]),
+      el('div', { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }, [
+        el('div', { display: 'flex', fontFamily: 'Space Mono', fontWeight: 400, fontSize: 30, letterSpacing: '0.24em', color: OCHRE }, d.kicker.toUpperCase()),
+        el('div', { display: 'flex', fontFamily: 'EB Garamond', fontWeight: 600, fontSize: 300, color: '#ffffff', lineHeight: 0.9, letterSpacing: '-0.03em' }, String(d.year)),
+      ]),
+      el('div', { display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 48 }, statNodes),
+      d.top.length
+        ? el('div', { display: 'flex', flexDirection: 'column', gap: 14 }, [
+            el('div', { display: 'flex', fontFamily: 'Space Mono', fontWeight: 400, fontSize: 22, letterSpacing: '0.2em', color: MUTED }, d.topLabel.toUpperCase()),
+            ...d.top.map((title, i) =>
+              el('div', { display: 'flex', gap: 22, alignItems: 'baseline' }, [
+                el('div', { display: 'flex', fontFamily: 'Space Mono', fontWeight: 700, fontSize: 30, color: OCHRE, width: 44 }, String(i + 1)),
+                el('div', { display: 'flex', fontFamily: 'EB Garamond', fontWeight: 600, fontSize: 52, color: '#ffffff', lineHeight: 1.1 }, title),
+              ]),
+            ),
+          ])
+        : el('div', { display: 'flex' }, ''),
+      el('div', { display: 'flex', alignItems: 'center', gap: 30 }, [
+        img(d.qrDataUrl, 156, { border: '8px solid #ffffff', background: '#ffffff' }),
+        el('div', { display: 'flex', flexDirection: 'column', gap: 8 }, [
+          el('div', { fontFamily: 'Space Mono', fontWeight: 700, fontSize: 36, color: OCHRE }, 'cinearchive.es'),
+          el('div', { fontFamily: 'Space Mono', fontWeight: 400, fontSize: 28, color: INK }, `/u/${d.username}/year/${d.year}`),
+        ]),
+      ]),
+    ],
+  );
+}
+
+export async function renderYearStory(data: YearStoryData, background: Buffer): Promise<Buffer> {
+  const svg = await satori(yearForeground(data) as never, { width: STORY_W, height: STORY_H, fonts: fonts() });
+  const fg = new Resvg(svg, { background: 'rgba(0,0,0,0)' }).render().asPng();
+  return sharp(background).composite([{ input: fg }]).png().toBuffer();
+}

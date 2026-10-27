@@ -12,6 +12,8 @@ import { db } from '../db/client';
 import { userFilms, userViewings } from '../db/schema';
 import { invalidateRecommendations } from './recs';
 import { invalidateStats } from './stats';
+import { getFilmsBrief } from './films';
+import { computeYear, type YearReview } from './yearreview';
 
 export interface Viewing {
   id: number;
@@ -135,4 +137,24 @@ export async function deleteViewing(userId: string, id: number): Promise<boolean
 export function invalidateViewer(userId: string): void {
   invalidateStats(userId);
   invalidateRecommendations(userId);
+}
+
+/**
+ * El resumen de un año del usuario, más los datos de las películas que salen
+ * en él (título y cartel) para pintarlo.
+ */
+export async function loadYearReview(userId: string, year: number, locale: string) {
+  const vs = await listViewings(userId, year);
+  const ratings = await db
+    .select({ tmdbId: userFilms.tmdbId, rating: userFilms.rating })
+    .from(userFilms)
+    .where(eq(userFilms.userId, userId));
+  const filmRating = new Map(ratings.map((r) => [r.tmdbId, r.rating]));
+  const briefs = await getFilmsBrief([...new Set(vs.map((v) => v.tmdbId))], locale);
+  const review: YearReview = computeYear(
+    year,
+    vs.map((v) => ({ tmdbId: v.tmdbId, watchedOn: v.watchedOn, rewatch: v.rewatch, rating: v.rating ?? filmRating.get(v.tmdbId) ?? null })),
+    briefs,
+  );
+  return { review, briefs };
 }

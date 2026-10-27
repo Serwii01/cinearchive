@@ -12,6 +12,7 @@ import { and, eq, desc } from 'drizzle-orm';
 import { isAdmin } from '../../lib/admin';
 import { getMyProfile } from '../../lib/social';
 import { hasPassword } from '../../lib/account';
+import { viewingYears } from '../../lib/viewings';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -59,6 +60,12 @@ const actividad = [
 ];
 
 const conPassword = await hasPassword(user.id);
+
+// En diciembre, «Tu año en cine» del año en curso se anuncia aquí arriba
+// (solo si hay algo que contar).
+const ahora = new Date();
+const anoEnCurso = ahora.getUTCFullYear();
+const anuncioAno = ahora.getUTCMonth() === 11 && (await viewingYears(user.id)).includes(anoEnCurso);
 const deleteWord = t('account.deleteWord');
 
 const inputCls =
@@ -111,6 +118,12 @@ const inputCls =
       </aside>
 
       <div class="flex flex-col gap-8 lg:col-span-8">
+        {anuncioAno && (
+          <a href={localizePath(lang, `year/${anoEnCurso}`)} class="flex items-center justify-between gap-4 border-2 border-ink bg-ochre px-5 py-4 text-on-accent no-underline hover:bg-ink hover:text-white">
+            <span class="font-display text-headline-md">{t('year.banner').replace('{year}', String(anoEnCurso))}</span>
+            <span aria-hidden="true" class="font-mono">→</span>
+          </a>
+        )}
         {/* ============ Perfil público ============ */}
         <section
           class="border border-ink bg-surface"

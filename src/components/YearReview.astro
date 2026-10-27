@@ -1,0 +1,209 @@
+---
+/**
+ * El cuerpo de «Tu año en cine». Lo comparten la página privada (/year/2026)
+ * y la pública del perfil (/u/<usuario>/year/2026).
+ */
+import Stars from './Stars.astro';
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
+import { filmSlug } from '../lib/slug';
+import { genreName } from '../data/genres';
+import type { YearReview } from '../lib/yearreview';
+import type { FilmBrief } from '../lib/films';
+
+interface Props {
+  review: YearReview;
+  briefs: Map<number, FilmBrief>;
+  lang: Lang;
+  /** Título grande: «Tu 2026 en cine» o «El 2026 de @ana». */
+  heading: string;
+  /** Botones de compartir (solo el dueño con perfil público). */
+  share?: { url: string; img: string } | null;
+}
+
+const { review: r, briefs, lang, heading, share = null } = Astro.props;
+const t = useTranslations(lang);
+const nf = new Intl.NumberFormat(lang);
+// Sin el año: dentro de «Tu 2026 en cine» repetirlo en cada fecha sobra.
+const day = (iso: string) =>
+  new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`));
+const monthName = (m: number) =>
+  new Intl.DateTimeFormat(lang, { month: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(2000, m, 15)));
+const monthShort = (m: number) =>
+  new Intl.DateTimeFormat(lang, { month: 'narrow', timeZone: 'UTC' }).format(new Date(Date.UTC(2000, m, 15)));
+const weekdayName = (i: number) =>
+  // 3 de enero de 2000 fue lunes.
+  new Intl.DateTimeFormat(lang, { weekday: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(2000, 0, 3 + i)));
+const href = (id: number) => localizePath(lang, `film/${filmSlug(id, briefs.get(id)?.title)}`);
+const maxMonth = Math.max(1, ...r.byMonth);
+const maxDecade = Math.max(1, ...r.decades.map((d) => d.count));
+const topWeekday = r.viewings ? r.byWeekday.indexOf(Math.max(...r.byWeekday)) : null;
+const fill = (s: string, v: Record<string, string | number>) =>
+  s.replace(/\{(\w+)\}/g, (_, k) => (typeof v[k] === 'number' ? nf.format(v[k] as number) : String(v[k] ?? '')));
+
+const big = [
+  { value: r.films, label: t('year.films') },
+  { value: r.viewings, label: t('year.viewings') },
+  { value: r.hours, label: t('year.hours') },
+  { value: r.rewatches, label: t('year.rewatches') },
+];
+---
+
+<header class="border-b border-ink pb-8">
+  <span class="label">{t('year.kicker')}</span>
+  <h1 class="mt-3 text-display-mobile md:text-display-lg">{heading}</h1>
+  <ul class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink md:grid-cols-4">
+    {big.map((b) => (
+      <li class="bg-surface p-5">
+        <span class="block font-display text-display-mobile leading-none text-ink">{nf.format(b.value)}</span>
+        <span class="label mt-2 block">{b.label}</span>
+      </li>
+    ))}
+  </ul>
+  {share && (
+    <div class="mt-6 flex flex-wrap gap-3">
+      <button id="share-year" type="button" data-img={share.img} data-url={share.url} data-share-title={heading} data-error={t('profile.shareStoryError')} class="btn btn-primary">
+        {t('year.shareImage')}
+      </button>
+      <button id="share-year-link" type="button" data-url={share.url} data-copied={t('year.copied')} class="btn btn-secondary">
+        {t('year.shareLink')}
+      </button>
+    </div>
+  )}
+</header>
+
+{r.viewings === 0 ? (
+  <p class="mt-10 max-w-2xl font-mono text-body-md text-muted">{t('year.empty')}</p>
+) : (
+  <div class="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-2">
+    {/* Por meses */}
+    <section class="lg:col-span-2">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.byMonth')}</h2>
+      {r.topMonth != null && (
+        <p class="mt-3 text-body-lg text-charcoal">
+          {fill(t('year.topMonth'), { month: monthName(r.topMonth), n: r.byMonth[r.topMonth] })}
+        </p>
+      )}
+      <ol class="mt-6 grid h-40 grid-cols-12 items-end gap-1 border-b border-ink" aria-label={t('year.byMonth')}>
+        {r.byMonth.map((n, m) => (
+          <li class="flex h-full flex-col justify-end" title={`${monthName(m)}: ${n}`}>
+            <span class:list={['block w-full', m === r.topMonth ? 'bg-ochre' : 'bg-ink']} style={`height:${Math.round((n / maxMonth) * 100)}%`}></span>
+            <span class="sr-only">{monthName(m)}: {n}</span>
+          </li>
+        ))}
+      </ol>
+      <ol class="mt-1 grid grid-cols-12 gap-1 text-center font-mono text-meta-data uppercase text-muted" aria-hidden="true">
+        {r.byMonth.map((_, m) => <li>{monthShort(m)}</li>)}
+      </ol>
+    </section>
+
+    {/* Datos sueltos */}
+    <section>
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.habits')}</h2>
+      <dl class="mt-4 flex flex-col gap-4">
+        {r.streak && r.streak.days > 1 && (
+          <div>
+            <dt class="label">{t('year.streak')}</dt>
+            <dd class="mt-1 text-body-lg text-ink">{fill(t('year.streakDays'), { n: r.streak.days, from: day(r.streak.from), to: day(r.streak.to) })}</dd>
+          </div>
+        )}
+        {topWeekday != null && (
+          <div>
+            <dt class="label">{t('year.weekday')}</dt>
+            <dd class="mt-1 text-body-lg capitalize text-ink">{weekdayName(topWeekday)}</dd>
+          </div>
+        )}
+        {r.oldest && (
+          <div>
+            <dt class="label">{t('year.oldest')}</dt>
+            <dd class="mt-1 text-body-lg text-ink">
+              <a href={href(r.oldest.tmdbId)} class="underline decoration-ochre">{briefs.get(r.oldest.tmdbId)?.title}</a> ({r.oldest.year})
+            </dd>
+          </div>
+        )}
+      </dl>
+    </section>
+
+    {/* Primera y última */}
+    <section>
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.bookends')}</h2>
+      <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink">
+        {[{ v: r.first, label: t('year.first') }, { v: r.last, label: t('year.last') }].map(({ v, label }) => v && (
+          <a href={href(v.tmdbId)} class="flex flex-col gap-2 bg-surface p-3 no-underline hover:bg-film-white">
+            <span class="label">{label} · {day(v.watchedOn)}</span>
+            <div class="aspect-[2/3] w-full border border-ink bg-charcoal">
+              {briefs.get(v.tmdbId)?.poster && <img src={briefs.get(v.tmdbId)!.poster!} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+            </div>
+            <span class="font-display text-headline-md leading-tight text-ink">{briefs.get(v.tmdbId)?.title ?? `#${v.tmdbId}`}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {/* Mejor puntuadas */}
+    {r.topRated.length > 0 && (
+      <section class="lg:col-span-2">
+        <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.topRated')}</h2>
+        <ol class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-5">
+          {r.topRated.map((f, i) => (
+            <li class="bg-surface">
+              <a href={href(f.tmdbId)} class="flex h-full flex-col gap-2 p-3 no-underline hover:bg-film-white">
+                <span class="label">#{i + 1}</span>
+                <div class="aspect-[2/3] w-full border border-ink bg-charcoal">
+                  {briefs.get(f.tmdbId)?.poster && <img src={briefs.get(f.tmdbId)!.poster!} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+                </div>
+                <span class="font-display text-headline-md leading-tight text-ink">{briefs.get(f.tmdbId)?.title ?? `#${f.tmdbId}`}</span>
+                <Stars rating={f.rating} lang={lang} class="font-mono text-meta-data text-ink" />
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )}
+
+    {/* Directores y géneros */}
+    {r.topDirectors.length > 0 && (
+      <section>
+        <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.directors')}</h2>
+        <ol class="mt-4 flex flex-col divide-y divide-outline-variant">
+          {r.topDirectors.map((d) => (
+            <li class="flex justify-between py-2"><span class="text-body-lg text-ink">{d.label}</span><span class="font-mono text-meta-data text-muted">{d.count}</span></li>
+          ))}
+        </ol>
+      </section>
+    )}
+    {r.topGenres.length > 0 && (
+      <section>
+        <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.genres')}</h2>
+        <ol class="mt-4 flex flex-col divide-y divide-outline-variant">
+          {r.topGenres.map((g) => (
+            <li class="flex justify-between py-2"><span class="text-body-lg text-ink">{genreName(g.id, lang)}</span><span class="font-mono text-meta-data text-muted">{g.count}</span></li>
+          ))}
+        </ol>
+      </section>
+    )}
+
+    {/* Décadas */}
+    {r.decades.length > 0 && (
+      <section class="lg:col-span-2">
+        <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.decades')}</h2>
+        <ul class="mt-4 flex flex-col gap-2">
+          {r.decades.map((d) => (
+            <li class="grid grid-cols-[4rem_1fr_2rem] items-center gap-3">
+              <span class="font-mono text-meta-data text-charcoal">{d.decade}s</span>
+              <span class="h-4 bg-ochre" style={`width:${Math.round((d.count / maxDecade) * 100)}%`}></span>
+              <span class="text-right font-mono text-meta-data text-muted">{d.count}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </div>
+)}
+
+<script>
+  import { shareLink, shareStoryImage } from '../lib/ui/share';
+  const img = document.getElementById('share-year') as HTMLButtonElement | null;
+  if (img) shareStoryImage(img);
+  const link = document.getElementById('share-year-link') as HTMLButtonElement | null;
+  if (link) shareLink(link);
+</script>

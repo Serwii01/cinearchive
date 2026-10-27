@@ -1,0 +1,11 @@
+---
+import { normalizeLang, localizePath } from '../../../i18n/ui';
+import { viewingYears } from '../../../lib/viewings';
+
+export const prerender = false;
+
+// /year a secas lleva al año más reciente con visionados, o al actual.
+const lang = normalizeLang(Astro.params.lang);
+const years = await viewingYears(Astro.locals.user!.id);
+return Astro.redirect(localizePath(lang, `year/${years[0] ?? new Date().getUTCFullYear()}`));
+---

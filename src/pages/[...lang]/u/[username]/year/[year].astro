@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../../../../layouts/BaseLayout.astro';
+import YearReview from '../../../../../components/YearReview.astro';
+import { normalizeLang, useTranslations, localizePath } from '../../../../../i18n/ui';
+import { loadYearReview } from '../../../../../lib/viewings';
+import { getProfileByUsername, followState, canViewActivity } from '../../../../../lib/social';
+
+export const prerender = false;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const viewer = Astro.locals.user;
+
+const target = await getProfileByUsername(Astro.params.username ?? '');
+if (!target) return new Response(null, { status: 404 });
+const year = Number(Astro.params.year);
+if (!Number.isInteger(year) || year < 1900 || year > new Date().getUTCFullYear()) {
+  return new Response(null, { status: 404 });
+}
+
+// El mismo muro que el perfil: sin permiso para ver su actividad, 404.
+const state = await followState(viewer?.id ?? null, target.userId);
+if (!canViewActivity(viewer?.id ?? null, target, state)) return new Response(null, { status: 404 });
+
+const { review, briefs } = await loadYearReview(target.userId, year, lang);
+if (review.viewings === 0) return new Response(null, { status: 404 });
+
+const heading = t('year.ofUser').replace('{year}', String(year)).replace('{user}', `@${target.username}`);
+const isSelf = viewer?.id === target.userId;
+const site = Astro.site ?? new URL('https://cinearchive.es');
+const pageUrl = new URL(localizePath(lang, `u/${target.username}/year/${year}`), site).href;
+const share = isSelf && !target.isPrivate ? { url: pageUrl, img: `/api/og/year/${target.username}/${year}.png?lang=${lang}` } : null;
+---
+
+<BaseLayout title={heading} description={t('year.description').replace('{user}', `@${target.username}`).replace('{year}', String(year))} noindex={target.isPrivate}>
+  <section class="frame py-12">
+    <a href={localizePath(lang, `u/${target.username}`)} class="label no-underline hover:text-ink">← @{target.username}</a>
+    <div class="mt-6">
+      <YearReview review={review} briefs={briefs} lang={lang} heading={heading} share={share} />
+    </div>
+  </section>
+</BaseLayout>

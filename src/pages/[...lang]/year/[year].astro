@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import YearReview from '../../../components/YearReview.astro';
+import { normalizeLang, useTranslations, localizePath } from '../../../i18n/ui';
+import { loadYearReview, viewingYears } from '../../../lib/viewings';
+import { getMyProfile } from '../../../lib/social';
+
+export const prerender = false;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const userId = Astro.locals.user!.id; // el middleware garantiza sesión en /year
+
+const year = Number(Astro.params.year);
+if (!Number.isInteger(year) || year < 1900 || year > new Date().getUTCFullYear()) {
+  return new Response(null, { status: 404 });
+}
+
+const { review, briefs } = await loadYearReview(userId, year, lang);
+const years = await viewingYears(userId);
+
+// Se comparte la versión pública del perfil; con perfil privado no hay nada
+// que enlazar, así que tampoco hay botones.
+const me = await getMyProfile(userId);
+const site = Astro.site ?? new URL('https://cinearchive.es');
+const share =
+  me && !me.isPrivate && review.viewings > 0
+    ? {
+        url: new URL(localizePath(lang, `u/${me.username}/year/${year}`), site).href,
+        img: `/api/og/year/${me.username}/${year}.png?lang=${lang}`,
+      }
+    : null;
+const heading = t('year.cta').replace('{year}', String(year));
+---
+
+<BaseLayout title={heading} noindex>
+  <section class="frame py-12">
+    <a href={localizePath(lang, 'diary')} class="label no-underline hover:text-ink">← {t('diary.title')}</a>
+    {years.length > 1 && (
+      <nav class="mt-6 flex w-fit max-w-full flex-wrap gap-px border border-ink bg-ink" aria-label={t('diary.years')}>
+        {years.map((y) => (
+          <a
+            href={localizePath(lang, `year/${y}`)}
+            aria-current={y === year ? 'page' : undefined}
+            class:list={['tap justify-center px-4 font-mono text-meta-data no-underline', y === year ? 'bg-ink text-white' : 'bg-surface text-ink hover:bg-film-white']}
+          >{y}</a>
+        ))}
+      </nav>
+    )}
+    <div class="mt-6">
+      <YearReview review={review} briefs={briefs} lang={lang} heading={heading} share={share} />
+    </div>
+    {me?.isPrivate && review.viewings > 0 && (
+      <p class="mt-10 max-w-2xl font-mono text-meta-data text-muted">{t('year.privateNote')}</p>
+    )}
+  </section>
+</BaseLayout>
