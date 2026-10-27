@@ -86,6 +86,7 @@ const API_ROUTES: ReadonlySet<string> = new Set([
   'og',
   'people',
   'places',
+  'search',
   'users',
   'visits',
 ]);

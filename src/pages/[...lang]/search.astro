@@ -26,6 +26,16 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
     data-films={t('search.sectionFilms')}
     data-login-users={t('search.loginForUsers')}
     data-login-url={`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`}
+    data-kinds={JSON.stringify({
+      article: t('search.kindArticle'),
+      dossier: t('search.kindDossier'),
+      collection: t('search.kindCollection'),
+      figure: t('search.kindFigure'),
+      periodical: t('search.kindPeriodical'),
+      book: t('search.kindBook'),
+      cinema: t('search.kindCinema'),
+      glossary: t('search.kindGlossary'),
+    })}
   >
     <header class="border-b border-ink pb-6">
       <span class="label">{t('search.title')}</span>
@@ -48,8 +58,15 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
 
     <p id="hint" class="mt-4 font-mono text-meta-data text-muted">{t('search.hint')}</p>
 
+    {/* Lo propio del archivo va primero: es lo que no se encuentra en ningún
+        otro sitio. */}
+    <div id="site-block" class="mt-8 hidden">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('search.sectionArchive')}</h2>
+      <ul id="results-site" class="mt-4 border border-ink"></ul>
+    </div>
+
     {/* Usuarios */}
-    <div id="users-block" class="mt-8 hidden">
+    <div id="users-block" class="mt-10 hidden">
       <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('search.sectionUsers')}</h2>
       <ul id="results-users" class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2"></ul>
     </div>
@@ -80,6 +97,9 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
   const filmsBlock = document.getElementById('films-block') as HTMLElement;
   const usersList = document.getElementById('results-users') as HTMLElement;
   const filmsGrid = document.getElementById('results-films') as HTMLElement;
+  const siteBlock = document.getElementById('site-block') as HTMLElement;
+  const siteList = document.getElementById('results-site') as HTMLElement;
+  const kinds = JSON.parse(root.dataset.kinds ?? '{}') as Record<string, string>;
 
   const esc = (s: string) =>
     String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -138,10 +158,26 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
       .join('');
   };
 
+  // Sin resultados del archivo no se enseña la sección: la de películas ya
+  // dice «sin resultados» si tampoco hay nada allí.
+  const renderSite = (rows: { kind: string; title: string; meta: string; href: string }[]) => {
+    siteBlock.classList.toggle('hidden', rows.length === 0);
+    siteList.innerHTML = rows
+      .map(
+        (r) => `<li class="border-b border-outline-variant last:border-b-0"><a href="${esc(r.href)}" class="flex flex-col gap-1 bg-surface px-4 py-3 no-underline hover:bg-film-white sm:flex-row sm:items-baseline sm:gap-4">
+          <span class="label w-32 shrink-0">${esc(kinds[r.kind] ?? r.kind)}</span>
+          <span class="min-w-0"><span class="block font-display text-headline-md leading-tight text-ink">${esc(r.title)}</span>
+          ${r.meta ? `<span class="mt-0.5 block truncate font-mono text-meta-data text-muted">${esc(r.meta)}</span>` : ''}</span>
+        </a></li>`,
+      )
+      .join('');
+  };
+
   async function run(raw: string) {
     const q = raw.trim();
     if (q.length < 2) {
       controller?.abort();
+      siteBlock.classList.add('hidden');
       usersBlock.classList.add('hidden');
       filmsBlock.classList.add('hidden');
       hint.hidden = false;
@@ -151,6 +187,15 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
     controller?.abort();
     controller = new AbortController();
     const signal = controller.signal;
+
+    // El archivo responde al momento (índice en memoria): se pinta sin esperar
+    // a TMDB.
+    fetch(`/api/search/site?q=${encodeURIComponent(q)}&lang=${lang}`, { signal, headers: { accept: 'application/json' } })
+      .then((r) => (r.ok ? r.json() : { results: [] }))
+      .then((d) => {
+        if (!signal.aborted) renderSite(d.results ?? []);
+      })
+      .catch(() => {});
 
     // Películas: siempre (búsqueda pública). Usuarios: solo con sesión.
     const filmsP = fetch(`/api/films/search?q=${encodeURIComponent(q)}&lang=${lang}`, { signal, headers: { accept: 'application/json' } })
