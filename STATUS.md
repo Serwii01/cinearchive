@@ -6,7 +6,7 @@
 En producción en cinearchive.es, con todas las secciones funcionando (cine abierto, hemeroteca, biblioteca, filmoteca, Descubrir, dosieres, palmarés, cuentas, recomendaciones, panel de administración). El changelog llega a la **v1.15** (25 oct). Lo del 27 oct (diario de visionados, importar de Letterboxd, Tu año en cine, medias estrellas, buscador del archivo, seguridad de la cuenta…) aún no tiene entrada en el changelog y trae la migración `drizzle/0020_viewings_diary.sql`.
 
 ## Siguientes pasos
-- [ ] Desplegar en el VPS lo del 23–27 oct y aplicar la migración `0020_viewings_diary` (`git pull && docker compose up -d --build`); comprobar diario, importación de Letterboxd y /year
+- [x] Desplegar en el VPS lo del 23–27 oct y aplicar la migración `0020_viewings_diary` (`git pull && docker compose up -d --build`); comprobar diario, importación de Letterboxd y /year
 - [ ] Anotar la **v1.16** en `src/data/changelog.json` (5 idiomas): diario de visionados, importar de Letterboxd, Tu año en cine, medias estrellas, buscador del archivo, seguridad y datos de la cuenta, Filmoteca traducida, artículos con vídeo
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
 
