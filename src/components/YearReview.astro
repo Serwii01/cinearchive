@@ -9,6 +9,7 @@ import { filmSlug } from '../lib/slug';
 import { genreName } from '../data/genres';
 import type { YearReview } from '../lib/yearreview';
 import type { FilmBrief } from '../lib/films';
+import { padTo } from '../lib/grid';
 
 interface Props {
   review: YearReview;
@@ -35,6 +36,11 @@ const weekdayName = (i: number) =>
   new Intl.DateTimeFormat(lang, { weekday: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(2000, 0, 3 + i)));
 const href = (id: number) => localizePath(lang, `film/${filmSlug(id, briefs.get(id)?.title)}`);
 const maxMonth = Math.max(1, ...r.byMonth);
+// Los resúmenes traen el cartel a 185 px, pensado para miniaturas; aquí se ven
+// a 200-300 px y salían borrosos. TMDB sirve el mismo cartel a otro tamaño
+// cambiando el tramo de la URL.
+const nitido = (poster: string) => poster.replace('/w185/', '/w500/');
+const nitidoSrcset = (poster: string) => `${poster.replace('/w185/', '/w342/')} 342w, ${poster.replace('/w185/', '/w500/')} 500w`;
 const maxDecade = Math.max(1, ...r.decades.map((d) => d.count));
 const topWeekday = r.viewings ? r.byWeekday.indexOf(Math.max(...r.byWeekday)) : null;
 const fill = (s: string, v: Record<string, string | number>) =>
@@ -131,9 +137,9 @@ const big = [
           <a href={href(v.tmdbId)} class="flex flex-col gap-2 bg-surface p-3 no-underline hover:bg-film-white">
             <span class="label">{label} · {day(v.watchedOn)}</span>
             <div class="aspect-[2/3] w-full border border-ink bg-charcoal">
-              {briefs.get(v.tmdbId)?.poster && <img src={briefs.get(v.tmdbId)!.poster!} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+              {briefs.get(v.tmdbId)?.poster && <img src={nitido(briefs.get(v.tmdbId)!.poster!)} srcset={nitidoSrcset(briefs.get(v.tmdbId)!.poster!)} sizes="(min-width: 1024px) 22vw, 50vw" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
             </div>
-            <span class="font-display text-headline-md leading-tight text-ink">{briefs.get(v.tmdbId)?.title ?? `#${v.tmdbId}`}</span>
+            <span class="line-clamp-2 min-h-[2.5em] font-display text-headline-md leading-tight text-ink">{briefs.get(v.tmdbId)?.title ?? `#${v.tmdbId}`}</span>
           </a>
         ))}
       </div>
@@ -143,19 +149,20 @@ const big = [
     {r.topRated.length > 0 && (
       <section class="lg:col-span-2">
         <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.topRated')}</h2>
-        <ol class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-5">
+        <ol class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
           {r.topRated.map((f, i) => (
             <li class="bg-surface">
               <a href={href(f.tmdbId)} class="flex h-full flex-col gap-2 p-3 no-underline hover:bg-film-white">
                 <span class="label">#{i + 1}</span>
                 <div class="aspect-[2/3] w-full border border-ink bg-charcoal">
-                  {briefs.get(f.tmdbId)?.poster && <img src={briefs.get(f.tmdbId)!.poster!} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+                  {briefs.get(f.tmdbId)?.poster && <img src={nitido(briefs.get(f.tmdbId)!.poster!)} srcset={nitidoSrcset(briefs.get(f.tmdbId)!.poster!)} sizes="(min-width: 1024px) 15vw, (min-width: 640px) 30vw, 50vw" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
                 </div>
-                <span class="font-display text-headline-md leading-tight text-ink">{briefs.get(f.tmdbId)?.title ?? `#${f.tmdbId}`}</span>
-                <Stars rating={f.rating} lang={lang} class="font-mono text-meta-data text-ink" />
+                <span class="line-clamp-2 min-h-[2.5em] font-display text-headline-md leading-tight text-ink">{briefs.get(f.tmdbId)?.title ?? `#${f.tmdbId}`}</span>
+                <Stars rating={f.rating} lang={lang} class="mt-auto font-mono text-meta-data text-ink" />
               </a>
             </li>
           ))}
+          {Array.from({ length: padTo(r.topRated.length, 6) - r.topRated.length }, () => <li class="bg-surface" aria-hidden="true"></li>)}
         </ol>
       </section>
     )}
