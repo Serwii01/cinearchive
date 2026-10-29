@@ -22,6 +22,9 @@ import {
   trailerKey,
   providerLogoUrl,
   WATCH_TYPES,
+  getSaga,
+  partTitle,
+  type SagaPart,
   type TmdbSearchResult,
   type WatchType,
 } from '../../../lib/tmdb';
@@ -61,6 +64,18 @@ const dir = director(tmdb);
 const dirPerson = directorPerson(tmdb);
 const dirExtra = [tmdb.runtime ? `${tmdb.runtime} min` : null, tmdb.production_countries[0]?.name].filter(Boolean).join(' · ');
 const menciones = mentionsOf(tmdb.id, lang);
+
+// La saga («Transformers», «El Padrino»…): el resto de entregas bajo «Dónde
+// ver». Si TMDB no responde, la ficha sale sin ella.
+let saga: { name: string; parts: SagaPart[] } | null = null;
+if (tmdb.belongs_to_collection) {
+  try {
+    const s = await getSaga(tmdb.belongs_to_collection.id, lang);
+    if (s.parts.length > 1) saga = s;
+  } catch {
+    saga = null;
+  }
+}
 const poster = posterUrl(tmdb.poster_path, 'w500');
 const poster2x = posterSrcset(tmdb.poster_path, 'w500', 'w780');
 const year = tmdb.release_date ? tmdb.release_date.slice(0, 4) : '';
@@ -483,11 +498,12 @@ const crumbsJsonLd = breadcrumbLd([
       {/* Dónde ver — datos de JustWatch vía TMDB, incluidos en la ficha.
           En escritorio va en la columna izquierda, bajo los controles; en móvil
           cae aquí mismo, justo donde estaba. */}
+      {/* self-start: sin él, la columna se estira a lo alto de toda la fila
+          y el recuadro queda kilométrico y medio vacío. */}
+      <div class="mt-10 flex flex-col gap-8 md:col-span-4 md:col-start-1 md:row-start-2 md:mt-0 md:self-start">
         <section
           id="watch-section"
-          {/* self-start: sin él, la sección se estira a lo alto de toda la fila
-              y el recuadro queda kilométrico y medio vacío. */}
-          class="mt-10 border border-ink md:col-span-4 md:col-start-1 md:row-start-2 md:mt-0 md:self-start"
+          class="border border-ink"
           data-id={tmdbId}
           data-labels={JSON.stringify(watchLabels)}
           data-order={JSON.stringify(WATCH_TYPES)}
@@ -549,6 +565,41 @@ const crumbsJsonLd = breadcrumbLd([
             )}
           </div>
         </section>
+
+        {/* La saga, con carteles pequeños: es para orientarse, no para elegir. */}
+        {saga && (
+          <section class="border border-ink">
+            <h2 class="border-b border-ink bg-ink px-3 py-2 label text-background">
+              {t('film.saga')} · {saga.name}
+            </h2>
+            <ol class="grid grid-cols-4 gap-px bg-ink sm:grid-cols-6 md:grid-cols-3">
+              {saga.parts.map((p, i) => {
+                const actual = p.id === tmdbId;
+                return (
+                  <li class:list={['bg-surface', actual && 'outline outline-2 -outline-offset-2 outline-ochre']}>
+                    <a
+                      href={localizePath(lang, `film/${filmSlug(p.id, p.title)}`)}
+                      aria-current={actual ? 'page' : undefined}
+                      class="block no-underline hover:bg-film-white"
+                      title={p.title}
+                    >
+                      <div class="aspect-[2/3] w-full bg-charcoal">
+                        {p.poster_path ? (
+                          <img src={posterUrl(p.poster_path, 'w154')} alt="" width="154" height="231" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                        ) : (
+                          <div class="film-grain h-full w-full"></div>
+                        )}
+                      </div>
+                      <p class="line-clamp-2 px-1 pt-1 font-mono text-meta-data leading-tight text-ink">{i + 1}. {partTitle(p.title, saga!.name)}</p>
+                      <p class="px-1 pb-1 font-mono text-meta-data leading-tight text-muted">{p.release_date?.slice(0, 4) ?? '—'}</p>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        )}
+      </div>
     </div>
 
     {/* En Cine Archive: colecciones, dosieres y artículos que hablan de esta

@@ -81,6 +81,8 @@ export interface TmdbMovie {
    */
   translated?: boolean;
   release_date?: string;
+  /** La saga a la que pertenece («Transformers», «El Padrino»), si TMDB la tiene. */
+  belongs_to_collection?: { id: number; name: string; poster_path: string | null } | null;
   runtime: number | null;
   budget?: number;
   revenue?: number;
@@ -270,6 +272,10 @@ export function slimMovie(m: TmdbMovie): TmdbMovie {
       crew: (m.credits.crew ?? []).filter((c) => CREW_JOBS.has(c.job)).map((c) => ({ id: c.id, job: c.job, name: c.name })),
     };
   }
+  if (m.belongs_to_collection) {
+    const c = m.belongs_to_collection;
+    out.belongs_to_collection = { id: c.id, name: c.name, poster_path: c.poster_path ?? null };
+  }
   if (m.keywords?.keywords) out.keywords = { keywords: m.keywords.keywords.map((k) => ({ id: k.id, name: k.name })) };
   if (m.recommendations) out.recommendations = { results: (m.recommendations.results ?? []).slice(0, SIMILAR_MAX).map(brief) };
   if (m.similar) out.similar = { results: (m.similar.results ?? []).slice(0, SIMILAR_MAX).map(brief) };
@@ -455,7 +461,85 @@ export async function getPerson(id: number, locale: string): Promise<TmdbPerson>
   return person;
 }
 
-export type PosterSize = 'w185' | 'w342' | 'w500' | 'w780';
+/* ------------------------------------------------------------------ *
+ * Sagas (colecciones de TMDB).
+ * ------------------------------------------------------------------ */
+
+export interface SagaPart {
+  id: number;
+  title: string;
+  release_date?: string;
+  poster_path: string | null;
+}
+
+export interface Saga {
+  id: number;
+  name: string;
+  parts: SagaPart[];
+}
+
+// Una saga cambia muy poco (una entrega nueva cada pocos años) y la piden todas
+// sus películas: un día en memoria por saga e idioma.
+const SAGA_TTL_MS = 24 * 60 * 60 * 1000;
+const sagaMemo = createMemo<Saga>(SAGA_TTL_MS, 300);
+registerCache({
+  id: 'tmdb-sagas',
+  label: 'Sagas de películas',
+  ttlMs: SAGA_TTL_MS,
+  maxKeys: 300,
+  size: () => sagaMemo.size,
+  clear: () => sagaMemo.clear(),
+});
+
+/** Las películas de una saga, por orden de estreno (las sin fecha, al final). */
+export function sortSagaParts(parts: SagaPart[]): SagaPart[] {
+  return [...parts].sort((a, b) => {
+    if (!a.release_date) return b.release_date ? 1 : 0;
+    if (!b.release_date) return -1;
+    return a.release_date.localeCompare(b.release_date);
+  });
+}
+
+/**
+ * El nombre de la saga sin la coletilla de TMDB: «Transformers - Colección»,
+ * «The Godfather Collection» → «Transformers», «The Godfather».
+ */
+export function sagaName(name: string): string {
+  return name
+    .replace(/\s*[-–:]?\s*\(?(colección|collection|col·lecció|coleccion|saga)\)?\s*$/i, '')
+    .replace(/^(colección|col·lecció)\s+(de\s+)?/i, '')
+    .trim() || name;
+}
+
+/**
+ * El título de una entrega sin el nombre de la saga delante, para que quepa
+ * bajo un cartel pequeño: «Transformers: La venganza de los caídos» → «La
+ * venganza de los caídos». La primera entrega, que se llama como la saga, se
+ * queda como está.
+ */
+export function partTitle(title: string, saga: string): string {
+  const base = saga.toLowerCase();
+  const t = title.trim();
+  if (!base || t.toLowerCase() === base || !t.toLowerCase().startsWith(base)) return t;
+  const rest = t.slice(base.length).replace(/^\s*[:\-–—.]?\s*/, '');
+  return rest || t;
+}
+
+export function getSaga(id: number, locale: string): Promise<Saga> {
+  const language = toTmdbLang(locale);
+  return sagaMemo.get(`${id}:${language}`, async () => {
+    const c = await tmdbFetch<{ id: number; name: string; parts?: SagaPart[] }>(`/collection/${id}`, { language });
+    return {
+      id: c.id,
+      name: sagaName(c.name),
+      parts: sortSagaParts(
+        (c.parts ?? []).map((p) => ({ id: p.id, title: p.title, release_date: p.release_date || undefined, poster_path: p.poster_path ?? null })),
+      ),
+    };
+  });
+}
+
+export type PosterSize = 'w92' | 'w154' | 'w185' | 'w342' | 'w500' | 'w780';
 export function posterUrl(path: string | null, size: PosterSize = 'w342') {
   return path ? `${TMDB_IMG}/${size}${path}` : null;
 }

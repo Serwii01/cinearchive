@@ -205,10 +205,15 @@ describe('slimMovie', () => {
 
   it('quita lo que la web no lee', () => {
     const s = slimMovie(gorda()) as unknown as Record<string, unknown>;
-    for (const k of ['adult', 'homepage', 'popularity', 'spoken_languages', 'status', 'belongs_to_collection', 'watch/providers']) {
+    for (const k of ['adult', 'homepage', 'popularity', 'spoken_languages', 'status', 'watch/providers']) {
       expect(k in s, k).toBe(false);
     }
     expect((s.production_companies as { logo_path?: string }[])[0].logo_path).toBeUndefined();
+  });
+
+  it('conserva la saga, que la ficha enseña bajo «Dónde ver»', () => {
+    const s = slimMovie({ ...gorda(), belongs_to_collection: { id: 230, name: 'El Padrino', poster_path: '/c.jpg' } });
+    expect(s.belongs_to_collection).toEqual({ id: 230, name: 'El Padrino', poster_path: '/c.jpg' });
   });
 
   it('deja el reparto en 10 y el equipo solo con los oficios que se enseñan', () => {
