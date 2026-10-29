@@ -1,0 +1,88 @@
+---
+/**
+ * El diario público: los visionados de alguien por años y meses, igual que tu
+ * propio /diary pero de solo lectura. Antes era una rejilla de carteles con la
+ * fecha debajo; el diario se lee mejor por meses.
+ *
+ * Se llama /viewings y no /diary porque el comodín de idioma [...lang] se
+ * quedaría con /u/<usuario>/diary (ver PROFILE_SUBPAGES en lib/routes.ts).
+ */
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import DiaryMonths from '../../../../components/DiaryMonths.astro';
+import GoalCard from '../../../../components/GoalCard.astro';
+import { normalizeLang, useTranslations, localizePath } from '../../../../i18n/ui';
+import { db } from '../../../../db/client';
+import { userFilms } from '../../../../db/schema';
+import { eq } from 'drizzle-orm';
+import { getFilmsBrief } from '../../../../lib/films';
+import { listViewings, viewingYears, yearGoal } from '../../../../lib/viewings';
+import { getProfileByUsername, followState, canViewActivity } from '../../../../lib/social';
+
+export const prerender = false;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const viewer = Astro.locals.user;
+
+const target = await getProfileByUsername(Astro.params.username ?? '');
+if (!target) return new Response(null, { status: 404 });
+// El mismo muro que el perfil: sin permiso para ver su actividad, 404.
+const state = await followState(viewer?.id ?? null, target.userId);
+if (!canViewActivity(viewer?.id ?? null, target, state)) return new Response(null, { status: 404 });
+
+const uid = target.userId;
+const years = await viewingYears(uid);
+const asked = Number(Astro.url.searchParams.get('year'));
+// Sin año (o con uno sin visionados) se abre el más reciente: un diario de
+// diez años de golpe serían miles de entradas.
+const year = years.includes(asked) ? asked : years[0];
+const viewings = year ? await listViewings(uid, year) : [];
+
+// La nota de cada visionado si la tiene; si no, la de la película.
+const filmRows = await db.select({ tmdbId: userFilms.tmdbId, rating: userFilms.rating }).from(userFilms).where(eq(userFilms.userId, uid));
+const filmRating = new Map(filmRows.map((r) => [r.tmdbId, r.rating]));
+const briefs = await getFilmsBrief([...new Set(viewings.map((v) => v.tmdbId))], lang);
+const goal = year ? await yearGoal(uid, year) : null;
+
+const heading = `${t('diary.title')} · @${target.username}`;
+const base = localizePath(lang, `u/${target.username}/viewings`);
+---
+
+<BaseLayout title={heading} noindex={target.isPrivate || asked > 0}>
+  <section class="frame py-12">
+    <a href={localizePath(lang, `u/${target.username}`)} class="label no-underline hover:text-ink">← @{target.username}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('diary.title')}{year ? ` · ${year} · ${viewings.length}` : ''}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{heading}</h1>
+      {year && viewings.length > 0 && (
+        <a href={localizePath(lang, `u/${target.username}/year/${year}`)} class="tap label mt-4 hover:text-ink">
+          {t('year.ofUser').replace('{year}', String(year)).replace('{user}', `@${target.username}`)} →
+        </a>
+      )}
+    </header>
+
+    {year && <GoalCard goal={goal} year={year} lang={lang} class="mt-6" />}
+
+    {years.length > 1 && (
+      <nav class="mt-6 flex w-fit max-w-full flex-wrap gap-px border border-ink bg-ink" aria-label={t('diary.years')}>
+        {years.map((y) => (
+          <a
+            href={`${base}?year=${y}`}
+            aria-current={y === year ? 'page' : undefined}
+            class:list={['tap justify-center px-4 font-mono text-meta-data no-underline', y === year ? 'bg-ink text-white' : 'bg-surface text-ink hover:bg-film-white']}
+          >{y}</a>
+        ))}
+      </nav>
+    )}
+
+    {viewings.length === 0 ? (
+      <p class="mt-10 font-mono text-body-md text-muted">—</p>
+    ) : (
+      <DiaryMonths
+        items={viewings.map((v) => ({ ...v, rating: v.rating ?? filmRating.get(v.tmdbId) ?? null }))}
+        briefs={briefs}
+        lang={lang}
+      />
+    )}
+  </section>
+</BaseLayout>

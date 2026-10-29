@@ -1,15 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Stars from '../../components/Stars.astro';
+import DiaryMonths from '../../components/DiaryMonths.astro';
 import GoalCard from '../../components/GoalCard.astro';
 import { normalizeLang, useTranslations, localizePath } from '../../i18n/ui';
-import { filmSlug } from '../../lib/slug';
 import { db } from '../../db/client';
 import { userFilms } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 import { getFilmsBrief } from '../../lib/films';
 import { listViewings, viewingYears, yearGoal } from '../../lib/viewings';
-import { groupByMonth, monthLabel } from '../../lib/diary';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -33,7 +31,6 @@ const filmRows = await db
 const filmRating = new Map(filmRows.map((r) => [r.tmdbId, r.rating]));
 
 const briefs = await getFilmsBrief([...new Set(viewings.map((v) => v.tmdbId))], lang);
-const months = groupByMonth(viewings);
 // El reto del año que se está viendo; sin visionados todavía, el del año en curso.
 const goalYear = year ?? new Date().getUTCFullYear();
 const goal = await yearGoal(userId, goalYear);
@@ -70,35 +67,11 @@ const base = localizePath(lang, 'diary');
     {viewings.length === 0 ? (
       <p class="mt-10 max-w-2xl font-mono text-body-md text-muted">{t('diary.empty')}</p>
     ) : (
-      months.map((m) => (
-        <div class="mt-10">
-          <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">
-            {monthLabel(m.month, lang)} <span class="label">· {m.items.length}</span>
-          </h2>
-          <ol class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
-            {m.items.map((v) => {
-              const b = briefs.get(v.tmdbId);
-              const r = v.rating ?? filmRating.get(v.tmdbId) ?? null;
-              return (
-                <li class="bg-surface">
-                  <a href={localizePath(lang, `film/${filmSlug(v.tmdbId, b?.title)}`)} class="flex gap-3 p-3 no-underline hover:bg-film-white">
-                    <span class="w-10 shrink-0 font-display text-headline-lg leading-none text-ink">{Number(v.watchedOn.slice(8, 10))}</span>
-                    <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
-                      {b?.poster && <img src={b.poster} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
-                    </div>
-                    <div class="min-w-0">
-                      <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${v.tmdbId}`}</p>
-                      <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
-                      {r && <p class="mt-1 font-mono text-meta-data text-ink"><Stars rating={r} lang={lang} /></p>}
-                      {v.rewatch && <p class="mt-1 font-mono text-meta-data text-muted">↻ {t('diary.rewatch')}</p>}
-                    </div>
-                  </a>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      ))
+      <DiaryMonths
+        items={viewings.map((v) => ({ ...v, rating: v.rating ?? filmRating.get(v.tmdbId) ?? null }))}
+        briefs={briefs}
+        lang={lang}
+      />
     )}
   </section>
 </BaseLayout>

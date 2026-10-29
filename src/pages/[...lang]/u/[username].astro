@@ -324,7 +324,7 @@ const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lan
               <PosterGrid items={recent.map((r) => ({ tmdbId: r.tmdbId, rating: r.rating, sub: `${r.watchedOn.slice(8, 10)}/${r.watchedOn.slice(5, 7)}${r.rewatch ? ' ↻' : ''}` }))} briefs={briefs} lang={lang} details />
             </div>
             {viewingsTotal > recent.length && (
-              <a href={localizePath(lang, `u/${target.username}/viewings`)} class="tap label mt-2 hover:text-ink">{t('profile.seeAll')} →</a>
+              <a href={localizePath(lang, `u/${target.username}/viewings`)} class="tap label mt-2 hover:text-ink">{t('profile.seeDiary')} →</a>
             )}
           </div>
         )}

@@ -1,23 +1,24 @@
 ---
 /**
- * «Ver todo» del perfil público: el diario, las favoritas o las pendientes
- * enteras, de 48 en 48 (múltiplo de 12, así cada página cierra la rejilla).
- * El perfil solo enseña las doce últimas de cada cosa.
+ * «Ver todo» del perfil público: las favoritas o las pendientes enteras, de
+ * 48 en 48 (múltiplo de 12, así cada página cierra la rejilla). El perfil solo
+ * enseña las doce últimas de cada cosa. El diario tiene su propia página
+ * (viewings.astro), por años y meses.
  */
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import PosterGrid from '../../../../components/PosterGrid.astro';
 import { normalizeLang, useTranslations, localizePath } from '../../../../i18n/ui';
 import { db } from '../../../../db/client';
-import { userFilms, userViewings } from '../../../../db/schema';
+import { userFilms } from '../../../../db/schema';
 import { and, desc, eq, or, sql } from 'drizzle-orm';
 import { getFilmsBrief } from '../../../../lib/films';
 import { getProfileByUsername, followState, canViewActivity } from '../../../../lib/social';
 
 export const prerender = false;
 
-// Nombres que no existen como página de primer nivel: con /diary o /watchlist
-// la ruta comodín del idioma se quedaba con /u/<usuario>/diary.
-const SECTIONS = ['viewings', 'favorites', 'pending'] as const;
+// Nombres que no existen como página de primer nivel: con /watchlist la ruta
+// comodín del idioma se quedaba con /u/<usuario>/watchlist.
+const SECTIONS = ['favorites', 'pending'] as const;
 type Section = (typeof SECTIONS)[number];
 const section = Astro.params.section as Section;
 if (!SECTIONS.includes(section)) return new Response(null, { status: 404 });
@@ -36,59 +37,24 @@ const PER_PAGE = 48;
 const asked = Number(Astro.url.searchParams.get('page'));
 const uid = target.userId;
 
-let total = 0;
-let items: { tmdbId: number; rating?: number | null; sub?: string }[] = [];
-let page = 1;
-const pageOf = (n: number) => {
-  const pages = Math.max(1, Math.ceil(n / PER_PAGE));
-  return { pages, page: Number.isInteger(asked) && asked >= 1 && asked <= pages ? asked : 1 };
-};
+const where =
+  section === 'favorites'
+    ? and(eq(userFilms.userId, uid), or(eq(userFilms.favorite, true), eq(userFilms.status, 'favorite')))
+    : and(eq(userFilms.userId, uid), eq(userFilms.status, 'want'));
+const [c] = await db.select({ n: sql<number>`count(*)::int` }).from(userFilms).where(where);
+const total = c?.n ?? 0;
+const pages = Math.max(1, Math.ceil(total / PER_PAGE));
+const page = Number.isInteger(asked) && asked >= 1 && asked <= pages ? asked : 1;
+const items = await db
+  .select({ tmdbId: userFilms.tmdbId })
+  .from(userFilms)
+  .where(where)
+  .orderBy(desc(userFilms.updatedAt))
+  .limit(PER_PAGE)
+  .offset((page - 1) * PER_PAGE);
 
-if (section === 'viewings') {
-  const [c] = await db.select({ n: sql<number>`count(*)::int` }).from(userViewings).where(eq(userViewings.userId, uid));
-  total = c?.n ?? 0;
-  page = pageOf(total).page;
-  const rows = await db
-    .select({
-      tmdbId: userViewings.tmdbId,
-      watchedOn: userViewings.watchedOn,
-      vRating: userViewings.rating,
-      fRating: userFilms.rating,
-      rewatch: userViewings.rewatch,
-    })
-    .from(userViewings)
-    .leftJoin(userFilms, and(eq(userFilms.userId, userViewings.userId), eq(userFilms.tmdbId, userViewings.tmdbId)))
-    .where(eq(userViewings.userId, uid))
-    .orderBy(desc(userViewings.watchedOn), desc(userViewings.id))
-    .limit(PER_PAGE)
-    .offset((page - 1) * PER_PAGE);
-  // En el diario completo la fecha lleva el año: aquí se mezclan varios.
-  items = rows.map((r) => ({
-    tmdbId: r.tmdbId,
-    rating: r.vRating ?? r.fRating ?? null,
-    sub: `${r.watchedOn.slice(8, 10)}/${r.watchedOn.slice(5, 7)}/${r.watchedOn.slice(2, 4)}${r.rewatch ? ' ↻' : ''}`,
-  }));
-} else {
-  const where =
-    section === 'favorites'
-      ? and(eq(userFilms.userId, uid), or(eq(userFilms.favorite, true), eq(userFilms.status, 'favorite')))
-      : and(eq(userFilms.userId, uid), eq(userFilms.status, 'want'));
-  const [c] = await db.select({ n: sql<number>`count(*)::int` }).from(userFilms).where(where);
-  total = c?.n ?? 0;
-  page = pageOf(total).page;
-  const rows = await db
-    .select({ tmdbId: userFilms.tmdbId })
-    .from(userFilms)
-    .where(where)
-    .orderBy(desc(userFilms.updatedAt))
-    .limit(PER_PAGE)
-    .offset((page - 1) * PER_PAGE);
-  items = rows.map((r) => ({ tmdbId: r.tmdbId }));
-}
-
-const { pages } = pageOf(total);
 const briefs = await getFilmsBrief(items.map((i) => i.tmdbId), lang);
-const label = { viewings: t('profile.recent'), favorites: t('watchlist.favorite'), pending: t('watchlist.want') }[section];
+const label = { favorites: t('watchlist.favorite'), pending: t('watchlist.want') }[section];
 const heading = `${label} · @${target.username}`;
 const base = localizePath(lang, `u/${target.username}/${section}`);
 ---
@@ -105,7 +71,7 @@ const base = localizePath(lang, `u/${target.username}/${section}`);
       <p class="mt-10 font-mono text-body-md text-muted">—</p>
     ) : (
       <div class="mt-8">
-        <PosterGrid items={items} briefs={briefs} lang={lang} details={section === 'viewings'} />
+        <PosterGrid items={items} briefs={briefs} lang={lang} />
       </div>
     )}
 

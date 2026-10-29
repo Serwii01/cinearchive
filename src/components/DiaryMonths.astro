@@ -1,0 +1,62 @@
+---
+/**
+ * El diario por meses: día, cartel, título, nota y si fue revisionado. Lo usan
+ * tu diario (/diary) y el diario público del perfil (/u/<usuario>/viewings).
+ *
+ * La rejilla es de 1, 2 o 3 columnas según la pantalla, y cada mes se cierra
+ * con casillas vacías para que no quede una fila a medias con un hueco negro.
+ */
+import Stars from './Stars.astro';
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
+import { filmSlug } from '../lib/slug';
+import { groupByMonth, monthLabel } from '../lib/diary';
+import type { FilmBrief } from '../lib/films';
+
+interface Props {
+  /** Del más reciente al más antiguo; `rating` ya resuelto (la del visionado o la de la película). */
+  items: { tmdbId: number; watchedOn: string; rewatch: boolean; rating: number | null }[];
+  briefs: Map<number, FilmBrief>;
+  lang: Lang;
+}
+
+const { items, briefs, lang } = Astro.props;
+const t = useTranslations(lang);
+const months = groupByMonth(items);
+---
+
+{months.map((m) => {
+  const n = m.items.length;
+  // Huecos por tamaño de pantalla: en tableta (2 columnas) y en escritorio (3).
+  const padSm = n % 2;
+  const padLg = (3 - (n % 3)) % 3;
+  return (
+    <div class="mt-10">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">
+        {monthLabel(m.month, lang)} <span class="label">· {n}</span>
+      </h2>
+      <ol class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+        {m.items.map((v) => {
+          const b = briefs.get(v.tmdbId);
+          return (
+            <li class="bg-surface">
+              <a href={localizePath(lang, `film/${filmSlug(v.tmdbId, b?.title)}`)} class="flex h-full gap-3 p-3 no-underline hover:bg-film-white">
+                <span class="w-10 shrink-0 font-display text-headline-lg leading-none text-ink">{Number(v.watchedOn.slice(8, 10))}</span>
+                <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
+                  {b?.poster && <img src={b.poster} srcset={b.posterSrcset ?? undefined} sizes="64px" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+                </div>
+                <div class="min-w-0">
+                  <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${v.tmdbId}`}</p>
+                  <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
+                  {v.rating != null && <p class="mt-1 font-mono text-meta-data text-ink"><Stars rating={v.rating} lang={lang} /></p>}
+                  {v.rewatch && <p class="mt-1 font-mono text-meta-data text-muted">↻ {t('diary.rewatch')}</p>}
+                </div>
+              </a>
+            </li>
+          );
+        })}
+        {Array.from({ length: padSm }, () => <li class="hidden bg-surface sm:block lg:hidden" aria-hidden="true"></li>)}
+        {Array.from({ length: padLg }, () => <li class="hidden bg-surface lg:block" aria-hidden="true"></li>)}
+      </ol>
+    </div>
+  );
+})}
