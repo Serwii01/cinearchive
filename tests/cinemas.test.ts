@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { looksLikeCinema, isCinema, isClosed, dedupe, inSpain, nearest, snapToGrid, findCinemas, type Cinema } from '../src/lib/cinemas';
+import { looksLikeCinema, isCinema, isClosed, dedupe, inSpain, nearest, snapToGrid, findCinemas, boxAround, nominatimToElements, _resetOverpassCooldown, type Cinema } from '../src/lib/cinemas';
 
 const cine = (over: Partial<Cinema>): Cinema => ({
   id: 'node/1',
@@ -203,6 +203,7 @@ describe('findCinemas con espejos de Overpass', () => {
   afterEach(() => {
     vi.useRealTimers();
     vi.unstubAllGlobals();
+    _resetOverpassCooldown();
   });
 
   const respuesta = (elements: unknown[]) => new Response(JSON.stringify({ elements }), { status: 200 });
@@ -240,5 +241,59 @@ describe('findCinemas con espejos de Overpass', () => {
   it('si fallan todos, lanza (y el endpoint responde un error reintentable)', async () => {
     vi.stubGlobal('fetch', async () => new Response('down', { status: 504 }));
     await expect(findCinemas(36.7413, -4.4414, 5000)).rejects.toThrow();
+  });
+});
+
+describe('alternativa por Nominatim', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    _resetOverpassCooldown();
+  });
+
+  it('boxAround contiene el círculo pedido', () => {
+    const b = boxAround(40, -3, 11132);
+    expect(b.maxLat - 40).toBeCloseTo(0.1, 3);
+    expect(b.maxLon - -3).toBeGreaterThan(0.1); // a 40° de latitud, un grado de longitud es más corto
+  });
+
+  it('convierte los resultados a la forma de Overpass, con dirección y web', () => {
+    const [e] = nominatimToElements([
+      {
+        osm_type: 'way',
+        osm_id: 268051340,
+        lat: '40.41',
+        lon: '-3.70',
+        name: 'Yelmo Cines Ideal',
+        address: { road: 'Calle del Doctor Cortezo', house_number: '6', postcode: '28012', city: 'Madrid' },
+        extratags: { website: 'https://yelmocines.es' },
+      },
+    ]);
+    expect(e).toMatchObject({ type: 'way', id: 268051340, lat: 40.41, lon: -3.7 });
+    expect(e.tags).toMatchObject({
+      amenity: 'cinema',
+      name: 'Yelmo Cines Ideal',
+      'addr:street': 'Calle del Doctor Cortezo',
+      'addr:city': 'Madrid',
+      website: 'https://yelmocines.es',
+    });
+  });
+
+  it('si Overpass falla entero, responde con Nominatim y luego no insiste con Overpass', async () => {
+    const llamadas: string[] = [];
+    vi.stubGlobal('fetch', async (url: string) => {
+      llamadas.push(url);
+      if (url.includes('overpass')) return new Response('down', { status: 504 });
+      return new Response(
+        JSON.stringify([{ osm_type: 'node', osm_id: 5, lat: '37.39', lon: '-5.99', name: 'Cine Avenida' }]),
+        { status: 200 },
+      );
+    });
+    const out = await findCinemas(37.3891, -5.9845, 5000);
+    expect(out.map((c) => c.name)).toEqual(['Cine Avenida']);
+    expect(llamadas.filter((u) => u.includes('overpass'))).toHaveLength(3);
+
+    llamadas.length = 0;
+    await findCinemas(37.2891, -5.8845, 5000);
+    expect(llamadas.every((u) => u.includes('nominatim'))).toBe(true);
   });
 });

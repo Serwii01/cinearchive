@@ -196,6 +196,8 @@ export async function geocode(query: string): Promise<GeoPoint | null> {
 
   let data: GeoPoint | null = null;
   try {
+    // Comparte turno con la búsqueda de salas por Nominatim (una por segundo).
+    await nominatimTurn();
     const res = await fetchWithTimeout(nominatimUrl(query.trim(), 1), {
       headers: { 'User-Agent': UA, accept: 'application/json' },
     });
@@ -467,25 +469,38 @@ export function nearest(list: Cinema[], lat: number, lon: number, radius: number
 
 /**
  * Cuánto se espera a un espejo de Overpass antes de lanzar el siguiente en
- * paralelo. Una consulta normal tarda ~3 s; si a los 6 no ha contestado, lo
- * normal es que esté saturado. Antes se esperaba a su timeout entero (25 s) y,
- * con dos espejos atascados, la página se pasaba casi un minuto en «Buscando».
+ * paralelo. Una consulta normal tarda ~3 s; si no ha contestado para entonces,
+ * lo normal es que esté saturado.
  */
-const HEDGE_MS = 6000;
+const HEDGE_MS = 3000;
+/**
+ * Tiempo total para Overpass, entre todos sus espejos. Pasado este tiempo se
+ * pregunta a Nominatim. Antes no había un tope global: en octubre de 2026 los
+ * tres espejos se quedaban colgados sin responder, y la página pasaba 31 s en
+ * «Buscando» para acabar en error.
+ */
+const OVERPASS_BUDGET_MS = 9000;
+/**
+ * Tras un fallo total, durante este tiempo no se pregunta a Overpass y se va
+ * directo a Nominatim. Si Overpass está caído, lo estará también en la
+ * siguiente búsqueda, y no tiene sentido hacer esperar 9 s a cada visita.
+ */
+const OVERPASS_COOLDOWN_MS = 10 * 60 * 1000;
+/** Ventaja de Overpass antes de preguntar también a Nominatim (ver findCinemas). */
+const OVERPASS_HEAD_START_MS = 4000;
+let overpassDownUntil = 0;
 
 async function queryOverpass(q: string): Promise<OverpassElement[]> {
+  // Aborta todas las peticiones en curso cuando una gana o se acaba el tiempo:
+  // así no quedan peticiones colgadas contra un servicio público.
+  const master = new AbortController();
   const ask = async (endpoint: string): Promise<OverpassElement[]> => {
-    const res = await fetchWithTimeout(
-      endpoint,
-      {
-        method: 'POST',
-        headers: { 'User-Agent': UA, 'content-type': 'application/x-www-form-urlencoded' },
-        body: 'data=' + encodeURIComponent(q),
-      },
-      // Por encima del timeout de la consulta (20 s): si no, abortaríamos
-      // antes de que Overpass llegue a contestar.
-      25000,
-    );
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'User-Agent': UA, 'content-type': 'application/x-www-form-urlencoded' },
+      body: 'data=' + encodeURIComponent(q),
+      signal: AbortSignal.any([master.signal, AbortSignal.timeout(25000)]),
+    });
     // 429/504…: cuenta como fallo y deja paso al siguiente espejo.
     if (!res.ok) throw new Error(`overpass http ${res.status}`);
     const json = (await res.json()) as { elements?: OverpassElement[] };
@@ -499,6 +514,17 @@ async function queryOverpass(q: string): Promise<OverpassElement[]> {
     let timer: ReturnType<typeof setTimeout> | undefined;
     let lastError: unknown = new Error('overpass unavailable');
 
+    const terminar = (fin: () => void) => {
+      terminado = true;
+      clearTimeout(timer);
+      clearTimeout(tope);
+      master.abort();
+      fin();
+    };
+    const tope = setTimeout(() => {
+      if (!terminado) terminar(() => reject(new Error('overpass timeout')));
+    }, OVERPASS_BUDGET_MS);
+
     const lanzar = () => {
       if (terminado || lanzados >= OVERPASS_MIRRORS.length) return;
       const endpoint = OVERPASS_MIRRORS[lanzados++];
@@ -507,19 +533,14 @@ async function queryOverpass(q: string): Promise<OverpassElement[]> {
       timer = setTimeout(lanzar, HEDGE_MS);
       ask(endpoint).then(
         (elements) => {
-          if (terminado) return;
-          terminado = true;
-          clearTimeout(timer);
-          resolve(elements);
+          if (!terminado) terminar(() => resolve(elements));
         },
         (err) => {
           if (terminado) return;
           lastError = err;
           fallidos++;
           if (fallidos >= OVERPASS_MIRRORS.length) {
-            terminado = true;
-            clearTimeout(timer);
-            reject(lastError);
+            terminar(() => reject(lastError));
           } else if (fallidos >= lanzados) {
             lanzar(); // todos los lanzados han fallado: no hay que esperar
           }
@@ -530,12 +551,127 @@ async function queryOverpass(q: string): Promise<OverpassElement[]> {
   });
 }
 
+/* ------------------------------------------------------------------ *
+ * Alternativa: Nominatim.
+ *
+ * Es también OpenStreetMap (los mismos objetos y los mismos ids, así que
+ * isCinema() y cinemas-overrides.json siguen valiendo), pero tiene dos
+ * limitaciones frente a Overpass:
+ *   - Solo busca `amenity=cinema`: los multicines etiquetados como teatro no
+ *     salen por aquí.
+ *   - Devuelve como mucho 40 resultados, ordenados por importancia y no por
+ *     distancia. Si la zona se llena, se repite por cuadrantes.
+ * Por eso es la alternativa cuando Overpass falla, y no la fuente principal.
+ * ------------------------------------------------------------------ */
+
+const NOMINATIM_MAX = 40;
+/** Política de Nominatim: como mucho una petición por segundo. */
+const NOMINATIM_GAP_MS = 1100;
+/** Lo que llega por Nominatim se guarda menos: cuando Overpass vuelva, mejor dato. */
+const FALLBACK_TTL_MS = 6 * 60 * 60 * 1000;
+let nominatimNext = 0;
+
+/** Turno para hablar con Nominatim, respetando una petición por segundo. */
+async function nominatimTurn(): Promise<void> {
+  const now = Date.now();
+  const wait = Math.max(0, nominatimNext - now);
+  nominatimNext = Math.max(now, nominatimNext) + NOMINATIM_GAP_MS;
+  if (wait) await new Promise((r) => setTimeout(r, wait));
+}
+
+interface Box {
+  minLat: number;
+  maxLat: number;
+  minLon: number;
+  maxLon: number;
+}
+
+/** Caja que contiene el círculo de `radius` metros alrededor del punto. */
+export function boxAround(lat: number, lon: number, radius: number): Box {
+  const dLat = radius / 111_320;
+  const dLon = radius / (111_320 * Math.cos((lat * Math.PI) / 180));
+  return { minLat: lat - dLat, maxLat: lat + dLat, minLon: lon - dLon, maxLon: lon + dLon };
+}
+
+export interface NominatimPlace {
+  osm_type: string;
+  osm_id: number;
+  lat: string;
+  lon: string;
+  name?: string;
+  address?: Record<string, string>;
+  extratags?: Record<string, string> | null;
+}
+
+/**
+ * Convierte los resultados de Nominatim a la forma que trae Overpass, para que
+ * pasen por el mismo filtro (parseCinemas) que el resto.
+ */
+export function nominatimToElements(rows: NominatimPlace[]): OverpassElement[] {
+  return rows
+    .map((r) => {
+      const a = r.address ?? {};
+      const tags: Record<string, string> = { ...(r.extratags ?? {}), amenity: 'cinema' };
+      if (r.name) tags.name = r.name;
+      const put = (k: string, v: string | undefined) => {
+        if (v && !tags[k]) tags[k] = v;
+      };
+      put('addr:street', a.road ?? a.pedestrian);
+      put('addr:housenumber', a.house_number);
+      put('addr:postcode', a.postcode);
+      put('addr:city', a.city ?? a.town ?? a.village);
+      return { type: r.osm_type, id: r.osm_id, lat: Number(r.lat), lon: Number(r.lon), tags };
+    })
+    .filter((e) => Number.isFinite(e.lat) && Number.isFinite(e.lon));
+}
+
+async function nominatimBox(box: Box): Promise<OverpassElement[]> {
+  await nominatimTurn();
+  const url = new URL(NOMINATIM);
+  url.searchParams.set('format', 'jsonv2');
+  url.searchParams.set('amenity', 'cinema');
+  url.searchParams.set('viewbox', `${box.minLon},${box.maxLat},${box.maxLon},${box.minLat}`);
+  url.searchParams.set('bounded', '1');
+  url.searchParams.set('limit', String(NOMINATIM_MAX));
+  url.searchParams.set('addressdetails', '1');
+  url.searchParams.set('extratags', '1');
+  const res = await fetchWithTimeout(url.toString(), { headers: { 'User-Agent': UA, accept: 'application/json' } }, 10000);
+  if (!res.ok) throw new Error(`nominatim http ${res.status}`);
+  return nominatimToElements((await res.json()) as NominatimPlace[]);
+}
+
+/** Salas alrededor de un punto según Nominatim. Lanza si Nominatim falla. */
+async function queryNominatim(lat: number, lon: number, radius: number): Promise<OverpassElement[]> {
+  const box = boxAround(lat, lon, radius);
+  const first = await nominatimBox(box);
+  if (first.length < NOMINATIM_MAX) return first;
+  // Lleno: podrían faltar salas cercanas. Se repite por cuadrantes, y si alguno
+  // falla se usa lo que haya.
+  const midLat = (box.minLat + box.maxLat) / 2;
+  const midLon = (box.minLon + box.maxLon) / 2;
+  const quads: Box[] = [
+    { ...box, maxLat: midLat, maxLon: midLon },
+    { ...box, maxLat: midLat, minLon: midLon },
+    { ...box, minLat: midLat, maxLon: midLon },
+    { ...box, minLat: midLat, minLon: midLon },
+  ];
+  const byId = new Map(first.map((e) => [`${e.type}/${e.id}`, e]));
+  for (const q of quads) {
+    try {
+      for (const e of await nominatimBox(q)) byId.set(`${e.type}/${e.id}`, e);
+    } catch {
+      /* lo que haya */
+    }
+  }
+  return [...byId.values()];
+}
+
 /**
  * Salas de cine alrededor de un punto, ordenadas por distancia.
  *
- * Pregunta a los espejos de Overpass en orden, lanzando el siguiente si uno
- * tarda, y usa la primera respuesta buena. Solo se cachea un resultado EFECTIVO
- * (24 h si hay salas, 10 min si vino vacío); si todos los espejos fallan se
+ * Pregunta a los espejos de Overpass y, si tardan o fallan, también a
+ * Nominatim. Solo se cachea un resultado EFECTIVO (24 h si hay salas,
+ * 6 h si vino de Nominatim, 10 min si vino vacío); si fallan las dos fuentes se
  * LANZA una excepción (el endpoint la traduce a un error reintentable) y **no**
  * se cachea, para no dejar un vacío pegado durante horas.
  */
@@ -558,12 +694,39 @@ export async function findCinemas(lat: number, lon: number, radius = 25000): Pro
     `nwr[amenity=theatre](around:${around},${grid.lat},${grid.lon}););` +
     `out center tags;`;
 
-  // Si ningún espejo responde, queryOverpass lanza y el endpoint responde un
-  // error reintentable.
-  const all = parseCinemas(await queryOverpass(q), grid.lat, grid.lon, around);
+  type Result = { elements: OverpassElement[]; ttl: number };
+  const viaNominatim = (): Promise<Result> =>
+    queryNominatim(grid.lat, grid.lon, around).then((elements) => ({ elements, ttl: FALLBACK_TTL_MS }));
+
+  // Si las dos fuentes fallan, lanza y el endpoint responde un error reintentable.
+  let result: Result;
+  if (Date.now() >= overpassDownUntil) {
+    const op = queryOverpass(q).then((elements): Result => ({ elements, ttl: DAY_MS }));
+    op.catch(() => {
+      overpassDownUntil = Date.now() + OVERPASS_COOLDOWN_MS;
+    });
+    // Overpass tiene unos segundos de ventaja; si no ha contestado, se pregunta
+    // también a Nominatim y gana la primera respuesta buena. Esperar a que
+    // Overpass agote su tiempo y SOLO entonces ir a Nominatim sumaba 15 s.
+    const early = await Promise.race([
+      op.catch(() => null),
+      new Promise<null>((r) => setTimeout(() => r(null), OVERPASS_HEAD_START_MS)),
+    ]);
+    result = early ?? (await Promise.any([op, viaNominatim()]));
+  } else {
+    result = await viaNominatim();
+  }
+
+  const { elements, ttl } = result;
+  const all = parseCinemas(elements, grid.lat, grid.lon, around);
   cinemaCache.set(key, {
-    expires: Date.now() + (all.length ? DAY_MS : EMPTY_TTL_MS),
+    expires: Date.now() + (all.length ? ttl : EMPTY_TTL_MS),
     data: all,
   });
   return nearest(all, lat, lon, radius);
+}
+
+/** Para los tests: vuelve a dar una oportunidad a Overpass. */
+export function _resetOverpassCooldown(): void {
+  overpassDownUntil = 0;
 }
