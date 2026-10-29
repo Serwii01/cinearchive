@@ -4,6 +4,7 @@
  */
 import { getPerson, posterUrl, type TmdbPerson, type TmdbPersonCredit } from './tmdb';
 import { registerCache } from './cache-registry';
+import { latinNames } from './personnames';
 
 const TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 días
 const MAX = 500;
@@ -24,6 +25,12 @@ export async function getPersonCached(id: number, locale: string): Promise<TmdbP
   if (hit && Date.now() - hit.at < TTL_MS) return hit.data;
 
   const data = await getPerson(id, locale);
+  // «芥川龍之介» → Ryunosuke Akutagawa, con el original debajo del título.
+  const latin = (await latinNames([data], 1)).get(id);
+  if (latin) {
+    data.original_name = data.name;
+    data.name = latin;
+  }
   if (cache.size >= MAX) cache.delete(cache.keys().next().value as string);
   cache.set(key, { at: Date.now(), data });
   return data;

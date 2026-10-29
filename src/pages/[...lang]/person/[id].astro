@@ -83,6 +83,7 @@ const facts = [
       <div class="md:col-span-9">
         {person.known_for_department && <span class="label">{person.known_for_department}</span>}
         <h1 class="mt-2 text-display-mobile md:text-display-lg">{person.name}</h1>
+        {person.original_name && <p class="mt-2 font-mono text-body-md text-muted" lang="und">{person.original_name}</p>}
         {esFigura && (
           <a href={localizePath(lang, 'figures')} class="label mt-3 inline-block border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">
             {t('nav.figures')} →

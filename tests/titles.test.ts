@@ -42,3 +42,19 @@ describe('titlesFrom', () => {
     expect(Object.values(t)).toEqual(['Heat', 'Heat', 'Heat', 'Heat', 'Heat']);
   });
 });
+
+describe('titlesFrom: estrenada en España con el título original', () => {
+  it('no salta al título de México', () => {
+    const t = titlesFrom({ original_title: 'Trainspotting', original_language: 'en' }, [
+      tr('es', 'ES', ''),
+      tr('es', 'MX', 'Trainspotting: La vida en el abismo'),
+      tr('en', 'US', ''),
+    ]);
+    expect(t.es).toBe('Trainspotting');
+    expect(t.en).toBe('Trainspotting');
+  });
+  it('con un original ilegible sí sigue buscando', () => {
+    const t = titlesFrom({ original_title: '乱', original_language: 'ja' }, [tr('es', 'ES', ''), tr('es', 'MX', 'Ran')]);
+    expect(t.es).toBe('Ran');
+  });
+});

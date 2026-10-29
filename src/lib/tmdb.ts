@@ -445,6 +445,8 @@ export interface TmdbPersonCredit {
 export interface TmdbPerson {
   id: number;
   name: string;
+  /** El nombre en su escritura original, si `name` se ha pasado a latino (lib/personnames.ts). */
+  original_name?: string;
   biography: string;
   birthday: string | null;
   deathday: string | null;
@@ -472,6 +474,18 @@ export async function getPerson(id: number, locale: string): Promise<TmdbPerson>
     }
   }
   return person;
+}
+
+/**
+ * Lo necesario para dar con el nombre latino de alguien (lib/personnames.ts):
+ * sus alias y su elemento de Wikidata, en una sola petición.
+ */
+export async function getPersonNaming(id: number): Promise<{ name: string; aliases: string[]; wikidataId: string | null }> {
+  const p = await tmdbFetch<{ name: string; also_known_as?: string[]; external_ids?: { wikidata_id?: string | null } }>(
+    `/person/${id}`,
+    { append_to_response: 'external_ids' },
+  );
+  return { name: p.name, aliases: p.also_known_as ?? [], wikidataId: p.external_ids?.wikidata_id ?? null };
 }
 
 /* ------------------------------------------------------------------ *

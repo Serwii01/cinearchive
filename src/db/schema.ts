@@ -166,6 +166,9 @@ export const userFilms = pgTable(
     userUpdatedIdx: index('user_films_user_updated_idx').on(t.userId, t.updatedAt),
     // Reseñas del perfil público: solo las que tienen fecha de reseña.
     userReviewedIdx: index('user_films_user_reviewed_idx').on(t.userId, t.reviewedAt),
+    // La nota de la comunidad en la ficha y el orden del sitemap agrupan por
+    // película; la PK empieza por el usuario y no sirve para eso.
+    tmdbIdx: index('user_films_tmdb_idx').on(t.tmdbId),
   }),
 );
 
@@ -301,6 +304,18 @@ export const watchSnapshot = pgTable(
     checkedIdx: index('watch_snapshot_checked_idx').on(t.checkedAt),
   }),
 );
+
+/**
+ * El nombre en alfabeto latino de las personas que TMDB tiene en su escritura
+ * original (ver lib/names.ts). Se busca una vez por persona en TMDB y
+ * Wikidata; `latin` es null si no se encontró ninguno, para no volver a
+ * preguntar en cada visita.
+ */
+export const personNames = pgTable('person_names', {
+  personId: integer('person_id').primaryKey(),
+  latin: text('latin'),
+  checkedAt: timestamp('checked_at').notNull().defaultNow(),
+});
 
 /** Avisos de «una película que tienes pendiente ha llegado a una plataforma». */
 export const streamAlerts = pgTable(

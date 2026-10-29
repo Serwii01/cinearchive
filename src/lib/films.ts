@@ -3,7 +3,7 @@
  * resultado en films_cache. OMDb tiene un límite diario bajo, así que su respuesta
  * se reutiliza desde cache durante OMDB_TTL.
  */
-import { eq, inArray } from 'drizzle-orm';
+import { desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '../db/client';
 import { filmsCache } from '../db/schema';
 import {
@@ -22,6 +22,7 @@ import { createMemo } from './memo';
 import { registerCache } from './cache-registry';
 import { WATCH_REGIONS } from '../data/countries';
 import { titlesFrom, type Titles } from './titles';
+import { latinizeMovie, latinNames } from './personnames';
 import type { Lang } from '../i18n/ui';
 
 const OMDB_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
@@ -73,6 +74,9 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
     tmdb = cached?.tmdb as TmdbMovie | undefined;
   }
   if (!tmdb) throw new Error(`No se pudo obtener la película ${tmdbId}.`);
+  // Reparto y dirección en alfabeto latino («中井朝一» → Asakazu Nakai). Se
+  // guarda así también en la caché, de donde leen las listas.
+  tmdb = await latinizeMovie(tmdb);
 
   // OMDb: reutilizar de cache si está fresca; si no, refrescar por imdb_id.
   let omdb = (cached?.omdb as OmdbData | null) ?? null;
@@ -195,6 +199,31 @@ async function fillTitles(m: TmdbMovie): Promise<Titles | null> {
   return titles;
 }
 
+// Como mucho una tanda cada diez minutos: la lanza el sitemap, que los
+// rastreadores piden a menudo. 300 por tanda son 300 peticiones a TMDB.
+let backfillAt = 0;
+const BACKFILL_EVERY_MS = 10 * 60 * 1000;
+
+/**
+ * Completa en segundo plano los títulos por idioma de hasta `limit` fichas
+ * guardadas sin ellos. El sitemap solo lista las que los tienen (sin ellos no
+ * sabe la URL de cada idioma), así que sin esto las fichas viejas que nadie
+ * vuelve a abrir no entrarían nunca.
+ */
+export function backfillTitles(limit = 300): void {
+  if (Date.now() - backfillAt < BACKFILL_EVERY_MS) return;
+  backfillAt = Date.now();
+  void (async () => {
+    const rows = await db
+      .select({ tmdb: filmsCache.tmdb })
+      .from(filmsCache)
+      .where(isNull(filmsCache.titles))
+      .orderBy(desc(filmsCache.fetchedAt))
+      .limit(limit);
+    await runLimited(rows.map((r) => r.tmdb as TmdbMovie), fillTitles);
+  })().catch(() => {});
+}
+
 /**
  * Resúmenes para una lista de IDs. Usa films_cache; para los que falten, los
  * pide a TMDB (y de paso los cachea). Devuelve un mapa id → FilmBrief.
@@ -256,5 +285,22 @@ export async function getFilmsBrief(
     }
   };
   await Promise.all(Array.from({ length: Math.min(BRIEF_CONCURRENCY, missing.length) }, worker));
+  await latinizeBriefs(out);
   return out;
+}
+
+/**
+ * Nombres latinos en los resúmenes. Las fichas cacheadas antes de que
+ * existiera lib/personnames.ts guardan el nombre original; aquí se corrige al
+ * leer (las que no se sepan aún, salen bien en la siguiente visita).
+ */
+async function latinizeBriefs(out: Map<number, FilmBrief>): Promise<void> {
+  const people = [...out.values()].flatMap((b) => [...b.directors, ...b.cast]);
+  const names = await latinNames(people);
+  if (names.size === 0) return;
+  const fix = (p: { id: number; name: string }) => (names.has(p.id) ? { ...p, name: names.get(p.id)! } : p);
+  for (const [id, b] of out) {
+    const directors = b.directors.map(fix);
+    out.set(id, { ...b, directors, cast: b.cast.map(fix), director: directors[0]?.name ?? b.director });
+  }
 }

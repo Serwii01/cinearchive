@@ -188,3 +188,22 @@ export function agrupar(filas: Fila[]): FilmLocations {
     narrative: narrative.sort(ordenar).slice(0, MAX_LUGARES),
   };
 }
+
+/**
+ * La etiqueta de un elemento de Wikidata en castellano o, si no la tiene, en
+ * inglés. Sirve para el nombre latino de una persona que TMDB guarda en su
+ * escritura original (ver lib/personnames.ts). Null si no hay o si falla.
+ */
+export async function getLabel(qid: string): Promise<string | null> {
+  if (!/^Q[0-9]+$/.test(qid)) return null;
+  const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=labels&languages=es|en&ids=${qid}`;
+  try {
+    const res = await fetch(url, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { entities?: Record<string, { labels?: Record<string, { value: string }> }> };
+    const labels = data.entities?.[qid]?.labels;
+    return labels?.es?.value ?? labels?.en?.value ?? null;
+  } catch {
+    return null;
+  }
+}

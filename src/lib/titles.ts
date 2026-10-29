@@ -9,6 +9,7 @@
  */
 import type { Lang } from '../i18n/ui';
 import type { TmdbTranslation } from './tmdb';
+import { hasNonLatin } from './names';
 
 export type Titles = Record<Lang, string>;
 
@@ -27,11 +28,19 @@ interface MovieNames {
  *
  * TMDB deja el título vacío en la traducción del idioma original («El
  * espíritu de la colmena» en es-ES llega como ""): ahí vale el original.
+ *
+ * También lo deja vacío cuando en ese país se estrenó con el título original:
+ * «Trainspotting» o «Heat» en España. Ahí no vale saltar a México («La vida
+ * en el abismo», «Fuego contra fuego»): en castellano y en inglés manda el
+ * original, que es además lo que TMDB devuelve para la ficha y con lo que se
+ * hace su URL. Salvo que el original no se pueda leer (乱): entonces se sigue.
  */
 export function titlesFrom(m: MovieNames, translations: TmdbTranslation[]): Titles {
   const original = m.original_title || m.title || '';
-  const find = (lang: string, regions: string[]): string | undefined => {
+  const find = (lang: string, regions: string[], blankMeansOriginal = false): string | undefined => {
     const ofLang = translations.filter((t) => t.iso_639_1 === lang);
+    const first = ofLang.find((t) => t.iso_3166_1 === regions[0]);
+    if (blankMeansOriginal && first && !first.data?.title?.trim() && original && !hasNonLatin(original)) return original;
     const ordered = [
       ...regions.map((r) => ofLang.find((t) => t.iso_3166_1 === r)),
       ...ofLang,
@@ -44,8 +53,8 @@ export function titlesFrom(m: MovieNames, translations: TmdbTranslation[]): Titl
     return m.original_language === lang ? original : undefined;
   };
 
-  const en = find('en', ['US', 'GB']) ?? original;
-  const es = find('es', ['ES', 'MX']) ?? en;
+  const en = find('en', ['US', 'GB'], true) ?? original;
+  const es = find('es', ['ES', 'MX'], true) ?? en;
   return {
     es,
     en,

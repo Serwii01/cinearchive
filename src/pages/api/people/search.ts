@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { searchPeople, profileUrl } from '../../../lib/tmdb';
 import { rateLimit, clientIp } from '../../../lib/ratelimit';
+import { latinNames } from '../../../lib/personnames';
 
 export const prerender = false;
 
@@ -19,9 +20,13 @@ export const GET: APIRoute = async ({ locals, request, url }) => {
   if (q.length < 2) return Response.json({ results: [] });
 
   try {
-    const results = (await searchPeople(q, lang)).map((p) => ({
+    const hits = await searchPeople(q, lang);
+    // Solo los nombres latinos ya conocidos (0 en el momento): se busca al
+    // teclear y no puede esperar a Wikidata. Los demás quedan para la próxima.
+    const latin = await latinNames(hits, 0);
+    const results = hits.map((p) => ({
       id: p.id,
-      name: p.name,
+      name: latin.get(p.id) ?? p.name,
       department: p.known_for_department,
       knownFor: p.known_for,
       photo: profileUrl(p.profile_path, 'w185'),
