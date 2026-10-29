@@ -398,7 +398,6 @@ export type User = typeof user.$inferSelect;
 export type UserFilm = typeof userFilms.$inferSelect;
 export type UserPreferences = typeof userPreferences.$inferSelect;
 export type FilmCache = typeof filmsCache.$inferSelect;
-export type WatchCache = typeof watchCache.$inferSelect;
 export type ExtraFilm = typeof extraFilms.$inferSelect;
 export type UserList = typeof userLists.$inferSelect;
 export type UserListFilm = typeof userListFilms.$inferSelect;

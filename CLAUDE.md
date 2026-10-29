@@ -38,7 +38,7 @@ Para la BD en local: `docker run -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=cine -p
 ## Convenciones
 - **Ninguna clave llega al navegador.** Nada de variables `PUBLIC_` para secretos: el cliente solo habla con `/api/*`.
 - CSP estricta, sin `unsafe-inline` en scripts. Los scripts del cliente no pueden ir en línea.
-- Todo texto visible pasa por `src/i18n/ui.ts` y se traduce a **los 5 idiomas** (hay test de i18n). El contenido editorial (artículos, dosieres) existe en ES/EN.
+- Todo texto visible pasa por `src/i18n/ui.ts` y se traduce a **los 5 idiomas** (hay test de i18n). El contenido editorial (artículos, dosieres) también existe en los 5 idiomas.
 - Los commits van en castellano y describen el efecto para el usuario, no el cambio técnico (p. ej. «Info: el contador ya no enseña 30.800 mientras carga»).
 - Los comentarios del código, en castellano, explican el **porqué** (ver `docker-compose.yml` o `integrations/sw-version.mjs`).
 - Cada versión publicada se anota en `src/data/changelog.json` (5 idiomas, lenguaje llano) y se muestra en `/changelog`. El CRM (`adminscinearchive`) también edita ese archivo.

@@ -46,7 +46,9 @@ type PickLike = {
   title: string;
   overview: string;
   release_date?: string;
-  backdrop_path: string | null;
+  // Opcional: en los resultados de búsqueda de TMDB puede faltar (aquí solo
+  // llegan los que lo tienen, ver el filtro de candidatos).
+  backdrop_path?: string | null;
   poster_path: string | null;
   vote_average: number;
 };
@@ -74,7 +76,7 @@ function toFilmOfDay(p: PickLike): FilmOfDay {
     title: p.title,
     overview: p.overview,
     year: p.release_date ? p.release_date.slice(0, 4) : '',
-    backdrop: backdropUrl(p.backdrop_path, 'w1280'),
+    backdrop: backdropUrl(p.backdrop_path ?? null, 'w1280'),
     poster: posterUrl(p.poster_path, 'w500'),
     voteAverage: p.vote_average,
   };

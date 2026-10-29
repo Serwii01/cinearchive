@@ -92,7 +92,7 @@ export const GET: APIRoute = async ({ params, url, site }) => {
           }
         }),
       )
-    ).filter((b): b is Buffer => b != null);
+    ).filter((b) => b != null);
   }
 
   // QR a la URL canónica del perfil.

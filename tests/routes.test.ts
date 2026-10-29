@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { TOP_LEVEL_SECTIONS, isKnownRoute, legacyDefaultLangRedirect } from '../src/lib/routes';
-import { languages, localizePath } from '../src/i18n/ui';
+import { languages, localizePath, type Lang } from '../src/i18n/ui';
 
-const LANGS = Object.keys(languages);
+const LANGS = Object.keys(languages) as Lang[];
 const PAGES = join(process.cwd(), 'src', 'pages', '[...lang]');
 
 describe('TOP_LEVEL_SECTIONS', () => {
