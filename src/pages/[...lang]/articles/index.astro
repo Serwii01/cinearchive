@@ -73,7 +73,7 @@ const chip =
       <p id="art-status" class="label" aria-live="polite" data-tpl={t('articles.showing')}></p>
     </div>
 
-    <div id="art-grid" class="mt-6 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+    <div id="art-grid" class="mt-6 grid ruled grid-cols-1 border border-ink md:grid-cols-2">
       {
         lista.map(({ slug, date, c, topic, search }) => (
           <a

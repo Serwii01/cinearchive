@@ -34,7 +34,7 @@ const months = groupByMonth(items);
       <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">
         {monthLabel(m.month, lang)} <span class="label">· {n}</span>
       </h2>
-      <ol class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+      <ol class="mt-4 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-3">
         {m.items.map((v) => {
           const b = briefs.get(v.tmdbId);
           return (

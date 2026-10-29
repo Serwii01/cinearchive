@@ -16,7 +16,7 @@ const t = useTranslations(lang);
   data-l-error={t('tmdb.error')}
   class="block border border-ink bg-surface"
 >
-  <div class="border-b border-ink p-4">
+  <div class="p-4">
     <h2 class="label mb-2">{t('tmdb.title')}</h2>
     <input
       data-input
@@ -27,8 +27,8 @@ const t = useTranslations(lang);
     />
     <p class="mt-2 font-mono text-meta-data text-muted">{t('tmdb.hint')}</p>
   </div>
-  <div data-status class="hidden px-4 py-3 font-mono text-meta-data text-muted"></div>
-  <div data-results class="hidden grid grid-cols-2 gap-px bg-ink sm:grid-cols-3 lg:grid-cols-4"></div>
+  <div data-status class="hidden border-t border-ink px-4 py-3 font-mono text-meta-data text-muted"></div>
+  <div data-results class="hidden grid ruled-inner grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"></div>
 </tmdb-search>
 
 <script>

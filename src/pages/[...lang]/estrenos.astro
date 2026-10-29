@@ -10,7 +10,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { normalizeLang, useTranslations, localizePath, locales } from '../../i18n/ui';
 import { filmSlug } from '../../lib/slug';
-import { padTo } from '../../lib/grid';
+import { fillers } from '../../lib/grid';
 import { genreName } from '../../data/genres';
 import { getCartelera, type ReleaseFilm, type Cartelera } from '../../lib/releases';
 import { itemListLd, breadcrumbLd } from '../../lib/seo';
@@ -73,7 +73,7 @@ const jsonLd = [
         // dejaba un hueco negro al final. De dos en dos en móvil (con 3
         // secciones, la última ocupa la fila entera) y todas juntas después.
         <nav
-          class:list={['mt-4 grid grid-cols-2 gap-px border border-ink bg-ink', navCols]}
+          class:list={['mt-4 grid ruled grid-cols-2 border border-ink', navCols]}
           aria-label={t('releases.title')}
         >
           {sections.map((s, i) => (
@@ -95,16 +95,15 @@ const jsonLd = [
       <p class="mt-10 font-mono text-body-md text-muted">{t('releases.empty')}</p>
     ) : (
       sections.map((s) => {
-        // 2, 3 y 6 columnas: con un múltiplo de 6 casillas la rejilla cierra
-        // en rectángulo en cualquier pantalla.
-        const huecos = padTo(s.films.length, 6) - s.films.length;
+        // 2, 3 y 6 columnas: la última fila se completa en cada pantalla.
+        const huecos = fillers(s.films.length, { base: 2, sm: 3, lg: 6 });
         return (
           <section id={s.id} class="mt-12 scroll-mt-24">
             <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">
               {s.title} <span class="label">· {s.films.length}</span>
             </h2>
             <p class="mt-2 font-mono text-meta-data text-muted first-letter:uppercase">{s.sub}</p>
-            <ul class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+            <ul class="mt-4 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">
               {s.films.map((f) => (
                 <li class="bg-surface">
                   <a href={filmHref(f)} class="group flex h-full flex-col no-underline hover:bg-film-white">
@@ -121,19 +120,7 @@ const jsonLd = [
                   </a>
                 </li>
               ))}
-              {Array.from({ length: huecos }, (_, i) => (
-                <li
-                  class:list={[
-                    'bg-surface',
-                    // En móvil (2 columnas) y tableta (3) sobran algunas casillas de relleno.
-                    i >= (padTo(s.films.length, 2) - s.films.length) && 'hidden',
-                    i < (padTo(s.films.length, 3) - s.films.length) && 'sm:block',
-                    i >= (padTo(s.films.length, 3) - s.films.length) && 'sm:hidden',
-                    'lg:block',
-                  ]}
-                  aria-hidden="true"
-                ></li>
-              ))}
+              {huecos.map((cls) => <li class={`bg-surface ${cls}`} aria-hidden="true"></li>)}
             </ul>
           </section>
         );

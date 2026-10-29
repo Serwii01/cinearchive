@@ -20,7 +20,7 @@ const fichas = dossiers.map((d) => ({ slug: d.slug, c: dossierCopy(d, lang) }));
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('dossiers.intro')}</p>
     </header>
 
-    <div class="mt-10 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2">
+    <div class="mt-10 grid ruled grid-cols-1 border border-ink sm:grid-cols-2">
       {
         fichas.map(({ slug, c }) => (
           <a

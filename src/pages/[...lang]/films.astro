@@ -47,7 +47,7 @@ const secciones = [
     {/* Las cuatro secciones que cuelgan de la Filmoteca. Van arriba, antes del
         catálogo: quien llega aquí buscando «qué hay» tiene que verlas sin
         bajar, y quien viene a por una ficha concreta usa el filtro de abajo. */}
-    <nav class="mt-8 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4" aria-label={t('films.sections')}>
+    <nav class="mt-8 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-4" aria-label={t('films.sections')}>
       {
         secciones.map((s) => (
           <a href={localizePath(lang, s.path)} class="group flex flex-col bg-surface p-5 no-underline transition-colors hover:bg-film-white">

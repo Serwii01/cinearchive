@@ -42,7 +42,7 @@ const collJsonLd = [
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{collectionBlurb(collection, lang)}</p>
     </header>
 
-    <div class="mt-10 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+    <div class="mt-10 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">
       {
         films.map((f) => (
           <a href={localizePath(lang, `film/${filmSlug(f!.tmdbId, f!.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">

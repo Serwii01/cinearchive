@@ -1,14 +1,13 @@
 ---
 /**
  * Rejilla de carteles del perfil y sus páginas de «ver todo». Siempre de 4, 6
- * o 12 columnas (móvil, tableta, escritorio) y rellena con casillas vacías
- * hasta un múltiplo de 12: así la rejilla cierra en rectángulo en cualquier
- * pantalla, en vez de dejar una fila a medias con un bloque negro al lado.
+ * o 12 columnas (móvil, tableta, escritorio), y la última fila se completa con
+ * casillas vacías en cada pantalla (ver fillers en lib/grid.ts).
  */
 import Stars from './Stars.astro';
 import { localizePath } from '../i18n/ui';
 import { filmSlug } from '../lib/slug';
-import { padTo } from '../lib/grid';
+import { fillers } from '../lib/grid';
 import type { FilmBrief } from '../lib/films';
 
 interface Item {
@@ -27,10 +26,10 @@ interface Props {
 }
 
 const { items, briefs, lang, details = false } = Astro.props;
-const huecos = padTo(items.length, 12) - items.length;
+const huecos = fillers(items.length, { base: 4, sm: 6, lg: 12 });
 ---
 
-<ol class="grid grid-cols-4 gap-px border border-ink bg-ink sm:grid-cols-6 lg:grid-cols-12">
+<ol class="grid ruled grid-cols-4 border border-ink sm:grid-cols-6 lg:grid-cols-12">
   {items.map((it) => {
     const b = briefs.get(it.tmdbId);
     return (
@@ -53,5 +52,5 @@ const huecos = padTo(items.length, 12) - items.length;
       </li>
     );
   })}
-  {Array.from({ length: huecos }, () => <li class="bg-surface" aria-hidden="true"></li>)}
+  {huecos.map((cls) => <li class={`bg-surface ${cls}`} aria-hidden="true"></li>)}
 </ol>

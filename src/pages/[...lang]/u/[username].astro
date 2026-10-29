@@ -4,7 +4,7 @@ import Stars from '../../../components/Stars.astro';
 import PosterGrid from '../../../components/PosterGrid.astro';
 import GoalCard from '../../../components/GoalCard.astro';
 import { yearGoal } from '../../../lib/viewings';
-import { reviewGrid } from '../../../lib/grid';
+import { reviewGrid, fillers } from '../../../lib/grid';
 import Avatar from '../../../components/Avatar.astro';
 import Badges from '../../../components/Badges.astro';
 import { badgesForUser } from '../../../lib/badges';
@@ -296,7 +296,7 @@ const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lan
     ) : (
       <>
         {/* Cifras: lo que antes había que deducir contando carteles. */}
-        <ul class="mt-10 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
+        <ul class="mt-10 grid ruled grid-cols-2 border border-ink sm:grid-cols-4">
           {[
             { value: seenTotal, label: t('profile.statSeen') },
             { value: yearViewings, label: t('profile.statYear').replace('{year}', String(thisYear)) },
@@ -348,7 +348,7 @@ const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lan
           {reviews.length === 0 ? (
             <p class="mt-4 font-mono text-body-md text-muted">{t('profile.noReviews')}</p>
           ) : (
-            <div class:list={['mt-4 grid grid-cols-1 gap-px border border-ink bg-ink', REVIEW_COLS[rg.sm].sm, REVIEW_COLS[rg.lg].lg]}>
+            <div class:list={['mt-4 grid ruled grid-cols-1 border border-ink', REVIEW_COLS[rg.sm].sm, REVIEW_COLS[rg.lg].lg]}>
               {reviews.map((r) => {
                 const b = briefs.get(r.tmdbId);
                 return (
@@ -367,7 +367,7 @@ const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lan
                   </a>
                 );
               })}
-              {Array.from({ length: rg.pad }, () => <div class="bg-surface" aria-hidden="true"></div>)}
+              {fillers(reviews.length, { base: 1, sm: rg.sm, lg: rg.lg }).map((cls) => <div class={`bg-surface ${cls}`} aria-hidden="true"></div>)}
             </div>
           )}
           {reviewsTotal > reviews.length && (

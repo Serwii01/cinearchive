@@ -128,7 +128,7 @@ const groups: Group[] = [
               {t(g.heading)}
               {g.needsAccount && <span class="label text-muted">{t('info.needsAccount')}</span>}
             </h2>
-            <ul class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2">
+            <ul class="mt-4 grid ruled grid-cols-1 border border-ink sm:grid-cols-2">
               {g.items.map((it) => (
                 <a href={localizePath(lang, it.path)} class="group flex flex-col bg-surface p-4 no-underline transition-colors hover:bg-film-white">
                   <span class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{t(it.label)} →</span>

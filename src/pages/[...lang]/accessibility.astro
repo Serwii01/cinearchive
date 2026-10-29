@@ -74,7 +74,7 @@ const warnIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     {/* ---------- Qué hemos tenido en cuenta (rejilla con iconos) ---------- */}
     <section class="mt-14">
       <h2 class="font-display text-headline-lg text-ink">{considered.heading}</h2>
-      <ul class="mt-6 grid gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+      <ul class="mt-6 grid ruled border border-ink sm:grid-cols-2 lg:grid-cols-3">
         {
           considered.body.map((text, i) => (
             <li class="flex items-start gap-4 bg-surface p-5">
@@ -125,7 +125,7 @@ const warnIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     {/* ---------- Limitaciones conocidas ---------- */}
     <section class="mt-14">
       <h2 class="font-display text-headline-lg text-ink">{limitations.heading}</h2>
-      <ul class="mt-6 grid gap-px border border-outline-variant bg-outline-variant">
+      <ul class="mt-6 grid ruled border border-outline-variant [--rule:var(--c-outline-variant)]">
         {
           limitations.body.map((text) => (
             <li class="flex items-start gap-3 bg-surface-dim p-5">

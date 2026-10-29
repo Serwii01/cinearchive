@@ -156,7 +156,7 @@ const etiquetaSemana = (iso: string) =>
       </p>
     )}
 
-    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-4">
+    <div class="mt-4 grid ruled grid-cols-2 border border-ink lg:grid-cols-4">
       <div class="bg-surface p-4">
         <span class="label">{t('admin.cpuUsage')}</span>
         <p data-vital="vitals.cpu.usoPct" data-fmt="pct" data-umbral class:list={['mt-1 font-display text-display-mobile', colorUso(vitals.cpu.usoPct)]}>
@@ -215,7 +215,7 @@ const etiquetaSemana = (iso: string) =>
     <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.hostNote')} · {t('admin.diskNote')}</p>
 
     {/* Proceso Node y límites del contenedor */}
-    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-4">
+    <div class="mt-4 grid ruled grid-cols-2 border border-ink lg:grid-cols-4">
       <div class="bg-surface p-4">
         <span class="label">{t('admin.uptimeProc')}</span>
         <p data-vital="vitals.proceso.uptimeS" data-fmt="dur" class="mt-1 font-display text-headline-md text-ink">{formatDuration(vitals.proceso.uptimeS)}</p>
@@ -245,7 +245,7 @@ const etiquetaSemana = (iso: string) =>
 
     {/* ================= BASE DE DATOS ================= */}
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.database')}</h2>
-    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-4">
+    <div class="mt-4 grid ruled grid-cols-2 border border-ink lg:grid-cols-4">
       <div class="bg-surface p-4">
         <span class="label">{t('admin.dbSize')}</span>
         <p data-vital="db.general.tamanoBytes" data-fmt="bytes" class="mt-1 font-display text-display-mobile text-ink">{formatBytes(dbStats.general?.tamanoBytes)}</p>
@@ -307,7 +307,7 @@ const etiquetaSemana = (iso: string) =>
     {/* Mantenimiento de films_cache: ver src/lib/dbmaint.ts. Son botones y no
         tareas automáticas porque acaban en VACUUM FULL, que bloquea la tabla
         unos segundos. */}
-    <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+    <div class="mt-4 grid ruled grid-cols-1 border border-ink md:grid-cols-2">
       <div class="flex flex-col gap-3 bg-surface p-4">
         <span class="label">{t('admin.maintenance')} · {t('admin.compact')}</span>
         <p class="text-body-md text-charcoal">{t('admin.compactNote')}</p>
@@ -332,7 +332,7 @@ const etiquetaSemana = (iso: string) =>
     {/* ================= CORREO Y ACCESO ================= */}
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.emailTitle')}</h2>
     <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.emailNote')}</p>
-    <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-4 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-4">
       <div class="bg-surface p-4">
         <p class="label">{t('admin.emailSending')}</p>
         <p class:list={['mt-1 font-display text-headline-md', emailConfigured() ? 'text-ink' : 'text-error']}>
@@ -362,7 +362,7 @@ const etiquetaSemana = (iso: string) =>
     {/* ================= FUENTES EXTERNAS ================= */}
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.sources')}</h2>
     <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.sourcesNote')}</p>
-    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-5">
+    <div class="mt-4 grid ruled grid-cols-2 border border-ink lg:grid-cols-5">
       {FUENTES.map((id) => (
         <div class="bg-surface p-4" data-probe={id}>
           <span class="label">{NOMBRE_FUENTE[id]}</span>
@@ -413,7 +413,7 @@ const etiquetaSemana = (iso: string) =>
 
     {/* ================= ACTIVIDAD ================= */}
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.activity')}</h2>
-    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-5">
+    <div class="mt-4 grid ruled grid-cols-2 border border-ink lg:grid-cols-5">
       <div class="bg-surface p-4">
         <span class="label">{t('admin.active24h')}</span>
         <p data-vital="actividad.d1" class="mt-1 font-display text-display-mobile text-ink">{formatNum(actividad.d1, nf)}</p>
@@ -465,7 +465,7 @@ const etiquetaSemana = (iso: string) =>
 
     {/* ================= DATOS ================= */}
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.dataTitle')}</h2>
-    <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
+    <div class="mt-4 grid ruled grid-cols-2 border border-ink sm:grid-cols-4">
       {dataCards.map((c) => (
         <div class="bg-surface p-4">
           <span class="label">{c.label}</span>
@@ -519,7 +519,7 @@ const etiquetaSemana = (iso: string) =>
     {/* ================= ETIQUETAS DE USUARIO ================= */}
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.badges')}</h2>
     <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.badgesNote')}</p>
-    <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink lg:grid-cols-12">
+    <div class="mt-4 grid ruled grid-cols-1 border border-ink lg:grid-cols-12">
       <form id="badge-form" class="flex flex-col gap-3 bg-surface p-4 lg:col-span-5">
         <label class="block">
           <span class="label mb-1 block">{t('admin.badgeName')}</span>

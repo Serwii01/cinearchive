@@ -9,7 +9,7 @@ import { filmSlug } from '../lib/slug';
 import { genreName } from '../data/genres';
 import type { YearReview } from '../lib/yearreview';
 import type { FilmBrief } from '../lib/films';
-import { padTo } from '../lib/grid';
+import { fillers } from '../lib/grid';
 
 interface Props {
   review: YearReview;
@@ -57,7 +57,7 @@ const big = [
 <header class="border-b border-ink pb-8">
   <span class="label">{t('year.kicker')}</span>
   <h1 class="mt-3 text-display-mobile md:text-display-lg">{heading}</h1>
-  <ul class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink md:grid-cols-4">
+  <ul class="mt-8 grid ruled grid-cols-2 border border-ink md:grid-cols-4">
     {big.map((b) => (
       <li class="bg-surface p-5">
         <span class="block font-display text-display-mobile leading-none text-ink">{nf.format(b.value)}</span>
@@ -132,7 +132,7 @@ const big = [
     {/* Primera y última */}
     <section>
       <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.bookends')}</h2>
-      <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink">
+      <div class="mt-4 grid ruled grid-cols-2 border border-ink">
         {[{ v: r.first, label: t('year.first') }, { v: r.last, label: t('year.last') }].map(({ v, label }) => v && (
           <a href={href(v.tmdbId)} class="flex flex-col gap-2 bg-surface p-3 no-underline hover:bg-film-white">
             <span class="label">{label} · {day(v.watchedOn)}</span>
@@ -149,7 +149,7 @@ const big = [
     {r.topRated.length > 0 && (
       <section class="lg:col-span-2">
         <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.topRated')}</h2>
-        <ol class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+        <ol class="mt-4 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">
           {r.topRated.map((f, i) => (
             <li class="bg-surface">
               <a href={href(f.tmdbId)} class="flex h-full flex-col gap-2 p-3 no-underline hover:bg-film-white">
@@ -162,7 +162,7 @@ const big = [
               </a>
             </li>
           ))}
-          {Array.from({ length: padTo(r.topRated.length, 6) - r.topRated.length }, () => <li class="bg-surface" aria-hidden="true"></li>)}
+          {fillers(r.topRated.length, { base: 2, sm: 3, lg: 6 }).map((cls) => <li class={`bg-surface ${cls}`} aria-hidden="true"></li>)}
         </ol>
       </section>
     )}

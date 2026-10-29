@@ -39,7 +39,7 @@ const heading = t('year.cta').replace('{year}', String(year));
   <section class="frame py-12">
     <a href={localizePath(lang, 'diary')} class="label no-underline hover:text-ink">← {t('diary.title')}</a>
     {years.length > 1 && (
-      <nav class="mt-6 flex w-fit max-w-full flex-wrap gap-px border border-ink bg-ink" aria-label={t('diary.years')}>
+      <nav class="mt-6 flex ruled w-fit max-w-full flex-wrap border border-ink" aria-label={t('diary.years')}>
         {years.map((y) => (
           <a
             href={localizePath(lang, `year/${y}`)}

@@ -17,7 +17,7 @@ const posters = (Astro.props.posters ?? []).slice(0, 4);
 
 {
   posters.length > 0 && (
-    <div class="grid grid-cols-4 gap-px border-b border-ink bg-ink" aria-hidden="true">
+    <div class="grid grid-cols-4 divide-x divide-ink border-b border-ink" aria-hidden="true">
       {posters.map((p) => (
         <img
           src={posterUrl(p, 'w185')}

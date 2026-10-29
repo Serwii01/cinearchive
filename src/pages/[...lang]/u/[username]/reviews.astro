@@ -53,7 +53,7 @@ const heading = `${t('profile.reviews')} · @${target.username}`;
     {rows.length === 0 ? (
       <p class="mt-10 font-mono text-body-md text-muted">{t('profile.noReviews')}</p>
     ) : (
-      <div class="mt-8 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-8 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-3">
         {rows.map((r) => {
           const b = briefs.get(r.tmdbId);
           return (

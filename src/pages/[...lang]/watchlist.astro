@@ -89,7 +89,7 @@ const isEmpty = rows.length === 0 && lists.length === 0;
       return items.length > 0 ? (
         <div class="mt-10">
           <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{g.label} <span class="label">· {items.length}</span></h2>
-          <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+          <div class="mt-4 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-3">
             {items.map((r) => {
               const b = briefs.get(r.tmdbId);
               return (
@@ -133,7 +133,7 @@ const isEmpty = rows.length === 0 && lists.length === 0;
       {lists.length === 0 ? (
         <p class="mt-4 font-mono text-body-md text-muted">{t('lists.empty')}</p>
       ) : (
-        <ul id="lists" class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2" data-base={detailBase} data-public={t('lists.public')} data-private={t('lists.private')}>
+        <ul id="lists" class="mt-4 grid ruled grid-cols-1 border border-ink sm:grid-cols-2" data-base={detailBase} data-public={t('lists.public')} data-private={t('lists.private')}>
           {lists.map((l) => (
             <li class="flex flex-col gap-3 bg-surface p-4 sm:flex-row sm:items-center sm:justify-between" data-id={l.id} data-is-public={l.isPublic ? '1' : '0'}>
               <a href={`${detailBase}/${l.id}`} class="min-w-0 flex-1 no-underline">

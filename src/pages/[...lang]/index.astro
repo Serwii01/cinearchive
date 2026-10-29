@@ -102,7 +102,7 @@ const homeJsonLd = [
             {/* Novedades en la hemeroteca: solo las portadas. */}
             <a data-slide style="visibility:hidden" href={localizePath(lang, 'archive')} class="group flex flex-col justify-center [grid-area:1/1] p-6 no-underline md:p-8">
               <span class="label">{t('home.latestIssues')}</span>
-              <span class="mt-4 grid grid-cols-4 gap-px border border-ink bg-ink">
+              <span class="mt-4 grid ruled grid-cols-4 border border-ink">
                 {latestIssues.slice(0, 4).map((item) => (
                   <span class="block aspect-[3/4] overflow-hidden bg-charcoal">
                     <img src={coverUrl(item.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
@@ -202,13 +202,14 @@ const homeJsonLd = [
     </div>
   </section>
 
-  {/* ARTÍCULOS DE CINE ARCHIVE — lo vivo de la casa, justo debajo del héroe */}
-  <section class="frame border-t border-ink py-12">
+  {/* ARTÍCULOS DE CINE ARCHIVE — lo vivo de la casa, justo debajo del héroe.
+      Sin borde superior: el héroe ya cierra con el suyo y salían dos juntos. */}
+  <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('articles.title')}</h2>
       <a href={localizePath(lang, 'articles')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
-    <div class="grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+    <div class="grid ruled grid-cols-1 border border-ink md:grid-cols-2">
       {
         articlePicks.map(({ slug, date, c }) => (
           <a href={localizePath(lang, `articles/${slug}`)} class="group flex flex-col bg-surface p-6 no-underline transition-colors hover:bg-film-white">
@@ -236,7 +237,7 @@ const homeJsonLd = [
       <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">{t('home.viewArchive')} →</a>
     </div>
 
-    <div class="grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+    <div class="grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-4">
       {latestIssues.map((item) => <IssueCard item={item} lang={lang} />)}
     </div>
   </section>
@@ -247,7 +248,7 @@ const homeJsonLd = [
       <h2 class="text-headline-lg text-ink">{t('nav.library')}</h2>
       <a href={localizePath(lang, 'library')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
-    <div class="grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
+    <div class="grid ruled grid-cols-2 border border-ink sm:grid-cols-4">
       {
         bookPicks.map((b) => (
           <a href={localizePath(lang, `library/${b.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
@@ -270,7 +271,7 @@ const homeJsonLd = [
       <h2 class="text-headline-lg text-ink">{t('nav.cinema')}</h2>
       <a href={localizePath(lang, 'cinema')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
-    <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-4">
       {
         cinemaPicks.map((f) => (
           <a href={localizePath(lang, `cinema/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
@@ -296,7 +297,7 @@ const homeJsonLd = [
     </div>
     <p class="mb-8 max-w-2xl text-body-md text-charcoal">{t('dossiers.intro')}</p>
 
-    <div class="grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+    <div class="grid ruled grid-cols-1 border border-ink md:grid-cols-2">
       {
         dossierPicks.map(({ slug, c }) => (
           <a
@@ -324,7 +325,7 @@ const homeJsonLd = [
       <h2 class="text-headline-lg text-ink">{t('nav.collections')}</h2>
       <a href={localizePath(lang, 'collections')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
-    <div class="grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-3">
+    <div class="grid ruled grid-cols-1 border border-ink sm:grid-cols-3">
       {
         collectionPicks.map((c) => (
           <a href={localizePath(lang, `collections/${c.slug}`)} class="group flex flex-col bg-surface no-underline transition-colors hover:bg-film-white">
@@ -346,7 +347,7 @@ const homeJsonLd = [
       <h2 class="text-headline-lg text-ink">{t('nav.figures')}</h2>
       <a href={localizePath(lang, 'figures')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
-    <div class="grid grid-cols-3 gap-px border border-ink bg-ink sm:grid-cols-6">
+    <div class="grid ruled grid-cols-3 border border-ink sm:grid-cols-6">
       {
         figurePicks.map((f) => (
           <a href={localizePath(lang, `person/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">

@@ -527,7 +527,7 @@ for (let p = Math.max(1, page - 2); p <= Math.min(results.totalPages, page + 2);
     {results.results.length === 0 ? (
       <p class="mt-10 font-mono text-body-md text-muted">{t('discover.empty')}</p>
     ) : (
-      <div class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+      <div class="mt-4 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">
         {results.results.map((r) => (
           <a href={localizePath(lang, `film/${filmSlug(r.id, r.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">

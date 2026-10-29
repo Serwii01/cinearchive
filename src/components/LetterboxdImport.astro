@@ -180,7 +180,7 @@ const L = {
           c.poster_path ? `<img src="https://image.tmdb.org/t/p/w92${c.poster_path}" alt="" class="h-12 w-8 border border-ink object-cover" loading="lazy">` : '<span class="h-12 w-8 border border-ink bg-charcoal"></span>';
 
         out.innerHTML = `
-          <ul class="grid grid-cols-3 gap-px border border-ink bg-ink text-center">
+          <ul class="grid ruled grid-cols-3 border border-ink text-center">
             <li class="bg-film-white p-3"><span class="block font-display text-headline-lg text-ink">${nf.format(exact.length)}</span><span class="label">${esc(fill(L.found, { n: '' }).trim())}</span></li>
             <li class="bg-film-white p-3"><span class="block font-display text-headline-lg text-ink">${nf.format(likely.length)}</span><span class="label">${esc(fill(L.likely, { n: '' }).trim())}</span></li>
             <li class="bg-film-white p-3"><span class="block font-display text-headline-lg text-ink">${nf.format(missing.length)}</span><span class="label">${esc(fill(L.missing, { n: '' }).trim())}</span></li>

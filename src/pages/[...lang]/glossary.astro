@@ -61,7 +61,7 @@ const letras = [...grupos.keys()];
         letras.map((l) => (
           <section data-letra={l} class="mt-10">
             <h2 id={`l-${l}`} class="border-b border-ink pb-2 font-display text-headline-lg text-ink">{l}</h2>
-            <dl class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+            <dl class="mt-4 grid ruled grid-cols-1 border border-ink md:grid-cols-2">
               {grupos.get(l)!.map((g) => (
                 <div class="bg-surface p-4" data-term={`${glossaryTerm(g, lang)} ${g.term_es} ${g.term_en}`.toLowerCase()}>
                   <dt class="font-display text-headline-md text-ink">{glossaryTerm(g, lang)}</dt>

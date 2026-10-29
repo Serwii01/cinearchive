@@ -129,7 +129,7 @@ const listDesc = `${list.name} · ${films.length} ${t('lists.count')}${owner ? `
     {films.length === 0 ? (
       <p class="mt-10 font-mono text-body-md text-muted">{t('lists.emptyFilms')}</p>
     ) : (
-      <div id="grid" class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+      <div id="grid" class="mt-8 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">
         {films.map((f) => (
           <div class="group relative flex flex-col bg-surface" data-id={f!.tmdbId}>
             <a href={localizePath(lang, `film/${filmSlug(f!.tmdbId, f!.title)}`)} class="flex flex-1 flex-col no-underline hover:bg-film-white">

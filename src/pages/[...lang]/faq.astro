@@ -28,7 +28,7 @@ const faqJsonLd = faqLd(qa.map((item) => ({ question: t(item.q), answer: t(item.
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('faq.intro')}</p>
     </header>
 
-    <div class="mt-10 grid grid-cols-1 gap-px border border-ink bg-ink">
+    <div class="mt-10 grid ruled grid-cols-1 border border-ink">
       {
         qa.map((item) => (
           <details class="group bg-surface open:bg-film-white">

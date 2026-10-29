@@ -64,7 +64,7 @@ const base = localizePath(lang, `u/${target.username}/viewings`);
     {year && <GoalCard goal={goal} year={year} lang={lang} class="mt-6" />}
 
     {years.length > 1 && (
-      <nav class="mt-6 flex w-fit max-w-full flex-wrap gap-px border border-ink bg-ink" aria-label={t('diary.years')}>
+      <nav class="mt-6 flex ruled w-fit max-w-full flex-wrap border border-ink" aria-label={t('diary.years')}>
         {years.map((y) => (
           <a
             href={`${base}?year=${y}`}

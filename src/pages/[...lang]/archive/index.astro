@@ -65,7 +65,7 @@ const sections: { id?: string; href?: string; label: string }[] = [
               <option value="">{t('archive.all')}</option><option value="es">Español</option><option value="en">English</option>
             </select></label>
         </div>
-        <div id="issue-grid" class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+        <div id="issue-grid" class="mt-6 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-4">
           {issues.map((item) => (
             <div data-type={item.type} data-decade={Math.floor(item.year / 10) * 10} data-lang={item.lang}><IssueCard item={item} lang={lang} /></div>
           ))}
@@ -76,7 +76,7 @@ const sections: { id?: string; href?: string; label: string }[] = [
         <div class="mt-12 border-t border-ink pt-8">
           <h3 class="text-headline-md text-ink">{t('archive.current')} <span class="label">· {journals.length}</span></h3>
           <p class="mt-2 max-w-2xl text-body-md text-charcoal">{t('archive.currentIntro')}</p>
-          <div class="mt-6 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+          <div class="mt-6 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-3">
             {journals.map((j) => <JournalCard item={j} lang={lang} />)}
           </div>
           <p class="mt-4 font-mono text-meta-data text-muted">{t('archive.currentCredit')}</p>
@@ -90,7 +90,7 @@ const sections: { id?: string; href?: string; label: string }[] = [
       <div class="pb-10">
         <p class="max-w-2xl text-body-md text-charcoal">{t('library.intro')}</p>
         <input id="lib-filter" type="search" autocomplete="off" placeholder={t('archive.searchLib')} class="mt-4 w-full max-w-xs border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none" />
-        <div id="lib-grid" class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+        <div id="lib-grid" class="mt-6 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-4">
           {libItems.map((b) => (
             <article class="group flex h-full flex-col bg-surface" data-search={`${b.title} ${b.author}`.toLowerCase()}>
               <a href={localizePath(lang, `library/${b.id}`)} class="flex h-full flex-col no-underline">

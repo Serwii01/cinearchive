@@ -94,6 +94,55 @@
 }
 
 @layer components {
+  /*
+   * Cuadrícula con filetes de 1 px entre celdas (el sello de la casa).
+   *
+   * Antes se hacía con `gap-px` sobre fondo negro: el filete era el fondo que
+   * asomaba por el hueco. En pantallas con escalado (Windows al 125 % o 150 %)
+   * ese hueco de 1 px CSS mide 1,25 o 1,5 píxeles reales, y Chrome lo redondea
+   * a 1 o a 2 según dónde caiga: unas líneas salían el doble de gruesas que
+   * otras. Los bordes, en cambio, siempre se pintan con el mismo grosor.
+   *
+   * Así que cada celda pinta su filete derecho e inferior, y el marco exterior
+   * lo pone un `outline` metido 1 px hacia dentro. El marco va por encima de
+   * las celdas: los filetes de la última columna y la última fila caen justo
+   * debajo de él (no se duplican), y si la última fila no se llena, el hueco
+   * queda cerrado igualmente. Con el fondo negro ese hueco salía como un
+   * bloque negro; con bordes por los cuatro lados habría quedado abierto.
+   *
+   * El color es `--rule` (negro de tinta salvo que la cuadrícula diga otro).
+   * `.ruled.ruled` gana a la utilidad `border`, que la cuadrícula conserva en
+   * el marcado pero aquí no se pinta.
+   */
+  .ruled.ruled {
+    border-width: 0;
+    outline: 1px solid var(--rule, var(--c-ink));
+    outline-offset: -1px;
+  }
+  .ruled.ruled:empty {
+    outline: none;
+  }
+  .ruled > * {
+    border-right: 1px solid var(--rule, var(--c-ink));
+    border-bottom: 1px solid var(--rule, var(--c-ink));
+  }
+
+  /*
+   * Lo mismo para una cuadrícula metida en una caja que ya tiene borde (la
+   * saga en la ficha, los resultados del buscador de TMDB): solo filetes ENTRE
+   * celdas. Cada celda pinta el superior y el izquierdo, y la cuadrícula se
+   * sube y se corre 1 px para que los de la primera fila y la primera columna
+   * caigan justo encima del borde de la caja, en vez de duplicarlo.
+   */
+  .ruled-inner {
+    margin-top: -1px;
+    margin-left: -1px;
+  }
+  .ruled-inner > * {
+    border-top: 1px solid var(--c-ink);
+    border-left: 1px solid var(--c-ink);
+  }
+
   /* Marco general de página: márgenes "art-book" y ancho máximo. */
   .frame {
     @apply mx-auto w-full max-w-frame px-4 md:px-12;

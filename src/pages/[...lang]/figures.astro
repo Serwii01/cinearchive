@@ -24,7 +24,7 @@ const items = figures.slice().sort((a, b) => a.name.localeCompare(b.name));
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('figures.intro')}</p>
     </header>
 
-    <div class="mt-10 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-4">
+    <div class="mt-10 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-4">
       {
         items.map((f) => (
           <a href={localizePath(lang, `person/${f.id}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">

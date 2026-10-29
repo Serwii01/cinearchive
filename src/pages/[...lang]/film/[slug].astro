@@ -359,7 +359,7 @@ const crumbsJsonLd = breadcrumbLd([
 
         <!-- Notas externas -->
         {scores.length > 0 && (
-          <div class:list={['mt-8 grid grid-cols-2 gap-px border border-ink bg-ink', scoreCols]}>
+          <div class:list={['mt-8 grid ruled grid-cols-2 border border-ink', scoreCols]}>
             {scores.map((sc) => (
               <div class="bg-film-white p-3">
                 <span class="label">{sc.label}</span>
@@ -375,7 +375,7 @@ const crumbsJsonLd = breadcrumbLd([
         {facts.length > 0 && (
           <section class="mt-10">
             <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('film.facts')}</h2>
-            <dl class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2">
+            <dl class="mt-4 grid ruled grid-cols-1 border border-ink sm:grid-cols-2">
               {facts.map((f) => (
                 <div class="bg-surface p-3">
                   <dt class="label">{f.label}</dt>
@@ -479,7 +479,7 @@ const crumbsJsonLd = breadcrumbLd([
         {cast.length > 0 && (
           <section class="mt-10">
             <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('film.cast')}</h2>
-            <ul class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
+            <ul class="mt-4 grid ruled grid-cols-2 border border-ink sm:grid-cols-4">
               {cast.map((c) => (
                 <li class="bg-surface">
                   <a href={localizePath(lang, `person/${c.id}`)} class="group flex h-full flex-col no-underline hover:bg-film-white">
@@ -589,7 +589,7 @@ const crumbsJsonLd = breadcrumbLd([
             <h2 class="border-b border-ink bg-ink px-3 py-2 label text-background">
               {t('film.saga')} · {saga.name}
             </h2>
-            <ol class="grid grid-cols-4 gap-px bg-ink sm:grid-cols-6 md:grid-cols-3">
+            <ol class="grid ruled-inner grid-cols-4 sm:grid-cols-6 md:grid-cols-3">
               {saga.parts.map((p, i) => {
                 const actual = p.id === tmdbId;
                 return (
@@ -625,7 +625,7 @@ const crumbsJsonLd = breadcrumbLd([
     {menciones.length > 0 && (
       <section class="mt-14">
         <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('film.mentions')}</h2>
-        <ul class="mt-6 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+        <ul class="mt-6 grid ruled grid-cols-1 border border-ink md:grid-cols-2">
           {menciones.map((m) => (
             <li class="bg-surface">
               <a href={m.href} class="group flex h-full flex-col p-5 no-underline transition-colors hover:bg-film-white">
@@ -646,7 +646,7 @@ const crumbsJsonLd = breadcrumbLd([
     {similar.length > 0 && (
       <section class="mt-14">
         <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('film.similar')}</h2>
-        <div class="mt-6 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+        <div class="mt-6 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">
           {similar.map((s) => (
             <a href={localizePath(lang, `film/${filmSlug(s.id, s.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
               <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
