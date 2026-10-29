@@ -8,7 +8,40 @@ export const getStaticPaths = langStaticPaths;
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
-const lista = articles.map((a) => ({ slug: a.slug, date: a.date, c: articleCopy(a, lang) }));
+
+// Sin tildes y en minúsculas: «película» se encuentra escribiendo «pelicula».
+// El navegador hace lo mismo con lo que se teclea (ver el script).
+const fold = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase();
+
+// El tema es lo que va tras el «·» del antetítulo («Artículo · Industria»). La
+// clave sale del castellano, para que un enlace con ?topic= valga en los cinco
+// idiomas; la etiqueta, del idioma de la página.
+const topicOf = (kicker: string) => kicker.split('·').pop()!.trim();
+const topicKey = (kicker: string) => fold(topicOf(kicker)).replace(/[^a-z0-9]+/g, '-');
+
+const lista = articles.map((a) => {
+  const c = articleCopy(a, lang);
+  const subtitles = c.body.filter((p) => p.startsWith('## ')).map((p) => p.slice(3));
+  return {
+    slug: a.slug,
+    date: a.date,
+    c,
+    topic: topicKey(articleCopy(a, 'es').kicker),
+    search: fold([c.kicker, c.title, c.lead, a.author ?? '', ...subtitles].join(' ')),
+  };
+});
+
+// Temas con su número de artículos, de más a menos.
+const topics = [...new Map(lista.map((a) => [a.topic, topicOf(a.c.kicker)]))]
+  .map(([key, label]) => ({ key, label, n: lista.filter((a) => a.topic === key).length }))
+  .sort((a, b) => b.n - a.n || a.label.localeCompare(b.label, lang));
+
+const chip =
+  'label border border-ink px-3 py-1 transition-colors hover:bg-ink hover:text-white aria-pressed:bg-ink aria-pressed:text-white';
 ---
 
 <BaseLayout title={t('articles.title')} description={t('articles.intro')}>
@@ -20,10 +53,35 @@ const lista = articles.map((a) => ({ slug: a.slug, date: a.date, c: articleCopy(
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('articles.intro')}</p>
     </header>
 
-    <div class="mt-10 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+    {/* Buscador y temas. Sin JavaScript no hacen nada y se ven todos los
+        artículos, así que solo se muestran cuando el script los activa. */}
+    <div id="art-filters" class="mt-8 flex flex-col gap-4" hidden>
+      <label for="art-q" class="label">{t('articles.search')}</label>
+      <input
+        id="art-q"
+        type="search"
+        autocomplete="off"
+        placeholder={t('articles.searchPlaceholder')}
+        class="w-full max-w-md border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
+      />
+      <div class="flex flex-wrap gap-2" role="group" aria-label={t('articles.topics')}>
+        <button type="button" data-topic="" aria-pressed="true" class={chip}>{t('articles.allTopics')} · {lista.length}</button>
+        {topics.map((tp) => (
+          <button type="button" data-topic={tp.key} aria-pressed="false" class={chip}>{tp.label} · {tp.n}</button>
+        ))}
+      </div>
+      <p id="art-status" class="label" aria-live="polite" data-tpl={t('articles.showing')}></p>
+    </div>
+
+    <div id="art-grid" class="mt-6 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
       {
-        lista.map(({ slug, date, c }) => (
-          <a href={localizePath(lang, `articles/${slug}`)} class="group flex flex-col bg-surface p-6 no-underline transition-colors hover:bg-film-white">
+        lista.map(({ slug, date, c, topic, search }) => (
+          <a
+            href={localizePath(lang, `articles/${slug}`)}
+            data-topic={topic}
+            data-search={search}
+            class="group flex flex-col bg-surface p-6 no-underline transition-colors hover:bg-film-white"
+          >
             <span class="label">{c.kicker} · {formatDate(new Date(date), lang)}</span>
             <h2 class="mt-3 font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{c.title}</h2>
             <p class="mt-3 text-body-md text-charcoal">{c.lead}</p>
@@ -31,7 +89,17 @@ const lista = articles.map((a) => ({ slug: a.slug, date: a.date, c: articleCopy(
           </a>
         ))
       }
+      {/* Celda de relleno: con un número impar de artículos, la rejilla de dos
+          columnas dejaba un hueco negro al final. El script la enciende o la
+          apaga según cuántos queden tras filtrar. */}
+      <div data-filler aria-hidden="true" class={`bg-surface ${lista.length % 2 ? 'hidden md:block' : 'hidden'}`}></div>
     </div>
+
+    <div id="art-empty" class="border border-t-0 border-ink bg-surface p-6" hidden>
+      <p class="text-body-md text-charcoal">{t('articles.noResults')}</p>
+      <button id="art-clear" type="button" class="btn btn-secondary mt-4">{t('articles.clearFilters')}</button>
+    </div>
+
     <a href={localizePath(lang, 'dossiers')} class="group mt-px flex flex-col gap-2 border border-ink bg-surface p-6 no-underline transition-colors hover:bg-film-white sm:flex-row sm:items-center sm:justify-between">
       <span>
         <span class="label">{t('dossiers.title')}</span>
@@ -41,3 +109,72 @@ const lista = articles.map((a) => ({ slug: a.slug, date: a.date, c: articleCopy(
     </a>
   </section>
 </BaseLayout>
+
+<script>
+  const fold = (s: string) =>
+    s
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .toLowerCase();
+
+  const panel = document.getElementById('art-filters');
+  const grid = document.getElementById('art-grid');
+  if (panel && grid) {
+    const input = document.getElementById('art-q') as HTMLInputElement;
+    const status = document.getElementById('art-status')!;
+    const empty = document.getElementById('art-empty')!;
+    const chips = [...panel.querySelectorAll<HTMLButtonElement>('button[data-topic]')];
+    const cards = [...grid.querySelectorAll<HTMLElement>(':scope > [data-search]')];
+    const filler = grid.querySelector<HTMLElement>(':scope > [data-filler]');
+    const known = new Set(chips.map((b) => b.dataset.topic));
+    let topic = '';
+
+    const apply = () => {
+      const words = fold(input.value).split(/\s+/).filter(Boolean);
+      let shown = 0;
+      for (const card of cards) {
+        const ok = (!topic || card.dataset.topic === topic) && words.every((w) => card.dataset.search!.includes(w));
+        card.hidden = !ok;
+        if (ok) shown++;
+      }
+      filler?.classList.toggle('md:block', shown % 2 === 1);
+      grid.hidden = shown === 0;
+      empty.hidden = shown > 0;
+      for (const b of chips) b.setAttribute('aria-pressed', String(b.dataset.topic === topic));
+      const filtered = topic !== '' || words.length > 0;
+      status.textContent = filtered
+        ? status.dataset.tpl!.replace('{n}', String(shown)).replace('{total}', String(cards.length))
+        : '';
+
+      // La búsqueda queda en la URL: se puede compartir y sobrevive a volver atrás.
+      const url = new URL(location.href);
+      const q = input.value.trim();
+      if (topic) url.searchParams.set('topic', topic);
+      else url.searchParams.delete('topic');
+      if (q) url.searchParams.set('q', q);
+      else url.searchParams.delete('q');
+      history.replaceState(history.state, '', url);
+    };
+
+    for (const b of chips) {
+      b.addEventListener('click', () => {
+        topic = b.dataset.topic ?? '';
+        apply();
+      });
+    }
+    input.addEventListener('input', apply);
+    document.getElementById('art-clear')?.addEventListener('click', () => {
+      topic = '';
+      input.value = '';
+      apply();
+      input.focus();
+    });
+
+    const sp = new URLSearchParams(location.search);
+    const fromUrl = sp.get('topic') ?? '';
+    topic = known.has(fromUrl) ? fromUrl : '';
+    input.value = sp.get('q')?.slice(0, 100) ?? '';
+    panel.hidden = false;
+    apply();
+  }
+</script>
