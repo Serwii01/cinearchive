@@ -1,6 +1,7 @@
-import { and, count, desc, eq, gt, or } from 'drizzle-orm';
+import { and, count, desc, eq, gt, isNotNull, lt, lte, or, sql } from 'drizzle-orm';
 import { db } from '../db/client';
-import { profile, follows, user } from '../db/schema';
+import { profile, follows, user, userFilms, userViewings } from '../db/schema';
+import { buildFeed, pageFeed, type FeedItem } from './feed';
 import type { Profile } from '../db/schema';
 
 /* ------------------------------------------------------------------ *
@@ -244,4 +245,65 @@ export async function notificationCount(userId: string): Promise<number> {
 /** Marca las notificaciones como vistas (limpia el "nuevo" de los seguidores). */
 export async function markNotificationsSeen(userId: string): Promise<void> {
   await db.update(profile).set({ notificationsSeenAt: new Date() }).where(eq(profile.userId, userId));
+}
+
+/* ------------------------------------------------------------------ *
+ * Actividad de la gente que sigues (la mezcla y el corte, en feed.ts).
+ * ------------------------------------------------------------------ */
+
+const FEED_PAGE = 40;
+
+/**
+ * Visionados y reseñas de quienes sigue el usuario (seguimiento aceptado:
+ * eso ya le da permiso para ver su actividad aunque el perfil sea privado),
+ * anteriores al día `before` si se da. Se piden el doble de lo que cabe en
+ * una página para poder cortar sin partir un día.
+ */
+export async function loadActivity(viewerId: string, before: string | null): Promise<{ items: FeedItem[]; nextBefore: string | null }> {
+  const fetchN = FEED_PAGE * 2;
+  const followed = and(eq(follows.followerId, viewerId), eq(follows.status, 'accepted'));
+  const who = {
+    userId: profile.userId,
+    username: profile.username,
+    name: user.name,
+    hasAvatar: profile.avatarType,
+  };
+
+  const [vs, rs] = await Promise.all([
+    db
+      .select({
+        ...who,
+        tmdbId: userViewings.tmdbId,
+        watchedOn: userViewings.watchedOn,
+        rewatch: userViewings.rewatch,
+        vRating: userViewings.rating,
+        fRating: userFilms.rating,
+        createdAt: userViewings.createdAt,
+      })
+      .from(follows)
+      .innerJoin(profile, eq(profile.userId, follows.followingId))
+      .innerJoin(user, eq(user.id, follows.followingId))
+      .innerJoin(userViewings, eq(userViewings.userId, follows.followingId))
+      .leftJoin(userFilms, and(eq(userFilms.userId, userViewings.userId), eq(userFilms.tmdbId, userViewings.tmdbId)))
+      // Nada del futuro (un visionado mal fechado no se queda arriba para siempre).
+      .where(and(followed, lte(userViewings.watchedOn, new Date().toISOString().slice(0, 10)), before ? lt(userViewings.watchedOn, before) : undefined))
+      .orderBy(desc(userViewings.watchedOn), desc(userViewings.createdAt))
+      .limit(fetchN),
+    db
+      .select({ ...who, tmdbId: userFilms.tmdbId, rating: userFilms.rating, note: userFilms.note, reviewedAt: userFilms.reviewedAt })
+      .from(follows)
+      .innerJoin(profile, eq(profile.userId, follows.followingId))
+      .innerJoin(user, eq(user.id, follows.followingId))
+      .innerJoin(userFilms, eq(userFilms.userId, follows.followingId))
+      // Solo reseñas con texto: una nota suelta ya sale como estrellas del visionado.
+      .where(and(followed, isNotNull(userFilms.reviewedAt), sql`length(trim(${userFilms.note})) > 0`, before ? lt(userFilms.reviewedAt, new Date(`${before}T00:00:00Z`)) : undefined))
+      .orderBy(desc(userFilms.reviewedAt))
+      .limit(fetchN),
+  ]);
+
+  const items = buildFeed(
+    vs.map((v) => ({ ...v, hasAvatar: !!v.hasAvatar, rating: v.vRating ?? v.fRating ?? null })),
+    rs.map((r) => ({ ...r, hasAvatar: !!r.hasAvatar, note: r.note ?? '', reviewedAt: r.reviewedAt! })),
+  );
+  return pageFeed(items, FEED_PAGE);
 }

@@ -1,0 +1,104 @@
+---
+/**
+ * Actividad: lo que ven y reseñan las personas que sigues, por días. Las
+ * consultas están en lib/social.ts (loadActivity) y la mezcla en lib/feed.ts.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Avatar from '../../components/Avatar.astro';
+import Stars from '../../components/Stars.astro';
+import { normalizeLang, useTranslations, localizePath, formatDate } from '../../i18n/ui';
+import { filmSlug } from '../../lib/slug';
+import { getFilmsBrief } from '../../lib/films';
+import { loadActivity, followCounts } from '../../lib/social';
+import type { FeedItem } from '../../lib/feed';
+
+export const prerender = false;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const userId = Astro.locals.user!.id; // el middleware garantiza sesión en /activity
+
+const askedBefore = Astro.url.searchParams.get('before');
+const before = askedBefore && /^\d{4}-\d{2}-\d{2}$/.test(askedBefore) ? askedBefore : null;
+
+const { items, nextBefore } = await loadActivity(userId, before);
+const { following } = await followCounts(userId);
+const briefs = await getFilmsBrief([...new Set(items.map((i) => i.tmdbId))], lang);
+
+// Agrupado por día, en el orden en que llega (ya viene del más reciente al más antiguo).
+const days: { day: string; items: FeedItem[] }[] = [];
+for (const it of items) {
+  const last = days[days.length - 1];
+  if (last?.day === it.day) last.items.push(it);
+  else days.push({ day: it.day, items: [it] });
+}
+
+const today = new Date().toISOString().slice(0, 10);
+const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+const dayLabel = (d: string) =>
+  d === today ? t('activity.today') : d === yesterday ? t('activity.yesterday') : formatDate(new Date(`${d}T12:00:00Z`), lang);
+const kindLabel = (i: FeedItem) => (i.kind === 'review' ? t('activity.reviewed') : i.rewatch ? t('activity.rewatched') : t('activity.watched'));
+const base = localizePath(lang, 'activity');
+---
+
+<BaseLayout title={t('activity.title')} noindex>
+  <section class="frame py-12">
+    <a href={localizePath(lang, 'account')} class="label no-underline hover:text-ink">← {t('nav.backToAccount')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('activity.title')}{following ? ` · ${following}` : ''}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('activity.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('activity.intro')}</p>
+    </header>
+
+    {items.length === 0 ? (
+      <div class="mt-10 max-w-2xl">
+        <p class="font-mono text-body-md text-muted">{before ? t('activity.end') : following === 0 ? t('activity.noFollows') : t('activity.empty')}</p>
+        {following === 0 && <a href={localizePath(lang, 'search')} class="btn btn-primary mt-4 no-underline">{t('activity.findPeople')}</a>}
+      </div>
+    ) : (
+      days.map((d) => (
+        <div class="mt-10">
+          <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{dayLabel(d.day)}</h2>
+          <ol class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink lg:grid-cols-2">
+            {d.items.map((i) => {
+              const b = briefs.get(i.tmdbId);
+              const filmHref = localizePath(lang, `film/${filmSlug(i.tmdbId, b?.title)}`);
+              return (
+                <li class="flex gap-3 bg-surface p-3">
+                  <a href={filmHref} class="h-24 w-16 shrink-0 border border-ink bg-charcoal" aria-hidden="true" tabindex="-1">
+                    {b?.poster && <img src={b.poster} srcset={b.posterSrcset ?? undefined} sizes="64px" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+                  </a>
+                  <div class="min-w-0 flex-1">
+                    <a href={localizePath(lang, `u/${i.username}`)} class="flex items-center gap-2 no-underline">
+                      <Avatar userId={i.userId} name={i.name} hasAvatar={i.hasAvatar} size={24} class="h-6 w-6 shrink-0" />
+                      <span class="truncate font-mono text-meta-data text-ink">{i.name} <span class="text-muted">@{i.username}</span></span>
+                    </a>
+                    <span class="label mt-2 block">{kindLabel(i)}</span>
+                    <a href={filmHref} class="mt-1 block font-display text-headline-md leading-tight text-ink no-underline hover:underline">
+                      {b?.title ?? `#${i.tmdbId}`}{b?.year && <span class="font-mono text-meta-data text-muted"> · {b.year}</span>}
+                    </a>
+                    {i.rating != null && <Stars rating={i.rating} lang={lang} class="mt-1 block font-mono text-meta-data text-ink" />}
+                    {i.note && (
+                      <>
+                        <p class="mt-2 line-clamp-3 text-body-md text-charcoal">{i.note}</p>
+                        <a href={localizePath(lang, `u/${i.username}/review/${i.tmdbId}`)} class="tap label hover:text-ink">{t('activity.readReview')} →</a>
+                      </>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+            {/* Con un número impar, una casilla vacía cierra la rejilla de dos columnas. */}
+            {d.items.length % 2 === 1 && <li class="hidden bg-surface lg:block" aria-hidden="true"></li>}
+          </ol>
+        </div>
+      ))
+    )}
+
+    {nextBefore && (
+      <nav class="mt-8 flex justify-end font-mono text-meta-data" aria-label={t('activity.title')}>
+        <a href={`${base}?before=${nextBefore}`} class="tap hover:text-ochre">{t('activity.older')} →</a>
+      </nav>
+    )}
+  </section>
+</BaseLayout>
