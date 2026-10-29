@@ -1,5 +1,78 @@
 [
   {
+    "version": "1.16",
+    "date": "2026-10-27",
+    "title": {
+      "es": "Tu diario de cine, Letterboxd y tu año en cine",
+      "en": "Your film diary, Letterboxd and your year in film",
+      "gl": "O teu diario de cine, Letterboxd e o teu ano en cine",
+      "eu": "Zure zinema-egunkaria, Letterboxd eta zure urtea zineman",
+      "ca": "El teu diari de cinema, Letterboxd i el teu any en cinema"
+    },
+    "changes": {
+      "es": [
+        "Diario de visionados: cada vez que ves una película queda apuntada con su fecha, y los revisionados se marcan solos. En la ficha de cada película verás cuántas veces la has visto y podrás añadir otro visionado; en «Diario» los tienes todos, mes a mes y año a año. Las películas que ya tenías como vistas con fecha entran como primer visionado.",
+        "Importar desde Letterboxd: sube el ZIP que te da Letterboxd y trae lo que has visto, tus notas, tus reseñas, tu lista de pendientes y el diario con sus fechas. Antes de guardar ves cuántas se han encontrado y puedes confirmar las dudosas. Lo que ya tenías aquí no se toca, y repetir la importación no duplica nada.",
+        "Tu año en cine: un resumen de tu año con películas, horas, revisionados, tu mes más cinéfilo, tu racha más larga, tus mejor puntuadas, directores, géneros y décadas. Si tu perfil es público puedes compartirlo con un enlace y una imagen para Instagram.",
+        "Medias estrellas: ahora se puntúa de media en media, como en Letterboxd. Pulsar dos veces la misma estrella deja la media, y una tercera vez quita la nota.",
+        "Buscador del propio archivo: además de películas y personas, el buscador encuentra hemeroteca, cine abierto, artículos, dosieres, colecciones y glosario.",
+        "Tu cuenta: ya puedes cambiar la contraseña, descargar todos tus datos en un archivo y borrar la cuenta tú mismo.",
+        "La Filmoteca enseña títulos y países en tu idioma y los premios traducidos. Las fichas en gallego, euskera y catalán usan la sinopsis en ese idioma cuando existe.",
+        "Encuentra tu cine recuerda tu búsqueda en el enlace, amplía la distancia sola si no encuentra nada cerca, dice cuántos cines hay y tiene un botón para verlos en el mapa.",
+        "En el móvil, el título de la película se ve sin bajar, los filtros de Descubrir se pliegan y los enlaces pequeños son más fáciles de pulsar.",
+        "Más archivo: veinte fanzines de cine de culto en la hemeroteca, trece películas más en Cine abierto y colecciones con un mosaico de carteles. Los artículos pueden llevar vídeo, fotogramas y firma, y estrenamos piezas sobre el Festival de Sevilla 2026 y el tráiler de GTA VI."
+      ],
+      "en": [
+        "Viewing diary: every time you watch a film it is logged with its date, and rewatches are marked automatically. Each film page shows how many times you have seen it and lets you add another viewing; “Diary” holds them all, month by month and year by year. Films you had already marked as seen with a date become their first viewing.",
+        "Import from Letterboxd: upload the ZIP Letterboxd gives you and bring over what you have watched, your ratings, your reviews, your watchlist and your diary with its dates. Before saving you see how many were found and can confirm the doubtful ones. Nothing you already had here is touched, and importing again creates no duplicates.",
+        "Your year in film: a summary of your year with films, hours, rewatches, your busiest month, your longest streak, your top rated, directors, genres and decades. If your profile is public you can share it with a link and an image for Instagram.",
+        "Half stars: ratings now go in halves, as on Letterboxd. Pressing the same star twice leaves a half, and a third time removes the rating.",
+        "Search the archive itself: besides films and people, search now finds the magazine library, open cinema, articles, dossiers, collections and the glossary.",
+        "Your account: you can now change your password, download all your data in a file and delete your account yourself.",
+        "The Filmography shows titles and countries in your language and translated awards. Film pages in Galician, Basque and Catalan use the synopsis in that language when there is one.",
+        "Find your cinema remembers your search in the link, widens the distance on its own if nothing is nearby, tells you how many cinemas there are and has a button to see them on the map.",
+        "On mobile, the film title is visible without scrolling, Discover’s filters fold away and small links are easier to tap.",
+        "More archive: twenty cult film fanzines in the magazine library, thirteen more films in Open Cinema and collections with a poster mosaic. Articles can now carry video, frames and a byline, and we open with pieces on the Seville Film Festival 2026 and the GTA VI trailer."
+      ],
+      "gl": [
+        "Diario de visionados: cada vez que ves unha película queda anotada coa súa data, e os revisionados márcanse sós. Na ficha de cada película verás cantas veces a viches e poderás engadir outro visionado; en «Diario» tes todos, mes a mes e ano a ano. As películas que xa tiñas como vistas con data entran como primeiro visionado.",
+        "Importar desde Letterboxd: sobe o ZIP que che dá Letterboxd e trae o que viches, as túas notas, as túas críticas, a túa lista de pendentes e o diario coas súas datas. Antes de gardar ves cantas se atoparon e podes confirmar as dubidosas. O que xa tiñas aquí non se toca, e repetir a importación non duplica nada.",
+        "O teu ano en cine: un resumo do teu ano con películas, horas, revisionados, o teu mes máis cinéfilo, a túa racha máis longa, as túas mellor puntuadas, directores, xéneros e décadas. Se o teu perfil é público podes compartilo cunha ligazón e unha imaxe para Instagram.",
+        "Medias estrelas: agora puntúase de media en media, como en Letterboxd. Premer dúas veces a mesma estrela deixa a media, e unha terceira vez quita a nota.",
+        "Buscador do propio arquivo: ademais de películas e persoas, o buscador atopa hemeroteca, cine aberto, artigos, dosieres, coleccións e glosario.",
+        "A túa conta: xa podes cambiar o contrasinal, descargar todos os teus datos nun ficheiro e borrar a conta ti mesmo.",
+        "A Filmoteca ensina títulos e países no teu idioma e os premios traducidos. As fichas en galego, éuscaro e catalán usan a sinopse nese idioma cando existe.",
+        "Atopa o teu cine lembra a túa busca na ligazón, amplía a distancia soa se non atopa nada preto, di cantos cines hai e ten un botón para velos no mapa.",
+        "No móbil, o título da película vese sen baixar, os filtros de Descubrir préganse e as ligazóns pequenas son máis fáciles de premer.",
+        "Máis arquivo: vinte fanzines de cine de culto na hemeroteca, trece películas máis en Cine aberto e coleccións cun mosaico de carteis. Os artigos poden levar vídeo, fotogramas e sinatura, e estreamos pezas sobre o Festival de Sevilla 2026 e o tráiler de GTA VI."
+      ],
+      "eu": [
+        "Ikustaldien egunkaria: film bat ikusten duzun bakoitzean bere datarekin gordetzen da, eta berriz ikusiak bere kabuz markatzen dira. Film bakoitzaren fitxan zenbat aldiz ikusi duzun ikusiko duzu eta beste ikustaldi bat gehitu ahal izango duzu; «Egunkaria» atalean denak dituzu, hilabetez hilabete eta urtez urte. Datarekin ikusitzat zenituen filmak lehen ikustaldi gisa sartzen dira.",
+        "Inportatu Letterboxdetik: igo Letterboxdek ematen dizun ZIPa eta ekarri ikusi duzuna, zure notak, zure kritikak, zure zain-zerrenda eta egunkaria bere datekin. Gorde aurretik zenbat aurkitu diren ikusten duzu eta zalantzazkoak berretsi ditzakezu. Hemen zenuena ez da ukitzen, eta inportazioa errepikatzeak ez du ezer bikoizten.",
+        "Zure urtea zineman: zure urtearen laburpena, filmekin, orduekin, berriz ikusiekin, zure hilabeterik zinezaleenarekin, zure segidarik luzeenarekin, nota onenekoekin, zuzendariekin, generoekin eta hamarkadekin. Zure profila publikoa bada, esteka batekin eta Instagramerako irudi batekin parteka dezakezu.",
+        "Izar erdiak: orain erdika puntuatzen da, Letterboxden bezala. Izar bera bi aldiz sakatzeak erdia uzten du, eta hirugarrenez sakatzeak nota kentzen du.",
+        "Artxiboaren beraren bilatzailea: filmez eta pertsonez gain, bilatzaileak hemeroteka, zinema irekia, artikuluak, dosierrak, bildumak eta glosarioa aurkitzen ditu.",
+        "Zure kontua: orain pasahitza alda dezakezu, zure datu guztiak fitxategi batean deskargatu eta kontua zuk zeuk ezabatu.",
+        "Filmotekak izenburuak eta herrialdeak zure hizkuntzan erakusten ditu, baita sariak itzulita ere. Galegozko, euskarazko eta katalanezko fitxek hizkuntza horretako sinopsia erabiltzen dute badagoenean.",
+        "Aurkitu zure zinema: bilaketa estekan gogoratzen du, gertu ezer aurkitzen ez badu distantzia bere kabuz handitzen du, zenbat zinema dauden esaten du eta mapan ikusteko botoi bat du.",
+        "Mugikorrean, filmaren izenburua jaitsi gabe ikusten da, Aurkitu ataleko iragazkiak tolestu egiten dira eta esteka txikiak errazago sakatzen dira.",
+        "Artxibo gehiago: kultuzko zinemaren hogei fanzine hemerotekan, hamahiru film gehiago Zinema irekian eta karteletako mosaikoa duten bildumak. Artikuluek bideoa, fotogramak eta sinadura eraman ditzakete, eta 2026ko Sevillako Zinemaldiari eta GTA VI-ren trailerrari buruzko piezak estreinatzen ditugu."
+      ],
+      "ca": [
+        "Diari de visionats: cada vegada que veus una pel·lícula queda anotada amb la seva data, i els revisionats es marquen sols. A la fitxa de cada pel·lícula veuràs quantes vegades l’has vista i podràs afegir-hi un altre visionat; a «Diari» els tens tots, mes a mes i any a any. Les pel·lícules que ja tenies com a vistes amb data hi entren com a primer visionat.",
+        "Importa des de Letterboxd: puja el ZIP que et dona Letterboxd i porta el que has vist, les teves notes, les teves ressenyes, la teva llista de pendents i el diari amb les seves dates. Abans de desar veus quantes se n’han trobat i pots confirmar les dubtoses. El que ja tenies aquí no es toca, i repetir la importació no duplica res.",
+        "El teu any en cinema: un resum del teu any amb pel·lícules, hores, revisionats, el teu mes més cinèfil, la teva ratxa més llarga, les més ben puntuades, directors, gèneres i dècades. Si el teu perfil és públic el pots compartir amb un enllaç i una imatge per a Instagram.",
+        "Mitges estrelles: ara es puntua de mitja en mitja, com a Letterboxd. Prémer dues vegades la mateixa estrella deixa la mitja, i una tercera vegada treu la nota.",
+        "Cercador del mateix arxiu: a més de pel·lícules i persones, el cercador troba hemeroteca, cinema obert, articles, dossiers, col·leccions i glossari.",
+        "El teu compte: ja pots canviar la contrasenya, descarregar totes les teves dades en un fitxer i esborrar el compte tu mateix.",
+        "La Filmoteca mostra títols i països en el teu idioma i els premis traduïts. Les fitxes en gallec, basc i català fan servir la sinopsi en aquest idioma quan existeix.",
+        "Troba el teu cinema recorda la cerca a l’enllaç, amplia la distància sola si no troba res a prop, diu quants cinemes hi ha i té un botó per veure’ls al mapa.",
+        "Al mòbil, el títol de la pel·lícula es veu sense baixar, els filtres de Descobrir es pleguen i els enllaços petits són més fàcils de prémer.",
+        "Més arxiu: vint fanzins de cinema de culte a l’hemeroteca, tretze pel·lícules més a Cinema obert i col·leccions amb un mosaic de cartells. Els articles poden portar vídeo, fotogrames i signatura, i estrenem peces sobre el Festival de Sevilla 2026 i el tràiler de GTA VI."
+      ]
+    }
+  },
+  {
     "version": "1.15",
     "date": "2026-10-25",
     "title": {
