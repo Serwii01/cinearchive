@@ -5,7 +5,9 @@ import { db } from './db/client';
 import { user as userTable } from './db/schema';
 import { check, clientIp, tooMany } from './lib/ratelimit';
 import { isAdmin } from './lib/admin';
-import { cachePolicy } from './lib/httpcache';
+import { cachePolicy, sharedTtl } from './lib/httpcache';
+import { servePage, cacheKey, hasSessionCookie } from './lib/htmlcache';
+import { backLinkSource } from './lib/backlink';
 import { isKnownRoute, legacyDefaultLangRedirect } from './lib/routes';
 import { contarVisita } from './lib/visits';
 import { startStreamAlerts } from './lib/streamjob';
@@ -180,8 +182,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return harden(await next(), path);
   }
 
-  // Recuperar la sesión a partir de las cookies de la petición.
-  const session = await auth.api.getSession({ headers: request.headers }).catch(() => null);
+  // Recuperar la sesión a partir de las cookies de la petición. Sin cookie de
+  // sesión no hay nada que buscar: la mayoría de visitas (y todos los bots) se
+  // ahorran la llamada.
+  const sessionCookie = hasSessionCookie(request.headers.get('cookie'));
+  const session = sessionCookie
+    ? await auth.api.getSession({ headers: request.headers }).catch(() => null)
+    : null;
 
   context.locals.user = session?.user ?? null;
   context.locals.session = session?.session ?? null;
@@ -234,5 +241,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   }
 
-  return cachePolicy(harden(await next(), path), stripped, !!context.locals.user);
+  const render = async () => cachePolicy(harden(await next(), path), stripped, !!context.locals.user);
+
+  // Visitante sin sesión en una página pública: se sirve de memoria (ver
+  // lib/htmlcache.ts). Con cookie de sesión, aunque esté caducada, se renderiza:
+  // la página podría salir con datos personales o fijar cookies.
+  const ttl = method === 'GET' && !sessionCookie ? sharedTtl(stripped) : null;
+  let key = ttl !== null ? cacheKey(url) : null;
+  // Las fichas pintan «← volver» según de dónde se venga (cabecera Referer):
+  // el origen entra en la clave para no dar a nadie el botón de otra visita.
+  if (key !== null && (stripped.startsWith('/film/') || stripped.startsWith('/person/'))) {
+    const siteHost = import.meta.env.SITE ? new URL(import.meta.env.SITE as string).hostname : undefined;
+    const source = backLinkSource(request.headers.get('referer'), [url.hostname, siteHost]);
+    if (source) key += `|${source.href}`;
+  }
+  if (ttl !== null && key !== null) return servePage(key, ttl * 1000, render);
+  return render();
 });

@@ -37,28 +37,41 @@ const SECTION_LABEL: Record<string, UIKey> = {
   search: 'back.search',
 };
 
-export function resolveBackLink(
+/**
+ * La página de origen (ruta + consulta) si la ficha se abrió desde una sección
+ * propia que tiene botón de vuelta; null si se llegó de fuera o sin Referer.
+ * Va aparte porque la caché de páginas (lib/htmlcache.ts) la usa en su clave:
+ * dos visitas con el mismo origen ven exactamente la misma ficha.
+ */
+export function backLinkSource(
   referer: string | null,
-  lang: Lang,
-  t: (k: UIKey) => string,
   /** Hosts que contamos como propios (el de la petición y el del dominio configurado). */
   hosts: readonly (string | undefined)[],
-): { href: string; label: string } {
-  const fallback = { href: localizePath(lang, 'films'), label: t('back.films') };
-  if (!referer) return fallback;
+): { href: string; key: UIKey } | null {
+  if (!referer) return null;
   let url: URL;
   try {
     url = new URL(referer);
   } catch {
-    return fallback;
+    return null;
   }
-  if (!hosts.includes(url.hostname)) return fallback; // viene de fuera
+  if (!hosts.includes(url.hostname)) return null; // viene de fuera
   const segs = url.pathname.split('/').filter(Boolean);
   // El prefijo de idioma es opcional (el castellano no lleva): si el primer
   // segmento es un idioma, la sección es el siguiente.
   if (segs[0] && segs[0] in languages) segs.shift();
-  const section = segs[0] ?? '';
-  const key = SECTION_LABEL[section];
-  if (!key) return fallback; // sección que no es origen natural de una ficha
-  return { href: url.pathname + url.search, label: t(key) };
+  const key = SECTION_LABEL[segs[0] ?? ''];
+  if (!key) return null; // sección que no es origen natural de una ficha
+  return { href: url.pathname + url.search, key };
+}
+
+export function resolveBackLink(
+  referer: string | null,
+  lang: Lang,
+  t: (k: UIKey) => string,
+  hosts: readonly (string | undefined)[],
+): { href: string; label: string } {
+  const source = backLinkSource(referer, hosts);
+  if (!source) return { href: localizePath(lang, 'films'), label: t('back.films') };
+  return { href: source.href, label: t(source.key) };
 }

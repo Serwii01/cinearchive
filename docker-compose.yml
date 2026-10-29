@@ -25,6 +25,12 @@ services:
       -c effective_cache_size=640MB
       -c work_mem=6MB
       -c maintenance_work_mem=128MB
+      -c random_page_cost=1.1
+      -c jit=off
+    # random_page_cost=1.1: el disco del VPS es SSD; con el 4 de fábrica (discos
+    # de platos) el planificador prefiere recorrer tablas enteras a usar índices.
+    # jit=off: el JIT compila consultas largas de analítica; con las cortas de
+    # esta web solo gasta CPU y memoria en compilar.
     # Techo de memoria: sin él, si algo se desmadra el núcleo elige víctima al
     # azar y puede llevarse la base de datos por delante. Con techo, el que se
     # pasa es el que cae, y docker lo reinicia.
@@ -69,6 +75,11 @@ services:
       # script en cada petición, así que las necesitan aquí además de en el build.
       UMAMI_WEBSITE_ID: ${UMAMI_WEBSITE_ID:-}
       UMAMI_HOST: analitica.${DOMAIN}
+      # Techo del heap de V8 por debajo del mem_limit (512m). Si V8 cree que
+      # tiene más, no se da prisa en recoger basura y el contenedor muere por
+      # OOM en lugar de liberar memoria. El resto queda para buffers, la caché
+      # de páginas (lib/htmlcache.ts, fuera del heap) y el propio Node.
+      NODE_OPTIONS: --max-old-space-size=320
     depends_on:
       db:
         condition: service_healthy

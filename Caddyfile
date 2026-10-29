@@ -86,16 +86,31 @@ analitica.{$DOMAIN} {
 		-Server
 	}
 
+	# El ">" aplica la cabecera DESPUÉS de recibir la respuesta de la app y
+	# sustituye la suya. Sin él, Caddy la añadía antes y Node ponía además su
+	# "public, max-age=0": salían dos Cache-Control contradictorios.
+
 	# Cache larga para los assets con hash de Astro.
 	@assets path /_astro/*
-	header @assets Cache-Control "public, max-age=31536000, immutable"
+	header @assets >Cache-Control "public, max-age=31536000, immutable"
+
+	# Imágenes de public/ (portadas de revistas, carteles, libros, retratos):
+	# no llevan hash en el nombre, pero no cambian nunca. Con max-age=0 cada
+	# visita las volvía a pedir a Node solo para recibir un 304. Un mes basta;
+	# si alguna se sustituye, conviene ponerle otro nombre.
+	@images path /covers/* /cinema/* /library/* /faces/* /articles/* /screenshots/* /icons/* /og.png /favicon.svg
+	header @images >Cache-Control "public, max-age=2592000, stale-while-revalidate=604800"
 
 	# El service worker, al contrario: nunca cacheado. Si un navegador se queda
 	# con una versión vieja, se queda con ella (y con su caché) indefinidamente.
 	@sw path /sw.js
-	header @sw Cache-Control "no-cache"
+	header @sw >Cache-Control "no-cache"
 
 	reverse_proxy app:4321 {
+		# Mientras se recrea el contenedor en un despliegue (migraciones + arranque),
+		# Caddy retiene las peticiones y reintenta en vez de devolver un 502.
+		lb_try_duration 30s
+		lb_try_interval 500ms
 		# Sobrescribe (no anexa) las cabeceras de IP: si el cliente envía un
 		# X-Forwarded-For falso, aquí se descarta. Así el rate limiting de la app
 		# y el anti fuerza-bruta del login cuentan siempre por la IP real.

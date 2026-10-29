@@ -145,8 +145,20 @@ const homeJsonLd = [
           film ? (
             <div class="flex min-h-0 flex-col border-t border-ink md:col-span-5 md:overflow-hidden md:border-t-0">
               <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} class="block border-b border-ink md:min-h-0 md:flex-1 md:overflow-hidden">
+                {/* Es la imagen más grande de la primera pantalla: va con prioridad, y
+                    el móvil se queda con la de 780 px en vez de bajar la de 1280. */}
                 {film.backdrop ? (
-                  <img src={film.backdrop} alt={film.title} width="1280" height="720" decoding="async" class="h-44 w-full object-cover md:h-full" />
+                  <img
+                    src={film.backdrop}
+                    srcset={`${film.backdrop.replace('/w1280/', '/w780/')} 780w, ${film.backdrop} 1280w`}
+                    sizes="(min-width: 768px) 42vw, 100vw"
+                    alt={film.title}
+                    width="1280"
+                    height="720"
+                    fetchpriority="high"
+                    decoding="async"
+                    class="h-44 w-full object-cover md:h-full"
+                  />
                 ) : (
                   <div class="film-grain h-44 w-full md:h-full" />
                 )}
