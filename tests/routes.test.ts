@@ -37,6 +37,15 @@ describe('TOP_LEVEL_SECTIONS', () => {
 });
 
 describe('isKnownRoute', () => {
+  it('detrás de /u/<usuario>/ solo van sus páginas', () => {
+    for (const p of ['/u/ana', '/u/ana/reviews', '/u/ana/review/603', '/u/ana/year/2026', '/u/ana/viewings', '/u/ana/favorites', '/u/ana/pending', '/en/u/ana/pending']) {
+      expect(isKnownRoute(p, LANGS), p).toBe(true);
+    }
+    for (const p of ['/u/ana/diary', '/u/ana/films', '/en/u/ana/watchlist']) {
+      expect(isKnownRoute(p, LANGS), p).toBe(false);
+    }
+  });
+
   it('acepta la portada de cada idioma', () => {
     for (const lang of LANGS) expect(isKnownRoute(localizePath(lang), LANGS)).toBe(true);
   });

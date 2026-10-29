@@ -94,6 +94,14 @@ const API_ROUTES: ReadonlySet<string> = new Set([
 ]);
 
 /**
+ * Lo que puede ir detrás de /u/<usuario>/. Hace falta comprobarlo porque el
+ * comodín del idioma también casa con «u/<usuario>»: sin esta lista,
+ * /u/ana/diary servía la página privada /diary (y fallaba sin sesión) y
+ * /u/ana/films, la filmoteca entera con otra URL.
+ */
+const PROFILE_SUBPAGES: ReadonlySet<string> = new Set(['review', 'reviews', 'year', 'viewings', 'favorites', 'pending']);
+
+/**
  * ¿La ruta apunta a una sección que existe?
  *
  * Se le quita un prefijo de idioma opcional y se mira el primer segmento que
@@ -107,6 +115,7 @@ export function isKnownRoute(pathname: string, langs: readonly string[]): boolea
   if (ROOT_ROUTES.has(segs[0])) return true;
   if (segs[0] === 'api') return segs.length > 1 && API_ROUTES.has(segs[1]);
   if (langs.includes(segs[0])) segs.shift();
+  if (segs[0] === 'u' && segs.length > 2 && !PROFILE_SUBPAGES.has(segs[2])) return false;
   return segs.length === 0 || TOP_LEVEL_SECTIONS.has(segs[0]);
 }
 

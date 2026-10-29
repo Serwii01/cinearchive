@@ -1,0 +1,57 @@
+---
+/**
+ * Rejilla de carteles del perfil y sus páginas de «ver todo». Siempre de 4, 6
+ * o 12 columnas (móvil, tableta, escritorio) y rellena con casillas vacías
+ * hasta un múltiplo de 12: así la rejilla cierra en rectángulo en cualquier
+ * pantalla, en vez de dejar una fila a medias con un bloque negro al lado.
+ */
+import Stars from './Stars.astro';
+import { localizePath } from '../i18n/ui';
+import { filmSlug } from '../lib/slug';
+import { padTo } from '../lib/grid';
+import type { FilmBrief } from '../lib/films';
+
+interface Item {
+  tmdbId: number;
+  rating?: number | null;
+  /** Línea pequeña bajo el cartel: la fecha del visionado, por ejemplo. */
+  sub?: string;
+}
+
+interface Props {
+  items: Item[];
+  briefs: Map<number, FilmBrief>;
+  lang: string;
+  /** Pinta la fila de estrellas y la línea `sub` (solo en visionados). */
+  details?: boolean;
+}
+
+const { items, briefs, lang, details = false } = Astro.props;
+const huecos = padTo(items.length, 12) - items.length;
+---
+
+<ol class="grid grid-cols-4 gap-px border border-ink bg-ink sm:grid-cols-6 lg:grid-cols-12">
+  {items.map((it) => {
+    const b = briefs.get(it.tmdbId);
+    return (
+      <li class="bg-surface">
+        <a href={localizePath(lang as never, `film/${filmSlug(it.tmdbId, b?.title)}`)} class="block h-full no-underline hover:bg-film-white" title={b?.title}>
+          <div class="aspect-[2/3] w-full bg-charcoal">
+            {b?.poster ? (
+              <img src={b.poster} srcset={b.posterSrcset ?? undefined} sizes="(min-width: 1024px) 8vw, (min-width: 640px) 16vw, 25vw" alt={b.title} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+            ) : (
+              <div class="film-grain h-full w-full"></div>
+            )}
+          </div>
+          {details && (
+            <>
+              <p class="h-5 px-1 pt-1 font-mono text-meta-data leading-tight text-ink">{it.rating ? <Stars rating={it.rating} lang={lang} /> : '·'}</p>
+              <p class="h-5 px-1 font-mono text-meta-data leading-tight text-muted">{it.sub ?? ''}</p>
+            </>
+          )}
+        </a>
+      </li>
+    );
+  })}
+  {Array.from({ length: huecos }, () => <li class="bg-surface" aria-hidden="true"></li>)}
+</ol>
