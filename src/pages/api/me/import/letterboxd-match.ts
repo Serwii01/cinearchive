@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
-import { searchMoviesForMatch } from '../../../../lib/tmdb';
+import { findByImdb, searchMoviesForMatch } from '../../../../lib/tmdb';
 import { pickMatch, type MatchCandidate, type Confidence } from '../../../../lib/letterboxd';
 import { mapLimit } from '../../../../lib/recs';
 import { check, tooMany } from '../../../../lib/ratelimit';
@@ -9,7 +9,9 @@ import { registerCache } from '../../../../lib/cache-registry';
 export const prerender = false;
 
 /**
- * POST — empareja una tanda de títulos de Letterboxd con TMDB.
+ * POST — empareja una tanda de títulos de Letterboxd con TMDB. También sirve a
+ * IMDb y Trakt: si la película trae id de TMDB se da por buena tal cual, y con
+ * id de IMDb se pregunta a TMDB por ese id en vez de buscar por el título.
  *
  * El navegador manda las películas de 50 en 50 y va pintando el progreso: un
  * export de 2.000 películas en una sola petición tendría el servidor (512 MB)
@@ -18,7 +20,15 @@ export const prerender = false;
 const BATCH = 50;
 const schema = z.object({
   items: z
-    .array(z.object({ key: z.string().max(400), name: z.string().min(1).max(300), year: z.number().int().nullable() }))
+    .array(
+      z.object({
+        key: z.string().max(400),
+        name: z.string().min(1).max(300),
+        year: z.number().int().nullable(),
+        tmdbId: z.number().int().positive().optional(),
+        imdbId: z.string().regex(/^tt\d{1,10}$/).optional(),
+      }),
+    )
     .min(1)
     .max(BATCH),
 });
@@ -30,6 +40,18 @@ const memo = new Map<string, { at: number; hit: Hit }>();
 const TTL = 24 * 60 * 60_000;
 const MAX = 20_000;
 registerCache({ id: 'letterboxd-match', label: 'Emparejado de Letterboxd', ttlMs: TTL, size: () => memo.size, clear: () => memo.clear() });
+
+async function byImdb(imdbId: string): Promise<Hit> {
+  const m = memo.get(imdbId);
+  if (m && Date.now() - m.at < TTL) return m.hit;
+  const r = await findByImdb(imdbId);
+  const hit: Hit = r
+    ? { id: r.id, confidence: 'exact', candidates: [{ id: r.id, title: r.title, original_title: r.original_title, release_date: r.release_date, poster_path: r.poster_path }] }
+    : { id: null, confidence: 'none', candidates: [] };
+  if (memo.size >= MAX) memo.delete(memo.keys().next().value!);
+  memo.set(imdbId, { at: Date.now(), hit });
+  return hit;
+}
 
 async function match(name: string, year: number | null): Promise<Hit> {
   const k = `${name.toLowerCase()}|${year ?? ''}`;
@@ -62,6 +84,12 @@ export const POST: APIRoute = async ({ locals, request }) => {
 
   const results = await mapLimit(parsed.data.items, 6, async (it) => {
     try {
+      if (it.tmdbId) return { key: it.key, id: it.tmdbId, confidence: 'exact' as const, candidates: [] };
+      // Sin película en TMDB para ese id de IMDb, aún se intenta por el título.
+      if (it.imdbId) {
+        const hit = await byImdb(it.imdbId);
+        if (hit.id) return { key: it.key, ...hit };
+      }
       return { key: it.key, ...(await match(it.name, it.year)) };
     } catch {
       // Un fallo de TMDB con una película no tumba la tanda: sale como «sin

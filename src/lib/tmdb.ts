@@ -68,6 +68,19 @@ export async function searchMoviesForMatch(query: string, year?: number): Promis
   return data.results.slice(0, 8);
 }
 
+/**
+ * La película de TMDB que corresponde a un id de IMDb («tt0047478»), o null si
+ * no es una película (una serie, un episodio). Para importar desde IMDb sin
+ * adivinar por el título.
+ */
+export async function findByImdb(imdbId: string): Promise<TmdbSearchResult | null> {
+  const data = await tmdbFetch<{ movie_results: TmdbSearchResult[] }>(`/find/${encodeURIComponent(imdbId)}`, {
+    external_source: 'imdb_id',
+    language: 'en-US',
+  });
+  return data.movie_results?.[0] ?? null;
+}
+
 export interface TmdbMovie {
   id: number;
   imdb_id: string | null;

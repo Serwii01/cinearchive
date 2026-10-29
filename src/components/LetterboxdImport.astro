@@ -1,8 +1,9 @@
 ---
 /**
- * «Importar desde Letterboxd», en la cuenta. Todo el trabajo pesado va en el
- * navegador: leer el ZIP, juntar los CSV y mandar las películas en tandas a
- * /api/me/import/letterboxd-match y -commit, con su barra de progreso.
+ * «Importar desde Letterboxd, IMDb o Trakt», en la cuenta. Todo el trabajo
+ * pesado va en el navegador: leer el ZIP o los ficheros sueltos, juntarlos en
+ * una lista de películas y mandarlas en tandas a /api/me/import/letterboxd-match
+ * y -commit (que sirven a los tres), con su barra de progreso.
  */
 import { useTranslations, localizePath, type Lang } from '../i18n/ui';
 
@@ -40,11 +41,16 @@ const L = {
   </div>
   <div class="p-5">
     <p class="max-w-prose text-body-md text-charcoal">{t('import.intro')}</p>
-    <p class="mt-2 max-w-prose font-mono text-meta-data text-muted">{t('import.how')}</p>
+    <ul class="mt-2 flex max-w-prose flex-col gap-1 font-mono text-meta-data text-muted">
+      <li>{t('import.how')}</li>
+      <li>{t('import.howImdb')}</li>
+      <li>{t('import.howTrakt')}</li>
+      <li>{t('import.local')}</li>
+    </ul>
     <letterboxd-import class="mt-4 block" data-l={JSON.stringify(L)}>
       <label class="btn btn-primary cursor-pointer">
         {t('import.choose')}
-        <input type="file" accept=".zip,application/zip" class="sr-only" data-file />
+        <input type="file" accept=".zip,.csv,.json,application/zip,text/csv,application/json" multiple class="sr-only" data-file />
       </label>
       <div data-out class="mt-4" aria-live="polite"></div>
     </letterboxd-import>
@@ -54,6 +60,7 @@ const L = {
 <script>
   import { listZip } from '../lib/unzip';
   import { collectFilms, lbFileKind, type LbFiles, type LbFilm, type MatchCandidate } from '../lib/letterboxd';
+  import { collectImdb, collectTrakt, detectSource, isImdbCsv, type ImportSource } from '../lib/imports';
 
   type Matched = { film: LbFilm; id: number | null; confidence: 'exact' | 'likely' | 'none'; candidates: MatchCandidate[] };
 
@@ -95,21 +102,44 @@ const L = {
         throw new Error('429');
       };
 
+      let source: ImportSource = 'letterboxd';
+
       input.addEventListener('change', async () => {
-        const file = input.files?.[0];
-        if (!file) return;
+        const picked = [...(input.files ?? [])];
+        if (picked.length === 0) return;
         input.disabled = true;
         out.innerHTML = `<p class="font-mono text-meta-data text-ink">${esc(L.reading)}</p>`;
 
-        // 1. Leer el ZIP y juntar los CSV.
+        // 1. Leer lo subido (ZIPs abiertos, CSV y JSON sueltos) y averiguar
+        //    de dónde viene por lo que trae, no por lo que dice el usuario.
         let films: LbFilm[];
         try {
-          const files: LbFiles = {};
-          for (const e of listZip(await file.arrayBuffer())) {
-            const kind = lbFileKind(e.name);
-            if (kind) files[kind] = new TextDecoder().decode(await e.read());
+          const entries: { name: string; text: string }[] = [];
+          const dec = new TextDecoder();
+          for (const file of picked) {
+            if (/\.zip$/i.test(file.name)) {
+              for (const e of listZip(await file.arrayBuffer())) {
+                if (/\.(csv|json)$/i.test(e.name)) entries.push({ name: e.name, text: dec.decode(await e.read()) });
+              }
+            } else {
+              entries.push({ name: file.name, text: await file.text() });
+            }
           }
-          films = collectFilms(files);
+          const found = detectSource(entries, (n) => lbFileKind(n) != null);
+          if (!found) return fail(L.error);
+          source = found;
+          if (source === 'imdb') {
+            films = collectImdb(entries.filter((e) => isImdbCsv(e.text)).map((e) => e.text));
+          } else if (source === 'trakt') {
+            films = collectTrakt(entries.filter((e) => /\.json$/i.test(e.name)));
+          } else {
+            const files: LbFiles = {};
+            for (const e of entries) {
+              const kind = lbFileKind(e.name);
+              if (kind) files[kind] = e.text;
+            }
+            films = collectFilms(files);
+          }
         } catch {
           return fail(L.error);
         }
@@ -122,7 +152,10 @@ const L = {
             progress(L.matching, i, films.length);
             const batch = films.slice(i, i + MATCH_BATCH);
             const { results } = await post('/api/me/import/letterboxd-match', {
-              items: batch.map((f) => ({ key: f.key, name: f.name, year: f.year })),
+              items: batch.map((f) => ({
+                key: f.key, name: f.name.slice(0, 300) || f.key, year: f.year,
+                ...(f.tmdbId ? { tmdbId: f.tmdbId } : {}), ...(f.imdbId ? { imdbId: f.imdbId } : {}),
+              })),
             });
             const byKey = new Map((results as (Omit<Matched, 'film'> & { key: string })[]).map((r) => [r.key, r]));
             for (const f of batch) {
@@ -224,7 +257,7 @@ const L = {
         try {
           for (let i = 0; i < films.length; i += COMMIT_BATCH) {
             progress(L.saving, i, films.length);
-            const r = await post('/api/me/import/letterboxd-commit', { likesAsFavorites, films: films.slice(i, i + COMMIT_BATCH) });
+            const r = await post('/api/me/import/letterboxd-commit', { likesAsFavorites, source, films: films.slice(i, i + COMMIT_BATCH) });
             saved += r.films; viewings += r.viewings; clipped += r.clipped;
           }
         } catch {

@@ -23,6 +23,9 @@ export interface LbViewing {
 export interface LbFilm {
   /** Título en minúsculas + «|» + año: lo que identifica a la película. */
   key: string;
+  /** IMDb y Trakt traen el id: con él no hace falta buscar por el título. */
+  tmdbId?: number;
+  imdbId?: string;
   name: string;
   year: number | null;
   watched: boolean;

@@ -18,6 +18,8 @@ const rating = z.number().min(0.5).max(5).multipleOf(0.5).nullable();
 const day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const schema = z.object({
   likesAsFavorites: z.boolean(),
+  // De dónde viene, para la columna source de los visionados.
+  source: z.enum(['letterboxd', 'imdb', 'trakt']).default('letterboxd'),
   films: z
     .array(
       z.object({
@@ -42,7 +44,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
   if (!rl.ok) return tooMany(rl.retryAfter);
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return new Response(JSON.stringify({ error: 'invalid' }), { status: 400 });
-  const { films, likesAsFavorites } = parsed.data;
+  const { films, likesAsFavorites, source } = parsed.data;
 
   const prevRows = await db
     .select()
@@ -69,7 +71,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
       if (f.viewings.length) {
         const ins = await tx
           .insert(userViewings)
-          .values(f.viewings.map((v) => ({ userId, tmdbId: f.tmdbId, watchedOn: v.date, rewatch: v.rewatch, rating: v.rating, source: 'letterboxd' })))
+          .values(f.viewings.map((v) => ({ userId, tmdbId: f.tmdbId, watchedOn: v.date, rewatch: v.rewatch, rating: v.rating, source })))
           .onConflictDoNothing()
           .returning({ id: userViewings.id });
         viewings += ins.length;
