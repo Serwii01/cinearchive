@@ -97,6 +97,12 @@ export const filmsCache = pgTable(
      * solos con ella: no necesitan marca de tiempo ni TTL propios.
      */
     providers: jsonb('providers'),
+    /**
+     * El título en los cinco idiomas ({ es, en, gl, eu, ca }; ver lib/titles).
+     * `tmdb` guarda la ficha en el idioma de la última visita, así que su
+     * título no sirve para listas que se leen en otro idioma.
+     */
+    titles: jsonb('titles'),
     wikidata: jsonb('wikidata'),
     wikidataFetchedAt: timestamp('wikidata_fetched_at'),
     fetchedAt: timestamp('fetched_at').notNull().defaultNow(),

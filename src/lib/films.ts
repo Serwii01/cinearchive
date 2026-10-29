@@ -8,6 +8,7 @@ import { db } from '../db/client';
 import { filmsCache } from '../db/schema';
 import {
   getMovie,
+  getTranslations,
   director,
   posterUrl, posterSrcset,
   extractWatchProviders,
@@ -20,6 +21,8 @@ import { getFilmLocations, esFormatoActual, type FilmLocations } from './wikidat
 import { createMemo } from './memo';
 import { registerCache } from './cache-registry';
 import { WATCH_REGIONS } from '../data/countries';
+import { titlesFrom, type Titles } from './titles';
+import type { Lang } from '../i18n/ui';
 
 const OMDB_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
 const WIKIDATA_TTL_MS = 60 * 24 * 60 * 60 * 1000; // 60 días (cambia rara vez)
@@ -113,12 +116,13 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
   // página recibe la completa que acabamos de pedir. Si TMDB falla y se sirve
   // desde caché, la podada tiene todo lo que la ficha necesita.
   const guardar = slimMovie(tmdb);
+  const titles = (await titlesOf(tmdb)) ?? (cached?.titles as Titles | null) ?? null;
   await db
     .insert(filmsCache)
-    .values({ tmdbId, tmdb: guardar, omdb, providers, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() })
+    .values({ tmdbId, tmdb: guardar, omdb, providers, titles, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() })
     .onConflictDoUpdate({
       target: filmsCache.tmdbId,
-      set: { tmdb: guardar, omdb, providers, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() },
+      set: { tmdb: guardar, omdb, providers, titles, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() },
     });
 
   return { tmdb, omdb, providers, locations };
@@ -137,11 +141,24 @@ export interface FilmBrief {
   runtime: number;
 }
 
-function briefFromTmdb(m: TmdbMovie): FilmBrief {
+/**
+ * Los títulos en los cinco idiomas. Una petición a TMDB, recordada un día
+ * (las de gallego, euskera y catalán ya la hacen). Null si TMDB falla: mejor
+ * sin títulos que sin ficha.
+ */
+async function titlesOf(m: TmdbMovie): Promise<Titles | null> {
+  try {
+    return titlesFrom(m, await getTranslations(m.id));
+  } catch {
+    return null;
+  }
+}
+
+function briefFromTmdb(m: TmdbMovie, titles: Titles | null, locale: string): FilmBrief {
   const year = m.release_date ? Number(m.release_date.slice(0, 4)) : null;
   return {
     tmdbId: m.id,
-    title: m.title,
+    title: titles?.[locale as Lang] ?? m.title,
     year: year ? String(year) : '',
     director: director(m),
     poster: posterUrl(m.poster_path, 'w185'),
@@ -153,6 +170,23 @@ function briefFromTmdb(m: TmdbMovie): FilmBrief {
 }
 
 const BRIEF_CONCURRENCY = 8;
+const TITLES_NOW = 40;
+
+/** Ejecuta fn sobre la lista con BRIEF_CONCURRENCY a la vez. */
+async function runLimited<T>(items: T[], fn: (item: T) => Promise<unknown>): Promise<void> {
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) await fn(items[next++]);
+  };
+  await Promise.all(Array.from({ length: Math.min(BRIEF_CONCURRENCY, items.length) }, worker));
+}
+
+/** Calcula y guarda los títulos de una ficha que ya estaba en caché sin ellos. */
+async function fillTitles(m: TmdbMovie): Promise<Titles | null> {
+  const titles = await titlesOf(m);
+  if (titles) await db.update(filmsCache).set({ titles }).where(eq(filmsCache.tmdbId, m.id));
+  return titles;
+}
 
 /**
  * Resúmenes para una lista de IDs. Usa films_cache; para los que falten, los
@@ -169,7 +203,21 @@ export async function getFilmsBrief(
     .select()
     .from(filmsCache)
     .where(inArray(filmsCache.tmdbId, tmdbIds));
-  for (const row of cached) out.set(row.tmdbId, briefFromTmdb(row.tmdb as TmdbMovie));
+  for (const row of cached) out.set(row.tmdbId, briefFromTmdb(row.tmdb as TmdbMovie, row.titles as Titles | null, locale));
+
+  // Las fichas cacheadas antes de que se guardaran los títulos por idioma se
+  // completan aquí: unas pocas en el momento y el resto en segundo plano, para
+  // que el primer perfil con mil películas no tarde medio minuto en abrir.
+  const sinTitulos = cached.filter((r) => !r.titles).map((r) => r.tmdb as TmdbMovie);
+  if (sinTitulos.length) {
+    const ahora = sinTitulos.slice(0, TITLES_NOW);
+    await runLimited(ahora, async (m) => {
+      const titles = await fillTitles(m);
+      if (titles) out.set(m.id, briefFromTmdb(m, titles, locale));
+    });
+    const luego = sinTitulos.slice(TITLES_NOW);
+    if (luego.length) void runLimited(luego, fillTitles).catch(() => {});
+  }
 
   // Para los que falten pedimos SOLO a TMDB (no OMDb ni Wikidata, que son
   // lentos y aquí no se usan) y en paralelo; se cachea el tmdb para la ficha completa.
@@ -183,7 +231,8 @@ export async function getFilmsBrief(
       const id = missing[next++];
       try {
         const tmdb = await getMovie(id, locale);
-        out.set(id, briefFromTmdb(tmdb));
+        const titles = await titlesOf(tmdb);
+        out.set(id, briefFromTmdb(tmdb, titles, locale));
         // El «dónde ver» viene dentro de la misma respuesta: se extrae y se
         // guarda, así el selector de región funciona aunque la ficha completa
         // nunca se haya visitado. Antes el bloque en bruto (45-90 kB) se
@@ -192,8 +241,8 @@ export async function getFilmsBrief(
         const guardar = slimMovie(tmdb);
         await db
           .insert(filmsCache)
-          .values({ tmdbId: id, tmdb: guardar, providers, fetchedAt: new Date() })
-          .onConflictDoUpdate({ target: filmsCache.tmdbId, set: { tmdb: guardar, providers, fetchedAt: new Date() } });
+          .values({ tmdbId: id, tmdb: guardar, providers, titles, fetchedAt: new Date() })
+          .onConflictDoUpdate({ target: filmsCache.tmdbId, set: { tmdb: guardar, providers, titles, fetchedAt: new Date() } });
       } catch {
         /* ignorar IDs no resolubles */
       }
