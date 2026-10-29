@@ -41,6 +41,8 @@ export default defineConfig({
         defaultLocale: 'es',
         locales: { es: 'es-ES', en: 'en-US', gl: 'gl-ES', eu: 'eu-ES', ca: 'ca-ES' },
       },
+      // Páginas SSR públicas que la integración no ve (solo lista las estáticas).
+      customPages: ['', '/en', '/gl', '/eu', '/ca'].map((p) => `${SITE}${p}/estrenos`),
       // Fuera del sitemap las páginas privadas/de auth y las que van a `noindex`.
       filter: (page) =>
         !/\/(?:account|watchlist|notifications|stats|recommendations|login|register|forgot|reset|admin)(?:\/|$)/.test(

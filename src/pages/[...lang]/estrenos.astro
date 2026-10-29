@@ -1,0 +1,145 @@
+---
+/**
+ * Cartelera: estrenos en los cines de España esta semana, el próximo viernes
+ * y el mes siguiente, y lo que sigue en cartel. La lógica está en
+ * lib/releases.ts; los datos, de TMDB por fecha de estreno en España.
+ *
+ * La URL va en castellano («estrenos» y no «releases») porque es lo que se
+ * busca: «estrenos cine esta semana». Igual que /cines.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { normalizeLang, useTranslations, localizePath, locales } from '../../i18n/ui';
+import { filmSlug } from '../../lib/slug';
+import { padTo } from '../../lib/grid';
+import { genreName } from '../../data/genres';
+import { getCartelera, type ReleaseFilm, type Cartelera } from '../../lib/releases';
+import { itemListLd, breadcrumbLd } from '../../lib/seo';
+
+export const prerender = false;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+
+let cartelera: Cartelera | null = null;
+try {
+  cartelera = await getCartelera(lang);
+} catch {
+  cartelera = null; // TMDB caído: la página sale con el aviso, no con un 500
+}
+
+const longDate = (iso: string) =>
+  new Intl.DateTimeFormat(locales[lang], { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`));
+const shortDate = (iso: string) =>
+  new Intl.DateTimeFormat(locales[lang], { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`));
+
+const sections: { id: string; title: string; sub: string; films: ReleaseFilm[] }[] = cartelera
+  ? [
+      { id: 'esta-semana', title: t('releases.thisWeek'), sub: t('releases.since').replace('{date}', longDate(cartelera.windows.thisWeek.from)), films: cartelera.thisWeek },
+      { id: 'proximo-viernes', title: t('releases.nextWeek'), sub: longDate(cartelera.windows.nextWeek.from), films: cartelera.nextWeek },
+      { id: 'mas-adelante', title: t('releases.later'), sub: t('releases.laterSub'), films: cartelera.later },
+      { id: 'en-cartel', title: t('releases.nowPlaying'), sub: t('releases.nowPlayingSub'), films: cartelera.nowPlaying },
+    ].filter((s) => s.films.length > 0)
+  : [];
+
+// Clases enteras para que Tailwind las genere.
+const navCols = ['', '', 'sm:grid-cols-2', 'sm:grid-cols-3', 'sm:grid-cols-4'][sections.length];
+const filmHref = (f: ReleaseFilm) => localizePath(lang, `film/${filmSlug(f.id, f.title)}`);
+const pageUrl = new URL(localizePath(lang, 'estrenos'), Astro.site).href;
+const jsonLd = [
+  ...(cartelera && cartelera.thisWeek.length + cartelera.nextWeek.length > 0
+    ? [
+        itemListLd({
+          name: t('releases.title'),
+          items: [...cartelera.thisWeek, ...cartelera.nextWeek].map((f) => ({ name: f.title, url: new URL(filmHref(f), Astro.site).href })),
+        }),
+      ]
+    : []),
+  breadcrumbLd([
+    { name: t('nav.cines'), url: new URL(localizePath(lang, 'cines'), Astro.site).href },
+    { name: t('releases.title'), url: pageUrl },
+  ]),
+];
+---
+
+<BaseLayout title={t('releases.title')} description={t('releases.metaDesc')} jsonLd={jsonLd}>
+  <section class="frame py-12">
+    <header class="border-b border-ink pb-6">
+      <span class="label">{t('releases.label')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('releases.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('releases.intro')}</p>
+      <a href={localizePath(lang, 'cines')} class="btn btn-primary mt-6 no-underline">{t('releases.findCinema')} →</a>
+      {sections.length > 1 && (
+        // Rejilla y no fila flexible: al partirse en dos líneas, la fila
+        // dejaba un hueco negro al final. De dos en dos en móvil (con 3
+        // secciones, la última ocupa la fila entera) y todas juntas después.
+        <nav
+          class:list={['mt-4 grid grid-cols-2 gap-px border border-ink bg-ink', navCols]}
+          aria-label={t('releases.title')}
+        >
+          {sections.map((s, i) => (
+            <a
+              href={`#${s.id}`}
+              class:list={[
+                'tap justify-center bg-surface px-4 text-center font-mono text-meta-data text-ink no-underline hover:bg-film-white',
+                sections.length % 2 === 1 && i === sections.length - 1 && 'col-span-2 sm:col-span-1',
+              ]}
+            >{s.title}</a>
+          ))}
+        </nav>
+      )}
+    </header>
+
+    {!cartelera ? (
+      <p class="mt-10 font-mono text-body-md text-muted">{t('releases.unavailable')}</p>
+    ) : sections.length === 0 ? (
+      <p class="mt-10 font-mono text-body-md text-muted">{t('releases.empty')}</p>
+    ) : (
+      sections.map((s) => {
+        // 2, 3 y 6 columnas: con un múltiplo de 6 casillas la rejilla cierra
+        // en rectángulo en cualquier pantalla.
+        const huecos = padTo(s.films.length, 6) - s.films.length;
+        return (
+          <section id={s.id} class="mt-12 scroll-mt-24">
+            <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">
+              {s.title} <span class="label">· {s.films.length}</span>
+            </h2>
+            <p class="mt-2 font-mono text-meta-data text-muted first-letter:uppercase">{s.sub}</p>
+            <ul class="mt-4 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-3 lg:grid-cols-6">
+              {s.films.map((f) => (
+                <li class="bg-surface">
+                  <a href={filmHref(f)} class="group flex h-full flex-col no-underline hover:bg-film-white">
+                    <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+                      <img src={f.poster} srcset={f.posterSrcset ?? undefined} sizes="(min-width: 1024px) 16vw, (min-width: 640px) 33vw, 50vw" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                    </div>
+                    <div class="flex flex-1 flex-col p-2">
+                      <p class="font-display text-body-md leading-tight text-ink group-hover:underline">{f.title}</p>
+                      <p class="mt-1 font-mono text-meta-data text-muted">
+                        <time datetime={f.date}>{shortDate(f.date)}</time>
+                        {f.genreIds[0] && <> · {genreName(f.genreIds[0], lang)}</>}
+                      </p>
+                    </div>
+                  </a>
+                </li>
+              ))}
+              {Array.from({ length: huecos }, (_, i) => (
+                <li
+                  class:list={[
+                    'bg-surface',
+                    // En móvil (2 columnas) y tableta (3) sobran algunas casillas de relleno.
+                    i >= (padTo(s.films.length, 2) - s.films.length) && 'hidden',
+                    i < (padTo(s.films.length, 3) - s.films.length) && 'sm:block',
+                    i >= (padTo(s.films.length, 3) - s.films.length) && 'sm:hidden',
+                    'lg:block',
+                  ]}
+                  aria-hidden="true"
+                ></li>
+              ))}
+            </ul>
+          </section>
+        );
+      })
+    )}
+
+    <p class="mt-10 font-mono text-meta-data text-muted">{t('releases.source')}</p>
+  </section>
+</BaseLayout>

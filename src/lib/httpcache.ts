@@ -24,6 +24,7 @@ const CACHE_EXACT = new Map<string, number>([
   ['/discover', 600],
   ['/archive', 600], // incluye biblioteca, glosario, cronología y palmarés
   ['/cines', 1800], // el buscador de salas resuelve en cliente contra /api/cinemas
+  ['/estrenos', 1800], // la cartelera cambia una vez por semana
 ]);
 
 /** Prefijos públicos SSR cacheables (fichas y dosieres: cambian muy poco). */

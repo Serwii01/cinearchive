@@ -415,6 +415,36 @@ export async function popularMovies(locale: string, page = 1) {
   return data.results;
 }
 
+/**
+ * Estrenos en cines de un país entre dos fechas (cartelera, lib/releases.ts).
+ * Con `region`, TMDB filtra por la fecha de estreno EN ESE PAÍS (tipos 2 y 3:
+ * estreno limitado y en cines) y devuelve esa fecha en release_date.
+ */
+export async function regionReleases(
+  region: string,
+  from: string,
+  to: string,
+  locale: string,
+  pages = 1,
+): Promise<TmdbSearchResult[]> {
+  const out: TmdbSearchResult[] = [];
+  for (let page = 1; page <= pages; page++) {
+    const data = await tmdbFetch<{ results: TmdbSearchResult[]; total_pages: number }>('/discover/movie', {
+      language: toTmdbLang(locale),
+      region,
+      with_release_type: '2|3',
+      'release_date.gte': from,
+      'release_date.lte': to,
+      sort_by: 'popularity.desc',
+      include_adult: 'false',
+      page: String(page),
+    });
+    out.push(...data.results);
+    if (page >= data.total_pages) break;
+  }
+  return out;
+}
+
 export function director(movie: TmdbMovie): string | null {
   return movie.credits?.crew.find((c) => c.job === 'Director')?.name ?? null;
 }
