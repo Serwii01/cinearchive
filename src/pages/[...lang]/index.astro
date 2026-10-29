@@ -10,6 +10,7 @@ import { collections, collectionTitle, collectionBlurb } from '../../lib/collect
 import CollectionMosaic from '../../components/CollectionMosaic.astro';
 import { dossiers, dossierCopy } from '../../lib/dossiers';
 import { articles, articleCopy } from '../../lib/articles';
+import { articleImage } from '../../lib/articleimage';
 import { figures } from '../../lib/figures';
 import { getEphemerides, ephemerisDay, ephemerisText } from '../../lib/ephemerides';
 import { profileUrl, profileSrcset } from '../../lib/tmdb';
@@ -22,10 +23,9 @@ import { websiteLd, organizationLd } from '../../lib/seo';
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
-// Efeméride del día. Son 33 fichas escritas y traducidas a los cinco idiomas
-// que no salían en ninguna página: con 33 no se llenan 365 días, así que
-// cuando hoy no toca ninguna se enseña la próxima, que siempre tiene algo que
-// decir. Los textos «un día como hoy» y «próxima efeméride» ya existían.
+// Efeméride del día. Con unas 80 fichas no se llenan 365 días, así que cuando
+// hoy no toca ninguna se enseña la próxima (un test vigila que nunca quede a
+// más de una semana).
 const efem = getEphemerides();
 const efemeride = { hoy: efem.onThisDay.length > 0, dato: efem.onThisDay[0] ?? efem.next };
 
@@ -44,8 +44,16 @@ const cinemaPicks = sample(pdFilms, 4);
 const collectionPicks = collections.slice(0, 3);
 // Dosieres especiales: son dos y van los dos, no se recorta ninguno.
 const dossierPicks = dossiers.map((d) => ({ slug: d.slug, c: dossierCopy(d, lang) }));
-// Artículos: los cuatro más recientes, al pie de la portada.
+// Artículos: los cuatro más recientes, en la sección de debajo del héroe.
 const articlePicks = articles.slice(0, 4).map((a) => ({ slug: a.slug, date: a.date, c: articleCopy(a, lang) }));
+// Carrusel: los tres últimos, uno por diapositiva, y una cuarta con un collage
+// de los cuatro siguientes que lleva a todos los artículos. Las imágenes salen
+// de TMDB (cacheadas): si alguna falla, esa casilla va con grano y su título.
+const carouselArticles = articlePicks.slice(0, 3);
+const collage = await Promise.all(
+  articles.slice(3, 7).map(async (a) => ({ title: articleCopy(a, lang).title, img: await articleImage(a, lang) })),
+);
+const slideCount = carouselArticles.length + (collage.length ? 1 : 0);
 const figurePicks = sample(figures, 6);
 const bookPicks = sample(books, 4);
 // En la portada solo las 3 revistas más recientes (por año de fundación). La
@@ -70,8 +78,8 @@ const homeJsonLd = [
 ---
 
 <BaseLayout jsonLd={homeJsonLd}>
-  {/* HERO — a la izquierda, un carrusel de novedades (artículos, hemeroteca,
-      dosieres especiales) que avanza solo con una línea ocre que se va
+  {/* HERO — a la izquierda, un carrusel con los últimos artículos (tres, y un
+      collage que lleva a todos) que avanza solo con una línea ocre que se va
       llenando; a la derecha, la película del día, comprimida. Sin JavaScript
       se ve la primera diapositiva y la película, y todo sigue siendo enlace.
 
@@ -84,7 +92,7 @@ const homeJsonLd = [
         <home-carousel class="flex min-h-0 flex-col border-ink md:col-span-7 md:border-r" data-interval="7000">
           <div class="grid min-h-0 flex-1 overflow-hidden">
             {/* Un artículo por diapositiva: título y entradilla, nada más. */}
-            {articlePicks.slice(0, 2).map(({ slug, date, c }, i) => (
+            {carouselArticles.map(({ slug, date, c }, i) => (
               <a
                 data-slide
                 style={i === 0 ? undefined : 'visibility:hidden'}
@@ -99,40 +107,33 @@ const homeJsonLd = [
               </a>
             ))}
 
-            {/* Novedades en la hemeroteca: solo las portadas. */}
-            <a data-slide style="visibility:hidden" href={localizePath(lang, 'archive')} class="group flex flex-col justify-center [grid-area:1/1] p-6 no-underline md:p-8">
-              <span class="label">{t('home.latestIssues')}</span>
-              <span class="mt-4 grid ruled grid-cols-4 border border-ink">
-                {latestIssues.slice(0, 4).map((item) => (
-                  <span class="block aspect-[3/4] overflow-hidden bg-charcoal">
-                    <img src={coverUrl(item.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
-                  </span>
-                ))}
-              </span>
-              <span class="mt-4 block font-mono text-meta-data text-muted">{latestIssues.slice(0, 4).map((i) => i.title).join(' · ')}</span>
-              <span class="label mt-4 text-ink transition-colors group-hover:text-muted">{t('home.viewArchive')} →</span>
-            </a>
-
-            {/* Dosieres especiales: los dos títulos. */}
-            <a data-slide style="visibility:hidden" href={localizePath(lang, 'dossiers')} class="group flex flex-col justify-center [grid-area:1/1] p-6 no-underline md:p-8">
-              <span class="label">{t('dossiers.title')}</span>
-              <span class="mt-4 block max-w-2xl text-body-md text-charcoal">{t('dossiers.intro')}</span>
-              <span class="mt-6 flex flex-col gap-3">
-                {dossierPicks.map(({ c }) => (
-                  <span class="block border-l-2 border-ochre pl-4">
-                    <span class="block font-mono text-meta-data text-muted">{c.kicker}</span>
-                    <span class="block font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{c.title}</span>
-                  </span>
-                ))}
-              </span>
-              <span class="label mt-6 text-ink">{t('home.seeAll')} →</span>
-            </a>
+            {/* Collage de cuatro artículos más y la puerta a todos. */}
+            {collage.length > 0 && (
+              <a data-slide style="visibility:hidden" href={localizePath(lang, 'articles')} class="group flex flex-col justify-center [grid-area:1/1] p-6 no-underline md:p-8">
+                <span class="label">{t('articles.title')} · {articles.length}</span>
+                <span class="mt-4 grid ruled grid-cols-2 border border-ink">
+                  {collage.map(({ title, img }) => (
+                    <span class="relative block aspect-video overflow-hidden bg-charcoal">
+                      {img ? (
+                        <img src={img} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                      ) : (
+                        <span class="film-grain block h-full w-full" />
+                      )}
+                      {/* El título sobre la imagen, en una franja oscura para que se lea siempre (también en modo oscuro: va sobre una foto, no sobre el papel).
+                          El recorte a dos líneas va en el span de dentro: en el de fuera, el relleno inferior dejaba asomar la tercera. */}
+                      <span class="absolute inset-x-0 bottom-0 bg-[rgba(0,0,0,0.72)] px-2 py-1 font-display text-[0.8125rem] leading-tight text-[#fff] md:text-body-md"><span class="line-clamp-2">{title}</span></span>
+                    </span>
+                  ))}
+                </span>
+                <span class="label mt-6 text-ink transition-colors group-hover:text-muted">{t('home.allArticles')} →</span>
+              </a>
+            )}
           </div>
 
           {/* La línea: un tramo por diapositiva. Los pasados, llenos; el actual
               se va llenando; los siguientes, vacíos. Cada tramo es un botón. */}
           <div class="flex gap-1 border-t border-ink px-6 py-0 md:px-10" role="tablist" aria-label={t('home.carousel')}>
-            {Array.from({ length: Math.min(articlePicks.length, 2) + 2 }, (_, k) => k).map((i) => (
+            {Array.from({ length: slideCount }, (_, k) => k).map((i) => (
               <button type="button" role="tab" data-tab aria-selected={i === 0 ? 'true' : 'false'} aria-label={`${i + 1}`} class="group/tab flex h-11 flex-1 cursor-pointer items-center bg-transparent p-0">
                 <span class="block h-[3px] w-full bg-outline-variant transition-colors group-hover/tab:bg-muted">
                   <span data-fill class="block h-full w-0 bg-ochre"></span>
@@ -437,3 +438,85 @@ const homeJsonLd = [
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  /**
+   * Carrusel de la portada. Avanza solo cada N ms; la línea de abajo va por
+   * tramos (uno por diapositiva): los pasados llenos, el actual llenándose.
+   * Se para al pasar el ratón o al perder la pestaña, y no avanza si el
+   * sistema pide menos movimiento. Cada tramo es un botón.
+   *
+   * Ojo: este script se borró por error una vez (al mover la sección de
+   * artículos) y el carrusel se quedó parado en la primera diapositiva sin
+   * que nada fallara. Sin él, <home-carousel> es solo una etiqueta.
+   */
+  class HomeCarousel extends HTMLElement {
+    connectedCallback() {
+      const slides = Array.from(this.querySelectorAll<HTMLElement>('[data-slide]'));
+      const tabs = Array.from(this.querySelectorAll<HTMLButtonElement>('[data-tab]')).slice(0, slides.length);
+      // Tramos de más (si hay menos diapositivas que tramos pintados): fuera.
+      this.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((t, k) => {
+        if (k >= slides.length) t.remove();
+      });
+      if (slides.length < 2) return;
+      const interval = Number(this.dataset.interval) || 7000;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let i = 0;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      let paused = false;
+
+      const fill = (k: number) => tabs[k]?.querySelector<HTMLElement>('[data-fill]');
+      const pintarLinea = () => {
+        tabs.forEach((_, k) => {
+          const f = fill(k);
+          if (!f) return;
+          f.style.transition = 'none';
+          f.style.width = k < i ? '100%' : '0%';
+        });
+        const actual = fill(i);
+        if (!actual) return;
+        void actual.offsetWidth; // fuerza el reflow para que la transición arranque desde 0
+        if (reduce || paused) return;
+        actual.style.transition = `width ${interval}ms linear`;
+        actual.style.width = '100%';
+      };
+      const programar = () => {
+        clearTimeout(timer);
+        if (reduce || paused || document.hidden) return;
+        timer = setTimeout(() => mostrar((i + 1) % slides.length), interval);
+      };
+      const mostrar = (n: number) => {
+        i = n;
+        // visibility en vez de display: las diapositivas ocultas siguen
+        // ocupando su celda y la cabecera no cambia de alto.
+        slides.forEach((s, k) => {
+          s.style.visibility = k === n ? 'visible' : 'hidden';
+          s.setAttribute('aria-hidden', String(k !== n));
+          s.tabIndex = k === n ? 0 : -1;
+        });
+        tabs.forEach((t, k) => t.setAttribute('aria-selected', String(k === n)));
+        pintarLinea();
+        programar();
+      };
+
+      tabs.forEach((t, k) => t.addEventListener('click', () => mostrar(k)));
+      this.addEventListener('mouseenter', () => {
+        paused = true;
+        clearTimeout(timer);
+        const actual = fill(i);
+        if (actual) {
+          actual.style.width = getComputedStyle(actual).width; // se congela donde está
+          actual.style.transition = 'none';
+        }
+      });
+      this.addEventListener('mouseleave', () => {
+        paused = false;
+        mostrar(i);
+      });
+      document.addEventListener('visibilitychange', () => (document.hidden ? clearTimeout(timer) : mostrar(i)));
+
+      mostrar(0);
+    }
+  }
+  if (!customElements.get('home-carousel')) customElements.define('home-carousel', HomeCarousel);
+</script>
