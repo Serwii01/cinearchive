@@ -1,13 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Stars from '../../components/Stars.astro';
+import GoalCard from '../../components/GoalCard.astro';
 import { normalizeLang, useTranslations, localizePath } from '../../i18n/ui';
 import { filmSlug } from '../../lib/slug';
 import { db } from '../../db/client';
 import { userFilms } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 import { getFilmsBrief } from '../../lib/films';
-import { listViewings, viewingYears } from '../../lib/viewings';
+import { listViewings, viewingYears, yearGoal } from '../../lib/viewings';
 import { groupByMonth, monthLabel } from '../../lib/diary';
 
 const lang = normalizeLang(Astro.params.lang);
@@ -33,6 +34,9 @@ const filmRating = new Map(filmRows.map((r) => [r.tmdbId, r.rating]));
 
 const briefs = await getFilmsBrief([...new Set(viewings.map((v) => v.tmdbId))], lang);
 const months = groupByMonth(viewings);
+// El reto del año que se está viendo; sin visionados todavía, el del año en curso.
+const goalYear = year ?? new Date().getUTCFullYear();
+const goal = await yearGoal(userId, goalYear);
 const base = localizePath(lang, 'diary');
 ---
 
@@ -48,6 +52,8 @@ const base = localizePath(lang, 'diary');
         <a href={`${localizePath(lang, 'account')}#letterboxd`} class="tap label hover:text-ink">{t('import.cta')} →</a>
       </div>
     </header>
+
+    <GoalCard goal={goal} year={goalYear} lang={lang} editable class="mt-6" />
 
     {years.length > 1 && (
       <nav class="mt-6 flex w-fit max-w-full flex-wrap gap-px border border-ink bg-ink" aria-label={t('diary.years')}>

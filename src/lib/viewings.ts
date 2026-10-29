@@ -9,11 +9,12 @@
  */
 import { and, desc, eq, gte, lt, sql } from 'drizzle-orm';
 import { db } from '../db/client';
-import { userFilms, userViewings } from '../db/schema';
+import { userFilms, userGoals, userViewings } from '../db/schema';
 import { invalidateRecommendations } from './recs';
 import { invalidateStats } from './stats';
 import { getFilmsBrief } from './films';
 import { computeYear, type YearReview } from './yearreview';
+import { goalProgress, type GoalProgress } from './goal';
 
 export interface Viewing {
   id: number;
@@ -157,4 +158,39 @@ export async function loadYearReview(userId: string, year: number, locale: strin
     briefs,
   );
   return { review, briefs };
+}
+
+/* ------------------------------------------------------------------ *
+ * Reto anual (las cuentas están en goal.ts)
+ * ------------------------------------------------------------------ */
+
+/** Visionados del usuario en un año. */
+export async function countViewings(userId: string, year: number): Promise<number> {
+  const [r] = await db
+    .select({ n: sql<number>`count(*)::int` })
+    .from(userViewings)
+    .where(and(eq(userViewings.userId, userId), gte(userViewings.watchedOn, `${year}-01-01`), lt(userViewings.watchedOn, `${year + 1}-01-01`)));
+  return Number(r?.n ?? 0);
+}
+
+/** El reto de ese año con su progreso, o null si no se puso ninguno. */
+export async function yearGoal(userId: string, year: number, today = new Date()): Promise<GoalProgress | null> {
+  const [g] = await db
+    .select({ target: userGoals.target })
+    .from(userGoals)
+    .where(and(eq(userGoals.userId, userId), eq(userGoals.year, year)));
+  if (!g) return null;
+  return goalProgress(g.target, await countViewings(userId, year), year, today);
+}
+
+/** Pone o cambia el reto de un año; con target null lo quita. */
+export async function setGoal(userId: string, year: number, target: number | null): Promise<void> {
+  if (target == null) {
+    await db.delete(userGoals).where(and(eq(userGoals.userId, userId), eq(userGoals.year, year)));
+    return;
+  }
+  await db
+    .insert(userGoals)
+    .values({ userId, year, target, updatedAt: new Date() })
+    .onConflictDoUpdate({ target: [userGoals.userId, userGoals.year], set: { target, updatedAt: new Date() } });
 }

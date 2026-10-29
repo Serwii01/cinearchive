@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../../../../../layouts/BaseLayout.astro';
 import YearReview from '../../../../../components/YearReview.astro';
+import GoalCard from '../../../../../components/GoalCard.astro';
 import { normalizeLang, useTranslations, localizePath } from '../../../../../i18n/ui';
-import { loadYearReview } from '../../../../../lib/viewings';
+import { loadYearReview, yearGoal } from '../../../../../lib/viewings';
 import { getProfileByUsername, followState, canViewActivity } from '../../../../../lib/social';
 
 export const prerender = false;
@@ -25,6 +26,7 @@ if (!canViewActivity(viewer?.id ?? null, target, state)) return new Response(nul
 const { review, briefs } = await loadYearReview(target.userId, year, lang);
 if (review.viewings === 0) return new Response(null, { status: 404 });
 
+const goal = await yearGoal(target.userId, year);
 const heading = t('year.ofUser').replace('{year}', String(year)).replace('{user}', `@${target.username}`);
 const isSelf = viewer?.id === target.userId;
 const site = Astro.site ?? new URL('https://cinearchive.es');
@@ -35,6 +37,7 @@ const share = isSelf && !target.isPrivate ? { url: pageUrl, img: `/api/og/year/$
 <BaseLayout title={heading} description={t('year.description').replace('{user}', `@${target.username}`).replace('{year}', String(year))} noindex={target.isPrivate}>
   <section class="frame py-12">
     <a href={localizePath(lang, `u/${target.username}`)} class="label no-underline hover:text-ink">← @{target.username}</a>
+    <GoalCard goal={goal} year={year} lang={lang} class="mt-6" />
     <div class="mt-6">
       <YearReview review={review} briefs={briefs} lang={lang} heading={heading} share={share} />
     </div>

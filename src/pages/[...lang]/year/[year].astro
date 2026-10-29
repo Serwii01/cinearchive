@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import YearReview from '../../../components/YearReview.astro';
+import GoalCard from '../../../components/GoalCard.astro';
 import { normalizeLang, useTranslations, localizePath } from '../../../i18n/ui';
-import { loadYearReview, viewingYears } from '../../../lib/viewings';
+import { loadYearReview, viewingYears, yearGoal } from '../../../lib/viewings';
 import { getMyProfile } from '../../../lib/social';
 
 export const prerender = false;
@@ -18,6 +19,7 @@ if (!Number.isInteger(year) || year < 1900 || year > new Date().getUTCFullYear()
 
 const { review, briefs } = await loadYearReview(userId, year, lang);
 const years = await viewingYears(userId);
+const goal = await yearGoal(userId, year);
 
 // Se comparte la versión pública del perfil; con perfil privado no hay nada
 // que enlazar, así que tampoco hay botones.
@@ -47,6 +49,7 @@ const heading = t('year.cta').replace('{year}', String(year));
         ))}
       </nav>
     )}
+    <GoalCard goal={goal} year={year} lang={lang} class="mt-6" />
     <div class="mt-6">
       <YearReview review={review} briefs={briefs} lang={lang} heading={heading} share={share} />
     </div>

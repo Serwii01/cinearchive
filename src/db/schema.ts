@@ -254,8 +254,79 @@ export const userPreferences = pgTable('user_preferences', {
   favoritePeople: jsonb('favorite_people').$type<{ id: number; name: string }[]>().notNull().default([]),
   theme: text('theme').notNull().default('light'),
   privacy: jsonb('privacy').notNull().default({}),
+  /**
+   * Para los avisos de «ya está en tu plataforma»: el país donde mira cine y
+   * las plataformas que tiene (ids de TMDB). Sin plataformas elegidas avisa de
+   * cualquiera con suscripción o gratis.
+   */
+  watchRegion: text('watch_region').notNull().default('ES'),
+  watchProviders: integer('watch_providers').array().notNull().default([]),
+  /** Además del aviso en la web, un correo. Desactivado salvo que lo pida. */
+  alertsEmail: boolean('alerts_email').notNull().default(false),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
+
+/** Reto anual: cuántas películas quiere ver el usuario ese año. */
+export const userGoals = pgTable(
+  'user_goals',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    year: integer('year').notNull(),
+    target: integer('target').notNull(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.year] }),
+  }),
+);
+
+/**
+ * Lo último que se vio en «dónde ver» de una película y región (solo
+ * suscripción, gratis y con anuncios). Es la foto contra la que se compara
+ * cada día para saber qué plataforma es NUEVA. No sirve films_cache: una
+ * visita a la ficha la refresca y el cambio pasaría sin aviso.
+ */
+export const watchSnapshot = pgTable(
+  'watch_snapshot',
+  {
+    tmdbId: integer('tmdb_id').notNull(),
+    region: text('region').notNull(),
+    providerIds: integer('provider_ids').array().notNull().default([]),
+    checkedAt: timestamp('checked_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.tmdbId, t.region] }),
+    checkedIdx: index('watch_snapshot_checked_idx').on(t.checkedAt),
+  }),
+);
+
+/** Avisos de «una película que tienes pendiente ha llegado a una plataforma». */
+export const streamAlerts = pgTable(
+  'stream_alerts',
+  {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    tmdbId: integer('tmdb_id').notNull(),
+    region: text('region').notNull(),
+    providerId: integer('provider_id').notNull(),
+    providerName: text('provider_name').notNull(),
+    providerLogo: text('provider_logo'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    /** Cuándo lo vio en Notificaciones; null = nuevo. */
+    seenAt: timestamp('seen_at'),
+    /** Cuándo salió en un correo; null = aún no (o no quiere correo). */
+    emailedAt: timestamp('emailed_at'),
+  },
+  (t) => ({
+    // Si una plataforma quita la película y la vuelve a poner, no se avisa dos veces.
+    uniq: uniqueIndex('stream_alerts_uq').on(t.userId, t.tmdbId, t.region, t.providerId),
+    userIdx: index('stream_alerts_user_idx').on(t.userId, t.createdAt),
+  }),
+);
 
 /* ------------------------------------------------------------------ *
  * Capa social: perfiles públicos, seguidores y solicitudes.

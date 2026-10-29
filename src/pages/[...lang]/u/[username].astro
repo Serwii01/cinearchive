@@ -2,6 +2,8 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Stars from '../../../components/Stars.astro';
 import PosterGrid from '../../../components/PosterGrid.astro';
+import GoalCard from '../../../components/GoalCard.astro';
+import { yearGoal } from '../../../lib/viewings';
 import { reviewGrid } from '../../../lib/grid';
 import Avatar from '../../../components/Avatar.astro';
 import Badges from '../../../components/Badges.astro';
@@ -59,6 +61,7 @@ let watchlist: number[] = [];
 let watchlistTotal = 0;
 let seenTotal = 0;
 let yearViewings = 0;
+let goal: Awaited<ReturnType<typeof yearGoal>> = null;
 let viewingsTotal = 0;
 let lists: { id: string; name: string; count: number; films: number[] }[] = [];
 let briefs = new Map<number, FilmBrief>();
@@ -119,6 +122,7 @@ if (canView) {
     .from(userViewings)
     .where(and(eq(userViewings.userId, uid), gte(userViewings.watchedOn, `${thisYear}-01-01`)));
   yearViewings = y?.n ?? 0;
+  goal = await yearGoal(uid, thisYear);
   const [vt] = await db.select({ n: sql<number>`count(*)::int` }).from(userViewings).where(eq(userViewings.userId, uid));
   viewingsTotal = vt?.n ?? 0;
 
@@ -305,6 +309,7 @@ const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lan
             </li>
           ))}
         </ul>
+        <GoalCard goal={goal} year={thisYear} lang={lang} class="mt-3" />
         {yearViewings > 0 && (
           <a href={localizePath(lang, `u/${target.username}/year/${thisYear}`)} class="tap label mt-3 hover:text-ink">
             {t('year.ofUser').replace('{year}', String(thisYear)).replace('{user}', `@${target.username}`)} →
