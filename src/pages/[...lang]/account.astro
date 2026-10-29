@@ -3,6 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Avatar from '../../components/Avatar.astro';
 import Badges from '../../components/Badges.astro';
 import LetterboxdImport from '../../components/LetterboxdImport.astro';
+import StreamAlertsSettings from '../../components/StreamAlertsSettings.astro';
+import { emailConfigured } from '../../lib/email';
 import { badgesForUser } from '../../lib/badges';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { GENRES, genreName } from '../../data/genres';
@@ -349,6 +351,14 @@ const inputCls =
             </ul>
           )}
         </section>
+
+        <StreamAlertsSettings
+          lang={lang}
+          region={prefs?.watchRegion ?? 'ES'}
+          providers={prefs?.watchProviders ?? []}
+          email={prefs?.alertsEmail ?? false}
+          emailAvailable={emailConfigured()}
+        />
 
         <LetterboxdImport lang={lang} />
 

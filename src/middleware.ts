@@ -8,6 +8,7 @@ import { isAdmin } from './lib/admin';
 import { cachePolicy } from './lib/httpcache';
 import { isKnownRoute, legacyDefaultLangRedirect } from './lib/routes';
 import { contarVisita } from './lib/visits';
+import { startStreamAlerts } from './lib/streamjob';
 import { languages, defaultLang, localizePath, stripLangPrefix, getLangFromUrl } from './i18n/ui';
 
 const LANGS = Object.keys(languages);
@@ -66,6 +67,12 @@ function harden(response: Response, path?: string): Response {
 export const onRequest = defineMiddleware(async (context, next) => {
   const { request, url } = context;
   const path = url.pathname;
+
+  // Los avisos de «ya está en tu plataforma» corren en este mismo proceso. Se
+  // arrancan con la primera petición de verdad y solo en producción: el build
+  // también carga el middleware al prerenderizar, y ahí no deben arrancar. En
+  // local se lanzan a mano desde /api/admin/stream-alerts.
+  if (import.meta.env.PROD && !context.isPrerendered) startStreamAlerts();
 
   // Límite global por IP: primera barrera de la app contra inundación de
   // peticiones. Los assets estáticos no se cuentan (los amortigua Caddy).

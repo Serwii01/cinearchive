@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { langFromRequest, verificationEmail, resetEmail, testEmail, withCallback } from '../src/lib/emails';
+import { langFromRequest, verificationEmail, resetEmail, testEmail, withCallback, streamAlertEmail } from '../src/lib/emails';
 import { languages, defaultLang, type Lang } from '../src/i18n/ui';
 
 const LANGS = Object.keys(languages) as Lang[];
@@ -72,5 +72,18 @@ describe('withCallback', () => {
 
   it('una URL ilegible se queda como está en vez de romper el envío', () => {
     expect(withCallback('esto-no-es-una-url', '/verify')).toBe('esto-no-es-una-url');
+  });
+});
+
+describe('aviso de plataformas', () => {
+  it('una línea por película, escapada, y el asunto cuenta cuántas', () => {
+    const uno = streamAlertEmail('es', ['Perfect Days — Filmin'], 'https://cinearchive.es/notifications');
+    expect(uno.subject).toContain('Una película');
+    expect(uno.html).toContain('<li>Perfect Days — Filmin</li>');
+    expect(uno.text).toContain('- Perfect Days — Filmin');
+    const dos = streamAlertEmail('en', ['<b>X</b> — Netflix', 'Y — Max'], 'https://cinearchive.es/en/notifications');
+    expect(dos.subject).toMatch(/^2 films/);
+    expect(dos.html).toContain('&lt;b&gt;X&lt;/b&gt;');
+    expect(dos.html).not.toContain('<b>X</b>');
   });
 });

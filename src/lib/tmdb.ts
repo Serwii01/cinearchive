@@ -748,8 +748,18 @@ export function providerLogoUrl(path: string | null, size: 'w45' | 'w92' | 'w154
   return path ? `${TMDB_IMG}/${size}${path}` : null;
 }
 
+/**
+ * Solo el «dónde ver» de una película, todas las regiones: lo que piden cada
+ * día los avisos de «ya está en tu plataforma». Mucho más ligero que la ficha
+ * entera con su append_to_response.
+ */
+export async function getWatchProvidersRaw(id: number): Promise<Record<string, TmdbRegionProviders>> {
+  const data = await tmdbFetch<{ results?: Record<string, TmdbRegionProviders> }>(`/movie/${id}/watch/providers`);
+  return data.results ?? {};
+}
+
 /** Aplana el bloque de una región a nuestra lista, sin repetir plataforma+modalidad. */
-function flattenRegion(region: string, block: TmdbRegionProviders | undefined): WatchAvailability {
+export function flattenRegion(region: string, block: TmdbRegionProviders | undefined): WatchAvailability {
   const providers: WatchProvider[] = [];
   if (!block) return { region, link: null, providers };
 

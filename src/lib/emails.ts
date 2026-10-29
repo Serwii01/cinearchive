@@ -175,8 +175,11 @@ const esc = (s: string) =>
  * respetan los clientes de correo. Colores fijos, sin modo oscuro: Gmail y
  * Outlook no entienden las variables CSS.
  */
-function layout(c: Copy, url: string): string {
+function layout(c: Copy, url: string, list: string[] = []): string {
   const u = esc(url);
+  const items = list.length
+    ? `<ul style="margin:0 0 20px;padding-left:20px;font-size:15px;line-height:1.6">${list.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`
+    : '';
   return `<!doctype html>
 <html><body style="margin:0;padding:24px;background:#f9f9f9;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;border:1px solid #000;background:#fff">
@@ -186,6 +189,7 @@ function layout(c: Copy, url: string): string {
     <tr><td style="padding:24px">
       <h1 style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:400;line-height:1.2">${esc(c.title)}</h1>
       <p style="margin:0 0 20px;font-size:15px;line-height:1.6">${esc(c.intro)}</p>
+      ${items}
       <p style="margin:0 0 20px">
         <a href="${u}" style="display:inline-block;background:#eab308;color:#1a1a1a;text-decoration:none;padding:12px 20px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;border:1px solid #000">${esc(c.cta)}</a>
       </p>
@@ -199,8 +203,9 @@ function layout(c: Copy, url: string): string {
 </body></html>`;
 }
 
-function plain(c: Copy, url: string): string {
-  return `${c.title}\n\n${c.intro}\n\n${url}\n\n${c.note}\n${c.ignore}`;
+function plain(c: Copy, url: string, list: string[] = []): string {
+  const items = list.length ? `\n\n${list.map((l) => `- ${l}`).join('\n')}` : '';
+  return `${c.title}\n\n${c.intro}${items}\n\n${url}\n\n${c.note}\n${c.ignore}`;
 }
 
 export interface BuiltEmail {
@@ -229,4 +234,61 @@ export function testEmail(siteUrl: string): BuiltEmail {
     fallback: 'Dirección del sitio:',
   };
   return build(c, siteUrl);
+}
+
+type AlertCopy = Omit<Copy, 'subject'> & { subject: (n: number) => string };
+
+const STREAM_ALERT: Record<Lang, AlertCopy> = {
+  es: {
+    subject: (n) => (n === 1 ? 'Una película que tienes pendiente ya está en tu plataforma' : `${n} películas que tienes pendientes ya están en tus plataformas`),
+    title: 'Ya puedes verla',
+    intro: 'De tu lista de pendientes, esto acaba de llegar a una plataforma de tu país:',
+    cta: 'Ver mis avisos',
+    note: 'Los datos de dónde ver son de JustWatch y pueden cambiar.',
+    ignore: 'Puedes dejar de recibir estos correos en tu cuenta, en «Avisos de plataformas».',
+    fallback: 'Si el botón no funciona, copia esta dirección en tu navegador:',
+  },
+  en: {
+    subject: (n) => (n === 1 ? 'A film on your watchlist is now on your platform' : `${n} films on your watchlist are now on your platforms`),
+    title: 'You can watch it now',
+    intro: 'From your watchlist, this has just arrived on a platform in your country:',
+    cta: 'See my alerts',
+    note: 'Where-to-watch data comes from JustWatch and may change.',
+    ignore: 'You can stop these emails from your account, under “Platform alerts”.',
+    fallback: 'If the button does not work, copy this address into your browser:',
+  },
+  gl: {
+    subject: (n) => (n === 1 ? 'Unha película que tes pendente xa está na túa plataforma' : `${n} películas que tes pendentes xa están nas túas plataformas`),
+    title: 'Xa podes vela',
+    intro: 'Da túa lista de pendentes, isto acaba de chegar a unha plataforma do teu país:',
+    cta: 'Ver os meus avisos',
+    note: 'Os datos de onde ver son de JustWatch e poden cambiar.',
+    ignore: 'Podes deixar de recibir estes correos na túa conta, en «Avisos de plataformas».',
+    fallback: 'Se o botón non funciona, copia este enderezo no teu navegador:',
+  },
+  eu: {
+    subject: (n) => (n === 1 ? 'Zain duzun film bat zure plataforman dago jada' : `Zain dituzun ${n} film zure plataformetan daude jada`),
+    title: 'Orain ikus dezakezu',
+    intro: 'Zure zain-zerrendatik, hau zure herrialdeko plataforma batera iritsi berri da:',
+    cta: 'Ikusi nire abisuak',
+    note: 'Non ikusi datuak JustWatchenak dira eta alda daitezke.',
+    ignore: 'Zure kontuan, «Plataformen abisuak» atalean, utz diezaiokezu mezu hauek jasotzeari.',
+    fallback: 'Botoiak funtzionatzen ez badu, kopiatu helbide hau nabigatzailean:',
+  },
+  ca: {
+    subject: (n) => (n === 1 ? 'Una pel·lícula que tens pendent ja és a la teva plataforma' : `${n} pel·lícules que tens pendents ja són a les teves plataformes`),
+    title: 'Ja la pots veure',
+    intro: 'De la teva llista de pendents, això acaba d’arribar a una plataforma del teu país:',
+    cta: 'Veure els meus avisos',
+    note: 'Les dades d’on veure-la són de JustWatch i poden canviar.',
+    ignore: 'Pots deixar de rebre aquests correus al teu compte, a «Avisos de plataformes».',
+    fallback: 'Si el botó no funciona, copia aquesta adreça al teu navegador:',
+  },
+};
+
+/** Correo de «ya está en tu plataforma»: una línea por película («Título — Netflix»). */
+export function streamAlertEmail(lang: Lang, lines: string[], url: string): BuiltEmail {
+  const a = STREAM_ALERT[lang] ?? STREAM_ALERT[defaultLang];
+  const c: Copy = { ...a, subject: a.subject(lines.length) };
+  return { subject: c.subject, html: layout(c, url, lines), text: plain(c, url, lines) };
 }

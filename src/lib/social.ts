@@ -1,6 +1,6 @@
-import { and, count, desc, eq, gt, isNotNull, lt, lte, or, sql } from 'drizzle-orm';
+import { and, count, desc, eq, gt, isNotNull, isNull, lt, lte, or, sql } from 'drizzle-orm';
 import { db } from '../db/client';
-import { profile, follows, user, userFilms, userViewings } from '../db/schema';
+import { profile, follows, user, userFilms, userViewings, streamAlerts } from '../db/schema';
 import { buildFeed, pageFeed, type FeedItem } from './feed';
 import type { Profile } from '../db/schema';
 
@@ -217,7 +217,8 @@ export async function pendingRequestCount(userId: string): Promise<number> {
 
 /**
  * Nº de notificaciones sin ver: solicitudes pendientes (siempre) + seguidores
- * nuevos aceptados desde la última vez que abrió las notificaciones.
+ * nuevos aceptados desde la última vez que abrió las notificaciones + avisos de
+ * «ya está en tu plataforma» sin ver.
  */
 export async function notificationCount(userId: string): Promise<number> {
   const [p] = await db
@@ -225,7 +226,12 @@ export async function notificationCount(userId: string): Promise<number> {
     .from(profile)
     .where(eq(profile.userId, userId))
     .limit(1);
-  if (!p) return 0; // sin perfil no participa en la red social
+  const [al] = await db
+    .select({ c: count() })
+    .from(streamAlerts)
+    .where(and(eq(streamAlerts.userId, userId), isNull(streamAlerts.seenAt)));
+  const alerts = Number(al?.c ?? 0);
+  if (!p) return alerts; // sin perfil no participa en la red social, pero los avisos sí le llegan
 
   const [pend] = await db
     .select({ c: count() })
@@ -239,12 +245,13 @@ export async function notificationCount(userId: string): Promise<number> {
     .from(follows)
     .where(and(...conds));
 
-  return Number(pend?.c ?? 0) + Number(nf?.c ?? 0);
+  return Number(pend?.c ?? 0) + Number(nf?.c ?? 0) + alerts;
 }
 
 /** Marca las notificaciones como vistas (limpia el "nuevo" de los seguidores). */
 export async function markNotificationsSeen(userId: string): Promise<void> {
   await db.update(profile).set({ notificationsSeenAt: new Date() }).where(eq(profile.userId, userId));
+  await db.update(streamAlerts).set({ seenAt: new Date() }).where(and(eq(streamAlerts.userId, userId), isNull(streamAlerts.seenAt)));
 }
 
 /* ------------------------------------------------------------------ *

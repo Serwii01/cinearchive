@@ -1,10 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Avatar from '../../components/Avatar.astro';
-import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../i18n/ui';
 import { db } from '../../db/client';
-import { follows, user as userTable, profile } from '../../db/schema';
-import { and, eq, desc } from 'drizzle-orm';
+import { follows, user as userTable, profile, streamAlerts } from '../../db/schema';
+import { and, eq, desc, gt } from 'drizzle-orm';
+import { getFilmsBrief } from '../../lib/films';
+import { providerLogoUrl } from '../../lib/tmdb';
+import { filmSlug } from '../../lib/slug';
 import { getMyProfile, getConnections, markNotificationsSeen } from '../../lib/social';
 
 export const prerender = false;
@@ -29,8 +32,29 @@ const pending = myProfile
 
 const followers = myProfile ? await getConnections(userId, 'followers') : [];
 
-// Al abrir esta página, lo "nuevo" queda visto (limpia el badge de seguidores).
-if (myProfile) await markNotificationsSeen(userId);
+// Avisos de «ya está en tu plataforma» de los últimos tres meses. Se leen antes
+// de marcarlos como vistos para poder señalar cuáles son nuevos.
+const alerts = await db
+  .select()
+  .from(streamAlerts)
+  .where(and(eq(streamAlerts.userId, userId), gt(streamAlerts.createdAt, new Date(Date.now() - 90 * 24 * 60 * 60 * 1000))))
+  .orderBy(desc(streamAlerts.createdAt))
+  .limit(60);
+const alertBriefs = await getFilmsBrief([...new Set(alerts.map((a) => a.tmdbId))], lang);
+// Una fila por película y día: si llega a dos plataformas a la vez, un solo aviso con las dos.
+const alertRows: { tmdbId: number; at: Date; isNew: boolean; providers: { name: string; logo: string | null }[] }[] = [];
+for (const a of alerts) {
+  const day = a.createdAt.toISOString().slice(0, 10);
+  const row = alertRows.find((r) => r.tmdbId === a.tmdbId && r.at.toISOString().slice(0, 10) === day);
+  const prov = { name: a.providerName, logo: providerLogoUrl(a.providerLogo, 'w45') };
+  if (row) {
+    row.providers.push(prov);
+    row.isNew ||= !a.seenAt;
+  } else alertRows.push({ tmdbId: a.tmdbId, at: a.createdAt, isNew: !a.seenAt, providers: [prov] });
+}
+
+// Al abrir esta página, lo "nuevo" queda visto (limpia el badge de seguidores y avisos).
+await markNotificationsSeen(userId);
 ---
 
 <BaseLayout title={t('notifications.title')} noindex>
@@ -40,6 +64,46 @@ if (myProfile) await markNotificationsSeen(userId);
       <span class="label">{t('nav.notifications')}</span>
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('notifications.title')}</h1>
     </header>
+
+    {/* Avisos de plataformas: llegan aunque no tengas perfil público */}
+    <div class="mt-10" id="platform-alerts">
+      <div class="flex flex-wrap items-baseline justify-between gap-3 border-b border-ink pb-2">
+        <h2 class="text-headline-lg text-ink">{t('alerts.section')} <span class="label">· {alertRows.length}</span></h2>
+        <a href={`${localizePath(lang, 'account')}#alerts`} class="tap label hover:text-ink">{t('alerts.settings')} →</a>
+      </div>
+      {alertRows.length === 0 ? (
+        <p class="mt-3 max-w-2xl font-mono text-body-md text-muted">{t('alerts.none')}</p>
+      ) : (
+        <ul class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2">
+          {alertRows.map((r) => {
+            const b = alertBriefs.get(r.tmdbId);
+            return (
+              <li class="bg-surface">
+                <a href={localizePath(lang, `film/${filmSlug(r.tmdbId, b?.title)}`)} class="flex gap-3 p-3 no-underline hover:bg-film-white">
+                  <div class="h-20 w-14 shrink-0 border border-ink bg-charcoal">
+                    {b?.poster && <img src={b.poster} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+                  </div>
+                  <div class="min-w-0">
+                    <span class="label">{formatDate(r.at, lang)}{r.isNew && <span class="ml-2 bg-ochre px-1 text-on-accent">{t('alerts.new')}</span>}</span>
+                    <span class="mt-1 block font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${r.tmdbId}`}</span>
+                    <span class="mt-2 flex flex-wrap items-center gap-2">
+                      {r.providers.map((p) => (
+                        <span class="inline-flex items-center gap-1 font-mono text-meta-data text-charcoal">
+                          {p.logo && <img src={p.logo} alt="" width="20" height="20" class="h-5 w-5 border border-ink" loading="lazy" />}
+                          {p.name}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                </a>
+              </li>
+            );
+          })}
+          {alertRows.length % 2 === 1 && <li class="hidden bg-surface sm:block" aria-hidden="true"></li>}
+        </ul>
+      )}
+      <p class="mt-2 font-mono text-meta-data text-muted">{t('alerts.justwatch')}</p>
+    </div>
 
     {!myProfile ? (
       <p class="mt-10 font-mono text-body-md text-muted">

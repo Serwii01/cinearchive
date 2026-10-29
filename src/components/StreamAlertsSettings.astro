@@ -1,0 +1,126 @@
+---
+/**
+ * Ajustes de los avisos de «ya está en tu plataforma», en la cuenta: el país,
+ * las plataformas que tienes y si quieres además un correo. Al cambiar de país
+ * se piden sus plataformas a /api/films/providers (las mismas de Descubrir).
+ */
+import { useTranslations, locales, type Lang } from '../i18n/ui';
+import { WATCH_REGIONS, countryName } from '../data/countries';
+import { getProviderOptions, providerLogoUrl } from '../lib/tmdb';
+
+interface Props {
+  lang: Lang;
+  region: string;
+  providers: number[];
+  email: boolean;
+  /** Sin remitente configurado no se ofrece el correo. */
+  emailAvailable: boolean;
+}
+
+const { lang, region, providers, email, emailAvailable } = Astro.props;
+const t = useTranslations(lang);
+const options = (await getProviderOptions(region, locales[lang])).map((p) => ({ id: p.id, name: p.name, logo: providerLogoUrl(p.logo, 'w45') }));
+const chosen = new Set(providers);
+---
+
+<section id="alerts" class="border border-ink bg-surface">
+  <header class="border-b border-ink px-5 py-3">
+    <h2 class="font-display text-headline-md text-ink">{t('alerts.title')}</h2>
+  </header>
+  <stream-alerts
+    class="block p-5"
+    data-lang={lang}
+    data-chosen={JSON.stringify(providers)}
+    data-saved={t('account.saved')}
+    data-error={t('goal.error')}
+  >
+    <p class="max-w-prose text-body-md text-charcoal">{t('alerts.intro')}</p>
+
+    <label class="mt-5 flex flex-col gap-1">
+      <span class="label">{t('alerts.region')}</span>
+      <select data-region class="w-fit border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink">
+        {WATCH_REGIONS.map((r) => <option value={r} selected={r === region}>{countryName(r, lang)}</option>)}
+      </select>
+    </label>
+
+    <fieldset class="mt-5">
+      <legend class="label">{t('alerts.providers')}</legend>
+      <p class="mt-1 font-mono text-meta-data text-muted">{t('alerts.providersHelp')}</p>
+      <div data-providers class="mt-3 flex flex-wrap gap-2">
+        {options.map((p) => (
+          <label class="cursor-pointer">
+            <input type="checkbox" value={p.id} checked={chosen.has(p.id)} class="peer sr-only" />
+            <span class="label inline-flex items-center gap-2 border border-ink px-2 py-1 transition-colors peer-checked:bg-ochre peer-checked:text-on-accent hover:bg-film-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-ochre">
+              {p.logo && <img src={p.logo} alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />}
+              {p.name}
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+
+    {emailAvailable ? (
+      <label class="mt-5 flex items-start gap-2 text-body-md text-charcoal">
+        <input type="checkbox" data-email checked={email} class="mt-1" />
+        <span>{t('alerts.email')}</span>
+      </label>
+    ) : (
+      <p class="mt-5 font-mono text-meta-data text-muted">{t('alerts.emailOff')}</p>
+    )}
+
+    <div class="mt-5 flex flex-wrap items-center gap-4">
+      <button type="button" data-save class="btn btn-primary">{t('account.save')}</button>
+      <span data-msg role="status" class="font-mono text-meta-data text-muted"></span>
+    </div>
+  </stream-alerts>
+</section>
+
+<script>
+  class StreamAlerts extends HTMLElement {
+    connectedCallback() {
+      const region = this.querySelector<HTMLSelectElement>('[data-region]')!;
+      const box = this.querySelector<HTMLElement>('[data-providers]')!;
+      const msg = this.querySelector<HTMLElement>('[data-msg]')!;
+      const lang = this.dataset.lang || 'es';
+      // Lo marcado se recuerda al cambiar de país: Netflix tiene el mismo id en todos.
+      const chosen = new Set<number>(JSON.parse(this.dataset.chosen || '[]'));
+      const esc = (s: string) =>
+        s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+      const read = () => box.querySelectorAll<HTMLInputElement>('input:checked').forEach((i) => chosen.add(Number(i.value)));
+      box.addEventListener('change', (e) => {
+        const i = e.target as HTMLInputElement;
+        if (!i.checked) chosen.delete(Number(i.value));
+      });
+
+      region.addEventListener('change', async () => {
+        read();
+        const res = await fetch(`/api/films/providers?region=${encodeURIComponent(region.value)}&lang=${lang}`).catch(() => null);
+        if (!res?.ok) return;
+        const data = (await res.json()) as { providers: { id: number; name: string; logo: string | null }[] };
+        const cls = box.querySelector('span')?.className ?? '';
+        box.innerHTML = data.providers
+          .map(
+            (p) => `<label class="cursor-pointer">
+              <input type="checkbox" value="${p.id}" ${chosen.has(p.id) ? 'checked' : ''} class="peer sr-only">
+              <span class="${cls}">${p.logo ? `<img src="${esc(p.logo)}" alt="" width="20" height="20" class="h-5 w-5" loading="lazy">` : ''}${esc(p.name)}</span>
+            </label>`,
+          )
+          .join('');
+      });
+
+      this.querySelector('[data-save]')!.addEventListener('click', async () => {
+        // Solo cuentan las plataformas del país elegido que están marcadas.
+        const providers = [...box.querySelectorAll<HTMLInputElement>('input:checked')].map((i) => Number(i.value));
+        const email = !!this.querySelector<HTMLInputElement>('[data-email]')?.checked;
+        const res = await fetch('/api/me/alerts', {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ region: region.value, providers, email }),
+        }).catch(() => null);
+        msg.textContent = res?.ok ? this.dataset.saved || 'OK' : this.dataset.error || '';
+        if (res?.ok) setTimeout(() => (msg.textContent = ''), 1800);
+      });
+    }
+  }
+  if (!customElements.get('stream-alerts')) customElements.define('stream-alerts', StreamAlerts);
+</script>
