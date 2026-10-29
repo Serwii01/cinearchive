@@ -14,6 +14,26 @@
     },
     {
       "month": 1,
+      "day": 10,
+      "year": 1927,
+      "text_es": "Se estrena en Berlín «Metrópolis», de Fritz Lang.",
+      "text_en": "Fritz Lang's “Metropolis” premieres in Berlin.",
+      "text_gl": "Estréase en Berlín «Metrópolis», de Fritz Lang.",
+      "text_eu": "Fritz Langen «Metropolis» estreinatzen da Berlinen.",
+      "text_ca": "S'estrena a Berlín «Metròpolis», de Fritz Lang."
+    },
+    {
+      "month": 1,
+      "day": 14,
+      "year": 1941,
+      "text_es": "Nace Faye Dunaway, la Bonnie de «Bonnie y Clyde».",
+      "text_en": "Faye Dunaway is born, the Bonnie of “Bonnie and Clyde”.",
+      "text_gl": "Nace Faye Dunaway, a Bonnie de «Bonnie e Clyde».",
+      "text_eu": "Faye Dunaway jaio zen, «Bonnie and Clyde» filmeko Bonnie.",
+      "text_ca": "Neix Faye Dunaway, la Bonnie de «Bonnie i Clyde»."
+    },
+    {
+      "month": 1,
       "day": 20,
       "year": 1920,
       "text_es": "Nace Federico Fellini, poeta del exceso y la memoria.",
@@ -35,6 +55,26 @@
       "text_ca": "Neix Serguei Eisenstein, teòric i mestre del muntatge."
     },
     {
+      "month": 1,
+      "day": 26,
+      "year": 1925,
+      "text_es": "Nace Paul Newman, de «La gata sobre el tejado de zinc» a «El golpe».",
+      "text_en": "Paul Newman is born: from “Cat on a Hot Tin Roof” to “The Sting”.",
+      "text_gl": "Nace Paul Newman, de «A gata sobre o tellado de cinc» a «O golpe».",
+      "text_eu": "Paul Newman jaio zen, «Cat on a Hot Tin Roof» filmetik «The Sting» filmera.",
+      "text_ca": "Neix Paul Newman, de «La gata damunt la teulada de zinc» a «El cop»."
+    },
+    {
+      "month": 2,
+      "day": 1,
+      "year": 1901,
+      "text_es": "Nace Clark Gable, el Rhett Butler de «Lo que el viento se llevó».",
+      "text_en": "Clark Gable is born, Rhett Butler in “Gone with the Wind”.",
+      "text_gl": "Nace Clark Gable, o Rhett Butler de «O que o vento levou».",
+      "text_eu": "Clark Gable jaio zen, «Haizeak eraman zuena» filmeko Rhett Butler.",
+      "text_ca": "Neix Clark Gable, el Rhett Butler d'«Allò que el vent s'endugué»."
+    },
+    {
       "month": 2,
       "day": 6,
       "year": 1932,
@@ -47,6 +87,26 @@
     },
     {
       "month": 2,
+      "day": 8,
+      "year": 1931,
+      "text_es": "Nace James Dean, rebelde sin causa y mito de solo tres películas.",
+      "text_en": "James Dean is born, rebel without a cause and a legend of just three films.",
+      "text_gl": "Nace James Dean, rebelde sen causa e mito de só tres películas.",
+      "text_eu": "James Dean jaio zen, kausarik gabeko errebeldea eta hiru filmetako mitoa.",
+      "text_ca": "Neix James Dean, rebel sense causa i mite de només tres pel·lícules."
+    },
+    {
+      "month": 2,
+      "day": 15,
+      "year": 1882,
+      "text_es": "Nace John Barrymore, «el gran perfil», de una saga de actores que llega hasta Drew Barrymore.",
+      "text_en": "John Barrymore is born, “the Great Profile”, from an acting dynasty that reaches Drew Barrymore.",
+      "text_gl": "Nace John Barrymore, «o gran perfil», dunha saga de actores que chega ata Drew Barrymore.",
+      "text_eu": "John Barrymore jaio zen, «profil handia», Drew Barrymoreraino iristen den aktore-leinukoa.",
+      "text_ca": "Neix John Barrymore, «el gran perfil», d'una nissaga d'actors que arriba fins a Drew Barrymore."
+    },
+    {
+      "month": 2,
       "day": 22,
       "year": 1900,
       "text_es": "Nace Luis Buñuel, padre del surrealismo en el cine.",
@@ -55,6 +115,16 @@
       "text_gl": "Nace Luis Buñuel, pai do surrealismo no cine.",
       "text_eu": "Luis Buñuel jaio zen, zinemako surrealismoaren aita.",
       "text_ca": "Neix Luis Buñuel, pare del surrealisme al cinema."
+    },
+    {
+      "month": 2,
+      "day": 27,
+      "year": 1932,
+      "text_es": "Nace Elizabeth Taylor, la Cleopatra de Hollywood.",
+      "text_en": "Elizabeth Taylor is born, Hollywood's Cleopatra.",
+      "text_gl": "Nace Elizabeth Taylor, a Cleopatra de Hollywood.",
+      "text_eu": "Elizabeth Taylor jaio zen, Hollywoodeko Kleopatra.",
+      "text_ca": "Neix Elizabeth Taylor, la Cleòpatra de Hollywood."
     },
     {
       "month": 3,
@@ -69,6 +139,26 @@
     },
     {
       "month": 3,
+      "day": 6,
+      "year": 1926,
+      "text_es": "Nace Andrzej Wajda, la conciencia del cine polaco.",
+      "text_en": "Andrzej Wajda is born, the conscience of Polish cinema.",
+      "text_gl": "Nace Andrzej Wajda, a conciencia do cine polaco.",
+      "text_eu": "Andrzej Wajda jaio zen, Poloniako zinemaren kontzientzia.",
+      "text_ca": "Neix Andrzej Wajda, la consciència del cinema polonès."
+    },
+    {
+      "month": 3,
+      "day": 12,
+      "year": 1946,
+      "text_es": "Nace Liza Minnelli, hija de Judy Garland y alma de «Cabaret».",
+      "text_en": "Liza Minnelli is born, Judy Garland's daughter and the soul of “Cabaret”.",
+      "text_gl": "Nace Liza Minnelli, filla de Judy Garland e alma de «Cabaret».",
+      "text_eu": "Liza Minnelli jaio zen, Judy Garlanden alaba eta «Cabaret» filmaren arima.",
+      "text_ca": "Neix Liza Minnelli, filla de Judy Garland i ànima de «Cabaret»."
+    },
+    {
+      "month": 3,
       "day": 14,
       "year": 1972,
       "text_es": "Se estrena en Nueva York «El padrino», de Francis Ford Coppola.",
@@ -80,6 +170,16 @@
     },
     {
       "month": 3,
+      "day": 16,
+      "year": 1926,
+      "text_es": "Nace Jerry Lewis, el profesor chiflado.",
+      "text_en": "Jerry Lewis is born, the nutty professor.",
+      "text_gl": "Nace Jerry Lewis, o profesor chalado.",
+      "text_eu": "Jerry Lewis jaio zen, irakasle zoroa.",
+      "text_ca": "Neix Jerry Lewis, el professor guillat."
+    },
+    {
+      "month": 3,
       "day": 23,
       "year": 1910,
       "text_es": "Nace Akira Kurosawa, el emperador del cine japonés.",
@@ -88,6 +188,16 @@
       "text_gl": "Nace Akira Kurosawa, o emperador do cine xaponés.",
       "text_eu": "Akira Kurosawa jaio zen, japoniar zinemaren enperadorea.",
       "text_ca": "Neix Akira Kurosawa, l'emperador del cinema japonès."
+    },
+    {
+      "month": 3,
+      "day": 27,
+      "year": 1963,
+      "text_es": "Nace Quentin Tarantino, del videoclub a Cannes.",
+      "text_en": "Quentin Tarantino is born: from the video store to Cannes.",
+      "text_gl": "Nace Quentin Tarantino, do videoclub a Cannes.",
+      "text_eu": "Quentin Tarantino jaio zen, bideo-dendatik Cannesera.",
+      "text_ca": "Neix Quentin Tarantino, del videoclub a Canes."
     },
     {
       "month": 4,
@@ -113,6 +223,26 @@
     },
     {
       "month": 4,
+      "day": 7,
+      "year": 1939,
+      "text_es": "Nace Francis Ford Coppola, padre de «El padrino».",
+      "text_en": "Francis Ford Coppola is born, father of “The Godfather”.",
+      "text_gl": "Nace Francis Ford Coppola, pai de «O padriño».",
+      "text_eu": "Francis Ford Coppola jaio zen, «Aitabitxia» filmaren aita.",
+      "text_ca": "Neix Francis Ford Coppola, pare d'«El padrí»."
+    },
+    {
+      "month": 4,
+      "day": 10,
+      "year": 1932,
+      "text_es": "Nace Omar Sharif, el doctor Zhivago.",
+      "text_en": "Omar Sharif is born, Doctor Zhivago himself.",
+      "text_gl": "Nace Omar Sharif, o doutor Zhivago.",
+      "text_eu": "Omar Sharif jaio zen, Zhivago doktorea.",
+      "text_ca": "Neix Omar Sharif, el doctor Zhivago."
+    },
+    {
+      "month": 4,
       "day": 16,
       "year": 1889,
       "text_es": "Nace Charlie Chaplin, el vagabundo universal.",
@@ -120,6 +250,16 @@
       "text_gl": "Nace Charlie Chaplin, o vagabundo universal.",
       "text_eu": "Charlie Chaplin jaio zen, mundu osoko arlotea.",
       "text_ca": "Neix Charlie Chaplin, el rodamón universal."
+    },
+    {
+      "month": 4,
+      "day": 22,
+      "year": 1937,
+      "text_es": "Nace Jack Nicholson, huésped del hotel Overlook.",
+      "text_en": "Jack Nicholson is born, guest of the Overlook Hotel.",
+      "text_gl": "Nace Jack Nicholson, hóspede do hotel Overlook.",
+      "text_eu": "Jack Nicholson jaio zen, Overlook hoteleko bezeroa.",
+      "text_ca": "Neix Jack Nicholson, hoste de l'hotel Overlook."
     },
     {
       "month": 4,
@@ -156,6 +296,16 @@
     },
     {
       "month": 5,
+      "day": 10,
+      "year": 1899,
+      "text_es": "Nace Fred Astaire, el baile hecho elegancia.",
+      "text_en": "Fred Astaire is born, dance turned into elegance.",
+      "text_gl": "Nace Fred Astaire, o baile feito elegancia.",
+      "text_eu": "Fred Astaire jaio zen, dotorezia bihurtutako dantza.",
+      "text_ca": "Neix Fred Astaire, el ball fet elegància."
+    },
+    {
+      "month": 5,
       "day": 16,
       "year": 1929,
       "text_es": "Se celebra la primera ceremonia de los premios Óscar.",
@@ -163,6 +313,26 @@
       "text_gl": "Celébrase a primeira cerimonia dos premios Óscar.",
       "text_eu": "Oscar sarien lehen zeremonia ospatzen da.",
       "text_ca": "Se celebra la primera cerimònia dels premis Oscar."
+    },
+    {
+      "month": 5,
+      "day": 22,
+      "year": 1907,
+      "text_es": "Nace Laurence Olivier, Shakespeare en la gran pantalla.",
+      "text_en": "Laurence Olivier is born, Shakespeare on the big screen.",
+      "text_gl": "Nace Laurence Olivier, Shakespeare na gran pantalla.",
+      "text_eu": "Laurence Olivier jaio zen, Shakespeare pantaila handian.",
+      "text_ca": "Neix Laurence Olivier, Shakespeare a la gran pantalla."
+    },
+    {
+      "month": 5,
+      "day": 25,
+      "year": 1977,
+      "text_es": "Se estrena «La guerra de las galaxias» y cambia el cine de verano para siempre.",
+      "text_en": "“Star Wars” opens and changes the summer blockbuster forever.",
+      "text_gl": "Estréase «A guerra das galaxias» e cambia o cine de verán para sempre.",
+      "text_eu": "«Izarren gerra» estreinatzen da, eta udako zinema betiko aldatzen du.",
+      "text_ca": "S'estrena «La guerra de les galàxies» i canvia el cinema d'estiu per sempre."
     },
     {
       "month": 5,
@@ -174,6 +344,36 @@
       "text_gl": "Nace Agnès Varda, avoa da Nouvelle Vague.",
       "text_eu": "Agnès Varda jaio zen, Nouvelle Vagueren amona.",
       "text_ca": "Neix Agnès Varda, àvia de la Nouvelle Vague."
+    },
+    {
+      "month": 6,
+      "day": 1,
+      "year": 1926,
+      "text_es": "Nace Norma Jeane Mortenson, a quien el mundo conocerá como Marilyn Monroe.",
+      "text_en": "Norma Jeane Mortenson is born; the world will know her as Marilyn Monroe.",
+      "text_gl": "Nace Norma Jeane Mortenson, a quen o mundo coñecerá como Marilyn Monroe.",
+      "text_eu": "Norma Jeane Mortenson jaio zen; mundu osoak Marilyn Monroe izenez ezagutuko du.",
+      "text_ca": "Neix Norma Jeane Mortenson, que el món coneixerà com a Marilyn Monroe."
+    },
+    {
+      "month": 6,
+      "day": 6,
+      "year": 1933,
+      "text_es": "Abre en Camden (Nueva Jersey) el primer autocine.",
+      "text_en": "The first drive-in theater opens in Camden, New Jersey.",
+      "text_gl": "Abre en Camden (Nova Jersey) o primeiro autocine.",
+      "text_eu": "Lehen autozinema irekitzen da Camdenen (New Jersey).",
+      "text_ca": "Obre a Camden (Nova Jersey) el primer autocinema."
+    },
+    {
+      "month": 6,
+      "day": 10,
+      "year": 1922,
+      "text_es": "Nace Judy Garland, la Dorothy de «El mago de Oz».",
+      "text_en": "Judy Garland is born, Dorothy in “The Wizard of Oz”.",
+      "text_gl": "Nace Judy Garland, a Dorothy de «O mago de Oz».",
+      "text_eu": "Judy Garland jaio zen, «Ozeko azti miragarria» filmeko Dorothy.",
+      "text_ca": "Neix Judy Garland, la Dorothy d'«El màgic d'Oz»."
     },
     {
       "month": 6,
@@ -196,6 +396,36 @@
       "text_gl": "Nace Billy Wilder, ourive da comedia e o cine negro.",
       "text_eu": "Billy Wilder jaio zen, komediaren eta zinema beltzaren urregilea.",
       "text_ca": "Neix Billy Wilder, orfebre de la comèdia i el cinema negre."
+    },
+    {
+      "month": 6,
+      "day": 28,
+      "year": 1926,
+      "text_es": "Nace Mel Brooks, rey de la parodia.",
+      "text_en": "Mel Brooks is born, king of parody.",
+      "text_gl": "Nace Mel Brooks, rei da parodia.",
+      "text_eu": "Mel Brooks jaio zen, parodiaren erregea.",
+      "text_ca": "Neix Mel Brooks, rei de la paròdia."
+    },
+    {
+      "month": 7,
+      "day": 5,
+      "year": 1889,
+      "text_es": "Nace Jean Cocteau, poeta que filmó «La bella y la bestia».",
+      "text_en": "Jean Cocteau is born, the poet who filmed “Beauty and the Beast”.",
+      "text_gl": "Nace Jean Cocteau, poeta que filmou «A bela e a besta».",
+      "text_eu": "Jean Cocteau jaio zen, «Ederra eta piztia» filmatu zuen poeta.",
+      "text_ca": "Neix Jean Cocteau, poeta que va filmar «La bella i la bèstia»."
+    },
+    {
+      "month": 7,
+      "day": 9,
+      "year": 1956,
+      "text_es": "Nace Tom Hanks, de «Big» a «Forrest Gump».",
+      "text_en": "Tom Hanks is born: from “Big” to “Forrest Gump”.",
+      "text_gl": "Nace Tom Hanks, de «Big» a «Forrest Gump».",
+      "text_eu": "Tom Hanks jaio zen, «Big» filmetik «Forrest Gump» filmera.",
+      "text_ca": "Neix Tom Hanks, de «Big» a «Forrest Gump»."
     },
     {
       "month": 7,
@@ -221,6 +451,16 @@
     },
     {
       "month": 7,
+      "day": 21,
+      "year": 1951,
+      "text_es": "Nace Robin Williams, el profesor Keating de «El club de los poetas muertos».",
+      "text_en": "Robin Williams is born, Mr Keating in “Dead Poets Society”.",
+      "text_gl": "Nace Robin Williams, o profesor Keating de «O club dos poetas mortos».",
+      "text_eu": "Robin Williams jaio zen, «Poeta hilen elkartea» filmeko Keating irakaslea.",
+      "text_ca": "Neix Robin Williams, el professor Keating d'«El club dels poetes morts»."
+    },
+    {
+      "month": 7,
       "day": 26,
       "year": 1928,
       "text_es": "Nace Stanley Kubrick, perfeccionista de todos los géneros.",
@@ -229,6 +469,36 @@
       "text_gl": "Nace Stanley Kubrick, perfeccionista de todos os xéneros.",
       "text_eu": "Stanley Kubrick jaio zen, genero guztietako perfekzionista.",
       "text_ca": "Neix Stanley Kubrick, perfeccionista de tots els gèneres."
+    },
+    {
+      "month": 7,
+      "day": 30,
+      "year": 2007,
+      "text_es": "Mueren el mismo día Ingmar Bergman y Michelangelo Antonioni.",
+      "text_en": "Ingmar Bergman and Michelangelo Antonioni die on the same day.",
+      "text_gl": "Morren o mesmo día Ingmar Bergman e Michelangelo Antonioni.",
+      "text_eu": "Ingmar Bergman eta Michelangelo Antonioni egun berean hil ziren.",
+      "text_ca": "Moren el mateix dia Ingmar Bergman i Michelangelo Antonioni."
+    },
+    {
+      "month": 8,
+      "day": 5,
+      "year": 1906,
+      "text_es": "Nace John Huston, director de «El halcón maltés».",
+      "text_en": "John Huston is born, director of “The Maltese Falcon”.",
+      "text_gl": "Nace John Huston, director de «O falcón maltés».",
+      "text_eu": "John Huston jaio zen, «Maltako belatza» filmaren zuzendaria.",
+      "text_ca": "Neix John Huston, director d'«El falcó maltès»."
+    },
+    {
+      "month": 8,
+      "day": 8,
+      "year": 1937,
+      "text_es": "Nace Dustin Hoffman, el inolvidable «graduado».",
+      "text_en": "Dustin Hoffman is born, the unforgettable “Graduate”.",
+      "text_gl": "Nace Dustin Hoffman, o inesquecible «graduado».",
+      "text_eu": "Dustin Hoffman jaio zen, «The Graduate» filmeko protagonista ahaztezina.",
+      "text_ca": "Neix Dustin Hoffman, l'inoblidable «graduat»."
     },
     {
       "month": 8,
@@ -242,6 +512,76 @@
       "text_ca": "Neix Alfred Hitchcock, el mestre del suspens."
     },
     {
+      "month": 8,
+      "day": 17,
+      "year": 1943,
+      "text_es": "Nace Robert De Niro, el taxista de Scorsese.",
+      "text_en": "Robert De Niro is born, Scorsese's taxi driver.",
+      "text_gl": "Nace Robert De Niro, o taxista de Scorsese.",
+      "text_eu": "Robert De Niro jaio zen, Scorseseren taxi-gidaria.",
+      "text_ca": "Neix Robert De Niro, el taxista de Scorsese."
+    },
+    {
+      "month": 8,
+      "day": 23,
+      "year": 1912,
+      "text_es": "Nace Gene Kelly, el que cantaba bajo la lluvia.",
+      "text_en": "Gene Kelly is born, the man singin' in the rain.",
+      "text_gl": "Nace Gene Kelly, o que cantaba baixo a choiva.",
+      "text_eu": "Gene Kelly jaio zen, euripean abesten zuena.",
+      "text_ca": "Neix Gene Kelly, el que cantava sota la pluja."
+    },
+    {
+      "month": 8,
+      "day": 29,
+      "year": 1915,
+      "text_es": "Nace Ingrid Bergman, la Ilsa de «Casablanca».",
+      "text_en": "Ingrid Bergman is born, Ilsa in “Casablanca”.",
+      "text_gl": "Nace Ingrid Bergman, a Ilsa de «Casablanca».",
+      "text_eu": "Ingrid Bergman jaio zen, «Casablanca» filmeko Ilsa.",
+      "text_ca": "Neix Ingrid Bergman, la Ilsa de «Casablanca»."
+    },
+    {
+      "month": 9,
+      "day": 2,
+      "year": 1964,
+      "text_es": "Nace Keanu Reeves, el Neo de «Matrix».",
+      "text_en": "Keanu Reeves is born, Neo in “The Matrix”.",
+      "text_gl": "Nace Keanu Reeves, o Neo de «Matrix».",
+      "text_eu": "Keanu Reeves jaio zen, «Matrix» filmeko Neo.",
+      "text_ca": "Neix Keanu Reeves, el Neo de «Matrix»."
+    },
+    {
+      "month": 9,
+      "day": 8,
+      "year": 1925,
+      "text_es": "Nace Peter Sellers, el inspector Clouseau.",
+      "text_en": "Peter Sellers is born, Inspector Clouseau.",
+      "text_gl": "Nace Peter Sellers, o inspector Clouseau.",
+      "text_eu": "Peter Sellers jaio zen, Clouseau inspektorea.",
+      "text_ca": "Neix Peter Sellers, l'inspector Clouseau."
+    },
+    {
+      "month": 9,
+      "day": 15,
+      "year": 1946,
+      "text_es": "Nace Oliver Stone, director de «Platoon».",
+      "text_en": "Oliver Stone is born, director of “Platoon”.",
+      "text_gl": "Nace Oliver Stone, director de «Platoon».",
+      "text_eu": "Oliver Stone jaio zen, «Platoon» filmaren zuzendaria.",
+      "text_ca": "Neix Oliver Stone, director de «Platoon»."
+    },
+    {
+      "month": 9,
+      "day": 18,
+      "year": 1905,
+      "text_es": "Nace Greta Garbo, «la divina».",
+      "text_en": "Greta Garbo is born, “the Divine”.",
+      "text_gl": "Nace Greta Garbo, «a divina».",
+      "text_eu": "Greta Garbo jaio zen, «jainkosa».",
+      "text_ca": "Neix Greta Garbo, «la divina»."
+    },
+    {
       "month": 9,
       "day": 25,
       "year": 1949,
@@ -251,6 +591,16 @@
       "text_gl": "Nace Pedro Almodóvar, autor do melodrama contemporáneo español.",
       "text_eu": "Pedro Almodóvar jaio zen, gaur egungo espainiar melodramaren egilea.",
       "text_ca": "Neix Pedro Almodóvar, autor del melodrama contemporani espanyol."
+    },
+    {
+      "month": 9,
+      "day": 28,
+      "year": 1934,
+      "text_es": "Nace Brigitte Bardot, icono del cine francés de los sesenta.",
+      "text_en": "Brigitte Bardot is born, icon of 1960s French cinema.",
+      "text_gl": "Nace Brigitte Bardot, icona do cine francés dos sesenta.",
+      "text_eu": "Brigitte Bardot jaio zen, hirurogeiko hamarkadako Frantziako zinemaren ikonoa.",
+      "text_ca": "Neix Brigitte Bardot, icona del cinema francès dels seixanta."
     },
     {
       "month": 10,
@@ -273,6 +623,96 @@
       "text_ca": "S'estrena «El cantant de jazz», primer llargmetratge sonor."
     },
     {
+      "month": 10,
+      "day": 8,
+      "year": 1949,
+      "text_es": "Nace Sigourney Weaver, la teniente Ripley de «Alien».",
+      "text_en": "Sigourney Weaver is born, Ripley in “Alien”.",
+      "text_gl": "Nace Sigourney Weaver, a tenente Ripley de «Alien».",
+      "text_eu": "Sigourney Weaver jaio zen, «Alien» filmeko Ripley tenientea.",
+      "text_ca": "Neix Sigourney Weaver, la tinent Ripley d'«Alien»."
+    },
+    {
+      "month": 10,
+      "day": 14,
+      "year": 1888,
+      "text_es": "Louis Le Prince rueda en Leeds «La escena del jardín de Roundhay», la película más antigua que se conserva.",
+      "text_en": "Louis Le Prince films “Roundhay Garden Scene” in Leeds, the oldest surviving film.",
+      "text_gl": "Louis Le Prince roda en Leeds «A escena do xardín de Roundhay», a película máis antiga que se conserva.",
+      "text_eu": "Louis Le Princek «Roundhay Garden Scene» filmatzen du Leedsen, gordetzen den filmik zaharrena.",
+      "text_ca": "Louis Le Prince roda a Leeds «L'escena del jardí de Roundhay», la pel·lícula més antiga que es conserva."
+    },
+    {
+      "month": 10,
+      "day": 16,
+      "year": 1923,
+      "text_es": "Walt y Roy Disney fundan en Los Ángeles su estudio de animación.",
+      "text_en": "Walt and Roy Disney found their animation studio in Los Angeles.",
+      "text_gl": "Walt e Roy Disney fundan en Los Ángeles o seu estudio de animación.",
+      "text_eu": "Walt eta Roy Disneyk beren animazio-estudioa sortzen dute Los Angelesen.",
+      "text_ca": "Walt i Roy Disney funden a Los Angeles el seu estudi d'animació."
+    },
+    {
+      "month": 10,
+      "day": 22,
+      "year": 1943,
+      "text_es": "Nace Catherine Deneuve, musa de Buñuel en «Belle de jour».",
+      "text_en": "Catherine Deneuve is born, Buñuel's muse in “Belle de jour”.",
+      "text_gl": "Nace Catherine Deneuve, musa de Buñuel en «Belle de jour».",
+      "text_eu": "Catherine Deneuve jaio zen, Buñuelen musa «Belle de jour» filmean.",
+      "text_ca": "Neix Catherine Deneuve, musa de Buñuel a «Belle de jour»."
+    },
+    {
+      "month": 10,
+      "day": 28,
+      "year": 1892,
+      "text_es": "Émile Reynaud estrena en el Museo Grévin de París sus «Pantomimas luminosas», los primeros dibujos animados proyectados.",
+      "text_en": "Émile Reynaud premieres his “Pantomimes lumineuses” at the Musée Grévin in Paris, the first projected animated cartoons.",
+      "text_gl": "Émile Reynaud estrea no Museo Grévin de París as súas «Pantomimas luminosas», os primeiros debuxos animados proxectados.",
+      "text_eu": "Émile Reynaudek bere «Pantomima argitsuak» estreinatzen ditu Parisko Grévin museoan: proiektatutako lehen marrazki bizidunak.",
+      "text_ca": "Émile Reynaud estrena al Museu Grévin de París les seves «Pantomimes lluminoses», els primers dibuixos animats projectats."
+    },
+    {
+      "month": 10,
+      "day": 29,
+      "year": 1971,
+      "text_es": "Nace Winona Ryder, de «Beetlejuice» a «Eduardo Manostijeras».",
+      "text_en": "Winona Ryder is born: from “Beetlejuice” to “Edward Scissorhands”.",
+      "text_gl": "Nace Winona Ryder, de «Beetlejuice» a «Eduardo Mans de Tesoira».",
+      "text_eu": "Winona Ryder jaio zen, «Beetlejuice» filmetik «Edward Scissorhands» filmera.",
+      "text_ca": "Neix Winona Ryder, de «Beetlejuice» a «Eduard Mans d'Estisores»."
+    },
+    {
+      "month": 11,
+      "day": 3,
+      "year": 1954,
+      "text_es": "Se estrena en Japón «Godzilla», de Ishirō Honda.",
+      "text_en": "Ishirō Honda's “Godzilla” premieres in Japan.",
+      "text_gl": "Estréase en Xapón «Godzilla», de Ishirō Honda.",
+      "text_eu": "Ishirō Hondaren «Godzilla» estreinatzen da Japonian.",
+      "text_ca": "S'estrena al Japó «Godzilla», d'Ishirō Honda."
+    },
+    {
+      "month": 11,
+      "day": 8,
+      "year": 1935,
+      "text_es": "Nace Alain Delon, el samurái de Melville.",
+      "text_en": "Alain Delon is born, Melville's samurai.",
+      "text_gl": "Nace Alain Delon, o samurai de Melville.",
+      "text_eu": "Alain Delon jaio zen, Melvilleren samuraia.",
+      "text_ca": "Neix Alain Delon, el samurai de Melville."
+    },
+    {
+      "month": 11,
+      "day": 11,
+      "year": 1974,
+      "text_es": "Nace Leonardo DiCaprio, de «Titanic» al Óscar por «El renacido».",
+      "text_en": "Leonardo DiCaprio is born: from “Titanic” to an Oscar for “The Revenant”.",
+      "text_gl": "Nace Leonardo DiCaprio, de «Titanic» ao Óscar por «O renacido».",
+      "text_eu": "Leonardo DiCaprio jaio zen, «Titanic» filmetik «The Revenant» filmeko Oscarrera.",
+      "text_ca": "Neix Leonardo DiCaprio, de «Titanic» a l'Oscar per «El renascut»."
+    },
+    {
       "month": 11,
       "day": 17,
       "year": 1942,
@@ -282,6 +722,16 @@
       "text_gl": "Nace Martin Scorsese, cronista da culpa e a rúa.",
       "text_eu": "Martin Scorsese jaio zen, erruaren eta kalearen kronikaria.",
       "text_ca": "Neix Martin Scorsese, cronista de la culpa i el carrer."
+    },
+    {
+      "month": 11,
+      "day": 22,
+      "year": 1995,
+      "text_es": "Se estrena «Toy Story», el primer largometraje hecho entero por ordenador.",
+      "text_en": "“Toy Story” opens, the first feature film made entirely by computer.",
+      "text_gl": "Estréase «Toy Story», a primeira longametraxe feita enteira por ordenador.",
+      "text_eu": "«Toy Story» estreinatzen da, osorik ordenagailuz egindako lehen film luzea.",
+      "text_ca": "S'estrena «Toy Story», el primer llargmetratge fet sencer per ordinador."
     },
     {
       "month": 11,
@@ -339,6 +789,16 @@
     },
     {
       "month": 12,
+      "day": 18,
+      "year": 1946,
+      "text_es": "Nace Steven Spielberg, de «Tiburón» a «La lista de Schindler».",
+      "text_en": "Steven Spielberg is born: from “Jaws” to “Schindler's List”.",
+      "text_gl": "Nace Steven Spielberg, de «Tiburón» a «A lista de Schindler».",
+      "text_eu": "Steven Spielberg jaio zen, «Marrazoa» filmetik «Schindlerren zerrenda» filmera.",
+      "text_ca": "Neix Steven Spielberg, de «Tauró» a «La llista de Schindler»."
+    },
+    {
+      "month": 12,
       "day": 21,
       "year": 1925,
       "text_es": "Se estrena «El acorazado Potemkin», de Sergei Eisenstein.",
@@ -357,6 +817,16 @@
       "text_gl": "Os irmáns Lumière celebran a primeira proxección pública de cine, en París.",
       "text_eu": "Lumière anaiek zinemaren lehen proiekzio publikoa egiten dute, Parisen.",
       "text_ca": "Els germans Lumière celebren la primera projecció pública de cinema, a París."
+    },
+    {
+      "month": 12,
+      "day": 31,
+      "year": 1937,
+      "text_es": "Nace Anthony Hopkins, el inolvidable Hannibal Lecter.",
+      "text_en": "Anthony Hopkins is born, the unforgettable Hannibal Lecter.",
+      "text_gl": "Nace Anthony Hopkins, o inesquecible Hannibal Lecter.",
+      "text_eu": "Anthony Hopkins jaio zen, Hannibal Lecter ahaztezina.",
+      "text_ca": "Neix Anthony Hopkins, l'inoblidable Hannibal Lecter."
     }
   ]
 }

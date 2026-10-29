@@ -11,7 +11,7 @@ import CollectionMosaic from '../../components/CollectionMosaic.astro';
 import { dossiers, dossierCopy } from '../../lib/dossiers';
 import { articles, articleCopy } from '../../lib/articles';
 import { figures } from '../../lib/figures';
-import { getEphemerides, ephemerisDate, ephemerisText } from '../../lib/ephemerides';
+import { getEphemerides, ephemerisDay, ephemerisText } from '../../lib/ephemerides';
 import { profileUrl, profileSrcset } from '../../lib/tmdb';
 import { getFilmOfDay } from '../../lib/featured';
 import { manifesto } from '../../data/manifesto';
@@ -179,7 +179,11 @@ const homeJsonLd = [
               <div class="border-t border-ink px-6 py-3">
                 <span class="label">{efemeride.hoy ? t('home.onThisDay') : t('home.nextAnniversary')}</span>
                 <p class="mt-1 line-clamp-2 text-body-md text-charcoal">
-                  <span class="font-mono text-meta-data text-ochre-dim">{ephemerisDate(efemeride.dato, lang)}</span>
+                  {/* Hoy: basta el año. Próxima: el día en que toca y, aparte, el año
+                      del suceso, para que no parezca una fecha pasada. */}
+                  <span class="font-mono text-meta-data text-ochre-dim">
+                    {efemeride.hoy ? efemeride.dato.year : `${ephemerisDay(efemeride.dato, lang)} · ${efemeride.dato.year}`}
+                  </span>
                   {' · '}
                   {ephemerisText(efemeride.dato, lang)}
                 </p>

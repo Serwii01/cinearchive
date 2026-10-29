@@ -29,6 +29,17 @@ export function ephemerisDate(e: Ephemeris, lang: Lang): string {
   }).format(d);
 }
 
+/**
+ * Día y mes, sin año: «17 de noviembre». Es lo que se enseña como fecha de la
+ * próxima efeméride; el año del suceso va aparte. Con «17 de noviembre de 1942»
+ * parecía una fecha pasada y no se entendía que era dentro de unos días.
+ */
+export function ephemerisDay(e: Ephemeris, lang: Lang): string {
+  return new Intl.DateTimeFormat(locales[lang], { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(
+    new Date(Date.UTC(2000, e.month - 1, e.day)),
+  );
+}
+
 export interface TodayEphemerides {
   /** Eventos cuyo día y mes coinciden con la fecha dada (puede estar vacío). */
   onThisDay: Ephemeris[];
