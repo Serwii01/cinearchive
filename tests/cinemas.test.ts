@@ -296,4 +296,19 @@ describe('alternativa por Nominatim', () => {
     await findCinemas(37.2891, -5.8845, 5000);
     expect(llamadas.every((u) => u.includes('nominatim'))).toBe(true);
   });
+  it('rescata los multicines etiquetados como teatro, pero no los teatros', async () => {
+    vi.stubGlobal('fetch', async (url: string) => {
+      if (url.includes('overpass')) return new Response('down', { status: 504 });
+      const rows = url.includes('amenity=theatre')
+        ? [
+            { osm_type: 'node', osm_id: 1315960031, lat: '37.388', lon: '-5.961', name: 'Multicines' },
+            { osm_type: 'way', osm_id: 37522264, lat: '37.381', lon: '-5.988', name: 'Teatro Lope de Vega' },
+          ]
+        : [];
+      return new Response(JSON.stringify(rows), { status: 200 });
+    });
+    const out = await findCinemas(37.3881, -5.9609, 5000);
+    // El nombre bueno llega de cinemas-overrides.json, igual que con Overpass.
+    expect(out.map((c) => c.name)).toEqual(['Multicines Los Arcos']);
+  });
 });

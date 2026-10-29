@@ -557,8 +557,9 @@ async function queryOverpass(q: string): Promise<OverpassElement[]> {
  * Es también OpenStreetMap (los mismos objetos y los mismos ids, así que
  * isCinema() y cinemas-overrides.json siguen valiendo), pero tiene dos
  * limitaciones frente a Overpass:
- *   - Solo busca `amenity=cinema`: los multicines etiquetados como teatro no
- *     salen por aquí.
+ *   - Busca por un solo tipo cada vez: se piden los cines y, aparte, los
+ *     teatros, que pasan por el mismo filtro de nombre que con Overpass (así
+ *     sale el multicine del CC Los Arcos de Sevilla, que en OSM es un teatro).
  *   - Devuelve como mucho 40 resultados, ordenados por importancia y no por
  *     distancia. Si la zona se llena, se repite por cuadrantes.
  * Por eso es la alternativa cuando Overpass falla, y no la fuente principal.
@@ -569,6 +570,12 @@ const NOMINATIM_MAX = 40;
 const NOMINATIM_GAP_MS = 1100;
 /** Lo que llega por Nominatim se guarda menos: cuando Overpass vuelva, mejor dato. */
 const FALLBACK_TTL_MS = 6 * 60 * 60 * 1000;
+/**
+ * Los teatros se buscan en un radio menor: hay muchos más teatros que cines mal
+ * etiquetados, y los que se rescatan son multicines de ciudad, cerca de quien
+ * busca. En todo el radio harían falta el doble de peticiones (una por segundo).
+ */
+const THEATRE_RADIUS_M = 10_000;
 let nominatimNext = 0;
 
 /** Turno para hablar con Nominatim, respetando una petición por segundo. */
@@ -607,11 +614,11 @@ export interface NominatimPlace {
  * Convierte los resultados de Nominatim a la forma que trae Overpass, para que
  * pasen por el mismo filtro (parseCinemas) que el resto.
  */
-export function nominatimToElements(rows: NominatimPlace[]): OverpassElement[] {
+export function nominatimToElements(rows: NominatimPlace[], amenity: 'cinema' | 'theatre' = 'cinema'): OverpassElement[] {
   return rows
     .map((r) => {
       const a = r.address ?? {};
-      const tags: Record<string, string> = { ...(r.extratags ?? {}), amenity: 'cinema' };
+      const tags: Record<string, string> = { ...(r.extratags ?? {}), amenity };
       if (r.name) tags.name = r.name;
       const put = (k: string, v: string | undefined) => {
         if (v && !tags[k]) tags[k] = v;
@@ -625,11 +632,13 @@ export function nominatimToElements(rows: NominatimPlace[]): OverpassElement[] {
     .filter((e) => Number.isFinite(e.lat) && Number.isFinite(e.lon));
 }
 
-async function nominatimBox(box: Box): Promise<OverpassElement[]> {
+type Amenity = 'cinema' | 'theatre';
+
+async function nominatimBox(box: Box, amenity: Amenity): Promise<OverpassElement[]> {
   await nominatimTurn();
   const url = new URL(NOMINATIM);
   url.searchParams.set('format', 'jsonv2');
-  url.searchParams.set('amenity', 'cinema');
+  url.searchParams.set('amenity', amenity);
   url.searchParams.set('viewbox', `${box.minLon},${box.maxLat},${box.maxLon},${box.minLat}`);
   url.searchParams.set('bounded', '1');
   url.searchParams.set('limit', String(NOMINATIM_MAX));
@@ -637,13 +646,12 @@ async function nominatimBox(box: Box): Promise<OverpassElement[]> {
   url.searchParams.set('extratags', '1');
   const res = await fetchWithTimeout(url.toString(), { headers: { 'User-Agent': UA, accept: 'application/json' } }, 10000);
   if (!res.ok) throw new Error(`nominatim http ${res.status}`);
-  return nominatimToElements((await res.json()) as NominatimPlace[]);
+  return nominatimToElements((await res.json()) as NominatimPlace[], amenity);
 }
 
-/** Salas alrededor de un punto según Nominatim. Lanza si Nominatim falla. */
-async function queryNominatim(lat: number, lon: number, radius: number): Promise<OverpassElement[]> {
-  const box = boxAround(lat, lon, radius);
-  const first = await nominatimBox(box);
+/** Todos los objetos de un tipo en la caja. Lanza si falla la primera petición. */
+async function nominatimAmenity(box: Box, amenity: Amenity): Promise<OverpassElement[]> {
+  const first = await nominatimBox(box, amenity);
   if (first.length < NOMINATIM_MAX) return first;
   // Lleno: podrían faltar salas cercanas. Se repite por cuadrantes, y si alguno
   // falla se usa lo que haya.
@@ -658,12 +666,24 @@ async function queryNominatim(lat: number, lon: number, radius: number): Promise
   const byId = new Map(first.map((e) => [`${e.type}/${e.id}`, e]));
   for (const q of quads) {
     try {
-      for (const e of await nominatimBox(q)) byId.set(`${e.type}/${e.id}`, e);
+      for (const e of await nominatimBox(q, amenity)) byId.set(`${e.type}/${e.id}`, e);
     } catch {
       /* lo que haya */
     }
   }
   return [...byId.values()];
+}
+
+/**
+ * Salas alrededor de un punto según Nominatim. Lanza si falla la búsqueda de
+ * cines; si solo falla la de teatros, se sigue sin ellos.
+ */
+async function queryNominatim(lat: number, lon: number, radius: number): Promise<OverpassElement[]> {
+  const cinemas = await nominatimAmenity(boxAround(lat, lon, radius), 'cinema');
+  const theatres = await nominatimAmenity(boxAround(lat, lon, Math.min(radius, THEATRE_RADIUS_M)), 'theatre').catch(
+    () => [],
+  );
+  return [...cinemas, ...theatres];
 }
 
 /**
