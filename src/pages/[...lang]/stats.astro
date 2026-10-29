@@ -22,7 +22,10 @@ const histMax = stats ? Math.max(1, ...stats.ratingHistogram) : 1;
 const usesHalves = stats ? stats.ratingHistogram.some((n, i) => i % 2 === 0 && n > 0) : false;
 const ratingRows = usesHalves ? [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5] : [5, 4, 3, 2, 1];
 const genreMax = stats ? Math.max(1, ...stats.topGenres.map((g) => g.count)) : 1;
-const dirMax = stats ? Math.max(1, ...stats.topDirectors.map((d) => d.count)) : 1;
+const dirMax = stats ? Math.max(1, ...stats.people.directors.map((d) => d.count)) : 1;
+const actMax = stats ? Math.max(1, ...stats.people.actors.map((d) => d.count)) : 1;
+const personUrl = (id: number) => localizePath(lang, `person/${id}`);
+const hasFavs = stats ? stats.people.favDirectors.length + stats.people.favActors.length > 0 : false;
 const decadeMax = stats ? Math.max(1, ...stats.byDecade.map((d) => d.count)) : 1;
 
 const totals = stats
@@ -81,14 +84,30 @@ const isEmpty = !stats || stats.total === 0;
           )}
 
           {/* DIRECTORES */}
-          {stats.topDirectors.length > 0 && (
+          {stats.people.directors.length > 0 && (
             <section>
               <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.topDirectors')}</h2>
               <ul class="mt-4 flex flex-col gap-2">
-                {stats.topDirectors.map((d) => (
+                {stats.people.directors.map((d) => (
                   <li class="grid grid-cols-[5.5rem_1fr_2rem] items-center gap-3 sm:grid-cols-[8rem_1fr_2rem]">
-                    <span class="truncate font-mono text-meta-data text-charcoal">{d.label}</span>
+                    <a href={personUrl(d.id)} class="truncate font-mono text-meta-data text-charcoal no-underline hover:text-ink hover:underline">{d.name}</a>
                     <span class="h-4 bg-ochre" style={`width:${pct(d.count, dirMax)}%`}></span>
+                    <span class="text-right font-mono text-meta-data text-muted">{d.count}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* ACTORES */}
+          {stats.people.actors.length > 0 && (
+            <section>
+              <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.topActors')}</h2>
+              <ul class="mt-4 flex flex-col gap-2">
+                {stats.people.actors.map((d) => (
+                  <li class="grid grid-cols-[5.5rem_1fr_2rem] items-center gap-3 sm:grid-cols-[8rem_1fr_2rem]">
+                    <a href={personUrl(d.id)} class="truncate font-mono text-meta-data text-charcoal no-underline hover:text-ink hover:underline">{d.name}</a>
+                    <span class="h-4 bg-ink" style={`width:${pct(d.count, actMax)}%`}></span>
                     <span class="text-right font-mono text-meta-data text-muted">{d.count}</span>
                   </li>
                 ))}
@@ -128,6 +147,36 @@ const isEmpty = !stats || stats.total === 0;
             </section>
           )}
         </div>
+
+        {/* QUIÉN TE GUSTA MÁS: la media de tus notas, con un mínimo de películas */}
+        {hasFavs && (
+          <section>
+            <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('stats.favPeople')}</h2>
+            <p class="mt-2 font-mono text-meta-data text-muted">{t('stats.favPeopleHelp')}</p>
+            <div class="mt-4 grid grid-cols-1 gap-px border border-ink bg-ink md:grid-cols-2">
+              {[
+                { title: t('stats.directors'), list: stats.people.favDirectors },
+                { title: t('stats.actors'), list: stats.people.favActors },
+              ].map((col) => (
+                <div class="bg-surface p-4">
+                  <span class="label">{col.title}</span>
+                  {col.list.length === 0 ? (
+                    <p class="mt-3 font-mono text-meta-data text-muted">—</p>
+                  ) : (
+                    <ol class="mt-2 flex flex-col divide-y divide-outline-variant">
+                      {col.list.map((p) => (
+                        <li class="flex items-center justify-between gap-3 py-2">
+                          <a href={personUrl(p.id)} class="min-w-0 truncate text-body-lg text-ink no-underline hover:underline">{p.name}</a>
+                          <span class="shrink-0 font-mono text-meta-data text-charcoal">★ {p.avg!.toLocaleString(lang, { maximumFractionDigits: 1 })} <span class="text-muted">· {p.rated}</span></span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     )}
   </section>

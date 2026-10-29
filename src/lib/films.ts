@@ -139,6 +139,10 @@ export interface FilmBrief {
   genreIds: number[];
   decade: number | null;
   runtime: number;
+  /** Con id, para «tus directores» y enlazar a su ficha. Varios si la codirigieron. */
+  directors: { id: number; name: string }[];
+  /** Los cinco primeros del reparto: más abajo ya son papeles de una escena. */
+  cast: { id: number; name: string }[];
 }
 
 /**
@@ -166,10 +170,13 @@ function briefFromTmdb(m: TmdbMovie, titles: Titles | null, locale: string): Fil
     genreIds: (m.genres ?? []).map((g) => g.id),
     decade: year ? Math.floor(year / 10) * 10 : null,
     runtime: m.runtime ?? 0,
+    directors: (m.credits?.crew ?? []).filter((c) => c.job === 'Director').map((c) => ({ id: c.id, name: c.name })),
+    cast: (m.credits?.cast ?? []).slice(0, BRIEF_CAST).map((c) => ({ id: c.id, name: c.name })),
   };
 }
 
 const BRIEF_CONCURRENCY = 8;
+const BRIEF_CAST = 5;
 const TITLES_NOW = 40;
 
 /** Ejecuta fn sobre la lista con BRIEF_CONCURRENCY a la vez. */

@@ -3,9 +3,9 @@ import { computeYear, type YearViewing, type YearFilmInfo } from '../src/lib/yea
 import { groupByMonth, monthLabel } from '../src/lib/diary';
 
 const info = new Map<number, YearFilmInfo>([
-  [1, { runtime: 120, director: 'Kurosawa', genreIds: [18], decade: 1950, year: '1954' }],
+  [1, { runtime: 120, director: 'Kurosawa', genreIds: [18], decade: 1950, year: '1954', cast: [{ id: 7, name: 'Mifune' }] }],
   [2, { runtime: 90, director: 'Varda', genreIds: [18, 35], decade: 1960, year: '1962' }],
-  [3, { runtime: 60, director: 'Kurosawa', genreIds: [28], decade: 1980, year: '1985' }],
+  [3, { runtime: 60, director: 'Kurosawa', genreIds: [28], decade: 1980, year: '1985', cast: [{ id: 7, name: 'Mifune' }, { id: 8, name: 'Nakadai' }] }],
 ]);
 const v = (tmdbId: number, watchedOn: string, rating: number | null = null, rewatch = false): YearViewing => ({
   tmdbId, watchedOn, rating, rewatch,
@@ -50,6 +50,12 @@ describe('computeYear', () => {
   it('un revisionado no cuenta dos veces en directores ni géneros', () => {
     expect(r.topDirectors[0]).toEqual({ label: 'Kurosawa', count: 2 });
     expect(r.topGenres[0]).toEqual({ id: 18, count: 2 });
+  });
+  it('actores: cada película una vez, el que más repite primero', () => {
+    expect(r.topActors).toEqual([
+      { id: 7, name: 'Mifune', count: 2 },
+      { id: 8, name: 'Nakadai', count: 1 },
+    ]);
   });
   it('día de la semana: lunes = 0', () => {
     // El 2 de marzo de 2026 es lunes.

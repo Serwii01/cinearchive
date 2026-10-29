@@ -189,9 +189,21 @@ const big = [
       </section>
     )}
 
-    {/* Décadas */}
+    {/* Actores */}
+    {r.topActors.length > 0 && (
+      <section>
+        <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.actors')}</h2>
+        <ol class="mt-4 flex flex-col divide-y divide-outline-variant">
+          {r.topActors.map((a) => (
+            <li class="flex justify-between py-2"><a href={localizePath(lang, `person/${a.id}`)} class="text-body-lg text-ink no-underline hover:underline">{a.name}</a><span class="font-mono text-meta-data text-muted">{a.count}</span></li>
+          ))}
+        </ol>
+      </section>
+    )}
+
+    {/* Décadas: a media anchura junto a los actores; sola, a lo ancho */}
     {r.decades.length > 0 && (
-      <section class="lg:col-span-2">
+      <section class:list={[r.topActors.length === 0 && 'lg:col-span-2']}>
         <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('year.decades')}</h2>
         <ul class="mt-4 flex flex-col gap-2">
           {r.decades.map((d) => (

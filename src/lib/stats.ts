@@ -12,6 +12,7 @@ import { getFilmsBrief } from './films';
 import { genreName } from '../data/genres';
 import { registerCache } from './cache-registry';
 import { isValidRating } from './stars';
+import { topPeople, type PersonFilm, type TopPeople } from './toppeople';
 
 export interface CountItem {
   label: string;
@@ -27,7 +28,8 @@ export interface UserStats {
   avgRating: number | null;
   ratingHistogram: number[]; // índices 0..9 → notas 0,5..5 (índice = nota·2 − 1)
   topGenres: CountItem[];
-  topDirectors: CountItem[];
+  /** Directores y actores de lo VISTO (no de lo pendiente), con id para enlazarlos. */
+  people: TopPeople;
   byDecade: { decade: number; count: number }[];
 }
 
@@ -58,13 +60,13 @@ export async function getUserStats(userId: string, locale: string): Promise<User
   );
 
   const genres = new Map<number, number>();
-  const directors = new Map<string, number>();
   const decades = new Map<number, number>();
   const histogram: number[] = Array(10).fill(0);
   let hoursMin = 0;
   let ratingSum = 0;
   let rated = 0;
   const counts = { want: 0, seen: 0, favorite: 0 };
+  const seenFilms: PersonFilm[] = [];
 
   for (const row of rows) {
     // 'favorite' era un estado histórico; hoy es un flag propio. Se normaliza al
@@ -81,9 +83,11 @@ export async function getUserStats(userId: string, locale: string): Promise<User
     const b = briefs.get(row.tmdbId);
     if (!b) continue;
     const watched = seenOrFav;
-    if (watched) hoursMin += b.runtime;
+    if (watched) {
+      hoursMin += b.runtime;
+      seenFilms.push({ tmdbId: row.tmdbId, rating: isValidRating(row.rating) ? row.rating : null, directors: b.directors, cast: b.cast });
+    }
     for (const g of b.genreIds) genres.set(g, (genres.get(g) ?? 0) + 1);
-    if (b.director) directors.set(b.director, (directors.get(b.director) ?? 0) + 1);
     if (b.decade != null) decades.set(b.decade, (decades.get(b.decade) ?? 0) + 1);
   }
 
@@ -91,10 +95,6 @@ export async function getUserStats(userId: string, locale: string): Promise<User
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8)
     .map(([id, count]) => ({ label: genreName(id, locale as 'es' | 'en'), count }));
-  const topDirectors: CountItem[] = [...directors.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8)
-    .map(([label, count]) => ({ label, count }));
 
   const data: UserStats = {
     total: rows.length,
@@ -106,7 +106,7 @@ export async function getUserStats(userId: string, locale: string): Promise<User
     avgRating: rated > 0 ? ratingSum / rated : null,
     ratingHistogram: histogram,
     topGenres,
-    topDirectors,
+    people: topPeople(seenFilms),
     byDecade: [...decades.entries()]
       .sort((a, b) => a[0] - b[0])
       .map(([decade, count]) => ({ decade, count })),

@@ -19,6 +19,8 @@ export interface YearFilmInfo {
   genreIds: number[];
   decade: number | null;
   year: string;
+  /** Los primeros del reparto (opcional: los datos viejos de los tests no lo traen). */
+  cast?: { id: number; name: string }[];
 }
 
 export interface YearReview {
@@ -40,6 +42,8 @@ export interface YearReview {
   /** Las mejor puntuadas, sin repetir película: la nota más alta que le dio ese año. */
   topRated: { tmdbId: number; rating: number }[];
   topDirectors: { label: string; count: number }[];
+  /** Los actores con más películas ese año, con id para enlazar su ficha. */
+  topActors: { id: number; name: string; count: number }[];
   topGenres: { id: number; count: number }[];
   decades: { decade: number; count: number }[];
   /** La película más antigua vista ese año. */
@@ -61,6 +65,7 @@ export function computeYear(year: number, rows: YearViewing[], info: Map<number,
   const byWeekday = Array(7).fill(0) as number[];
   const directors = new Map<string, number>();
   const genres = new Map<number, number>();
+  const actors = new Map<number, { name: string; count: number }>();
   const decades = new Map<number, number>();
   const best = new Map<number, number>();
   const films = new Set<number>();
@@ -82,6 +87,11 @@ export function computeYear(year: number, rows: YearViewing[], info: Map<number,
     if (!f) continue;
     if (f.director) directors.set(f.director, (directors.get(f.director) ?? 0) + 1);
     for (const g of f.genreIds) genres.set(g, (genres.get(g) ?? 0) + 1);
+    for (const a of f.cast ?? []) {
+      const e = actors.get(a.id);
+      if (e) e.count++;
+      else actors.set(a.id, { name: a.name, count: 1 });
+    }
     if (f.decade != null) decades.set(f.decade, (decades.get(f.decade) ?? 0) + 1);
     const y = Number(f.year);
     if (y && (!oldest || y < oldest.year)) oldest = { tmdbId: v.tmdbId, year: y };
@@ -113,6 +123,12 @@ export function computeYear(year: number, rows: YearViewing[], info: Map<number,
     last: vs[vs.length - 1] ?? null,
     topRated: top(best, 6).map(([tmdbId, rating]) => ({ tmdbId, rating })),
     topDirectors: top(directors, 5).map(([label, count]) => ({ label, count })),
+    // Como en directores, los cinco primeros; un actor con una sola película
+    // solo sale si no hay nadie que repita.
+    topActors: [...actors.entries()]
+      .sort((a, b) => b[1].count - a[1].count)
+      .slice(0, 5)
+      .map(([id, a]) => ({ id, name: a.name, count: a.count })),
     topGenres: top(genres, 5).map(([id, count]) => ({ id, count })),
     decades: [...decades.entries()].sort((a, b) => a[0] - b[0]).map(([decade, count]) => ({ decade, count })),
     oldest,
