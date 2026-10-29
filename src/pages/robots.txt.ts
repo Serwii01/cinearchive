@@ -27,6 +27,7 @@ export const GET: APIRoute = ({ site }) => {
   const body =
     `User-agent: *\n${rules}\nAllow: /\n\n` +
     `Sitemap: ${map('sitemap-index.xml')}\n` +
-    `Sitemap: ${map('sitemap-films.xml')}\n`;
+    `Sitemap: ${map('sitemap-films.xml')}\n` +
+    `Sitemap: ${map('sitemap-people.xml')}\n`;
   return new Response(body, { headers: { 'content-type': 'text/plain; charset=utf-8' } });
 };

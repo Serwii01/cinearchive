@@ -6,6 +6,7 @@ import { resolveBackLink } from '../../../lib/backlink';
 import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { filmSlug } from '../../../lib/slug';
 import { figures } from '../../../lib/figures';
+import { personLd, breadcrumbLd } from '../../../lib/seo';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -53,9 +54,28 @@ const facts = [
   { label: t('person.died'), value: fmtDate(person.deathday) },
   { label: t('person.place'), value: person.place_of_birth },
 ].filter((f) => f.value);
+
+// SEO: datos estructurados de persona, con el nombre original como alternativo.
+const personUrl = new URL(localizePath(lang, `person/${id}`), Astro.site).href;
+const jsonLd = [
+  personLd({
+    url: personUrl,
+    name: person.name,
+    alternateName: person.original_name,
+    image: photo,
+    description: person.biography?.slice(0, 300) || null,
+    birthDate: person.birthday,
+    deathDate: person.deathday,
+    birthPlace: person.place_of_birth,
+  }),
+  breadcrumbLd([
+    { name: t('nav.films'), url: new URL(localizePath(lang, 'films'), Astro.site).href },
+    { name: person.name, url: personUrl },
+  ]),
+];
 ---
 
-<BaseLayout title={person.name} description={person.biography?.slice(0, 200)}>
+<BaseLayout title={person.name} description={person.biography?.slice(0, 200)} image={photo ?? undefined} jsonLd={jsonLd}>
   <article class="frame py-12">
     <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>
 

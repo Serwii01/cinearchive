@@ -9,6 +9,7 @@ import { resolveBackLink } from '../../../lib/backlink';
 import { getFilm } from '../../../lib/films';
 import { translateAwards } from '../../../lib/omdb';
 import { movieLd, breadcrumbLd } from '../../../lib/seo';
+import { getCommunityRating } from '../../../lib/community';
 import { filmSlug, parseFilmId } from '../../../lib/slug';
 import { mentionsOf } from '../../../lib/mentions';
 import {
@@ -125,6 +126,27 @@ if (Astro.locals.user) {
 }
 
 const ratings = omdb?.Ratings ?? [];
+const community = await getCommunityRating(tmdbId);
+
+// Las notas, en una sola fila de casillas: la de Cine Archive primero (es la
+// única que es nuestra) y después las de fuera, hasta cuatro.
+const scores: { label: string; value: string; sub?: string }[] = [];
+if (community) {
+  scores.push({
+    label: 'Cine Archive',
+    value: `${community.value.toLocaleString(locales[lang], { minimumFractionDigits: 1 })}/5`,
+    sub: t('film.communityVotes').replace('{n}', String(community.count)),
+  });
+}
+if (tmdb.vote_average > 0) scores.push({ label: 'TMDB', value: tmdb.vote_average.toFixed(1) });
+if (omdb?.imdbRating) scores.push({ label: t('film.imdb'), value: omdb.imdbRating });
+for (const r of ratings.filter((r) => r.Source !== 'Internet Movie Database')) {
+  scores.push({ label: r.Source.replace('Rotten Tomatoes', 'RT'), value: r.Value });
+}
+scores.splice(4);
+// Clases enteras (no interpoladas) para que Tailwind las genere. En móvil van
+// de dos en dos y, si son impares, una casilla vacía cierra la rejilla.
+const scoreCols = ['', 'sm:grid-cols-1', 'sm:grid-cols-2', 'sm:grid-cols-3', 'sm:grid-cols-4'][scores.length];
 
 // Tráiler (YouTube), reparto y películas similares (ya vienen en la tmdb cacheada).
 const trailer = trailerKey(tmdb);
@@ -212,10 +234,15 @@ const movieJsonLd = movieLd({
   description: tmdb.overview,
   datePublished: tmdb.release_date ?? null,
   genres: (tmdb.genres ?? []).map((g) => g.name),
-  director: dir,
+  directors: (tmdb.credits?.crew ?? [])
+    .filter((c) => c.job === 'Director')
+    .map((c) => ({ name: c.name, url: new URL(localizePath(lang, `person/${c.id}`), Astro.site).href })),
+  actors: (tmdb.credits?.cast ?? [])
+    .slice(0, 5)
+    .map((c) => ({ name: c.name, url: new URL(localizePath(lang, `person/${c.id}`), Astro.site).href })),
   runtimeMin: tmdb.runtime,
-  ratingValue: tmdb.vote_average,
-  ratingCount: tmdb.vote_count ?? null,
+  ratingValue: community?.value ?? null,
+  ratingCount: community?.count ?? null,
   inLanguage: lang,
 });
 const crumbsJsonLd = breadcrumbLd([
@@ -330,27 +357,16 @@ const crumbsJsonLd = breadcrumbLd([
         )}
 
         <!-- Notas externas -->
-        {(ratings.length > 0 || tmdb.vote_average > 0) && (
-          <div class="mt-8 grid grid-cols-2 gap-px border border-ink bg-ink sm:grid-cols-4">
-            <div class="bg-film-white p-3">
-              <span class="label">TMDB</span>
-              <p class="font-display text-headline-md text-ink">{tmdb.vote_average.toFixed(1)}</p>
-            </div>
-            {omdb?.imdbRating && (
+        {scores.length > 0 && (
+          <div class:list={['mt-8 grid grid-cols-2 gap-px border border-ink bg-ink', scoreCols]}>
+            {scores.map((sc) => (
               <div class="bg-film-white p-3">
-                <span class="label">{t('film.imdb')}</span>
-                <p class="font-display text-headline-md text-ink">{omdb.imdbRating}</p>
+                <span class="label">{sc.label}</span>
+                <p class="font-display text-headline-md text-ink">{sc.value}</p>
+                {sc.sub && <p class="font-mono text-meta-data text-muted">{sc.sub}</p>}
               </div>
-            )}
-            {ratings
-              .filter((r) => r.Source !== 'Internet Movie Database')
-              .slice(0, 2)
-              .map((r) => (
-                <div class="bg-film-white p-3">
-                  <span class="label">{r.Source.replace('Rotten Tomatoes', 'RT')}</span>
-                  <p class="font-display text-headline-md text-ink">{r.Value}</p>
-                </div>
-              ))}
+            ))}
+            {scores.length % 2 === 1 && <div class="bg-film-white sm:hidden" aria-hidden="true"></div>}
           </div>
         )}
 

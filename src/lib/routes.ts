@@ -67,7 +67,7 @@ export const TOP_LEVEL_SECTIONS: ReadonlySet<string> = new Set([
  * volvía a fallar la guarda, y Astro cortaba el bucle con un 508. Y como
  * robots.txt se prerenderiza, ese 508 acababa escrito dentro del fichero.
  */
-const ROOT_ROUTES: ReadonlySet<string> = new Set(['404', 'offline', 'robots.txt', 'sitemap-films.xml']);
+const ROOT_ROUTES: ReadonlySet<string> = new Set(['404', 'offline', 'robots.txt', 'sitemap-films.xml', 'sitemap-people.xml']);
 
 /**
  * Primer segmento de cada familia de endpoints bajo /api/.

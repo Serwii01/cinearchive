@@ -12,6 +12,7 @@ import { and, eq } from 'drizzle-orm';
 import { getFilmsBrief } from '../../../../../lib/films';
 import { filmSlug } from '../../../../../lib/slug';
 import { getProfileByUsername, followState, canViewActivity } from '../../../../../lib/social';
+import { reviewLd } from '../../../../../lib/seo';
 
 export const prerender = false;
 
@@ -58,9 +59,29 @@ const title = `${t('profile.review')} · ${brief?.title ?? `#${tmdbId}`} · @${t
 const shareUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 const storyImg = `/api/og/review/${encodeURIComponent(target.username)}/${tmdbId}.png?lang=${lang}`;
 const canShareStory = isOwner && !target.isPrivate;
+
+// SEO: la reseña como Review de schema.org, solo si el perfil es público (los
+// privados no se indexan: los ve quien sigue a la persona, no Google).
+const filmUrl = new URL(filmHref, Astro.site ?? Astro.url).href;
+const ld = target.isPrivate
+  ? null
+  : reviewLd({
+      url: shareUrl,
+      author: { name: target.name || target.username, url: new URL(profileHref, Astro.site ?? Astro.url).href },
+      film: {
+        name: brief?.title ?? `#${tmdbId}`,
+        url: filmUrl,
+        image: brief?.poster ?? null,
+        datePublished: brief?.year || null,
+        directors: (brief?.directors ?? []).map((d) => ({ name: d.name, url: new URL(localizePath(lang, `person/${d.id}`), Astro.site ?? Astro.url).href })),
+      },
+      rating: row.rating,
+      body: row.note,
+      datePublished: reviewedAt.toISOString().slice(0, 10),
+    });
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} noindex={target.isPrivate} jsonLd={ld ? [ld] : undefined}>
   <section class="frame py-12">
     <a href={profileHref} class="label no-underline hover:text-ink">← @{target.username}</a>
 
