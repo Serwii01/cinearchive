@@ -4,13 +4,21 @@
 
 type Json = Record<string, unknown>;
 
-/** WebSite + cuadro de búsqueda de sitio (sitelinks searchbox) para la home. */
-export function websiteLd(opts: { url: string; name: string; searchUrl: string }): Json {
+/**
+ * WebSite + cuadro de búsqueda de sitio (sitelinks searchbox) para la home.
+ *
+ * Google saca de aquí el nombre del sitio que pone encima de cada resultado.
+ * Cuando no se fía de él enseña el dominio, y salía «cinearchive.es» dos veces
+ * (nombre y URL). `alternateName` le da las otras formas en que se escribe,
+ * que es lo que su guía pide para reconocer el nombre como el de la web.
+ */
+export function websiteLd(opts: { url: string; name: string; alternateName?: string[]; searchUrl: string }): Json {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     url: opts.url,
     name: opts.name,
+    ...(opts.alternateName?.length ? { alternateName: opts.alternateName } : {}),
     potentialAction: {
       '@type': 'SearchAction',
       target: {

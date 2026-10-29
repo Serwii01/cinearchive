@@ -56,14 +56,16 @@ const manifestoCopy = manifesto[lang];
 const film = await getFilmOfDay(lang);
 
 // Datos estructurados de la home: WebSite (con cuadro de búsqueda) + Organization.
+// El logo va en PNG: Google no garantiza leer el SVG del favicon como logo.
 const homeUrl = new URL('/', Astro.site).href;
 const homeJsonLd = [
   websiteLd({
     url: homeUrl,
     name: t('site.title'),
+    alternateName: ['CineArchive', 'cinearchive.es'],
     searchUrl: new URL(localizePath(lang, 'search'), Astro.site).href,
   }),
-  organizationLd({ url: homeUrl, name: t('site.title'), logo: new URL('/favicon.svg', Astro.site).href }),
+  organizationLd({ url: homeUrl, name: t('site.title'), logo: new URL('/icons/icon-512.png', Astro.site).href }),
 ];
 ---
 
