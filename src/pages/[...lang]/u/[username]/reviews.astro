@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Stars from '../../../../components/Stars.astro';
+import { normalizeLang, useTranslations, localizePath, formatDate } from '../../../../i18n/ui';
+import { db } from '../../../../db/client';
+import { userFilms } from '../../../../db/schema';
+import { and, desc, eq, isNotNull, sql } from 'drizzle-orm';
+import { getFilmsBrief } from '../../../../lib/films';
+import { getProfileByUsername, followState, canViewActivity } from '../../../../lib/social';
+
+export const prerender = false;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const viewer = Astro.locals.user;
+
+const target = await getProfileByUsername(Astro.params.username ?? '');
+if (!target) return new Response(null, { status: 404 });
+
+// El mismo muro que el perfil: sin permiso para ver su actividad, 404.
+const state = await followState(viewer?.id ?? null, target.userId);
+if (!canViewActivity(viewer?.id ?? null, target, state)) return new Response(null, { status: 404 });
+
+// Todas las reseñas con texto, de 24 en 24 (el perfil solo enseña las últimas).
+const PER_PAGE = 24;
+const conTexto = and(eq(userFilms.userId, target.userId), isNotNull(userFilms.note), sql`btrim(${userFilms.note}) <> ''`);
+const [{ n: total }] = await db.select({ n: sql<number>`count(*)::int` }).from(userFilms).where(conTexto);
+const pages = Math.max(1, Math.ceil(total / PER_PAGE));
+const asked = Number(Astro.url.searchParams.get('page'));
+const page = Number.isInteger(asked) && asked >= 1 && asked <= pages ? asked : 1;
+
+const rows = await db
+  .select({ tmdbId: userFilms.tmdbId, rating: userFilms.rating, note: userFilms.note, reviewedAt: userFilms.reviewedAt, updatedAt: userFilms.updatedAt })
+  .from(userFilms)
+  .where(conTexto)
+  .orderBy(desc(sql`coalesce(${userFilms.reviewedAt}, ${userFilms.updatedAt})`))
+  .limit(PER_PAGE)
+  .offset((page - 1) * PER_PAGE);
+const briefs = await getFilmsBrief(rows.map((r) => r.tmdbId), lang);
+
+const base = localizePath(lang, `u/${target.username}/reviews`);
+const heading = `${t('profile.reviews')} · @${target.username}`;
+---
+
+<BaseLayout title={heading} noindex={target.isPrivate || page > 1}>
+  <section class="frame py-12">
+    <a href={localizePath(lang, `u/${target.username}`)} class="label no-underline hover:text-ink">← @{target.username}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('profile.reviews')} · {total}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{heading}</h1>
+    </header>
+
+    {rows.length === 0 ? (
+      <p class="mt-10 font-mono text-body-md text-muted">{t('profile.noReviews')}</p>
+    ) : (
+      <div class="mt-8 grid grid-cols-1 gap-px border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3">
+        {rows.map((r) => {
+          const b = briefs.get(r.tmdbId);
+          return (
+            <a href={localizePath(lang, `u/${target.username}/review/${r.tmdbId}`)} class="flex gap-3 bg-surface p-3 no-underline hover:bg-film-white">
+              <div class="h-24 w-16 shrink-0 border border-ink bg-charcoal">
+                {b?.poster && <img src={b.poster} srcset={b.posterSrcset ?? undefined} sizes="64px" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+              </div>
+              <div class="min-w-0">
+                <p class="font-display text-headline-md leading-tight text-ink">{b?.title ?? `#${r.tmdbId}`}</p>
+                <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
+                {r.rating && <p class="mt-1 font-mono text-meta-data text-ink"><Stars rating={r.rating} lang={lang} /></p>}
+                {r.note && <p class="mt-1 line-clamp-4 text-body-md text-charcoal/80">{r.note}</p>}
+                <p class="mt-1 font-mono text-meta-data text-outline">{formatDate(r.reviewedAt ?? r.updatedAt, lang)}</p>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    )}
+
+    {pages > 1 && (
+      <nav class="mt-8 flex items-center justify-between font-mono text-meta-data" aria-label={t('profile.reviews')}>
+        {page > 1 ? <a href={`${base}?page=${page - 1}`} class="tap hover:text-ochre">← {t('profile.prevPage')}</a> : <span></span>}
+        <span class="text-muted">{page} / {pages}</span>
+        {page < pages ? <a href={`${base}?page=${page + 1}`} class="tap hover:text-ochre">{t('profile.nextPage')} →</a> : <span></span>}
+      </nav>
+    )}
+  </section>
+</BaseLayout>
