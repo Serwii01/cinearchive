@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { looksLikeCinema, isCinema, isClosed, dedupe, inSpain, nearest, snapToGrid, findCinemas, boxAround, nominatimToElements, _resetOverpassCooldown, type Cinema } from '../src/lib/cinemas';
+import { looksLikeCinema, isCinema, isClosed, dedupe, inSpain, nearest, snapToGrid, findCinemas, boxAround, nominatimToElements, _resetOverpassCooldown, rankSuggestions, overpassCooldown, type Cinema } from '../src/lib/cinemas';
 
 const cine = (over: Partial<Cinema>): Cinema => ({
   id: 'node/1',
@@ -310,5 +310,42 @@ describe('alternativa por Nominatim', () => {
     const out = await findCinemas(37.3881, -5.9609, 5000);
     // El nombre bueno llega de cinemas-overrides.json, igual que con Overpass.
     expect(out.map((c) => c.name)).toEqual(['Multicines Los Arcos']);
+  });
+});
+
+describe('rankSuggestions', () => {
+  const f = (name: string, osm_value: string, state: string, lat = 37.39, lon = -5.98, countrycode = 'ES') => ({
+    properties: { name, osm_value, state, countrycode },
+    geometry: { coordinates: [lon, lat] as [number, number] },
+  });
+
+  it('pone la ciudad por delante de los pueblos que Photon ordena antes', () => {
+    // El orden real de Photon para «sevi», sesgado al centro de España.
+    const out = rankSuggestions([
+      f('Sevilla la Nueva', 'village', 'Comunidad de Madrid', 40.35, -4.03),
+      f('Sevilleja de la Jara', 'village', 'Castilla-La Mancha', 39.57, -4.96),
+      f('Sevilla', 'city', 'Andalucía'),
+      f('Sevilla', 'province', 'Andalucía'),
+      f('Sevillalta', 'neighbourhood', 'Comunidad de Madrid', 40.35, -4.03),
+    ]);
+    expect(out.map((p) => p.label)).toEqual([
+      'Sevilla, Andalucía',
+      'Sevilla la Nueva, Comunidad de Madrid',
+      'Sevilleja de la Jara, Castilla-La Mancha',
+      'Sevillalta, Comunidad de Madrid',
+    ]);
+  });
+
+  it('descarta lo de fuera de España y se queda con seis', () => {
+    const muchos = Array.from({ length: 9 }, (_, i) => f(`Pueblo ${i}`, 'village', 'Castilla y León', 41, -4));
+    expect(rankSuggestions([f('Seville', 'city', 'Ohio', 41, -81, 'US'), ...muchos])).toHaveLength(6);
+    expect(rankSuggestions([f('Seville', 'city', 'Ohio', 41, -81, 'US')])).toEqual([]);
+  });
+});
+
+describe('overpassCooldown', () => {
+  it('dobla la pausa con cada caída seguida, hasta una hora', () => {
+    const min = (n: number) => overpassCooldown(n) / 60_000;
+    expect([1, 2, 3, 4, 5, 9].map(min)).toEqual([10, 20, 40, 60, 60, 60]);
   });
 });

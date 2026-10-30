@@ -34,6 +34,7 @@ const t = useTranslations(lang);
     data-l-found-one={t('cines.foundOne')}
     data-l-widening={t('cines.widening')}
     data-l-show-on-map={t('cines.showOnMap')}
+    data-l-slow={t('cines.slow')}
   >
     <header class="border-b border-ink pb-6">
       <span class="label">{t('nav.cines')}</span>
@@ -160,6 +161,7 @@ const t = useTranslations(lang);
       foundOne: root.dataset.lFoundOne!,
       widening: root.dataset.lWidening!,
       showOnMap: root.dataset.lShowOnMap!,
+      slow: root.dataset.lSlow!,
     };
     const fill = (tpl: string, vars: Record<string, string | number>) =>
       tpl.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m));
@@ -485,10 +487,16 @@ const t = useTranslations(lang);
       results.innerHTML = '';
       widenBtn.hidden = true;
       setStatus(widenedFrom ? fill(L_.widening, { km: km(widenedFrom), km2: km(radius) }) : L_.loading);
+      // Si el servicio de mapas va lento (cuando Overpass está caído, la primera
+      // búsqueda de una zona tarda unos segundos), se dice, en vez de dejar un
+      // «Buscando…» quieto que parece colgado.
+      const lento = setTimeout(() => {
+        if (seq === querySeq) setStatus(L_.slow);
+      }, 4000);
       try {
         const res = await fetch(`${API}?${params}&radius=${radius}`, {
           headers: { accept: 'application/json' },
-        });
+        }).finally(() => clearTimeout(lento));
         const data = await res.json().catch(() => null);
         if (seq !== querySeq) return;
         if (!data) return setStatus(L_.error);

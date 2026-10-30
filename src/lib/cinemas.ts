@@ -212,7 +212,7 @@ export async function geocode(query: string): Promise<GeoPoint | null> {
   return data;
 }
 
-interface PhotonFeature {
+export interface PhotonFeature {
   properties?: {
     name?: string;
     city?: string;
@@ -235,10 +235,59 @@ function photonLabel(p: NonNullable<PhotonFeature['properties']>): string {
 }
 
 /**
+ * Orden de los tipos de lugar en las sugerencias: primero ciudades, luego
+ * pueblos, barrios y caseríos; regiones y provincias al final.
+ *
+ * Photon ordena por relevancia, y un barrio o un pueblo con el nombre exacto
+ * puede ir por delante de la ciudad («mala» → Mala, un barrio, antes que
+ * Málaga). Se reordena por tipo y, dentro de cada tipo, se respeta su orden.
+ */
+const PLACE_RANK: Record<string, number> = {
+  postcode: 0,
+  city: 0,
+  town: 1,
+  municipality: 2,
+  village: 3,
+  borough: 4,
+  suburb: 4,
+  quarter: 5,
+  neighbourhood: 5,
+  hamlet: 6,
+  locality: 7,
+  isolated_dwelling: 8,
+};
+export const placeRank = (osmValue: string | undefined): number => PLACE_RANK[osmValue ?? ''] ?? 9;
+
+/**
+ * De la respuesta de Photon a las sugerencias: solo España, ordenadas por tipo
+ * de lugar, sin etiquetas repetidas (la ciudad y su provincia se llaman igual:
+ * gana la ciudad, que va antes) y como mucho seis. Pura (tiene tests).
+ */
+export function rankSuggestions(features: PhotonFeature[]): GeoPoint[] {
+  const seen = new Set<string>();
+  return features
+    .map((f, i) => {
+      const p = f.properties ?? {};
+      const c = f.geometry?.coordinates;
+      if (p.countrycode !== 'ES' || !c) return null;
+      const [lon, lat] = c;
+      if (!Number.isFinite(lat) || !Number.isFinite(lon) || !inSpain(lat, lon)) return null;
+      const label = photonLabel(p);
+      if (!label) return null;
+      return { lat, lon, label, rank: placeRank(p.osm_value), i };
+    })
+    .filter((p): p is GeoPoint & { rank: number; i: number } => p !== null)
+    .sort((a, b) => a.rank - b.rank || a.i - b.i)
+    .filter((p) => (seen.has(p.label) ? false : (seen.add(p.label), true)))
+    .slice(0, 6)
+    .map(({ lat, lon, label }) => ({ lat, lon, label }));
+}
+
+/**
  * Sugerencias de lugares para el autocompletado (hasta 6), restringidas a España.
  * Usa Photon con `osm_tag=place` (solo entidades de población / códigos postales),
- * sesgado al centro peninsular para mejorar el ranking. Se cachea por texto; ante
- * fallo de red se devuelve lista vacía (nunca lanza).
+ * limitado a la caja de España y reordenado por tipo (ver placeRank). Se cachea
+ * por texto; ante fallo de red se devuelve lista vacía (nunca lanza).
  */
 export async function suggestPlaces(query: string): Promise<GeoPoint[]> {
   const raw = query.trim();
@@ -249,10 +298,14 @@ export async function suggestPlaces(query: string): Promise<GeoPoint[]> {
 
   const url = new URL(PHOTON);
   url.searchParams.set('q', raw);
-  url.searchParams.set('limit', '6');
+  // Se piden más de las que se enseñan: al reordenar, la ciudad que Photon
+  // ponía en séptimo lugar tiene que poder subir.
+  url.searchParams.set('limit', '12');
   url.searchParams.set('osm_tag', 'place'); // ciudades/pueblos/CP, no comercios
-  url.searchParams.set('lat', '40.4'); // sesgo al centro de España (mejor ranking)
-  url.searchParams.set('lon', '-3.7');
+  // Solo España, con la caja del país. Antes se pedía «cerca del centro de
+  // España» (lat/lon), y eso no solo ordenaba por cercanía a Madrid: dejaba
+  // fuera de la respuesta a las ciudades lejanas, y «mala» no traía Málaga.
+  url.searchParams.set('bbox', `${ES_BBOX.minLon},${ES_BBOX.minLat},${ES_BBOX.maxLon},${ES_BBOX.maxLat}`);
 
   let data: GeoPoint[] = [];
   try {
@@ -261,20 +314,7 @@ export async function suggestPlaces(query: string): Promise<GeoPoint[]> {
     });
     if (res.ok) {
       const json = (await res.json()) as { features?: PhotonFeature[] };
-      const seen = new Set<string>();
-      data = (json.features ?? [])
-        .map((f) => {
-          const p = f.properties ?? {};
-          const c = f.geometry?.coordinates;
-          if (p.countrycode !== 'ES' || !c) return null;
-          const [lon, lat] = c;
-          if (!Number.isFinite(lat) || !Number.isFinite(lon) || !inSpain(lat, lon)) return null;
-          const label = photonLabel(p);
-          if (!label || seen.has(label)) return null;
-          seen.add(label);
-          return { lat, lon, label } satisfies GeoPoint;
-        })
-        .filter((p): p is GeoPoint => p !== null);
+      data = rankSuggestions(json.features ?? []);
     }
     // Solo se cachea una respuesta efectiva de la red; si hubo excepción, no.
     suggestCache.set(key, { time: Date.now(), data });
@@ -483,12 +523,21 @@ const OVERPASS_BUDGET_MS = 9000;
 /**
  * Tras un fallo total, durante este tiempo no se pregunta a Overpass y se va
  * directo a Nominatim. Si Overpass está caído, lo estará también en la
- * siguiente búsqueda, y no tiene sentido hacer esperar 9 s a cada visita.
+ * siguiente búsqueda, y no tiene sentido hacer esperar a cada visita. Si sigue
+ * caído al volver a probar, la pausa se dobla (10, 20, 40 min, como mucho una
+ * hora): en una caída de días, cada reintento hacía esperar 4 s a alguien.
  */
 const OVERPASS_COOLDOWN_MS = 10 * 60 * 1000;
+const OVERPASS_COOLDOWN_MAX_MS = 60 * 60 * 1000;
 /** Ventaja de Overpass antes de preguntar también a Nominatim (ver findCinemas). */
 const OVERPASS_HEAD_START_MS = 4000;
 let overpassDownUntil = 0;
+let overpassFallos = 0;
+
+/** La pausa tras `fallos` caídas seguidas de Overpass. Pura (tiene tests). */
+export function overpassCooldown(fallos: number): number {
+  return Math.min(OVERPASS_COOLDOWN_MS * 2 ** Math.max(0, fallos - 1), OVERPASS_COOLDOWN_MAX_MS);
+}
 
 async function queryOverpass(q: string): Promise<OverpassElement[]> {
   // Aborta todas las peticiones en curso cuando una gana o se acaba el tiempo:
@@ -649,10 +698,13 @@ async function nominatimBox(box: Box, amenity: Amenity): Promise<OverpassElement
   return nominatimToElements((await res.json()) as NominatimPlace[], amenity);
 }
 
-/** Todos los objetos de un tipo en la caja. Lanza si falla la primera petición. */
-async function nominatimAmenity(box: Box, amenity: Amenity): Promise<OverpassElement[]> {
+/**
+ * Todos los objetos de un tipo en la caja. Lanza si falla la primera petición.
+ * `split = false` se queda con la primera página aunque venga llena.
+ */
+async function nominatimAmenity(box: Box, amenity: Amenity, split = true): Promise<OverpassElement[]> {
   const first = await nominatimBox(box, amenity);
-  if (first.length < NOMINATIM_MAX) return first;
+  if (!split || first.length < NOMINATIM_MAX) return first;
   // Lleno: podrían faltar salas cercanas. Se repite por cuadrantes, y si alguno
   // falla se usa lo que haya.
   const midLat = (box.minLat + box.maxLat) / 2;
@@ -680,7 +732,11 @@ async function nominatimAmenity(box: Box, amenity: Amenity): Promise<OverpassEle
  */
 async function queryNominatim(lat: number, lon: number, radius: number): Promise<OverpassElement[]> {
   const cinemas = await nominatimAmenity(boxAround(lat, lon, radius), 'cinema');
-  const theatres = await nominatimAmenity(boxAround(lat, lon, Math.min(radius, THEATRE_RADIUS_M)), 'theatre').catch(
+  // Los teatros, sin partir en cuadrantes: lo que se busca entre ellos son unos
+  // pocos multicines mal etiquetados, y cada cuadrante es un segundo más de
+  // espera (una petición por segundo). En Sevilla, con la zona llena de
+  // teatros, Los Arcos sale igual en la primera página.
+  const theatres = await nominatimAmenity(boxAround(lat, lon, Math.min(radius, THEATRE_RADIUS_M)), 'theatre', false).catch(
     () => [],
   );
   return [...cinemas, ...theatres];
@@ -721,9 +777,13 @@ export async function findCinemas(lat: number, lon: number, radius = 25000): Pro
   // Si las dos fuentes fallan, lanza y el endpoint responde un error reintentable.
   let result: Result;
   if (Date.now() >= overpassDownUntil) {
-    const op = queryOverpass(q).then((elements): Result => ({ elements, ttl: DAY_MS }));
+    const op = queryOverpass(q).then((elements): Result => {
+      overpassFallos = 0;
+      return { elements, ttl: DAY_MS };
+    });
     op.catch(() => {
-      overpassDownUntil = Date.now() + OVERPASS_COOLDOWN_MS;
+      overpassFallos++;
+      overpassDownUntil = Date.now() + overpassCooldown(overpassFallos);
     });
     // Overpass tiene unos segundos de ventaja; si no ha contestado, se pregunta
     // también a Nominatim y gana la primera respuesta buena. Esperar a que
@@ -749,4 +809,5 @@ export async function findCinemas(lat: number, lon: number, radius = 25000): Pro
 /** Para los tests: vuelve a dar una oportunidad a Overpass. */
 export function _resetOverpassCooldown(): void {
   overpassDownUntil = 0;
+  overpassFallos = 0;
 }
