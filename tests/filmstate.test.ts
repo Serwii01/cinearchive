@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { aplicarReglas, fechaVista, aInputDate } from '../src/lib/filmstate';
+import { aplicarReglas, fechaVista, aInputDate, hoyEnEspana } from '../src/lib/filmstate';
 
 describe('aplicarReglas', () => {
   it('pendiente se queda en pendiente: no la asciende a vista', () => {
@@ -93,5 +93,15 @@ describe('aInputDate', () => {
     expect(aInputDate(null)).toBe('');
     expect(aInputDate(undefined)).toBe('');
     expect(aInputDate('no es una fecha')).toBe('');
+  });
+});
+
+describe('hoyEnEspana', () => {
+  it('da el día de Madrid, no el de UTC', () => {
+    // 23:30 UTC del 29 de octubre: en Madrid ya es 30 (UTC+1 en invierno).
+    expect(hoyEnEspana(new Date('2026-10-29T23:30:00Z'))).toBe('2026-10-30');
+    // Y en verano (UTC+2): las 22:30 UTC del 1 de julio son las 00:30 del 2.
+    expect(hoyEnEspana(new Date('2026-07-01T22:30:00Z'))).toBe('2026-07-02');
+    expect(hoyEnEspana(new Date('2026-07-01T10:00:00Z'))).toBe('2026-07-01');
   });
 });

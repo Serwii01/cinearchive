@@ -5,7 +5,7 @@ import { db } from '../../../db/client';
 import { userFilms } from '../../../db/schema';
 import { invalidateRecommendations } from '../../../lib/recs';
 import { invalidateStats } from '../../../lib/stats';
-import { aplicarReglas, fechaVista } from '../../../lib/filmstate';
+import { aplicarReglas, fechaVista, hoyEnEspana } from '../../../lib/filmstate';
 import { ensureFirstViewing } from '../../../lib/viewings';
 
 export const prerender = false;
@@ -94,8 +94,15 @@ export const POST: APIRoute = async ({ locals, request }) => {
       },
     });
 
-  if (typeof parsed.data.reviewedAt === 'string') {
-    await ensureFirstViewing(locals.user.id, tmdbId, parsed.data.reviewedAt);
+  // Primer visionado: el día que el usuario diga, o hoy si acaba de puntuarla.
+  // Puntuar es haberla visto, y sin visionado la película no salía ni en el
+  // diario ni en «lo último que ha visto» del perfil, que leen user_viewings.
+  // Solo marcarla como vista no lo apunta: puede ser algo visto hace años.
+  // Si ya tiene algún visionado no se toca: cambiar la nota no es volver a verla.
+  const primerVisionado =
+    typeof parsed.data.reviewedAt === 'string' ? parsed.data.reviewedAt : rating != null ? hoyEnEspana(now) : null;
+  if (primerVisionado) {
+    await ensureFirstViewing(locals.user.id, tmdbId, primerVisionado);
   }
 
   invalidateRecommendations(locals.user.id);

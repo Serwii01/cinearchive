@@ -70,3 +70,13 @@ export function aInputDate(d: Date | string | null | undefined): string {
   const f = typeof d === 'string' ? new Date(d) : d;
   return Number.isNaN(f.getTime()) ? '' : f.toISOString().slice(0, 10);
 }
+
+/**
+ * El día de hoy en España, YYYY-MM-DD. Es la fecha que lleva el visionado que
+ * se apunta solo al puntuar: a las 00:30 de la noche en Madrid todavía es el
+ * día anterior en UTC, y con la fecha UTC la película caería en el día que no es.
+ */
+export function hoyEnEspana(ahora: Date = new Date()): string {
+  // en-CA da justo AAAA-MM-DD.
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora);
+}
