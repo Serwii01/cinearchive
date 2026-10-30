@@ -18,7 +18,7 @@ const RESERVED = new Set([
   'recommendations', 'discover', 'films', 'film', 'archive', 'about', 'help',
   'support', 'contact', 'root', 'system', 'null', 'undefined', 'me', 'my',
   'user', 'users', 'profile', 'profiles', 'u', 'moderator', 'mod', 'staff',
-  'official', 'cine', 'cinearchive', 'sergio', 'privacy', 'terms', 'legal',
+  'official', 'cine', 'cinearchive', 'sergio', 'team', 'privacy', 'terms', 'legal',
 ]);
 
 export type UsernameError = 'format' | 'reserved';

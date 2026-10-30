@@ -51,6 +51,7 @@ export const TOP_LEVEL_SECTIONS: ReadonlySet<string> = new Set([
   'sergio',
   'stats',
   'style',
+  'team',
   'terms',
   'timeline',
   'u',

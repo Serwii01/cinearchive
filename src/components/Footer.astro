@@ -4,7 +4,6 @@ import { CURRENT_VERSION } from '../data/changelog';
 
 const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const year = new Date().getFullYear();
 ---
 
 <footer class="mt-24 border-t border-ink bg-charcoal text-background">
@@ -16,7 +15,7 @@ const year = new Date().getFullYear();
         <p class="label mt-2 text-outline-variant">{t('site.tagline')}</p>
       </div>
       <p class="font-mono text-meta-data text-outline-variant">
-        © {year} <a href={localizePath(lang, 'sergio')} class="text-outline-variant no-underline hover:text-ochre hover:underline">{t('footer.rights')}</a>
+        <a href={localizePath(lang, 'team')} class="text-outline-variant no-underline hover:text-ochre hover:underline">{t('footer.rights')}</a>
       </p>
     </div>
 
