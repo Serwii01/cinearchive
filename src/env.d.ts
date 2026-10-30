@@ -14,5 +14,7 @@ declare namespace App {
       userId: string;
       expiresAt: Date;
     } | null;
+    /** La página no encontró lo que se pedía: el middleware responde 404. */
+    notFound?: boolean;
   }
 }

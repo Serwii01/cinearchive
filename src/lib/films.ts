@@ -34,6 +34,8 @@ export interface FilmDetail {
   /** Dónde ver, por región ISO. Viene de TMDB/JustWatch, sin coste de cuota. */
   providers: Record<string, WatchAvailability>;
   locations: FilmLocations | null;
+  /** El título en cada idioma (de él sale el slug de la ficha en ese idioma). */
+  titles: Titles | null;
 }
 
 // La ficha es idéntica para todos los visitantes: durante unos minutos se
@@ -129,7 +131,7 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
       set: { tmdb: guardar, omdb, providers, titles, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() },
     });
 
-  return { tmdb, omdb, providers, locations };
+  return { tmdb, omdb, providers, locations, titles };
 }
 
 export interface FilmBrief {

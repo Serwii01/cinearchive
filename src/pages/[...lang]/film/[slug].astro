@@ -44,20 +44,30 @@ const slugParam = Astro.params.slug ?? '';
 const tmdbId = parseFilmId(slugParam);
 
 if (tmdbId == null) {
-  return Astro.redirect(localizePath(lang, 'films'));
+  // No existe: la página 404 de verdad, con su estado (lo pone el middleware).
+  // Antes se redirigía al listado, y Google lo contaba como un 404 disfrazado.
+  Astro.locals.notFound = true;
+  return Astro.rewrite('/404');
 }
 
 let film;
 try {
   film = await getFilm(tmdbId, lang);
 } catch {
-  return new Response(t('film.notFound'), { status: 404 });
+  Astro.locals.notFound = true;
+  return Astro.rewrite('/404');
 }
-const { tmdb, omdb, providers, locations } = film;
+const { tmdb, omdb, providers, locations, titles } = film;
 
 // URL canónica con nombre: si llegan por id pelado o con un slug distinto (título
 // cambiado/otro idioma), 301 al slug real. El id garantiza resolver siempre.
-const canonicalSlug = filmSlug(tmdbId, tmdb.title);
+// El slug sale del título en el idioma de la página, el mismo que usan el
+// sitemap y las alternativas hreflang: si cada sitio lo sacara de un lado, unas
+// URLs redirigirían a otras.
+const slugIn = (l: Lang) => filmSlug(tmdbId, titles?.[l] ?? (l === lang ? tmdb.title : titles?.es ?? tmdb.title));
+const canonicalSlug = slugIn(lang);
+// La ficha en los cinco idiomas, cada una con su slug (para hreflang).
+const alternatePaths = Object.fromEntries((Object.keys(locales) as Lang[]).map((l) => [l, `film/${slugIn(l)}`]));
 if (slugParam !== canonicalSlug) {
   return Astro.redirect(localizePath(lang, `film/${canonicalSlug}`), 301);
 }
@@ -258,6 +268,7 @@ const crumbsJsonLd = breadcrumbLd([
   ogType="article"
   jsonLd={[movieJsonLd, crumbsJsonLd]}
   noindex={untranslated}
+  alternatePaths={alternatePaths}
 >
   <article class="frame py-12">
     <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>

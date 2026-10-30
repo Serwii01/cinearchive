@@ -2,7 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getLangFromUrl, useTranslations, localizePath } from '../i18n/ui';
 
-const lang = getLangFromUrl(Astro.url);
+// El idioma sale de la URL que pidió el visitante, no de Astro.url: los 404 se
+// pintan reescribiendo a /404, y con Astro.url /en/film/loquesea salía en castellano.
+const lang = getLangFromUrl(new URL(Astro.originPathname, Astro.url));
 const t = useTranslations(lang);
 
 const salidas = [

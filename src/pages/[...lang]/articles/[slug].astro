@@ -11,7 +11,12 @@ const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
 const article = articleBySlug(Astro.params.slug ?? '');
-if (!article) return Astro.redirect(localizePath(lang, 'articles'));
+if (!article) {
+  // No existe: la página 404 de verdad, con su estado (lo pone el middleware).
+  // Antes se redirigía al listado, y Google lo contaba como un 404 disfrazado.
+  Astro.locals.notFound = true;
+  return Astro.rewrite('/404');
+}
 const c = articleCopy(article, lang);
 
 // Imagen de cabecera: el fondo de una película de TMDB. Si TMDB no responde,

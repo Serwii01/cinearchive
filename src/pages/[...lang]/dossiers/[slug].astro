@@ -10,7 +10,12 @@ const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
 const dossier = dossierBySlug(Astro.params.slug ?? '');
-if (!dossier) return Astro.redirect(localizePath(lang, 'dossiers'));
+if (!dossier) {
+  // No existe: la página 404 de verdad, con su estado (lo pone el middleware).
+  // Antes se redirigía al listado, y Google lo contaba como un 404 disfrazado.
+  Astro.locals.notFound = true;
+  return Astro.rewrite('/404');
+}
 
 const c = dossierCopy(dossier, lang);
 

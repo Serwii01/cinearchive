@@ -29,12 +29,21 @@ interface Props {
   ogType?: 'website' | 'article';
   /** Datos estructurados schema.org; se serializan como JSON-LD (uno o varios). */
   jsonLd?: object | object[];
+  /**
+   * La ruta (sin prefijo de idioma) de esta misma página en cada idioma, cuando
+   * no es la misma en todos: la ficha de una película lleva el título traducido
+   * en el slug. Sin esto, las alternativas hreflang apuntaban al slug en
+   * castellano en los cinco idiomas, y cada una era una redirección.
+   */
+  alternatePaths?: Partial<Record<Lang, string>>;
 }
 
-const lang: Lang = getLangFromUrl(Astro.url);
+// De la URL pedida (originPathname), no de Astro.url: en los 404, que se pintan
+// reescribiendo a /404, Astro.url ya no lleva el idioma.
+const lang: Lang = getLangFromUrl(new URL(Astro.originPathname, Astro.url));
 const t = useTranslations(lang);
 
-const { title, description, image, noindex, ogType = 'website', jsonLd } = Astro.props;
+const { title, description, image, noindex, ogType = 'website', jsonLd, alternatePaths } = Astro.props;
 const pageTitle = title ? `${title} — ${t('site.title')}` : `${t('site.title')} — ${t('site.tagline')}`;
 const pageDesc = description ?? t('site.description');
 
@@ -52,7 +61,7 @@ const alternates = noindex
   ? []
   : langs.map((code) => ({
       code,
-      href: new URL(localizePath(code, stripLangPrefix(Astro.url.pathname)), Astro.site).href,
+      href: new URL(localizePath(code, alternatePaths?.[code] ?? stripLangPrefix(Astro.url.pathname)), Astro.site).href,
     }));
 const ogLocales: Record<Lang, string> = { es: 'es_ES', en: 'en_US', gl: 'gl_ES', eu: 'eu_ES', ca: 'ca_ES' };
 const ogImage = image

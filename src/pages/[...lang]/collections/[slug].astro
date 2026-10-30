@@ -10,7 +10,12 @@ const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
 const collection = collectionBySlug(Astro.params.slug ?? '');
-if (!collection) return Astro.redirect(localizePath(lang, 'collections'));
+if (!collection) {
+  // No existe: la página 404 de verdad, con su estado (lo pone el middleware).
+  // Antes se redirigía al listado, y Google lo contaba como un 404 disfrazado.
+  Astro.locals.notFound = true;
+  return Astro.rewrite('/404');
+}
 
 const briefs = await getFilmsBrief(collection.tmdbIds, lang);
 // Mantener el orden curado y descartar los que no resuelvan.

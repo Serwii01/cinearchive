@@ -16,13 +16,19 @@ const id = Number(Astro.params.id);
 // fueran: la sección enlazaba hacia aquí y aquí no se volvía a la sección.
 const esFigura = figures.some((fg) => fg.id === id);
 
-if (!Number.isInteger(id) || id <= 0) return Astro.redirect(localizePath(lang, 'films'));
+if (!Number.isInteger(id) || id <= 0) {
+  // No existe: la página 404 de verdad, con su estado (lo pone el middleware).
+  // Antes se redirigía al listado, y Google lo contaba como un 404 disfrazado.
+  Astro.locals.notFound = true;
+  return Astro.rewrite('/404');
+}
 
 let person;
 try {
   person = await getPersonCached(id, lang);
 } catch {
-  return new Response(t('person.notFound'), { status: 404 });
+  Astro.locals.notFound = true;
+  return Astro.rewrite('/404');
 }
 
 const photo = profileUrl(person.profile_path, 'h632');

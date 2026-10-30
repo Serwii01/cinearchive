@@ -110,7 +110,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   // `[...lang]` casa con cualquier cosa —incluido /api/loquesea—, así que sin
   // esto /pepe renderizaría la portada en español, y /api/inventado también.
-  if (!isKnownRoute(path, LANGS)) {
+  const notFound = async () => {
     if (path.startsWith('/api/')) {
       return harden(
         new Response(JSON.stringify({ error: 'not_found' }), {
@@ -125,6 +125,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
     // justo lo que hace que Google indexe basura.
     const res = await context.rewrite('/404');
     return harden(new Response(res.body, { status: 404, headers: res.headers }), path);
+  };
+  if (!isKnownRoute(path, LANGS)) return notFound();
+
+  // isKnownRoute solo mira el primer segmento, y `[...lang]` casa con
+  // cualquier cosa: /about/xyz, /film/234/extra, /api/me/inventada o
+  // /cinema/noexiste (una ficha prerenderizada que no existe) pintaban la
+  // portada con un 200, y /api/search o /about/films pintaban el buscador o la
+  // filmoteca tomando «api» o «about» por idioma. Para Google eran copias, y
+  // además llenaban la caché de páginas. El segmento de idioma solo puede ir
+  // vacío o ser un idioma de verdad.
+  if (context.routePattern.startsWith('/[...lang]')) {
+    const param = context.params.lang;
+    if (param && !LANGS.includes(param)) return notFound();
   }
 
   // CSRF (defensa en profundidad): en escrituras a la API, si llega cabecera
@@ -241,7 +254,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   }
 
-  const render = async () => cachePolicy(harden(await next(), path), stripped, !!context.locals.user);
+  const render = async () => {
+    const res = await next();
+    // Una página que no encuentra lo que se pide (película, persona,
+    // artículo…) marca locals.notFound y reescribe a /404; aquí se le pone el
+    // estado que le toca, porque la reescritura sale con 200.
+    if (context.locals.notFound) return harden(new Response(res.body, { status: 404, headers: res.headers }), path);
+    return cachePolicy(harden(res, path), stripped, !!context.locals.user);
+  };
 
   // Visitante sin sesión en una página pública: se sirve de memoria (ver
   // lib/htmlcache.ts). Con cookie de sesión, aunque esté caducada, se renderiza:
