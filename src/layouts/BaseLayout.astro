@@ -162,9 +162,14 @@ const umamiSrc = umamiId && umamiHost ? `https://${umamiHost}/script.js` : '';
     ))}
   </head>
   <body class="flex min-h-screen flex-col" data-contar-visita={Astro.isPrerendered ? '' : undefined}>
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[1000] focus:border focus:border-ink focus:bg-ochre focus:px-4 focus:py-3 focus:font-mono focus:text-label-caps focus:uppercase focus:text-ink"
+      >{t('a11y.skipToContent')}</a
+    >
     <Ticker />
     <Header />
-    <main class="flex-1">
+    <main id="contenido" tabindex="-1" class="flex-1 focus:outline-none">
       <slot />
     </main>
     <Footer />

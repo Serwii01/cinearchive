@@ -51,6 +51,7 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
         autocomplete="off"
         autofocus
         placeholder={t('search.placeholder')}
+        aria-label={t('search.placeholder')}
         class="w-full max-w-md border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
       />
       <button type="submit" class="btn btn-primary">{t('search.title')}</button>

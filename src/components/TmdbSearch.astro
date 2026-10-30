@@ -23,6 +23,7 @@ const t = useTranslations(lang);
       type="search"
       autocomplete="off"
       placeholder={t('tmdb.placeholder')}
+      aria-label={t('tmdb.title')}
       class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white focus:outline-none"
     />
     <p class="mt-2 font-mono text-meta-data text-muted">{t('tmdb.hint')}</p>

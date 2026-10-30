@@ -14,14 +14,20 @@ interface Props {
 }
 
 const { align = 'right' } = Astro.props;
-const lang: Lang = getLangFromUrl(Astro.url);
+// La URL pedida (originPathname): en los 404, Astro.url ya es /404.
+const pedida = new URL(Astro.originPathname, Astro.url);
+const lang: Lang = getLangFromUrl(pedida);
 const t = useTranslations(lang);
 const langs = Object.keys(languages) as Lang[];
 
 // Las rutas son simétricas entre idiomas: se quita el prefijo de la actual y se
 // vuelve a construir en el idioma de destino. No vale con sustituir el prefijo,
 // porque el castellano no lleva ninguno (/cines) y los demás sí (/en/cines).
-const seccion = stripLangPrefix(Astro.url.pathname);
+// Salvo /offline, que existe una sola vez y sin prefijo (la sirve el service
+// worker): desde ahí cada idioma lleva a su portada, no a un /en/offline que
+// no existe.
+const actual = stripLangPrefix(pedida.pathname);
+const seccion = /^\/offline\/?$/.test(actual) ? '' : actual;
 const pathFor = (target: Lang) => localizePath(target, seccion);
 ---
 

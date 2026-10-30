@@ -13,6 +13,7 @@ export const defaultLang: Lang = 'es';
 export const ui = {
   es: {
     'site.title': 'Cine Archive',
+    'a11y.skipToContent': 'Saltar al contenido',
     'site.tagline': 'Archivo editorial de cine',
     'site.description':
       'Archivo de cine abierto y multilingüe: hemeroteca de revistas en dominio público, fichas de películas y revistas de acceso abierto. Sin muros ni publicidad.',
@@ -92,6 +93,7 @@ export const ui = {
     'cines.foundOne': '1 sala a menos de {km} km',
     'cines.widening': 'No hay salas a {km} km. Buscando hasta {km2} km…',
     'cines.showOnMap': 'Ver en el mapa',
+    'cines.slow': 'Seguimos buscando: puede tardar unos segundos más…',
     'home.helpTitle': '¿Necesitas ayuda?',
     'home.helpBody':
       'Todo lo que puedes hacer en Cine Archive, sección a sección: la hemeroteca, el cine abierto, tu perfil, las listas y más.',
@@ -905,6 +907,7 @@ export const ui = {
   },
   en: {
     'site.title': 'Cine Archive',
+    'a11y.skipToContent': 'Skip to content',
     'site.tagline': 'A film editorial archive',
     'site.description':
       'An open, multilingual film archive: a public-domain periodicals library, film entries and open-access journals. No walls, no ads.',
@@ -982,6 +985,7 @@ export const ui = {
     'cines.foundOne': '1 cinema within {km} km',
     'cines.widening': 'No cinemas within {km} km. Searching up to {km2} km…',
     'cines.showOnMap': 'Show on map',
+    'cines.slow': 'Still searching — this can take a few more seconds…',
     'home.helpTitle': 'Need help?',
     'home.helpBody':
       'Everything you can do on Cine Archive, section by section: the periodicals archive, open cinema, your profile, lists and more.',
@@ -1797,6 +1801,7 @@ export const ui = {
   },
   gl: {
     'site.title': 'Cine Archive',
+    'a11y.skipToContent': 'Saltar ao contido',
     'site.tagline': 'Arquivo editorial de cine',
     'site.description':
       'Arquivo de cine aberto e multilingüe: hemeroteca de revistas en dominio público, fichas de películas e revistas de acceso aberto. Sen muros nin publicidade.',
@@ -1876,6 +1881,7 @@ export const ui = {
     'cines.foundOne': '1 sala a menos de {km} km',
     'cines.widening': 'Non hai salas a {km} km. Buscando ata {km2} km…',
     'cines.showOnMap': 'Ver no mapa',
+    'cines.slow': 'Seguimos buscando: pode tardar uns segundos máis…',
     'home.helpTitle': 'Precisas axuda?',
     'home.helpBody':
       'Todo o que podes facer en Cine Archive, sección a sección: a hemeroteca, o cine aberto, o teu perfil, as listas e máis.',
@@ -2689,6 +2695,7 @@ export const ui = {
   },
   eu: {
     'site.title': 'Cine Archive',
+    'a11y.skipToContent': 'Joan edukira',
     'site.tagline': 'Zinemaren artxibo editoriala',
     'site.description':
       'Zinema-artxibo ireki eta eleaniztuna: jabari publikoko aldizkarien hemeroteka, filmen fitxak eta sarbide irekiko aldizkariak. Hormarik eta publizitaterik gabe.',
@@ -2766,6 +2773,7 @@ export const ui = {
     'cines.foundOne': 'Zinema areto 1 {km} km baino gutxiagora',
     'cines.widening': 'Ez dago aretorik {km} km-ra. {km2} km arte bilatzen…',
     'cines.showOnMap': 'Ikusi mapan',
+    'cines.slow': 'Bilatzen jarraitzen dugu: segundo batzuk gehiago behar izan ditzake…',
     'home.helpTitle': 'Laguntza behar duzu?',
     'home.helpBody':
       'Cine Archive-n egin dezakezun guztia, atalez atal: hemeroteka, zinema irekia, zure profila, zerrendak eta gehiago.',
@@ -3581,6 +3589,7 @@ export const ui = {
   },
   ca: {
     'site.title': 'Cine Archive',
+    'a11y.skipToContent': 'Salta al contingut',
     'site.tagline': 'Arxiu editorial de cinema',
     'site.description':
       'Arxiu de cinema obert i multilingüe: hemeroteca de revistes de domini públic, fitxes de pel·lícules i revistes d’accés obert. Sense murs ni publicitat.',
@@ -3658,6 +3667,7 @@ export const ui = {
     'cines.foundOne': '1 sala a menys de {km} km',
     'cines.widening': 'No hi ha sales a {km} km. Cercant fins a {km2} km…',
     'cines.showOnMap': 'Veure al mapa',
+    'cines.slow': 'Seguim buscant: pot trigar uns segons més…',
     'home.helpTitle': 'Necessites ajuda?',
     'home.helpBody':
       'Tot el que pots fer a Cine Archive, secció a secció: l’hemeroteca, el cinema obert, el teu perfil, les llistes i més.',

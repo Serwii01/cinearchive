@@ -89,7 +89,7 @@ const sections: { id?: string; href?: string; label: string }[] = [
       <summary class="arch-sum"><span class="arch-arrow">▸</span><h2 class="text-headline-lg text-ink">{t('nav.library')} <span class="label">· {libItems.length}</span></h2></summary>
       <div class="pb-10">
         <p class="max-w-2xl text-body-md text-charcoal">{t('library.intro')}</p>
-        <input id="lib-filter" type="search" autocomplete="off" placeholder={t('archive.searchLib')} class="mt-4 w-full max-w-xs border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none" />
+        <input id="lib-filter" type="search" autocomplete="off" placeholder={t('archive.searchLib')} aria-label={t('archive.searchLib')} class="mt-4 w-full max-w-xs border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none" />
         <div id="lib-grid" class="mt-6 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-4">
           {libItems.map((b) => (
             <article class="group flex h-full flex-col bg-surface" data-search={`${b.title} ${b.author}`.toLowerCase()}>
@@ -153,7 +153,7 @@ const sections: { id?: string; href?: string; label: string }[] = [
       <summary class="arch-sum"><span class="arch-arrow">▸</span><h2 class="text-headline-lg text-ink">{t('nav.awards')}</h2></summary>
       <div class="pb-10">
         <p class="max-w-2xl text-body-md text-charcoal">{t('awards.intro')}</p>
-        <input id="aw-filter" type="search" autocomplete="off" placeholder={t('archive.searchAwards')} class="mt-4 w-full max-w-xs border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none" />
+        <input id="aw-filter" type="search" autocomplete="off" placeholder={t('archive.searchAwards')} aria-label={t('archive.searchAwards')} class="mt-4 w-full max-w-xs border border-ink bg-white px-3 py-2 font-mono text-meta-data text-ink placeholder:text-muted focus:bg-film-white focus:outline-none" />
         {awards.map((a) => (
           <section class="mt-8">
             <h3 class="border-b border-ink pb-2 text-headline-md text-ink">{awardName(a, lang)}</h3>

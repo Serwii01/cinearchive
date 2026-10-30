@@ -76,17 +76,6 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
     tmdb = cached?.tmdb as TmdbMovie | undefined;
   }
   if (!tmdb) throw new Error(`No se pudo obtener la película ${tmdbId}.`);
-  // Reparto y dirección en alfabeto latino («中井朝一» → Asakazu Nakai). Se
-  // guarda así también en la caché, de donde leen las listas.
-  tmdb = await latinizeMovie(tmdb);
-
-  // OMDb: reutilizar de cache si está fresca; si no, refrescar por imdb_id.
-  let omdb = (cached?.omdb as OmdbData | null) ?? null;
-  const omdbFresh =
-    cached?.omdb && Date.now() - new Date(cached.fetchedAt).getTime() < OMDB_TTL_MS;
-  if (!omdbFresh && tmdb.imdb_id) {
-    omdb = (await getOmdbByImdbId(tmdb.imdb_id)) ?? omdb;
-  }
 
   // Dónde ver: viene incrustado en la respuesta de TMDB que acabamos de pedir,
   // así que siempre está fresco y no gasta ninguna cuota. extractWatchProviders
@@ -99,6 +88,10 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
     providers = cached.providers as Record<string, WatchAvailability>;
   }
 
+  // OMDb: reutilizar de cache si está fresca; si no, refrescar por imdb_id.
+  const omdbFresh =
+    cached?.omdb && Date.now() - new Date(cached.fetchedAt).getTime() < OMDB_TTL_MS;
+
   // Wikidata: localizaciones (rodaje/narrativa). Cache muy prolongada.
   const guardado = (cached?.wikidata as FilmLocations | null) ?? null;
   // Lo guardado antes de que hubiera coordenadas es solo una lista de nombres:
@@ -110,19 +103,32 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
     cached?.wikidataFetchedAt &&
     Date.now() - new Date(cached.wikidataFetchedAt).getTime() < WIKIDATA_TTL_MS;
   let wikidataFetchedAt = cached?.wikidataFetchedAt ?? null;
-  if (!wdFresh && tmdb.imdb_id) {
-    const fresh = await getFilmLocations(tmdb.imdb_id);
-    if (fresh) {
-      locations = fresh;
-      wikidataFetchedAt = new Date();
-    }
+
+  // Las cuatro cosas que faltan solo dependen de la ficha de TMDB, así que van a
+  // la vez. Antes iban una detrás de otra y una ficha sin caché tardaba la suma
+  // (≈3,5 s); ahora, lo que tarde la más lenta.
+  //   · el reparto y la dirección en alfabeto latino («中井朝一» → Asakazu
+  //     Nakai), que se guarda así en la caché, de donde leen las listas;
+  //   · las notas de OMDb, las localizaciones de Wikidata y los títulos.
+  const imdb = tmdb.imdb_id;
+  const [latin, omdbNueva, fresh, titulosNuevos] = await Promise.all([
+    latinizeMovie(tmdb),
+    !omdbFresh && imdb ? getOmdbByImdbId(imdb) : Promise.resolve(null),
+    !wdFresh && imdb ? getFilmLocations(imdb) : Promise.resolve(null),
+    titlesOf(tmdb),
+  ]);
+  tmdb = latin;
+  const omdb = omdbNueva ?? (cached?.omdb as OmdbData | null) ?? null;
+  if (fresh) {
+    locations = fresh;
+    wikidataFetchedAt = new Date();
   }
 
   // A la caché va la ficha PODADA (solo lo que la web lee: ver slimMovie); la
   // página recibe la completa que acabamos de pedir. Si TMDB falla y se sirve
   // desde caché, la podada tiene todo lo que la ficha necesita.
   const guardar = slimMovie(tmdb);
-  const titles = (await titlesOf(tmdb)) ?? (cached?.titles as Titles | null) ?? null;
+  const titles = titulosNuevos ?? (cached?.titles as Titles | null) ?? null;
   await db
     .insert(filmsCache)
     .values({ tmdbId, tmdb: guardar, omdb, providers, titles, wikidata: locations, wikidataFetchedAt, fetchedAt: new Date() })

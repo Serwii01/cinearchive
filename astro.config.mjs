@@ -43,9 +43,11 @@ export default defineConfig({
       },
       // Páginas SSR públicas que la integración no ve (solo lista las estáticas).
       customPages: ['', '/en', '/gl', '/eu', '/ca'].map((p) => `${SITE}${p}/estrenos`),
-      // Fuera del sitemap las páginas privadas/de auth y las que van a `noindex`.
+      // Fuera del sitemap las páginas privadas/de auth y las que van a `noindex`
+      // (la guía de estilo y la página sin conexión llevan noindex: ofrecerlas en
+      // el sitemap es mandarle a Google señales contrarias).
       filter: (page) =>
-        !/\/(?:account|watchlist|notifications|stats|recommendations|login|register|forgot|reset|admin)(?:\/|$)/.test(
+        !/\/(?:account|watchlist|notifications|stats|recommendations|login|register|forgot|reset|admin|style|offline)(?:\/|$)/.test(
           page,
         ),
     }),
