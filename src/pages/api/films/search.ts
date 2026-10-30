@@ -23,7 +23,7 @@ export const GET: APIRoute = async ({ request, url }) => {
       originalTitle: r.original_title,
       year: r.release_date ? Number(r.release_date.slice(0, 4)) : null,
       poster: posterUrl(r.poster_path, 'w342'),
-      posterSrcset: posterSrcset(r.poster_path, 'w342', 'w500'),
+      posterSrcset: posterSrcset(r.poster_path),
       overview: r.overview,
     }));
     return Response.json({ results: slim });

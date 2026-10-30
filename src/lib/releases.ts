@@ -77,7 +77,7 @@ export function toReleaseFilms(results: TmdbSearchResult[]): ReleaseFilm[] {
       title: r.title,
       date: r.release_date!,
       poster: posterUrl(r.poster_path, 'w342'),
-      posterSrcset: posterSrcset(r.poster_path, 'w342', 'w500'),
+      posterSrcset: posterSrcset(r.poster_path),
       genreIds: r.genre_ids ?? [],
     }));
 }

@@ -455,7 +455,7 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
     year: film.release_date ? film.release_date.slice(0, 4) : '',
     overview: film.overview ?? '',
     poster: posterUrl(film.poster_path, 'w342'),
-    posterSrcset: posterSrcset(film.poster_path, 'w342', 'w500'),
+    posterSrcset: posterSrcset(film.poster_path),
     backdrop: backdropUrl(film.backdrop_path ?? null, 'w1280'),
     because: reason,
   }));

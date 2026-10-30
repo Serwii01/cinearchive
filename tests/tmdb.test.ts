@@ -29,10 +29,10 @@ describe('URLs de imágenes', () => {
     expect(profileUrl('/p.jpg')).toBe(`${TMDB_IMG}/w185/p.jpg`);
   });
 
-  it('srcset incluye 1x y 2x', () => {
-    const s = posterSrcset('/x.jpg', 'w342', 'w500');
-    expect(s).toContain('/w342/x.jpg 1x');
-    expect(s).toContain('/w500/x.jpg 2x');
+  it('srcset con todos los anchos, para que el navegador elija según la pantalla', () => {
+    const s = posterSrcset('/x.jpg');
+    for (const w of [185, 342, 500, 780]) expect(s).toContain(`/w${w}/x.jpg ${w}w`);
+    expect(posterSrcset(null)).toBeNull();
   });
 });
 

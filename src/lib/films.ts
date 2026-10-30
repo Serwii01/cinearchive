@@ -178,7 +178,7 @@ function briefFromTmdb(m: TmdbMovie, titles: Titles | null, locale: string): Fil
     year: year ? String(year) : '',
     director: director(m),
     poster: posterUrl(m.poster_path, 'w185'),
-    posterSrcset: posterSrcset(m.poster_path, 'w185', 'w342'),
+    posterSrcset: posterSrcset(m.poster_path),
     genreIds: (m.genres ?? []).map((g) => g.id),
     decade: year ? Math.floor(year / 10) * 10 : null,
     runtime: m.runtime ?? 0,

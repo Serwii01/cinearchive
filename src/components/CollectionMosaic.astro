@@ -6,6 +6,7 @@
  * (scripts/fetch-collection-posters.mjs), así que la página sigue siendo
  * estática y no pide nada a TMDB.
  */
+import { posterSet } from '../lib/posters';
 import { posterUrl } from '../lib/tmdb';
 
 interface Props {
@@ -21,6 +22,8 @@ const posters = (Astro.props.posters ?? []).slice(0, 4);
       {posters.map((p) => (
         <img
           src={posterUrl(p, 'w185')}
+          srcset={posterSet(posterUrl(p, 'w185'))}
+          sizes="(min-width: 1024px) 12vw, (min-width: 640px) 16vw, 25vw"
           alt=""
           width="185"
           height="278"

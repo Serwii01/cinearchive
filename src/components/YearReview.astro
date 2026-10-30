@@ -3,6 +3,7 @@
  * El cuerpo de «Tu año en cine». Lo comparten la página privada (/year/2026)
  * y la pública del perfil (/u/<usuario>/year/2026).
  */
+import { posterSet } from '../lib/posters';
 import Stars from './Stars.astro';
 import { useTranslations, localizePath, type Lang } from '../i18n/ui';
 import { filmSlug } from '../lib/slug';
@@ -40,7 +41,7 @@ const maxMonth = Math.max(1, ...r.byMonth);
 // a 200-300 px y salían borrosos. TMDB sirve el mismo cartel a otro tamaño
 // cambiando el tramo de la URL.
 const nitido = (poster: string) => poster.replace('/w185/', '/w500/');
-const nitidoSrcset = (poster: string) => `${poster.replace('/w185/', '/w342/')} 342w, ${poster.replace('/w185/', '/w500/')} 500w`;
+const nitidoSrcset = (poster: string) => posterSet(poster);
 const maxDecade = Math.max(1, ...r.decades.map((d) => d.count));
 const topWeekday = r.viewings ? r.byWeekday.indexOf(Math.max(...r.byWeekday)) : null;
 const fill = (s: string, v: Record<string, string | number>) =>

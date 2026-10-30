@@ -1,4 +1,5 @@
 ---
+import { posterSet } from '../../../lib/posters';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { articles, articleBySlug, articleCopy, renderParagraph, heading } from '../../../lib/articles';
 import { getFilmsBrief } from '../../../lib/films';
@@ -41,7 +42,7 @@ if (article.gallery) {
       const b = article.gallery.kind === 'tv'
         ? await getTv(item.tmdbId, lang).then((t) => ({ name: t.name, poster_path: t.poster_path }))
         : await getMovie(item.tmdbId, lang).then((m) => ({ name: m.title, poster_path: m.poster_path }));
-      galeria.push({ name: b.name, poster: posterUrl(b.poster_path, 'w342'), srcset: posterSrcset(b.poster_path, 'w342', 'w500'), caption: item.caption[lang] ?? item.caption.es });
+      galeria.push({ name: b.name, poster: posterUrl(b.poster_path, 'w342'), srcset: posterSrcset(b.poster_path), caption: item.caption[lang] ?? item.caption.es });
     } catch {
       /* sin ficha, sin cartel */
     }
@@ -55,7 +56,7 @@ const relacionadas = (article.related ?? []).map((id) => briefs.get(id)).filter(
 // mismo cartel a w500 (y w342 para pantallas normales) cambiando el tamaño en
 // la URL, que es como TMDB los sirve.
 const nitido = (poster: string | null) => (poster ? poster.replace('/w185/', '/w500/') : null);
-const nitidoSrcset = (poster: string | null) => (poster ? `${poster.replace('/w185/', '/w342/')} 342w, ${poster.replace('/w185/', '/w500/')} 500w` : undefined);
+const nitidoSrcset = (poster: string | null) => posterSet(poster);
 
 const otros = articles.filter((a) => a.slug !== article.slug).map((a) => ({ slug: a.slug, c: articleCopy(a, lang) }));
 

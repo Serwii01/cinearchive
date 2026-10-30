@@ -1,4 +1,5 @@
 ---
+import { posterSet } from '../../../../../lib/posters';
 import BaseLayout from '../../../../../layouts/BaseLayout.astro';
 import Badges from '../../../../../components/Badges.astro';
 import { badgesForUser } from '../../../../../lib/badges';
@@ -90,7 +91,7 @@ const ld = target.isPrivate
       <a href={filmHref} class="block no-underline">
         <div class="aspect-[2/3] w-full border border-ink bg-charcoal">
           {brief?.poster ? (
-            <img src={brief.poster} alt={brief.title} class="h-full w-full object-cover" />
+            <img src={brief.poster} srcset={posterSet(brief.poster)} sizes="(min-width: 640px) 200px, 100vw" alt={brief.title} class="h-full w-full object-cover" />
           ) : (
             <div class="film-grain h-full w-full"></div>
           )}

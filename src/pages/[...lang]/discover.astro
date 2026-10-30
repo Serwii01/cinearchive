@@ -535,7 +535,7 @@ for (let p = Math.max(1, page - 2); p <= Math.min(results.totalPages, page + 2);
               {r.poster_path ? (
                 <img
                   src={posterUrl(r.poster_path, 'w342')}
-                  srcset={posterSrcset(r.poster_path, 'w342', 'w500') ?? undefined}
+                  srcset={posterSrcset(r.poster_path) ?? undefined}
                   sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw"
                   alt=""
                   loading="lazy"

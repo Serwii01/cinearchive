@@ -1,4 +1,5 @@
 ---
+import { posterSet } from '../../lib/posters';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Avatar from '../../components/Avatar.astro';
 import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../i18n/ui';
@@ -81,7 +82,7 @@ await markNotificationsSeen(userId);
               <li class="bg-surface">
                 <a href={localizePath(lang, `film/${filmSlug(r.tmdbId, b?.title)}`)} class="flex gap-3 p-3 no-underline hover:bg-film-white">
                   <div class="h-20 w-14 shrink-0 border border-ink bg-charcoal">
-                    {b?.poster && <img src={b.poster} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+                    {b?.poster && <img src={b.poster} srcset={posterSet(b.poster)} sizes="56px" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
                   </div>
                   <div class="min-w-0">
                     <span class="label">{formatDate(r.at, lang)}{r.isNew && <span class="ml-2 bg-ochre px-1 text-on-accent">{t('alerts.new')}</span>}</span>

@@ -5,6 +5,7 @@
  * del servidor.
  */
 
+import { posterSet } from './posters';
 import { createMemo } from './memo';
 import { registerCache } from './cache-registry';
 
@@ -601,10 +602,13 @@ export function posterUrl(path: string | null, size: PosterSize = 'w342') {
   return path ? `${TMDB_IMG}/${size}${path}` : null;
 }
 
-/** srcset 1x/2x para imágenes nítidas en pantallas retina. */
-export function posterSrcset(path: string | null, base: PosterSize = 'w342', retina: PosterSize = 'w500') {
-  if (!path) return null;
-  return `${TMDB_IMG}/${base}${path} 1x, ${TMDB_IMG}/${retina}${path} 2x`;
+/**
+ * srcset del cartel con todos los anchos (ver lib/posters.ts). Antes era un par
+ * 1x/2x fijo por sitio, que ignora el `sizes` y se quedaba corto en móviles 3x
+ * o en rejillas que pintan el cartel más grande de lo previsto.
+ */
+export function posterSrcset(path: string | null): string | null {
+  return posterSet(posterUrl(path, 'w342')) ?? null;
 }
 
 export function backdropUrl(path: string | null, size: 'w780' | 'w1280' = 'w1280') {

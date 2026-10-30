@@ -1,4 +1,5 @@
 ---
+import { posterSet } from '../../../lib/posters';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getPersonCached, directedFilms, actedFilms, type FilmographyEntry } from '../../../lib/people';
 import { profileUrl } from '../../../lib/tmdb';
@@ -131,7 +132,7 @@ const jsonLd = [
                     <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
                       {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
                       {f.poster ? (
-                        <img src={f.poster} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                        <img src={f.poster} srcset={posterSet(f.poster)} sizes="(min-width: 1024px) 18vw, (min-width: 640px) 33vw, 50vw" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
                       ) : (
                         <div class="film-grain h-full w-full"></div>
                       )}
