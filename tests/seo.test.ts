@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('../src/db/client', () => ({ db: {} }));
 
-import { movieLd, personLd, reviewLd, itemListLd } from '../src/lib/seo';
+import { movieLd, personLd, reviewLd, itemListLd, organizationLd } from '../src/lib/seo';
 import { urlset, localizedEntries, xmlEscape } from '../src/lib/sitemap';
 import { communityScore, MIN_RATINGS } from '../src/lib/community';
 
@@ -80,5 +80,20 @@ describe('communityScore', () => {
   });
   it('no da nota por debajo del mínimo', () => {
     expect(communityScore(10, MIN_RATINGS - 1)).toBeNull();
+  });
+});
+
+describe('organizationLd', () => {
+  const base = { url: 'https://cinearchive.es/', name: 'Cine Archive', logo: 'https://cinearchive.es/icons/icon-512.png' };
+
+  it('enlaza los perfiles oficiales en sameAs', () => {
+    expect(organizationLd({ ...base, sameAs: ['https://www.instagram.com/cinearchive.es/'] }).sameAs).toEqual([
+      'https://www.instagram.com/cinearchive.es/',
+    ]);
+  });
+
+  it('sin perfiles, no deja un sameAs vacío', () => {
+    expect(organizationLd(base)).not.toHaveProperty('sameAs');
+    expect(organizationLd({ ...base, sameAs: [] })).not.toHaveProperty('sameAs');
   });
 });

@@ -31,13 +31,15 @@ export function websiteLd(opts: { url: string; name: string; alternateName?: str
 }
 
 /** Organización responsable del sitio (logo para el knowledge panel). */
-export function organizationLd(opts: { url: string; name: string; logo: string }): Json {
+export function organizationLd(opts: { url: string; name: string; logo: string; sameAs?: string[] }): Json {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     url: opts.url,
     name: opts.name,
     logo: opts.logo,
+    // Perfiles oficiales en redes: así los buscadores los asocian a la web.
+    ...(opts.sameAs?.length ? { sameAs: opts.sameAs } : {}),
   };
 }
 

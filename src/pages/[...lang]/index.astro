@@ -1,6 +1,7 @@
 ---
 export const prerender = false; // la película del día se obtiene en cada visita (cacheada por día)
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { INSTAGRAM_URL } from '../../data/social';
 import TmdbSearch from '../../components/TmdbSearch.astro';
 import IssueCard from '../../components/IssueCard.astro';
 import { showcaseIssues, coverUrl } from '../../lib/periodicals';
@@ -73,7 +74,12 @@ const homeJsonLd = [
     alternateName: ['CineArchive', 'cinearchive.es'],
     searchUrl: new URL(localizePath(lang, 'search'), Astro.site).href,
   }),
-  organizationLd({ url: homeUrl, name: t('site.title'), logo: new URL('/icons/icon-512.png', Astro.site).href }),
+  organizationLd({
+    url: homeUrl,
+    name: t('site.title'),
+    logo: new URL('/icons/icon-512.png', Astro.site).href,
+    sameAs: [INSTAGRAM_URL],
+  }),
 ];
 ---
 

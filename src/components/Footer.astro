@@ -1,6 +1,7 @@
 ---
 import { getLangFromUrl, useTranslations, localizePath, type Lang } from '../i18n/ui';
 import { CURRENT_VERSION } from '../data/changelog';
+import { INSTAGRAM_URL } from '../data/social';
 
 const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -36,6 +37,7 @@ const t = useTranslations(lang);
       <a href={localizePath(lang, 'changelog')} class="label tap text-background no-underline hover:text-ochre">{t('nav.changelog')} · v{CURRENT_VERSION}</a>
       {/* Feed de novedades: el único canal de retorno sin cuentas ni rastreadores. */}
       <a href={localizePath(lang, 'rss.xml')} class="label tap text-background no-underline hover:text-ochre">RSS</a>
+      <a href={INSTAGRAM_URL} target="_blank" rel="noopener me" class="label tap text-background no-underline hover:text-ochre">Instagram ↗</a>
     </nav>
   </div>
 </footer>
