@@ -25,7 +25,7 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
     data-users={t('search.sectionUsers')}
     data-films={t('search.sectionFilms')}
     data-login-users={t('search.loginForUsers')}
-    data-login-url={`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`}
+    data-login-url={localizePath(lang, 'login')}
     data-kinds={JSON.stringify({
       article: t('search.kindArticle'),
       dossier: t('search.kindDossier'),
@@ -111,7 +111,9 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
   const renderUsers = (rows: { id: string; username: string; name: string; isPrivate: boolean; hasAvatar: boolean }[]) => {
     usersBlock.classList.remove('hidden');
     if (!loggedIn) {
-      usersList.innerHTML = `<li class="bg-surface px-4 py-4 font-mono text-meta-data text-muted"><a href="${loginUrl}" class="text-ink underline decoration-ochre">${esc(loginUsers)}</a></li>`;
+      // El ?next= se arma aquí, con la búsqueda que haya en ese momento.
+      const next = encodeURIComponent(location.pathname + location.search);
+      usersList.innerHTML = `<li class="bg-surface px-4 py-4 font-mono text-meta-data text-muted"><a href="${loginUrl}?next=${next}" class="text-ink underline decoration-ochre">${esc(loginUsers)}</a></li>`;
       return;
     }
     if (!rows.length) {
@@ -219,16 +221,28 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
     }
   }
 
+  // La búsqueda va siempre a la URL, también al escribir sin pulsar Intro: si
+  // no, al abrir una película y volver, la ficha devolvía a /search vacío.
+  // replaceState y no pushState: cada letra no debe ser un paso del historial.
+  const syncUrl = (q: string) => {
+    const url = new URL(location.href);
+    if (q.trim()) url.searchParams.set('q', q.trim());
+    else url.searchParams.delete('q');
+    history.replaceState(history.state, '', url);
+  };
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    clearTimeout(timer);
     run(input.value);
-    const url = new URL(location.href);
-    url.searchParams.set('q', input.value.trim());
-    history.replaceState(null, '', url);
+    syncUrl(input.value);
   });
   input.addEventListener('input', () => {
     clearTimeout(timer);
-    timer = setTimeout(() => run(input.value), 300);
+    timer = setTimeout(() => {
+      run(input.value);
+      syncUrl(input.value);
+    }, 300);
   });
 
   if (input.value.trim().length >= 2) run(input.value);

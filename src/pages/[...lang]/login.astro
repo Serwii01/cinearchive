@@ -50,6 +50,7 @@ const next = Astro.url.searchParams.get('next') || localizePath(lang);
 
 <script>
   import { signIn } from '../../lib/auth-client';
+  import { safeNext } from '../../lib/safenext';
 
   const form = document.getElementById('login-form') as HTMLFormElement;
   const errEl = form.querySelector('[data-error]') as HTMLElement;
@@ -57,7 +58,8 @@ const next = Astro.url.searchParams.get('next') || localizePath(lang);
   // Sin ?next=, se vuelve a la portada del idioma. Antes se recortaba '/login'
   // del pathname, que en castellano (/login) daba la cadena vacía y dejaba al
   // recién identificado plantado en la propia página de acceso.
-  const next = params.get('next') || form.dataset.home || '/';
+  // Solo rutas de este sitio: ver lib/safenext.ts.
+  const next = safeNext(params.get('next'), form.dataset.home || '/');
   const errMsg = form.dataset.errmsg || 'Error';
 
   const showError = (msg: string) => {

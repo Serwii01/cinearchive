@@ -225,7 +225,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const isProtected = PROTECTED.some((p) => stripped === p || stripped.startsWith(p + '/'));
 
   if (isProtected && !context.locals.user) {
-    const back = encodeURIComponent(path);
+    const back = encodeURIComponent(path + url.search);
     return harden(context.redirect(`${localizePath(lang, 'login')}?next=${back}`), path);
   }
 

@@ -128,7 +128,7 @@ const t = useTranslations(lang);
           body: JSON.stringify({ tmdbId, ...body }),
         });
         if (res.status === 401) {
-          window.location.href = `${d.loginUrl}?next=${encodeURIComponent(window.location.pathname)}`;
+          window.location.href = `${d.loginUrl}?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
           return false;
         }
         return res.ok;

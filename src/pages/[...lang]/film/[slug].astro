@@ -272,7 +272,7 @@ const crumbsJsonLd = breadcrumbLd([
   alternatePaths={alternatePaths}
 >
   <article class="frame py-12">
-    <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>
+    <a href={back.href} data-back class="label no-underline hover:text-ink">← {back.label}</a>
 
     {/* En escritorio son dos columnas y DOS filas: «Dónde ver» baja a la
         columna izquierda, debajo de los controles, para llenar el hueco que
@@ -685,6 +685,9 @@ const crumbsJsonLd = breadcrumbLd([
   </article>
 
   <script>
+    import { wireBackLinks } from '../../../lib/ui/backnav';
+    wireBackLinks();
+
     // Tráiler: inyecta el iframe de YouTube solo al pulsar (privacidad + menos peso).
     const tw = document.getElementById('trailer');
     const tb = document.getElementById('trailer-btn');

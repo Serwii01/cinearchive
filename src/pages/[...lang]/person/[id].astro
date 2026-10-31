@@ -84,7 +84,7 @@ const jsonLd = [
 
 <BaseLayout title={person.name} description={person.biography?.slice(0, 200)} image={photo ?? undefined} jsonLd={jsonLd}>
   <article class="frame py-12">
-    <a href={back.href} class="label no-underline hover:text-ink">← {back.label}</a>
+    <a href={back.href} data-back class="label no-underline hover:text-ink">← {back.label}</a>
 
     <div class="mt-6 grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-12">
       <div class="mx-auto w-full max-w-[16rem] md:mx-0 md:col-span-3">
@@ -150,4 +150,9 @@ const jsonLd = [
       </div>
     </div>
   </article>
+
+  <script>
+    import { wireBackLinks } from '../../../lib/ui/backnav';
+    wireBackLinks();
+  </script>
 </BaseLayout>

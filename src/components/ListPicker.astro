@@ -137,7 +137,7 @@ const t = useTranslations(lang);
       const load = async () => {
         const res = await fetch(`/api/me/lists?tmdbId=${tmdbId}`, { headers: { accept: 'application/json' } });
         if (res.status === 401) {
-          body.innerHTML = `<a href="${d.loginUrl}?next=${encodeURIComponent(location.pathname)}" class="text-ink underline decoration-ochre">${esc(d.loginLabel || 'Iniciar sesión')}</a>`;
+          body.innerHTML = `<a href="${d.loginUrl}?next=${encodeURIComponent(location.pathname + location.search)}" class="text-ink underline decoration-ochre">${esc(d.loginLabel || 'Iniciar sesión')}</a>`;
           return;
         }
         const data = await res.json().catch(() => ({ lists: [] }));

@@ -72,6 +72,16 @@ const pathFor = (target: Lang) => localizePath(target, seccion);
 <script>
   // Cierra el desplegable de idioma al pulsar fuera o con Escape.
   const menus = document.querySelectorAll<HTMLDetailsElement>('details[data-lang-menu]');
+
+  // Cambiar de idioma no debe perder la búsqueda, los filtros ni la página del
+  // listado. Se añade al pulsar, y no en el servidor, porque la búsqueda, los
+  // artículos y Cines reescriben la consulta en la URL después de cargar.
+  for (const a of document.querySelectorAll<HTMLAnchorElement>('details[data-lang-menu] a[hreflang]')) {
+    a.addEventListener('click', () => {
+      if (location.search) a.href = a.pathname + location.search + location.hash;
+    });
+  }
+
   document.addEventListener('click', (e) => {
     for (const menu of menus) {
       if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
