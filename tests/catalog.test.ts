@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { localTitle } from '../src/lib/catalog';
-import { countryLabel, getAtlas } from '../src/lib/atlas';
+import { countryLabel } from '../src/lib/atlas';
 import filmsData from '../src/data/films.json';
 
 describe('localTitle', () => {
@@ -53,11 +53,5 @@ describe('countryLabel', () => {
 
   it('lo desconocido se deja como viene', () => {
     expect(countryLabel('Narnia', 'es')).toBe('Narnia');
-  });
-
-  it('Argelia y Suiza no aparecen en el atlas (solo son segundo país)', () => {
-    const claves = getAtlas().map((a) => a.key);
-    expect(claves).not.toContain('Algeria');
-    expect(claves).not.toContain('Switzerland');
   });
 });

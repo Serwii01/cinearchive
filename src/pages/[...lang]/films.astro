@@ -6,7 +6,8 @@ import { filmSlug } from '../../lib/slug';
 import { pdFilms } from '../../lib/pdfilms';
 import { collections } from '../../lib/collections';
 import { figures } from '../../lib/figures';
-import { getAtlas, countryLabel } from '../../lib/atlas';
+import { countryLabel } from '../../lib/atlas';
+import { getMovements } from '../../lib/movements';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -23,12 +24,11 @@ const intro = t('films.intro').replace('{count}', String(films.length));
 // no caben en el menú. Antes eran cuatro pastillas sueltas que no decían qué
 // había detrás; ahora cada una enseña su tamaño y para qué sirve, que es lo que
 // hace que alguien entre.
-const atlasPaises = (await getAtlas()).length;
 const secciones = [
   { path: 'cinema', label: t('nav.cinema'), desc: t('cinema.intro'), n: pdFilms.length },
   { path: 'collections', label: t('nav.collections'), desc: t('collections.intro'), n: collections.length },
   { path: 'figures', label: t('nav.figures'), desc: t('figures.intro'), n: figures.length },
-  { path: 'atlas', label: t('nav.atlas'), desc: t('atlas.intro'), n: atlasPaises },
+  { path: 'atlas', label: t('nav.atlas'), desc: t('atlas.intro'), n: getMovements(lang).length },
 ];
 ---
 

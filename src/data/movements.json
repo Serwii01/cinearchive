@@ -1,0 +1,4184 @@
+{
+  "note": "Movimientos y cinematografías del atlas. `to: null` = sigue vivo. tmdbId y poster de cada película los rellena scripts/fetch-movement-posters.mjs.",
+  "items": [
+    {
+      "id": "expresionismo-aleman",
+      "from": 1919,
+      "to": 1933,
+      "countries": [
+        "DE"
+      ],
+      "directors": [
+        "F. W. Murnau",
+        "Fritz Lang",
+        "Robert Wiene",
+        "G. W. Pabst"
+      ],
+      "name": {
+        "es": "Expresionismo alemán",
+        "en": "German Expressionism",
+        "gl": "Expresionismo alemán",
+        "eu": "Espresionismo alemana",
+        "ca": "Expressionisme alemany"
+      },
+      "blurb": {
+        "es": "Decorados torcidos, sombras pintadas y monstruos que hablan de una Alemania rota tras la guerra. Su luz y su miedo llegaron al terror y al cine negro de Hollywood.",
+        "en": "Crooked sets, painted shadows and monsters that speak of a Germany broken by war. Its light and its dread went on to shape Hollywood horror and film noir.",
+        "gl": "Decorados torcidos, sombras pintadas e monstros que falan dunha Alemaña rota tras a guerra. A súa luz e o seu medo chegaron ao terror e ao cine negro de Hollywood.",
+        "eu": "Dekoratu okerrak, itzal margotuak eta gerraren ondoren hautsitako Alemania bati buruz hitz egiten duten munstroak. Haren argiak eta beldurrak Hollywoodeko beldurrezko zinema eta film beltza moldatu zituzten.",
+        "ca": "Decorats torts, ombres pintades i monstres que parlen d’una Alemanya trencada després de la guerra. La seva llum i la seva por van arribar al terror i al cinema negre de Hollywood."
+      },
+      "films": [
+        {
+          "title": "The Cabinet of Dr. Caligari",
+          "year": 1920,
+          "tmdbId": 234,
+          "poster": "/myK9DeIsXWGKgUTZyGXg2IfFk0W.jpg",
+          "original_title": "Das Cabinet des Dr. Caligari",
+          "original_language": "de",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Cabinet of Dr. Caligari"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El gabinete del doctor Caligari"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El gabinete del Dr. Caligari (1920)"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El gabinet del Dr. Caligari"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Nosferatu",
+          "year": 1922,
+          "tmdbId": 653,
+          "poster": "/zv7J85D8CC9qYagAEhPM63CIG6j.jpg",
+          "original_title": "Nosferatu, eine Symphonie des Grauens",
+          "original_language": "de",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Nosferatu"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Nosferatu"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Nosferatu"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Metropolis",
+          "year": 1927,
+          "tmdbId": 19,
+          "poster": "/kr9wXRN23zLuWJIelahas1mtnYj.jpg",
+          "original_title": "Metropolis",
+          "original_language": "de",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Metrópolis"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Metrópolis"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Metròpolis"
+              }
+            }
+          ]
+        },
+        {
+          "title": "M",
+          "year": 1931,
+          "tmdbId": 832,
+          "poster": "/bTdZk3q2DWpBRnLiaaItKFWOVhI.jpg",
+          "original_title": "M - Eine Stadt sucht einen Mörder",
+          "original_language": "de",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "M"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "M, el vampiro de Düsseldorf"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "M: El maldito"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "M, un assassí entre nosaltres"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "montaje-sovietico",
+      "from": 1924,
+      "to": 1934,
+      "countries": [
+        "RU",
+        "UA"
+      ],
+      "directors": [
+        "Serguéi Eisenstein",
+        "Dziga Vertov",
+        "Vsevolod Pudovkin",
+        "Oleksandr Dovzhenko"
+      ],
+      "name": {
+        "es": "Montaje soviético",
+        "en": "Soviet montage",
+        "gl": "Montaxe soviética",
+        "eu": "Muntaketa sobietarra",
+        "ca": "Muntatge soviètic"
+      },
+      "blurb": {
+        "es": "La idea de que el sentido nace del choque entre dos planos. Los cineastas de la revolución inventaron una gramática que todavía usa cualquier tráiler.",
+        "en": "The idea that meaning is born from the clash of two shots. The filmmakers of the revolution invented a grammar that every trailer still uses.",
+        "gl": "A idea de que o sentido nace do choque entre dous planos. Os cineastas da revolución inventaron unha gramática que aínda usa calquera tráiler.",
+        "eu": "Bi planoren arteko talkatik sortzen dela esanahia. Iraultzaren zinemagileek gramatika bat asmatu zuten, eta edozein trailerrek erabiltzen du oraindik.",
+        "ca": "La idea que el sentit neix del xoc entre dos plans. Els cineastes de la revolució van inventar una gramàtica que encara fa servir qualsevol tràiler."
+      },
+      "films": [
+        {
+          "title": "Battleship Potemkin",
+          "year": 1925,
+          "tmdbId": 643,
+          "poster": "/hZmsRLsCnE9Zshf1YJONUpCOhds.jpg",
+          "original_title": "Броненосец Потёмкин",
+          "original_language": "ru",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Battleship Potemkin"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El acorazado Potemkin"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El acorazado Potemkin"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El cuirassat Potemkin"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Mother",
+          "year": 1926,
+          "tmdbId": 98914,
+          "poster": "/u9u71FR74RVndbAbW3rlmts0QyS.jpg",
+          "original_title": "Мать",
+          "original_language": "ru",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Mother"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La madre"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La madre"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La mare"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Man with a Movie Camera",
+          "year": 1929,
+          "tmdbId": 26317,
+          "poster": "/vJgAdgJWX54v0oXfIvhwjlZnmgn.jpg",
+          "original_title": "Человек с киноаппаратом",
+          "original_language": "ru",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Man with a Movie Camera"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El hombre de la cámara"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El hombre de la cámara"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Earth",
+          "year": 1930,
+          "tmdbId": 46594,
+          "poster": "/zXRpYOJFZ8wWzhCYWILSiw1ouOy.jpg",
+          "original_title": "Земля",
+          "original_language": "uk",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Earth"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Tierra"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La terra"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hollywood-clasico",
+      "from": 1930,
+      "to": 1960,
+      "countries": [
+        "US"
+      ],
+      "directors": [
+        "John Ford",
+        "Howard Hawks",
+        "Alfred Hitchcock",
+        "Billy Wilder"
+      ],
+      "name": {
+        "es": "Hollywood clásico",
+        "en": "Classical Hollywood",
+        "gl": "Hollywood clásico",
+        "eu": "Hollywood klasikoa",
+        "ca": "Hollywood clàssic"
+      },
+      "blurb": {
+        "es": "Los grandes estudios, las estrellas y los géneros: western, musical, cine negro, comedia. Una fábrica que convirtió la narración invisible en el idioma del mundo.",
+        "en": "The big studios, the stars and the genres: westerns, musicals, noir, comedy. A factory that made invisible storytelling the language of the world.",
+        "gl": "Os grandes estudios, as estrelas e os xéneros: western, musical, cine negro, comedia. Unha fábrica que converteu a narración invisible no idioma do mundo.",
+        "eu": "Estudio handiak, izarrak eta generoak: westerna, musikala, film beltza, komedia. Kontakizun ikusezina munduaren hizkuntza bihurtu zuen fabrika.",
+        "ca": "Els grans estudis, les estrelles i els gèneres: western, musical, cinema negre, comèdia. Una fàbrica que va convertir la narració invisible en l’idioma del món."
+      },
+      "films": [
+        {
+          "title": "His Girl Friday",
+          "year": 1940,
+          "tmdbId": 3085,
+          "poster": "/lu86Y9zTPH3neCiUzLzHCEFHf7f.jpg",
+          "original_title": "His Girl Friday",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Luna nueva"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Ayuno de amor"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Lluna nova"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Casablanca",
+          "year": 1942,
+          "tmdbId": 289,
+          "poster": "/lGCEKlJo2CnWydQj7aamY7s1S7Q.jpg",
+          "original_title": "Casablanca",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "eu",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Casablanca"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Searchers",
+          "year": 1956,
+          "tmdbId": 3114,
+          "poster": "/jLBmgW0epNzJ1N9uzaVCjbyT94v.jpg",
+          "original_title": "The Searchers",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Centauros del desierto"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Más corazón que odio"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Centaures del desert"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Some Like It Hot",
+          "year": 1959,
+          "tmdbId": 239,
+          "poster": "/hVIKyTK13AvOGv7ICmJjK44DTzp.jpg",
+          "original_title": "Some Like It Hot",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Con faldas y a lo loco"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Una Eva y dos Adanes"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ningú no és perfecte"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "realismo-poetico",
+      "from": 1932,
+      "to": 1940,
+      "countries": [
+        "FR"
+      ],
+      "directors": [
+        "Jean Renoir",
+        "Marcel Carné",
+        "Jean Vigo",
+        "Julien Duvivier"
+      ],
+      "name": {
+        "es": "Realismo poético francés",
+        "en": "French poetic realism",
+        "gl": "Realismo poético francés",
+        "eu": "Errealismo poetiko frantsesa",
+        "ca": "Realisme poètic francès"
+      },
+      "blurb": {
+        "es": "Puertos con niebla, amores condenados y gente corriente atrapada por el destino. El cine francés de entreguerras, melancólico y de estudio, antes de la ocupación.",
+        "en": "Foggy harbours, doomed love and ordinary people trapped by fate. French cinema between the wars, melancholy and studio-made, before the occupation.",
+        "gl": "Portos con néboa, amores condenados e xente corrente atrapada polo destino. O cine francés de entreguerras, melancólico e de estudio, antes da ocupación.",
+        "eu": "Lainoko portuak, amodio kondenatuak eta patuak harrapatutako jende arrunta. Gerra arteko zinema frantsesa, malenkoniatsua eta estudiokoa, okupazioaren aurretik.",
+        "ca": "Ports amb boira, amors condemnats i gent corrent atrapada pel destí. El cinema francès d’entreguerres, melancòlic i d’estudi, abans de l’ocupació."
+      },
+      "films": [
+        {
+          "title": "L'Atalante",
+          "year": 1934,
+          "tmdbId": 43904,
+          "poster": "/yDTHSZGk1G33Q3nBNqhnpgmkyk7.jpg",
+          "original_title": "L'Atalante",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Grand Illusion",
+          "year": 1937,
+          "tmdbId": 777,
+          "poster": "/lWg41zE0FVixkNsFgxnlRyvDYv9.jpg",
+          "original_title": "La Grande Illusion",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Grand Illusion"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La gran ilusión"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La Gran ilusión"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La gran il·lusió"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Port of Shadows",
+          "year": 1938,
+          "tmdbId": 46326,
+          "poster": "/2S8O2V50TZlXV8uabOvGUJ1i5CZ.jpg",
+          "original_title": "Le quai des brumes",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Port of Shadows"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El muelle de las brumas"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Rules of the Game",
+          "year": 1939,
+          "tmdbId": 776,
+          "poster": "/8JOzt7uFZyshcuzCBmYU6CDJL4D.jpg",
+          "original_title": "La Règle du jeu",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Rules of the Game"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La regla del juego"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oro-mexicano",
+      "from": 1936,
+      "to": 1959,
+      "countries": [
+        "MX"
+      ],
+      "directors": [
+        "Emilio Fernández",
+        "Luis Buñuel",
+        "Fernando de Fuentes",
+        "Ismael Rodríguez"
+      ],
+      "name": {
+        "es": "Época de oro del cine mexicano",
+        "en": "Golden Age of Mexican cinema",
+        "gl": "Época de ouro do cine mexicano",
+        "eu": "Mexikoko zinemaren urrezko aroa",
+        "ca": "Època d’or del cinema mexicà"
+      },
+      "blurb": {
+        "es": "Melodramas, rancheras y los cielos de Gabriel Figueroa. Durante dos décadas México fue la gran industria del cine en español, con sus propias estrellas y su propia mirada.",
+        "en": "Melodramas, ranchera musicals and Gabriel Figueroa’s skies. For two decades Mexico was the great Spanish-language film industry, with its own stars and its own eye.",
+        "gl": "Melodramas, rancheiras e os ceos de Gabriel Figueroa. Durante dúas décadas México foi a gran industria do cine en español, coas súas propias estrelas e a súa propia mirada.",
+        "eu": "Melodramak, rancherak eta Gabriel Figueroaren zeruak. Bi hamarkadaz Mexiko izan zen gaztelaniazko zinemaren industria handia, bere izarrekin eta bere begiradarekin.",
+        "ca": "Melodrames, rancheres i els cels de Gabriel Figueroa. Durant dues dècades Mèxic va ser la gran indústria del cinema en castellà, amb les seves pròpies estrelles i la seva pròpia mirada."
+      },
+      "films": [
+        {
+          "title": "Allá en el Rancho Grande",
+          "year": 1936,
+          "tmdbId": 240633,
+          "poster": "/5n4UGrxTKLdXXZAnW2lOxRmUo2M.jpg",
+          "original_title": "Allá en el Rancho Grande",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "María Candelaria",
+          "year": 1944,
+          "tmdbId": 60225,
+          "poster": "/whd229FgEBmzxZOGgOWffKOcuRl.jpg",
+          "original_title": "María Candelaria (Xochimilco)",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Maria Candelaria"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "María Candelaria"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Enamorada",
+          "year": 1946,
+          "tmdbId": 115301,
+          "poster": "/lHKRBzPNgu0XgGiBg2U5ltSE438.jpg",
+          "original_title": "Enamorada",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Los olvidados",
+          "year": 1950,
+          "tmdbId": 800,
+          "poster": "/cDCvmYoyqFg4CuSMtGMvCpfOIEw.jpg",
+          "original_title": "Los olvidados",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Young and the Damned"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Els oblidats"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neorrealismo",
+      "from": 1943,
+      "to": 1955,
+      "countries": [
+        "IT"
+      ],
+      "directors": [
+        "Roberto Rossellini",
+        "Vittorio De Sica",
+        "Luchino Visconti",
+        "Cesare Zavattini"
+      ],
+      "name": {
+        "es": "Neorrealismo italiano",
+        "en": "Italian Neorealism",
+        "gl": "Neorrealismo italiano",
+        "eu": "Neoerrealismo italiarra",
+        "ca": "Neorealisme italià"
+      },
+      "blurb": {
+        "es": "Cámaras en la calle, actores sin oficio y una Italia en ruinas. Tras la guerra, el cine salió de los estudios para mirar a la gente de frente.",
+        "en": "Cameras in the street, non-professional actors and an Italy in ruins. After the war, cinema left the studios to look people in the eye.",
+        "gl": "Cámaras na rúa, actores sen oficio e unha Italia en ruínas. Tras a guerra, o cine saíu dos estudios para mirar á xente de fronte.",
+        "eu": "Kamerak kalean, aktore ez-profesionalak eta Italia hondatu bat. Gerraren ondoren, zinema estudioetatik atera zen jendeari aurrez aurre begiratzeko.",
+        "ca": "Càmeres al carrer, actors sense ofici i una Itàlia en ruïnes. Després de la guerra, el cinema va sortir dels estudis per mirar la gent de cara."
+      },
+      "films": [
+        {
+          "title": "Rome, Open City",
+          "year": 1945,
+          "tmdbId": 307,
+          "poster": "/ijGV4v8JxgbNzgEhqKdzHdaZn8a.jpg",
+          "original_title": "Roma città aperta",
+          "original_language": "it",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Rome, Open City"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Roma. Ciudad abierta"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Roma, ciutat oberta"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Bicycle Thieves",
+          "year": 1948,
+          "tmdbId": 5156,
+          "poster": "/iPdVqIpmR3bRvOQJPrn4pr2KR3q.jpg",
+          "original_title": "Ladri di biciclette",
+          "original_language": "it",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Bicycle Thieves"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ladrón de bicicletas"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El lladre de bicicletes"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Ladrón de bicicletas"
+              }
+            }
+          ]
+        },
+        {
+          "title": "La Terra Trema",
+          "year": 1948,
+          "tmdbId": 43445,
+          "poster": "/cVK1GmzkLkVutFT9fFt6V6CripQ.jpg",
+          "original_title": "La terra trema",
+          "original_language": "it",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "La Terra Trema"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La tierra tiembla"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La terra tremola"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Umberto D.",
+          "year": 1952,
+          "tmdbId": 833,
+          "poster": "/5I7SYsNQmZRZpQ2MAarIQYU9vaX.jpg",
+          "original_title": "Umberto D.",
+          "original_language": "it",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Umberto D."
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oro-japones",
+      "from": 1950,
+      "to": 1965,
+      "countries": [
+        "JP"
+      ],
+      "directors": [
+        "Akira Kurosawa",
+        "Yasujirō Ozu",
+        "Kenji Mizoguchi",
+        "Mikio Naruse"
+      ],
+      "name": {
+        "es": "Edad de oro del cine japonés",
+        "en": "Golden Age of Japanese cinema",
+        "gl": "Idade de ouro do cine xaponés",
+        "eu": "Japoniako zinemaren urrezko aroa",
+        "ca": "Edat d’or del cinema japonès"
+      },
+      "blurb": {
+        "es": "El León de Oro de «Rashomon» abrió a Occidente un cine que ya era inmenso: samuráis, fantasmas y familias que se deshacen en silencio.",
+        "en": "The Golden Lion for “Rashomon” opened the West to a cinema that was already immense: samurai, ghosts and families quietly coming apart.",
+        "gl": "O León de Ouro de «Rashomon» abriu a Occidente un cine que xa era inmenso: samuráis, pantasmas e familias que se desfán en silencio.",
+        "eu": "«Rashomon»-en Urrezko Lehoiak Mendebaldeari ireki zion dagoeneko izugarria zen zinema bat: samuraiak, mamuak eta isilean desegiten diren familiak.",
+        "ca": "El Lleó d’Or de «Rashomon» va obrir a Occident un cinema que ja era immens: samurais, fantasmes i famílies que es desfan en silenci."
+      },
+      "films": [
+        {
+          "title": "Rashomon",
+          "year": 1950,
+          "tmdbId": 548,
+          "poster": "/ijWibsAU1iBcCD8tuIZfTmDzMVE.jpg",
+          "original_title": "羅生門",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Rashomon"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Rashomon"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Rashomon"
+              }
+            },
+            {
+              "iso_639_1": "eu",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Rashōmon"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Rashōmon"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Tokyo Story",
+          "year": 1953,
+          "tmdbId": 18148,
+          "poster": "/g2YbTYKpY7N2yDSk7BfXZ18I5QV.jpg",
+          "original_title": "東京物語",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Tokyo Story"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Cuentos de Tokio"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Cuentos de Tokio"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Contes de Tòquio"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Ugetsu",
+          "year": 1953,
+          "tmdbId": 14696,
+          "poster": "/r8RiuKTIYIJBjczBVsfeP5C00CJ.jpg",
+          "original_title": "雨月物語",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Ugetsu"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Cuentos de la luna pálida"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Cuentos de la Luna Pálida"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Els contes de la lluna pàl·lida després de la pluja"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Seven Samurai",
+          "year": 1954,
+          "tmdbId": 346,
+          "poster": "/lOMGc8bnSwQhS4XyE1S99uH8NXf.jpg",
+          "original_title": "七人の侍",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Seven Samurai"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Los siete samuráis"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Los Siete Samuráis"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Els set samurais"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "escuela-polaca",
+      "from": 1955,
+      "to": 1963,
+      "countries": [
+        "PL"
+      ],
+      "directors": [
+        "Andrzej Wajda",
+        "Andrzej Munk",
+        "Jerzy Kawalerowicz",
+        "Wojciech Has"
+      ],
+      "name": {
+        "es": "Escuela polaca",
+        "en": "Polish Film School",
+        "gl": "Escola polaca",
+        "eu": "Poloniar eskola",
+        "ca": "Escola polonesa"
+      },
+      "blurb": {
+        "es": "Con el deshielo, una generación de Łódź se atrevió a revisar la guerra sin heroísmo oficial: alcantarillas, dudas y jóvenes que mueren por nada.",
+        "en": "With the thaw, a generation from Łódź dared to revisit the war without official heroics: sewers, doubts and young men dying for nothing.",
+        "gl": "Co desxeo, unha xeración de Łódź atreveuse a revisar a guerra sen heroísmo oficial: sumidoiros, dúbidas e mozos que morren por nada.",
+        "eu": "Desizozteaz batera, Łódźeko belaunaldi bat ausartu zen gerra heroismo ofizialik gabe berrikustera: estoldak, zalantzak eta ezergatik hiltzen diren gazteak.",
+        "ca": "Amb el desglaç, una generació de Łódź es va atrevir a revisar la guerra sense heroisme oficial: clavegueres, dubtes i joves que moren per res."
+      },
+      "films": [
+        {
+          "title": "Kanal",
+          "year": 1957,
+          "tmdbId": 29933,
+          "poster": "/mUxZNNmvX3MwIJ9LTcuw76ZdtN6.jpg",
+          "original_title": "Kanał",
+          "original_language": "pl",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Kanal"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La patrulla de la muerte"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Ashes and Diamonds",
+          "year": 1958,
+          "tmdbId": 5055,
+          "poster": "/nE8aqRvVnRQEqskiarnFhdJdk8g.jpg",
+          "original_title": "Popiół i diament",
+          "original_language": "pl",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Ashes and Diamonds"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Cenizas y diamantes"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Eroica",
+          "year": 1958,
+          "tmdbId": 117767,
+          "poster": "/uWiEsDfapHS1F3gLh6VUUywo0q.jpg",
+          "original_title": "Eroica: Symfonia bohaterska w dwóch częściach",
+          "original_language": "pl",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Eroica"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Heroica"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Mother Joan of the Angels",
+          "year": 1961,
+          "tmdbId": 113458,
+          "poster": "/9THCQEF2r35Ejc7OHcglB6m45N7.jpg",
+          "original_title": "Matka Joanna od Aniołów",
+          "original_language": "pl",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Mother Joan of the Angels"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Madre Juana de los Ángeles"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cine-paralelo-indio",
+      "from": 1955,
+      "to": 1985,
+      "countries": [
+        "IN"
+      ],
+      "directors": [
+        "Satyajit Ray",
+        "Ritwik Ghatak",
+        "Mrinal Sen",
+        "Shyam Benegal"
+      ],
+      "name": {
+        "es": "Cine paralelo indio",
+        "en": "Indian Parallel Cinema",
+        "gl": "Cine paralelo indio",
+        "eu": "Indiako zinema paraleloa",
+        "ca": "Cinema paral·lel indi"
+      },
+      "blurb": {
+        "es": "Frente a los musicales de Bombay, un cine bengalí y regional, realista y de autor. «Pather Panchali» lo puso en el mapa y Satyajit Ray lo llevó a todo el mundo.",
+        "en": "Against Bombay musicals, a Bengali and regional cinema, realist and auteur-driven. “Pather Panchali” put it on the map and Satyajit Ray took it worldwide.",
+        "gl": "Fronte aos musicais de Bombai, un cine bengalí e rexional, realista e de autor. «Pather Panchali» púxoo no mapa e Satyajit Ray levouno a todo o mundo.",
+        "eu": "Bombaiko musikalen aurrean, zinema bengaliarra eta eskualdekoa, errealista eta egilearena. «Pather Panchali»-k mapan jarri zuen eta Satyajit Rayk mundu osora eraman zuen.",
+        "ca": "Davant dels musicals de Bombai, un cinema bengalí i regional, realista i d’autor. «Pather Panchali» el va posar al mapa i Satyajit Ray el va portar arreu del món."
+      },
+      "films": [
+        {
+          "title": "Pather Panchali",
+          "year": 1955,
+          "tmdbId": 5801,
+          "poster": "/frZj5djlU9hFEjMcL21RJZVuG5O.jpg",
+          "original_title": "পথের পাঁচালী",
+          "original_language": "bn",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Pather Panchali"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Pather Panchali (La canción del camino)"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Cloud-Capped Star",
+          "year": 1960,
+          "tmdbId": 59239,
+          "poster": "/uIlt1x2eBMzuQHwyU54CNPTSK6A.jpg",
+          "original_title": "মেঘে ঢাকা তারা",
+          "original_language": "bn",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Cloud-Capped Star"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Estrella nublada"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Charulata",
+          "year": 1964,
+          "tmdbId": 35790,
+          "poster": "/ei2YaCcnUBudyc6BQSc6mpCSJTx.jpg",
+          "original_title": "চারুলতা",
+          "original_language": "bn",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Charulata"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La esposa solitaria"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Ankur",
+          "year": 1974,
+          "tmdbId": 171492,
+          "poster": "/jrchYJ6zRkUZoWbhV4XQrnzLzXA.jpg",
+          "original_title": "अंकुर",
+          "original_language": "hi",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Ankur"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ankur"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "free-cinema",
+      "from": 1956,
+      "to": 1966,
+      "countries": [
+        "GB"
+      ],
+      "directors": [
+        "Tony Richardson",
+        "Karel Reisz",
+        "Lindsay Anderson",
+        "John Schlesinger"
+      ],
+      "name": {
+        "es": "Free Cinema británico",
+        "en": "British Free Cinema",
+        "gl": "Free Cinema británico",
+        "eu": "Free Cinema britainiarra",
+        "ca": "Free Cinema britànic"
+      },
+      "blurb": {
+        "es": "Jóvenes airados, fábricas, pubs y casas adosadas. El cine británico cambió los salones por la clase obrera del norte de Inglaterra, con rabia y sin adornos.",
+        "en": "Angry young men, factories, pubs and terraced houses. British cinema swapped drawing rooms for the working class of northern England, with rage and no frills.",
+        "gl": "Mozos airados, fábricas, pubs e casas adosadas. O cine británico cambiou os salóns pola clase obreira do norte de Inglaterra, con rabia e sen adornos.",
+        "eu": "Gazte haserreak, lantegiak, pubak eta etxe atxikiak. Zinema britainiarrak saloiak Ingalaterra iparraldeko langile klaseagatik aldatu zituen, amorruz eta apaingarririk gabe.",
+        "ca": "Joves irats, fàbriques, pubs i cases adossades. El cinema britànic va canviar els salons per la classe obrera del nord d’Anglaterra, amb ràbia i sense ornaments."
+      },
+      "films": [
+        {
+          "title": "Saturday Night and Sunday Morning",
+          "year": 1960,
+          "tmdbId": 37230,
+          "poster": "/ifhjfo8lZoJ9dvDQiWcnc3GeFK4.jpg",
+          "original_title": "Saturday Night and Sunday Morning",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Sábado noche, domingo mañana"
+              }
+            }
+          ]
+        },
+        {
+          "title": "A Taste of Honey",
+          "year": 1961,
+          "tmdbId": 25062,
+          "poster": "/5psrZNVZ9E6Eck7OtpO47A8zTbQ.jpg",
+          "original_title": "A Taste of Honey",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Un sabor a miel"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Loneliness of the Long Distance Runner",
+          "year": 1962,
+          "tmdbId": 16103,
+          "poster": "/ePhZKUNyFGc8lzx0E0LiCcKs4y4.jpg",
+          "original_title": "The Loneliness of the Long Distance Runner",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La soledad del corredor de fondo"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La soledat del corredor de fons"
+              }
+            }
+          ]
+        },
+        {
+          "title": "This Sporting Life",
+          "year": 1963,
+          "tmdbId": 18774,
+          "poster": "/lOxaN1ziYdOJgAQouWO1pGEBU7H.jpg",
+          "original_title": "This Sporting Life",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El ingenuo salvaje"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nouvelle-vague",
+      "from": 1958,
+      "to": 1968,
+      "countries": [
+        "FR"
+      ],
+      "directors": [
+        "Jean-Luc Godard",
+        "François Truffaut",
+        "Agnès Varda",
+        "Éric Rohmer"
+      ],
+      "name": {
+        "es": "Nouvelle Vague",
+        "en": "French New Wave",
+        "gl": "Nouvelle Vague",
+        "eu": "Nouvelle Vague",
+        "ca": "Nouvelle Vague"
+      },
+      "blurb": {
+        "es": "Críticos de Cahiers du cinéma que cogieron la cámara: rodaje en la calle, saltos de montaje y la idea de que el director es el autor. Nada volvió a ser igual.",
+        "en": "Cahiers du cinéma critics who picked up the camera: shooting in the street, jump cuts and the idea that the director is the author. Nothing was the same again.",
+        "gl": "Críticos de Cahiers du cinéma que colleron a cámara: rodaxe na rúa, saltos de montaxe e a idea de que o director é o autor. Nada volveu ser igual.",
+        "eu": "Kamera hartu zuten Cahiers du cinéma aldizkariko kritikariak: kalean filmatzea, muntaketa-jauziak eta zuzendaria egilea dela dioen ideia. Ezer ez zen berdina izan berriro.",
+        "ca": "Crítics de Cahiers du cinéma que van agafar la càmera: rodatge al carrer, salts de muntatge i la idea que el director és l’autor. Res no va tornar a ser igual."
+      },
+      "films": [
+        {
+          "title": "The 400 Blows",
+          "year": 1959,
+          "tmdbId": 147,
+          "poster": "/12PuU23kkDLvTd0nb8hMlE3oShB.jpg",
+          "original_title": "Les Quatre Cents Coups",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The 400 Blows"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Los cuatrocientos golpes"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Los 400 golpes"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Hiroshima mon amour",
+          "year": 1959,
+          "tmdbId": 5544,
+          "poster": "/zieczjWnvalaxwX5EQASEx0on5f.jpg",
+          "original_title": "Hiroshima mon amour",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Hiroshima Mon Amour"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Hiroshima, mon amour"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Hiroshima, mon amour"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Breathless",
+          "year": 1960,
+          "tmdbId": 269,
+          "poster": "/9Wx0Wdn2EOqeCZU4SP6tlS3LOml.jpg",
+          "original_title": "À bout de souffle",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Breathless"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Al final de la escapada"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Al Final de la Escapada"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Al final de l’escapada"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Cléo from 5 to 7",
+          "year": 1962,
+          "tmdbId": 499,
+          "poster": "/oelBStY4xpguaplRv15P3Za7Xsr.jpg",
+          "original_title": "Cléo de 5 à 7",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Cléo from 5 to 7"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Cleo de 5 a 7"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Cleo de 5 a 7"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cinema-novo",
+      "from": 1960,
+      "to": 1972,
+      "countries": [
+        "BR"
+      ],
+      "directors": [
+        "Glauber Rocha",
+        "Nelson Pereira dos Santos",
+        "Ruy Guerra",
+        "Joaquim Pedro de Andrade"
+      ],
+      "name": {
+        "es": "Cinema Novo",
+        "en": "Cinema Novo",
+        "gl": "Cinema Novo",
+        "eu": "Cinema Novo",
+        "ca": "Cinema Novo"
+      },
+      "blurb": {
+        "es": "«Una cámara en la mano y una idea en la cabeza». El Brasil del sertón, el hambre y la revuelta, filmado con pocos medios y una estética de la violencia.",
+        "en": "“A camera in the hand and an idea in the head.” The Brazil of the sertão, hunger and revolt, shot on little money with an aesthetic of violence.",
+        "gl": "«Unha cámara na man e unha idea na cabeza». O Brasil do sertón, a fame e a revolta, filmado con poucos medios e unha estética da violencia.",
+        "eu": "«Kamera bat eskuan eta ideia bat buruan». Sertãoko Brasil gosetua eta matxinatua, baliabide gutxirekin eta indarkeriaren estetika batekin filmatua.",
+        "ca": "«Una càmera a la mà i una idea al cap». El Brasil del sertão, la fam i la revolta, filmat amb pocs mitjans i una estètica de la violència."
+      },
+      "films": [
+        {
+          "title": "Barren Lives",
+          "year": 1963,
+          "tmdbId": 836,
+          "poster": "/bBb4GiCZul2W6hhV8sbbnBnlhuE.jpg",
+          "original_title": "Vidas Secas",
+          "original_language": "pt",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Barren Lives"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Vidas Secas"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Vides seques"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Black God, White Devil",
+          "year": 1964,
+          "tmdbId": 67612,
+          "poster": "/keNDV8nbgVLiCUyzObisEDxdAI4.jpg",
+          "original_title": "Deus e o Diabo na Terra do Sol",
+          "original_language": "pt",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Black God, White Devil"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Dios y el diablo en la tierra del sol"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Guns",
+          "year": 1964,
+          "tmdbId": 194853,
+          "poster": "/dTFmlDHJfZRbG830TYhc9tYdi6G.jpg",
+          "original_title": "Os Fuzis",
+          "original_language": "pt",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Guns"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Entranced Earth",
+          "year": 1967,
+          "tmdbId": 67062,
+          "poster": "/kuBU2eGzZyCBYxChYBUGbyTQ052.jpg",
+          "original_title": "Terra em Transe",
+          "original_language": "pt",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Entranced Earth"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Tierra en trance"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nueva-ola-checoslovaca",
+      "from": 1962,
+      "to": 1969,
+      "countries": [
+        "CZ",
+        "SK"
+      ],
+      "directors": [
+        "Miloš Forman",
+        "Věra Chytilová",
+        "Jiří Menzel",
+        "Jan Němec"
+      ],
+      "name": {
+        "es": "Nueva ola checoslovaca",
+        "en": "Czechoslovak New Wave",
+        "gl": "Nova onda checoslovaca",
+        "eu": "Txekoslovakiako olatu berria",
+        "ca": "Nova onada txecoslovaca"
+      },
+      "blurb": {
+        "es": "Humor absurdo, surrealismo y mucha ironía contra la burocracia socialista. Floreció con la Primavera de Praga y los tanques soviéticos la cortaron en seco.",
+        "en": "Absurd humour, surrealism and plenty of irony aimed at socialist bureaucracy. It bloomed with the Prague Spring and Soviet tanks cut it short.",
+        "gl": "Humor absurdo, surrealismo e moita ironía contra a burocracia socialista. Floreceu coa Primavera de Praga e os tanques soviéticos cortárona en seco.",
+        "eu": "Umore absurdoa, surrealismoa eta ironia ugari burokrazia sozialistaren aurka. Pragako Udaberriarekin loratu zen, eta tanke sobietarrek bat-batean moztu zuten.",
+        "ca": "Humor absurd, surrealisme i molta ironia contra la burocràcia socialista. Va florir amb la Primavera de Praga i els tancs soviètics la van tallar en sec."
+      },
+      "films": [
+        {
+          "title": "Loves of a Blonde",
+          "year": 1965,
+          "tmdbId": 39387,
+          "poster": "/fyRg6Qh4oN1KRfkx8Q3DFzA642P.jpg",
+          "original_title": "Lásky jedné plavovlásky",
+          "original_language": "cs",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Loves of a Blonde"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Los amores de una rubia"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Els amors d’una rossa"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Daisies",
+          "year": 1966,
+          "tmdbId": 46919,
+          "poster": "/8sxMhdn3i1Pn8OlGCBBjr9rjP1y.jpg",
+          "original_title": "Sedmikrásky",
+          "original_language": "cs",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Daisies"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Las margaritas"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Les margarides"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Closely Watched Trains",
+          "year": 1966,
+          "tmdbId": 789,
+          "poster": "/oKiOhsSRWO6fRqxtvda8WuCiXBm.jpg",
+          "original_title": "Ostře sledované vlaky",
+          "original_language": "cs",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Closely Watched Trains"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Trenes rigurosamente vigilados"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Firemen's Ball",
+          "year": 1967,
+          "tmdbId": 38442,
+          "poster": "/yylEjPttmTDar0o92StlrO5ghmw.jpg",
+          "original_title": "Hoří, má panenko",
+          "original_language": "cs",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Firemen's Ball"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Al fuego, bomberos"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nuevo-cine-espanol",
+      "from": 1962,
+      "to": 1977,
+      "countries": [
+        "ES"
+      ],
+      "directors": [
+        "Carlos Saura",
+        "Víctor Erice",
+        "José Luis Borau",
+        "Basilio Martín Patino"
+      ],
+      "name": {
+        "es": "Nuevo cine español",
+        "en": "New Spanish Cinema",
+        "gl": "Novo cine español",
+        "eu": "Espainiako zinema berria",
+        "ca": "Nou cinema espanyol"
+      },
+      "blurb": {
+        "es": "Bajo la censura franquista, el cine aprendió a hablar con metáforas: cacerías, colmenas y casas cerradas. De la Escuela Oficial de Cine salió una mirada adulta y de autor.",
+        "en": "Under Franco’s censorship, cinema learned to speak in metaphors: hunts, beehives and shuttered houses. The Official Film School produced an adult, auteur vision.",
+        "gl": "Baixo a censura franquista, o cine aprendeu a falar con metáforas: cazarías, colmeas e casas pechadas. Da Escola Oficial de Cine saíu unha mirada adulta e de autor.",
+        "eu": "Frankismoaren zentsurapean, zinemak metaforen bidez hitz egiten ikasi zuen: ehizaldiak, erleategiak eta etxe itxiak. Zinema Eskola Ofizialetik begirada heldu eta egile bat sortu zen.",
+        "ca": "Sota la censura franquista, el cinema va aprendre a parlar amb metàfores: caceres, ruscs i cases tancades. De l’Escola Oficial de Cinema en va sortir una mirada adulta i d’autor."
+      },
+      "films": [
+        {
+          "title": "The Hunt",
+          "year": 1966,
+          "tmdbId": 114333,
+          "poster": "/2lODWq6rLdcb8hLuQpt9qHSAatW.jpg",
+          "original_title": "La caza",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Hunt"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Spirit of the Beehive",
+          "year": 1973,
+          "tmdbId": 4495,
+          "poster": "/o6pUTkoCh4r6EA2dHNFKA40OmH2.jpg",
+          "original_title": "El espíritu de la colmena",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Spirit of the Beehive"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El espíritu de la colmena"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Poachers",
+          "year": 1975,
+          "tmdbId": 142965,
+          "poster": "/qqkjAu9FJKTGINYLnNnLiosyoI5.jpg",
+          "original_title": "Furtivos",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Poachers"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Furtivos"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Cría cuervos",
+          "year": 1976,
+          "tmdbId": 51857,
+          "poster": "/dzgMW3wK3WJITovR9BZBnGRUlI7.jpg",
+          "original_title": "Cría cuervos",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Cria!"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nuevo-cine-aleman",
+      "from": 1962,
+      "to": 1982,
+      "countries": [
+        "DE"
+      ],
+      "directors": [
+        "Rainer Werner Fassbinder",
+        "Werner Herzog",
+        "Wim Wenders",
+        "Margarethe von Trotta"
+      ],
+      "name": {
+        "es": "Nuevo cine alemán",
+        "en": "New German Cinema",
+        "gl": "Novo cine alemán",
+        "eu": "Alemaniako zinema berria",
+        "ca": "Nou cinema alemany"
+      },
+      "blurb": {
+        "es": "«El cine de papá ha muerto», proclamó el manifiesto de Oberhausen. Una generación sin padres cinematográficos se enfrentó al pasado nazi y al milagro económico.",
+        "en": "“Papa’s cinema is dead,” declared the Oberhausen Manifesto. A generation with no cinematic fathers confronted the Nazi past and the economic miracle.",
+        "gl": "«O cine de papá morreu», proclamou o manifesto de Oberhausen. Unha xeración sen pais cinematográficos enfrontouse ao pasado nazi e ao milagre económico.",
+        "eu": "«Aitatxoren zinema hil da», aldarrikatu zuen Oberhauseneko manifestuak. Aita zinematografikorik gabeko belaunaldi batek iragan nazia eta mirari ekonomikoa aurpegiratu zituen.",
+        "ca": "«El cinema del papà ha mort», va proclamar el manifest d’Oberhausen. Una generació sense pares cinematogràfics es va enfrontar al passat nazi i al miracle econòmic."
+      },
+      "films": [
+        {
+          "title": "Aguirre, the Wrath of God",
+          "year": 1972,
+          "tmdbId": 2000,
+          "poster": "/zU1FLiGJw3m3iFrakwA0SzFvIPV.jpg",
+          "original_title": "Aguirre, der Zorn Gottes",
+          "original_language": "de",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Aguirre, the Wrath of God"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Aguirre, la cólera de Dios"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Aguirre, la còlera de Déu"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Aguirre, la ira de Dios"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Ali: Fear Eats the Soul",
+          "year": 1974,
+          "tmdbId": 216,
+          "poster": "/cRL8j5RhL4YUviwcfTiCVHfrBFM.jpg",
+          "original_title": "Angst essen Seele auf",
+          "original_language": "de",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Ali: Fear Eats the Soul"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Todos nos llamamos Alí"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Todos se llaman Alí"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Alice in the Cities",
+          "year": 1974,
+          "tmdbId": 2204,
+          "poster": "/lw22wORmENkTZHGXI6bKmAIHxjO.jpg",
+          "original_title": "Alice in den Städten",
+          "original_language": "de",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Alice in the Cities"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Alicia en las ciudades"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Alicia en las ciudades"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Tin Drum",
+          "year": 1979,
+          "tmdbId": 659,
+          "poster": "/z4QsBWJbbBxct2zU7LnYSOw8UFz.jpg",
+          "original_title": "Die Blechtrommel",
+          "original_language": "de",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Tin Drum"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El tambor de hojalata"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El timbal de llauna"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cine-africano",
+      "from": 1963,
+      "to": 1995,
+      "countries": [
+        "SN",
+        "ML",
+        "BF"
+      ],
+      "directors": [
+        "Ousmane Sembène",
+        "Djibril Diop Mambéty",
+        "Souleymane Cissé",
+        "Idrissa Ouédraogo"
+      ],
+      "name": {
+        "es": "Cine africano poscolonial",
+        "en": "Postcolonial African cinema",
+        "gl": "Cine africano poscolonial",
+        "eu": "Afrikako zinema postkoloniala",
+        "ca": "Cinema africà postcolonial"
+      },
+      "blurb": {
+        "es": "Tras las independencias, África se filmó a sí misma por primera vez. Sembène, el «padre del cine africano», y el festival FESPACO de Uagadugú le dieron voz y casa.",
+        "en": "After independence, Africa filmed itself for the first time. Sembène, the “father of African cinema”, and the FESPACO festival in Ouagadougou gave it a voice and a home.",
+        "gl": "Tras as independencias, África filmouse a si mesma por primeira vez. Sembène, o «pai do cine africano», e o festival FESPACO de Uagadugú déronlle voz e casa.",
+        "eu": "Independentzien ondoren, Afrikak bere burua filmatu zuen lehen aldiz. Sembènek, «Afrikako zinemaren aitak», eta Ouagadougouko FESPACO jaialdiak ahotsa eta etxea eman zizkioten.",
+        "ca": "Després de les independències, l’Àfrica es va filmar a si mateixa per primera vegada. Sembène, el «pare del cinema africà», i el festival FESPACO d’Ouagadougou li van donar veu i casa."
+      },
+      "films": [
+        {
+          "title": "Black Girl",
+          "year": 1966,
+          "tmdbId": 95597,
+          "poster": "/hYYAk9I9KkscSr8DC30KyDjzsVu.jpg",
+          "original_title": "La Noire de...",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Black Girl"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La noire de..."
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La Noire de..."
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Touki Bouki",
+          "year": 1973,
+          "tmdbId": 77771,
+          "poster": "/kcBYKHyg9GcQqa6DWq0AuQDhtPI.jpg",
+          "original_title": "Touki-Bouki",
+          "original_language": "wo",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Touki Bouki"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El viaje de la hiena"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Touki bouki"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Yeelen",
+          "year": 1987,
+          "tmdbId": 71329,
+          "poster": "/xjckmcnKK6Ex6wHrVydu4F21h3t.jpg",
+          "original_title": "Yeelen",
+          "original_language": "bm",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La luz"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Yeelen"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Tilaï",
+          "year": 1990,
+          "tmdbId": 65482,
+          "poster": "/zj2UAI0eWxhtqX7K4HatWZmM3tH.jpg",
+          "original_title": "Tilaï",
+          "original_language": "ff",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Law"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nuevo-cine-latinoamericano",
+      "from": 1966,
+      "to": 1976,
+      "countries": [
+        "CU",
+        "AR",
+        "CL",
+        "BO"
+      ],
+      "directors": [
+        "Tomás Gutiérrez Alea",
+        "Fernando Solanas",
+        "Patricio Guzmán",
+        "Jorge Sanjinés"
+      ],
+      "name": {
+        "es": "Nuevo cine latinoamericano",
+        "en": "New Latin American Cinema",
+        "gl": "Novo cine latinoamericano",
+        "eu": "Latinoamerikako zinema berria",
+        "ca": "Nou cinema llatinoamericà"
+      },
+      "blurb": {
+        "es": "Un «tercer cine», ni de Hollywood ni de autor europeo: militante, documental y continental. De La Habana a Santiago, filmar era tomar partido.",
+        "en": "A “third cinema”, neither Hollywood nor European auteur: militant, documentary and continental. From Havana to Santiago, filming meant taking sides.",
+        "gl": "Un «terceiro cine», nin de Hollywood nin de autor europeo: militante, documental e continental. Da Habana a Santiago, filmar era tomar partido.",
+        "eu": "«Hirugarren zinema» bat, ez Hollywoodekoa ez Europako egileena: militantea, dokumentala eta kontinentala. Habanatik Santiagora, filmatzea alderdi bat hartzea zen.",
+        "ca": "Un «tercer cinema», ni de Hollywood ni d’autor europeu: militant, documental i continental. De l’Havana a Santiago, filmar era prendre partit."
+      },
+      "films": [
+        {
+          "title": "The Hour of the Furnaces",
+          "year": 1968,
+          "tmdbId": 89681,
+          "poster": "/750AVmOtNEXAaOzW9ArwbP8IrRv.jpg",
+          "original_title": "La hora de los hornos",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Hour of the Furnaces"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Memories of Underdevelopment",
+          "year": 1968,
+          "tmdbId": 47576,
+          "poster": "/av7zEHpOyzmm86VPRa68zOLaBqf.jpg",
+          "original_title": "Memorias del subdesarrollo",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Memories of Underdevelopment"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Memorias del subdesarrollo"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Lucía",
+          "year": 1968,
+          "tmdbId": 88591,
+          "poster": "/528i3iwgTxmR7HyGunUvgQKkM2Z.jpg",
+          "original_title": "Lucía",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Blood of the Condor",
+          "year": 1969,
+          "tmdbId": 157319,
+          "poster": "/7VD8rtdnLQuW17kQ2DePqWjNcyJ.jpg",
+          "original_title": "Yawar mallku",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Blood of the Condor"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nuevo-hollywood",
+      "from": 1967,
+      "to": 1980,
+      "countries": [
+        "US"
+      ],
+      "directors": [
+        "Francis Ford Coppola",
+        "Martin Scorsese",
+        "Robert Altman",
+        "Hal Ashby"
+      ],
+      "name": {
+        "es": "Nuevo Hollywood",
+        "en": "New Hollywood",
+        "gl": "Novo Hollywood",
+        "eu": "Hollywood berria",
+        "ca": "Nou Hollywood"
+      },
+      "blurb": {
+        "es": "Con los estudios en crisis, una generación de cinéfilos tomó el poder: antihéroes, violencia, finales amargos y el reflejo de Vietnam y el Watergate.",
+        "en": "With the studios in crisis, a generation of film buffs took power: antiheroes, violence, bitter endings and the shadow of Vietnam and Watergate.",
+        "gl": "Cos estudios en crise, unha xeración de cinéfilos tomou o poder: antiheroes, violencia, finais amargos e o reflexo de Vietnam e o Watergate.",
+        "eu": "Estudioak krisian zeudela, zinemazale belaunaldi batek boterea hartu zuen: antiheroiak, indarkeria, amaiera garratzak eta Vietnamen eta Watergateren isla.",
+        "ca": "Amb els estudis en crisi, una generació de cinèfils va prendre el poder: antiherois, violència, finals amargs i el reflex del Vietnam i el Watergate."
+      },
+      "films": [
+        {
+          "title": "Bonnie and Clyde",
+          "year": 1967,
+          "tmdbId": 475,
+          "poster": "/sCSQFK9kMsprT4jgWqgw82dT6WI.jpg",
+          "original_title": "Bonnie and Clyde",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Bonnie y Clyde"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Bonnie y Clyde"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Bonnie i Clyde"
+              }
+            },
+            {
+              "iso_639_1": "eu",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Bonnie Eta Clyde"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Chinatown",
+          "year": 1974,
+          "tmdbId": 829,
+          "poster": "/kZRSP3FmOcq0xnBulqpUQngJUXY.jpg",
+          "original_title": "Chinatown",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Chinatown"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Barrio Chino"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Conversation",
+          "year": 1974,
+          "tmdbId": 592,
+          "poster": "/dHqVBwcv1SGymOpUueRoKzcmdes.jpg",
+          "original_title": "The Conversation",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La conversación"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La conversación"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La conversa"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Taxi Driver",
+          "year": 1976,
+          "tmdbId": 103,
+          "poster": "/ekstpH614fwDX8DUln1a2Opz0N8.jpg",
+          "original_title": "Taxi Driver",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Taxi driver"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nuevo-cine-irani",
+      "from": 1969,
+      "to": 2005,
+      "countries": [
+        "IR"
+      ],
+      "directors": [
+        "Abbas Kiarostami",
+        "Mohsen Makhmalbaf",
+        "Jafar Panahi",
+        "Forough Farrokhzad"
+      ],
+      "name": {
+        "es": "Nuevo cine iraní",
+        "en": "Iranian New Wave",
+        "gl": "Novo cine iraní",
+        "eu": "Irango zinema berria",
+        "ca": "Nou cinema iranià"
+      },
+      "blurb": {
+        "es": "Niños, coches, caminos en zigzag y la frontera borrosa entre documental y ficción. Con la censura encima, Irán hizo uno de los cines más libres del mundo.",
+        "en": "Children, cars, zigzag roads and the blurred line between documentary and fiction. With censorship overhead, Iran made one of the freest cinemas in the world.",
+        "gl": "Nenos, coches, camiños en zigzag e a fronteira borrosa entre documental e ficción. Coa censura enriba, Irán fixo un dos cines máis libres do mundo.",
+        "eu": "Haurrak, autoak, sigi-saga bideak eta dokumentalaren eta fikzioaren arteko muga lausoa. Zentsura gainean zuela, Iranek munduko zinema askeenetako bat egin zuen.",
+        "ca": "Nens, cotxes, camins en ziga-zaga i la frontera difusa entre documental i ficció. Amb la censura al damunt, l’Iran va fer un dels cinemes més lliures del món."
+      },
+      "films": [
+        {
+          "title": "Where Is the Friend's House?",
+          "year": 1987,
+          "tmdbId": 49964,
+          "poster": "/xt7eYl1kFZO0ULyegrLLoNRw6DJ.jpg",
+          "original_title": "خانه‌ی دوست کجاست؟",
+          "original_language": "fa",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Where Is The Friend's House?"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "¿Dónde está la casa de mi amigo?"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "¿Dónde está la casa de mi amigo?"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Close-Up",
+          "year": 1990,
+          "tmdbId": 30017,
+          "poster": "/m9HG2N9ZKCmNN9qOHJTNyy18wn3.jpg",
+          "original_title": "کلوزآپ ، نمای نزدیک",
+          "original_language": "fa",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Close-Up"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Primer plano"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The White Balloon",
+          "year": 1995,
+          "tmdbId": 46785,
+          "poster": "/bamJR4MwtQDMdWkjVAPojfwOjY4.jpg",
+          "original_title": "بادکنک سفید",
+          "original_language": "fa",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The White Balloon"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El globo blanco"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El globo blanco"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El globus blanc"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Taste of Cherry",
+          "year": 1997,
+          "tmdbId": 30020,
+          "poster": "/vgPwjgbSdbYWrS1ty8TIZtmi6Tn.jpg",
+          "original_title": "طعم گيلاس",
+          "original_language": "fa",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Taste of Cherry"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El sabor de las cerezas"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El sabor de las cerezas"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nueva-ola-hong-kong",
+      "from": 1979,
+      "to": 2000,
+      "countries": [
+        "HK"
+      ],
+      "directors": [
+        "Tsui Hark",
+        "Ann Hui",
+        "John Woo",
+        "Wong Kar-wai"
+      ],
+      "name": {
+        "es": "Nueva ola de Hong Kong",
+        "en": "Hong Kong New Wave",
+        "gl": "Nova onda de Hong Kong",
+        "eu": "Hong Kongeko olatu berria",
+        "ca": "Nova onada de Hong Kong"
+      },
+      "blurb": {
+        "es": "Tiroteos a cámara lenta, artes marciales y amores en pasillos de neón. Una ciudad con prisa por filmarse antes de volver a China en 1997.",
+        "en": "Slow-motion shootouts, martial arts and love in neon corridors. A city in a hurry to film itself before returning to China in 1997.",
+        "gl": "Tiroteos a cámara lenta, artes marciais e amores en corredores de neon. Unha cidade con présa por filmarse antes de volver a China en 1997.",
+        "eu": "Kamera geldoko tiroketak, borroka-arteak eta neoizko korridoreetako amodioak. 1997an Txinara itzuli aurretik bere burua filmatzeko presaz zebilen hiria.",
+        "ca": "Tirotejos a càmera lenta, arts marcials i amors en passadissos de neó. Una ciutat amb pressa per filmar-se abans de tornar a la Xina el 1997."
+      },
+      "films": [
+        {
+          "title": "Boat People",
+          "year": 1982,
+          "tmdbId": 72445,
+          "poster": "/bdyxE6bXtozYG2jQiWKZUz3u4LD.jpg",
+          "original_title": "投奔怒海",
+          "original_language": "cn",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Boat People"
+              }
+            }
+          ]
+        },
+        {
+          "title": "A Better Tomorrow",
+          "year": 1986,
+          "tmdbId": 11471,
+          "poster": "/uxZIWxOm2yonHyjLARzW37aEZjF.jpg",
+          "original_title": "英雄本色",
+          "original_language": "cn",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "A Better Tomorrow"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Un mañana mejor"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Chungking Express",
+          "year": 1994,
+          "tmdbId": 11104,
+          "poster": "/43I9DcNoCzpyzK8JCkJYpHqHqGG.jpg",
+          "original_title": "重慶森林",
+          "original_language": "cn",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Chungking Express"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Chungking Express"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Chungking Express"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Chungking Express"
+              }
+            }
+          ]
+        },
+        {
+          "title": "In the Mood for Love",
+          "year": 2000,
+          "tmdbId": 843,
+          "poster": "/8BgGbbWiLNhPtkMkN0gGTnbtvBv.jpg",
+          "original_title": "花樣年華",
+          "original_language": "cn",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "In the Mood for Love"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Deseando amar"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Con Ánimo de Amar"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Desitjant estimar"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nuevo-cine-taiwanes",
+      "from": 1982,
+      "to": 2000,
+      "countries": [
+        "TW"
+      ],
+      "directors": [
+        "Hou Hsiao-hsien",
+        "Edward Yang",
+        "Tsai Ming-liang",
+        "Wu Nien-jen"
+      ],
+      "name": {
+        "es": "Nuevo cine taiwanés",
+        "en": "Taiwanese New Wave",
+        "gl": "Novo cine taiwanés",
+        "eu": "Taiwango zinema berria",
+        "ca": "Nou cinema taiwanès"
+      },
+      "blurb": {
+        "es": "Planos largos, memoria familiar y la historia silenciada de la isla. Tras la ley marcial, Taiwán se contó a sí misma con paciencia y sin melodrama.",
+        "en": "Long takes, family memory and the island’s silenced history. After martial law, Taiwan told its own story patiently and without melodrama.",
+        "gl": "Planos longos, memoria familiar e a historia silenciada da illa. Tras a lei marcial, Taiwán contouse a si mesma con paciencia e sen melodrama.",
+        "eu": "Plano luzeak, familiaren oroimena eta uhartearen historia isilarazia. Lege martzialaren ondoren, Taiwanek bere burua kontatu zuen pazientziaz eta melodramarik gabe.",
+        "ca": "Plans llargs, memòria familiar i la història silenciada de l’illa. Després de la llei marcial, Taiwan es va explicar a si mateixa amb paciència i sense melodrama."
+      },
+      "films": [
+        {
+          "title": "The Time to Live and the Time to Die",
+          "year": 1985,
+          "tmdbId": 45999,
+          "poster": "/7yFSUy939rX5CncqieINpajnM3q.jpg",
+          "original_title": "童年往事",
+          "original_language": "zh",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Time to Live and the Time to Die"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Tiempo de vivir, tiempo de morir"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Temps de viure, temps de morir"
+              }
+            }
+          ]
+        },
+        {
+          "title": "A City of Sadness",
+          "year": 1989,
+          "tmdbId": 49982,
+          "poster": "/n1aIYLgnrlsUrh77G2OdQT9NV1.jpg",
+          "original_title": "悲情城市",
+          "original_language": "zh",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "A City of Sadness"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ciudad doliente"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La ciutat de la tristesa"
+              }
+            }
+          ]
+        },
+        {
+          "title": "A Brighter Summer Day",
+          "year": 1991,
+          "tmdbId": 15804,
+          "poster": "/3l8fOAwiN3N5n3hHnZ51eog7Zu2.jpg",
+          "original_title": "牯嶺街少年殺人事件",
+          "original_language": "zh",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "A Brighter Summer Day"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Un día de verano"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Vive L'Amour",
+          "year": 1994,
+          "tmdbId": 11985,
+          "poster": "/w5fAXsJaguGtLYLNAE2imEJnQxS.jpg",
+          "original_title": "愛情萬歲",
+          "original_language": "zh",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Vive L'Amour"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Viva el amor"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ai qing wan sui (Vive L'Amour)"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quinta-generacion",
+      "from": 1984,
+      "to": 1993,
+      "countries": [
+        "CN"
+      ],
+      "directors": [
+        "Zhang Yimou",
+        "Chen Kaige",
+        "Tian Zhuangzhuang",
+        "Wu Ziniu"
+      ],
+      "name": {
+        "es": "Quinta generación china",
+        "en": "Chinese Fifth Generation",
+        "gl": "Quinta xeración chinesa",
+        "eu": "Txinako bosgarren belaunaldia",
+        "ca": "Cinquena generació xinesa"
+      },
+      "blurb": {
+        "es": "La primera promoción de la Academia de Cine de Pekín tras la Revolución Cultural. Color, paisaje y campesinos en lugar de propaganda.",
+        "en": "The first class of the Beijing Film Academy after the Cultural Revolution. Colour, landscape and peasants instead of propaganda.",
+        "gl": "A primeira promoción da Academia de Cine de Pequín tras a Revolución Cultural. Cor, paisaxe e labregos en lugar de propaganda.",
+        "eu": "Iraultza Kulturalaren ondoren Pekingo Zinema Akademiatik ateratako lehen promozioa. Kolorea, paisaia eta nekazariak propagandaren ordez.",
+        "ca": "La primera promoció de l’Acadèmia de Cinema de Pequín després de la Revolució Cultural. Color, paisatge i pagesos en lloc de propaganda."
+      },
+      "films": [
+        {
+          "title": "Yellow Earth",
+          "year": 1984,
+          "tmdbId": 92990,
+          "poster": "/i9zxjL9cLgBysC8YR3BTPlppn1Z.jpg",
+          "original_title": "黄土地",
+          "original_language": "zh",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Yellow Earth"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Tierra amarilla"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Red Sorghum",
+          "year": 1987,
+          "tmdbId": 42006,
+          "poster": "/2CP2eazEBKJ3njm4HM63pMfs5tW.jpg",
+          "original_title": "红高粱",
+          "original_language": "zh",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Red Sorghum"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Sorgo rojo"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Raise the Red Lantern",
+          "year": 1991,
+          "tmdbId": 10404,
+          "poster": "/j6MGZpg55cTqlHHwahBtzI2qQg1.jpg",
+          "original_title": "大红灯笼高高挂",
+          "original_language": "zh",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Raise the Red Lantern"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La linterna roja"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La Linterna Roja"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Farewell My Concubine",
+          "year": 1993,
+          "tmdbId": 10997,
+          "poster": "/f54hNIiHNINw3JiUJB2XaQl5wCN.jpg",
+          "original_title": "霸王别姬",
+          "original_language": "zh",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Farewell My Concubine"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Adiós a mi concubina"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Adéu a la meva concubina"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nuevo-cine-argentino",
+      "from": 1995,
+      "to": 2010,
+      "countries": [
+        "AR"
+      ],
+      "directors": [
+        "Lucrecia Martel",
+        "Pablo Trapero",
+        "Adrián Caetano",
+        "Carlos Sorín"
+      ],
+      "name": {
+        "es": "Nuevo cine argentino",
+        "en": "New Argentine Cinema",
+        "gl": "Novo cine argentino",
+        "eu": "Argentinako zinema berria",
+        "ca": "Nou cinema argentí"
+      },
+      "blurb": {
+        "es": "Escuelas de cine, presupuestos mínimos y la crisis de 2001 de fondo. Historias pequeñas y secas que retrataron un país en descomposición.",
+        "en": "Film schools, tiny budgets and the 2001 crisis in the background. Small, dry stories that portrayed a country falling apart.",
+        "gl": "Escolas de cine, orzamentos mínimos e a crise de 2001 de fondo. Historias pequenas e secas que retrataron un país en descomposición.",
+        "eu": "Zinema eskolak, aurrekontu txikiak eta 2001eko krisia atzealdean. Desegiten ari zen herrialde bat erretratatu zuten istorio txiki eta lehorrak.",
+        "ca": "Escoles de cinema, pressupostos mínims i la crisi del 2001 de fons. Històries petites i seques que van retratar un país en descomposició."
+      },
+      "films": [
+        {
+          "title": "Pizza, Beer, and Cigarettes",
+          "year": 1998,
+          "tmdbId": 127471,
+          "poster": "/gJEpEp0oE7osryIExZgCtyiUtJb.jpg",
+          "original_title": "Pizza, birra, faso",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Pizza, Beer, and Cigarettes"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Crane World",
+          "year": 1999,
+          "tmdbId": 101338,
+          "poster": "/eAyHxFZDtnzx1d8yH12w92HItF1.jpg",
+          "original_title": "Mundo grúa",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Crane World"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Mundo grúa"
+              }
+            }
+          ]
+        },
+        {
+          "title": "La Ciénaga",
+          "year": 2001,
+          "tmdbId": 58429,
+          "poster": "/fcgRKfCRudyWggyHIT9LOPgU3qW.jpg",
+          "original_title": "La Ciénaga",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La ciénaga"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Intimate Stories",
+          "year": 2002,
+          "tmdbId": 51378,
+          "poster": "/dD27iIMNImAnGlSs7OroS0lvV95.jpg",
+          "original_title": "Historias mínimas",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Intimate Stories"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dogma-95",
+      "from": 1995,
+      "to": 2005,
+      "countries": [
+        "DK"
+      ],
+      "directors": [
+        "Lars von Trier",
+        "Thomas Vinterberg",
+        "Søren Kragh-Jacobsen",
+        "Lone Scherfig"
+      ],
+      "name": {
+        "es": "Dogma 95",
+        "en": "Dogme 95",
+        "gl": "Dogma 95",
+        "eu": "Dogma 95",
+        "ca": "Dogma 95"
+      },
+      "blurb": {
+        "es": "Un «voto de castidad» de diez reglas: cámara en mano, luz natural, nada de música añadida ni de trucos. Un manifiesto medio en broma que sacudió el cine de los noventa.",
+        "en": "A ten-rule “vow of chastity”: handheld camera, natural light, no added music and no tricks. A half-joking manifesto that shook up nineties cinema.",
+        "gl": "Un «voto de castidade» de dez regras: cámara na man, luz natural, nada de música engadida nin de trucos. Un manifesto medio en broma que sacudiu o cine dos noventa.",
+        "eu": "Hamar arauko «kastitate-botoa»: kamera eskuan, argi naturala, musika gehiturik eta trikimailurik ez. Erdi txantxetan idatzitako manifestua, laurogeita hamarreko hamarkadako zinema astindu zuena.",
+        "ca": "Un «vot de castedat» de deu regles: càmera en mà, llum natural, gens de música afegida ni de trucs. Un manifest mig en broma que va sacsejar el cinema dels noranta."
+      },
+      "films": [
+        {
+          "title": "The Celebration",
+          "year": 1998,
+          "tmdbId": 309,
+          "poster": "/2LRzNq41yrY8EjCnD1S8sCCPvKk.jpg",
+          "original_title": "Festen",
+          "original_language": "da",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Celebration"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Celebración"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Idiots",
+          "year": 1998,
+          "tmdbId": 452,
+          "poster": "/dZUgHe2XH8egBFerMC6yLoqUqii.jpg",
+          "original_title": "Idioterne",
+          "original_language": "da",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Idiots"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Los idiotas"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Los idiotas"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Mifune's Last Song",
+          "year": 1999,
+          "tmdbId": 139,
+          "poster": "/qEg7dmFcPqjF5kBYD0Bkz2CVyYB.jpg",
+          "original_title": "Mifunes sidste sang",
+          "original_language": "da",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Mifune"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Mifune"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Italian for Beginners",
+          "year": 2000,
+          "tmdbId": 112,
+          "poster": "/yviUKuVb9BXYPqkWvp8JZFj2wVb.jpg",
+          "original_title": "Italiensk for begyndere",
+          "original_language": "da",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Italian for Beginners"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Italiano para principiantes"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nuevo-cine-coreano",
+      "from": 1996,
+      "to": null,
+      "countries": [
+        "KR"
+      ],
+      "directors": [
+        "Bong Joon-ho",
+        "Park Chan-wook",
+        "Lee Chang-dong",
+        "Hong Sang-soo"
+      ],
+      "name": {
+        "es": "Nuevo cine coreano",
+        "en": "Korean New Wave",
+        "gl": "Novo cine coreano",
+        "eu": "Koreako zinema berria",
+        "ca": "Nou cinema coreà"
+      },
+      "blurb": {
+        "es": "El fin de la censura y unas cuotas de pantalla generosas crearon una industria que mezcla géneros sin pudor. Llegó a lo más alto con el Óscar de «Parásitos».",
+        "en": "The end of censorship and generous screen quotas built an industry that mixes genres shamelessly. It reached the top with the Oscar for “Parasite”.",
+        "gl": "O fin da censura e unhas cotas de pantalla xenerosas crearon unha industria que mestura xéneros sen pudor. Chegou ao máis alto co Óscar de «Parasitos».",
+        "eu": "Zentsuraren amaierak eta pantaila-kuota eskuzabalek generoak lotsarik gabe nahasten dituen industria bat sortu zuten. Gailurrera iritsi zen «Parasitoak» filmaren Oscarrarekin.",
+        "ca": "La fi de la censura i unes quotes de pantalla generoses van crear una indústria que barreja gèneres sense vergonya. Va arribar al cim amb l’Oscar de «Paràsits»."
+      },
+      "films": [
+        {
+          "title": "Oldboy",
+          "year": 2003,
+          "tmdbId": 670,
+          "poster": "/pWDtjs568ZfOTMbURQBYuT4Qxka.jpg",
+          "original_title": "올드보이",
+          "original_language": "ko",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Oldboy"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Old Boy"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Oldboy: Cinco días para vengarse"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Old Boy"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Memories of Murder",
+          "year": 2003,
+          "tmdbId": 11423,
+          "poster": "/jcgUjx1QcupGzjntTVlnQ15lHqy.jpg",
+          "original_title": "살인의 추억",
+          "original_language": "ko",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Memories of Murder"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Memories of Murder (Crónica de un asesino en serie)"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Memorias de un Asesino"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Burning",
+          "year": 2018,
+          "tmdbId": 491584,
+          "poster": "/kXiF80o74fE9gf3Utf9moAI7ar0.jpg",
+          "original_title": "버닝",
+          "original_language": "ko",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Burning"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Burning"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Burning"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Burning"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Parasite",
+          "year": 2019,
+          "tmdbId": 496243,
+          "poster": "/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
+          "original_title": "기생충",
+          "original_language": "ko",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Parasite"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Parásitos"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Parásitos"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Paràsits"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nuevo-cine-rumano",
+      "from": 2001,
+      "to": null,
+      "countries": [
+        "RO"
+      ],
+      "directors": [
+        "Cristi Puiu",
+        "Cristian Mungiu",
+        "Corneliu Porumboiu",
+        "Radu Jude"
+      ],
+      "name": {
+        "es": "Nuevo cine rumano",
+        "en": "Romanian New Wave",
+        "gl": "Novo cine rumano",
+        "eu": "Errumaniako zinema berria",
+        "ca": "Nou cinema romanès"
+      },
+      "blurb": {
+        "es": "Planos fijos, tiempo real y burocracia kafkiana heredada del comunismo. Con muy poco dinero, Rumanía empezó a ganar en Cannes año tras año.",
+        "en": "Static shots, real time and Kafkaesque bureaucracy inherited from communism. On very little money, Romania started winning at Cannes year after year.",
+        "gl": "Planos fixos, tempo real e burocracia kafkiana herdada do comunismo. Con moi pouco diñeiro, Romanía comezou a gañar en Cannes ano tras ano.",
+        "eu": "Plano finkoak, denbora erreala eta komunismotik heredatutako burokrazia kafkiarra. Diru oso gutxirekin, Errumania Cannesen irabazten hasi zen urtez urte.",
+        "ca": "Plans fixos, temps real i burocràcia kafkiana heretada del comunisme. Amb molt pocs diners, Romania va començar a guanyar a Cannes any rere any."
+      },
+      "films": [
+        {
+          "title": "The Death of Mr. Lazarescu",
+          "year": 2005,
+          "tmdbId": 31032,
+          "poster": "/c3B7GwMYgNi15VMdcKZawgt6mf5.jpg",
+          "original_title": "Moartea domnului Lăzărescu",
+          "original_language": "ro",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Death of Mr. Lazarescu"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La muerte del Sr. Lazarescu"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La muerte del Sr. Lazarescu"
+              }
+            }
+          ]
+        },
+        {
+          "title": "12:08 East of Bucharest",
+          "year": 2006,
+          "tmdbId": 24159,
+          "poster": "/a7bBUXKWzhtqaPDyksOebSHeD6N.jpg",
+          "original_title": "A fost sau n-a fost?",
+          "original_language": "ro",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "12:08 East of Bucharest"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "12:08 al este de Bucarest"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "12.08 a l’est de Bucarest"
+              }
+            }
+          ]
+        },
+        {
+          "title": "4 Months, 3 Weeks and 2 Days",
+          "year": 2007,
+          "tmdbId": 2009,
+          "poster": "/acEtvzFPeOQwbzRWncjRLenhnKV.jpg",
+          "original_title": "4 luni, 3 săptămâni și 2 zile",
+          "original_language": "ro",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "4 Months, 3 Weeks and 2 Days"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "4 meses, 3 semanas, 2 días"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "4 meses, 3 semanas, 2 días"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "4 mesos, 3 setmanes i 2 dies"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Police, Adjective",
+          "year": 2009,
+          "tmdbId": 32511,
+          "poster": "/yiimBQLll8l6SXyNjder7ToilDi.jpg",
+          "original_title": "Polițist, adjectiv",
+          "original_language": "ro",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Police, Adjective"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nueva-ola-griega",
+      "from": 2009,
+      "to": null,
+      "countries": [
+        "GR"
+      ],
+      "directors": [
+        "Yorgos Lanthimos",
+        "Athina Rachel Tsangari",
+        "Babis Makridis",
+        "Syllas Tzoumerkas"
+      ],
+      "name": {
+        "es": "Nueva ola griega",
+        "en": "Greek Weird Wave",
+        "gl": "Nova onda grega",
+        "eu": "Greziako olatu berria",
+        "ca": "Nova onada grega"
+      },
+      "blurb": {
+        "es": "Familias encerradas, diálogos de autómata y rituales absurdos en plena crisis de la deuda. La «ola rara» que llevó a Lanthimos de Atenas a Hollywood.",
+        "en": "Locked-up families, robotic dialogue and absurd rituals in the middle of the debt crisis. The “weird wave” that took Lanthimos from Athens to Hollywood.",
+        "gl": "Familias pechadas, diálogos de autómata e rituais absurdos en plena crise da débeda. A «onda rara» que levou a Lanthimos de Atenas a Hollywood.",
+        "eu": "Familia itxiak, automata-elkarrizketak eta erritu absurduak zorraren krisiaren erdian. Lanthimos Atenastik Hollywoodera eraman zuen «olatu bitxia».",
+        "ca": "Famílies tancades, diàlegs d’autòmat i rituals absurds en plena crisi del deute. L’«onada estranya» que va portar Lanthimos d’Atenes a Hollywood."
+      },
+      "films": [
+        {
+          "title": "Dogtooth",
+          "year": 2009,
+          "tmdbId": 38810,
+          "poster": "/7nLuUGlH12cegPfR84QX4xIIH9k.jpg",
+          "original_title": "Κυνόδοντας",
+          "original_language": "el",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Dogtooth"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Canino"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Colmillos"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ullals"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Attenberg",
+          "year": 2010,
+          "tmdbId": 62321,
+          "poster": "/ry03y6yIwgEZwG5zuCHmOxj8Thk.jpg",
+          "original_title": "Attenberg",
+          "original_language": "el",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La vida según Attenberg"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Alps",
+          "year": 2011,
+          "tmdbId": 81857,
+          "poster": "/nF5A64lC0MuuEK6qNmOfQpY6mRv.jpg",
+          "original_title": "Άλπεις",
+          "original_language": "el",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Alps"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Alps"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Alps"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Chevalier",
+          "year": 2015,
+          "tmdbId": 314220,
+          "poster": "/RnL5hL9f5tZl84Mqf9EtYaSY2V.jpg",
+          "original_title": "Chevalier",
+          "original_language": "el",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Chevalier"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
