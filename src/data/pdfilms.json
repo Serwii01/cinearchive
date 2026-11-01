@@ -212,6 +212,21 @@
       "blurb_ca": "Un porter d’hotel perd l’uniforme i amb ell el seu lloc al món. Murnau l’explica gairebé sense rètols, només amb la càmera."
     },
     {
+      "id": "TheThiefOfBagdad1924",
+      "title": "The Thief of Bagdad",
+      "original_title": "The Thief of Bagdad",
+      "director": "Raoul Walsh",
+      "year": 1924,
+      "country": "EE. UU.",
+      "runtime": 140,
+      "lang": "es",
+      "blurb_es": "Douglas Fairbanks salta, vuela en alfombra y conquista a una princesa en una superproducción de decorados gigantes y efectos que aún asombran.",
+      "blurb_en": "Douglas Fairbanks leaps, flies on a carpet and wins a princess in a blockbuster of giant sets and effects that still amaze.",
+      "blurb_gl": "Douglas Fairbanks salta, voa en alfombra e conquista unha princesa nunha superprodución de decorados xigantes e efectos que aínda abraian.",
+      "blurb_eu": "Douglas Fairbanksek salto egiten du, alfonbran hegan egiten du eta printzesa bat konkistatzen du, dekoratu erraldoiak eta oraindik harritzen duten efektuak dituen superprodukzio batean.",
+      "blurb_ca": "Douglas Fairbanks salta, vola en catifa i conquereix una princesa en una superproducció de decorats gegants i efectes que encara meravellen."
+    },
+    {
       "id": "BattleshipPotemkin",
       "title": "Battleship Potemkin",
       "original_title": "Bronenosets Potyomkin",
@@ -272,6 +287,21 @@
       "blurb_ca": "Lon Chaney i el seu rostre descobert: el terror gòtic de Hollywood en estat pur."
     },
     {
+      "id": "strike-eisenstein-1925-english-intertitles-hd-quality",
+      "title": "Strike",
+      "original_title": "Stachka",
+      "director": "Sergei M. Eisenstein",
+      "year": 1925,
+      "country": "URSS",
+      "runtime": 89,
+      "lang": "es",
+      "blurb_es": "El primer largo de Eisenstein: una huelga obrera aplastada por la policía y montada en paralelo con la matanza de un toro. El montaje como puñetazo.",
+      "blurb_en": "Eisenstein's first feature: a workers' strike crushed by the police and cut in parallel with the slaughter of a bull. Montage as a punch.",
+      "blurb_gl": "A primeira longa de Eisenstein: unha folga obreira esmagada pola policía e montada en paralelo coa matanza dun touro. A montaxe como puñada.",
+      "blurb_eu": "Eisensteinen lehen film luzea: poliziak zapaldutako langile greba bat, zezen baten hilketarekin paraleloan muntatua. Muntaketa ukabilkada gisa.",
+      "blurb_ca": "El primer llarg d'Eisenstein: una vaga obrera aixafada per la policia i muntada en paral·lel amb la matança d'un toro. El muntatge com un cop de puny."
+    },
+    {
       "id": "TheGeneral_201312",
       "title": "The General",
       "original_title": "The General",
@@ -285,6 +315,21 @@
       "blurb_gl": "Keaton persegue unha locomotora roubada en plena guerra de Secesión. Cada acrobacia é real, e o tren que cae da ponte tamén.",
       "blurb_eu": "Keatonek lapurtutako lokomotora bat atzetik darama Sezesio Gerraren erdian. Akrobazia guztiak benetakoak dira, baita zubitik erortzen den trena ere.",
       "blurb_ca": "Keaton persegueix una locomotora robada en plena guerra de Secessió. Cada acrobàcia és real, i el tren que cau del pont també."
+    },
+    {
+      "id": "1926-faust",
+      "title": "Faust",
+      "original_title": "Faust – Eine deutsche Volkssage",
+      "director": "F. W. Murnau",
+      "year": 1926,
+      "country": "Alemania",
+      "runtime": 108,
+      "lang": "es",
+      "blurb_es": "El pacto con el diablo según Murnau: Mefisto extiende sus alas sobre el pueblo en una de las imágenes más poderosas del expresionismo alemán.",
+      "blurb_en": "The pact with the devil according to Murnau: Mephisto spreads his wings over the town in one of the most powerful images of German Expressionism.",
+      "blurb_gl": "O pacto co demo segundo Murnau: Mefisto estende as súas ás sobre a vila nunha das imaxes máis poderosas do expresionismo alemán.",
+      "blurb_eu": "Deabruarekiko ituna Murnauren arabera: Mefistok hegoak zabaltzen ditu herriaren gainean, espresionismo alemanaren irudi indartsuenetako batean.",
+      "blurb_ca": "El pacte amb el diable segons Murnau: Mefisto estén les ales sobre el poble en una de les imatges més poderoses de l'expressionisme alemany."
     },
     {
       "id": "Metropolis1927EnglishVersion",
@@ -317,6 +362,21 @@
       "blurb_ca": "Un pagès temptat d’ofegar la seva dona i una nit a la ciutat que els reconcilia. El primer treball de Murnau a Hollywood."
     },
     {
+      "id": "the-lodger-a-story-of-the-london-fog-1927-by-alfred-hitchcock",
+      "title": "The Lodger: A Story of the London Fog",
+      "original_title": "The Lodger: A Story of the London Fog",
+      "director": "Alfred Hitchcock",
+      "year": 1927,
+      "country": "Reino Unido",
+      "runtime": 91,
+      "lang": "es",
+      "blurb_es": "Un asesino de rubias en el Londres de la niebla y un huésped sospechoso: la primera película de Hitchcock que suena a Hitchcock.",
+      "blurb_en": "A killer of blondes in foggy London and a suspicious lodger: the first Hitchcock film that feels like Hitchcock.",
+      "blurb_gl": "Un asasino de louras na Londres da néboa e un hóspede sospeitoso: a primeira película de Hitchcock que soa a Hitchcock.",
+      "blurb_eu": "Ilehoriak hiltzen dituen bat Londres lainotsuan eta maizter susmagarri bat: Hitchcocken lehen filma Hitchcock usaina duena.",
+      "blurb_ca": "Un assassí de rosses a la Londres de la boira i un hoste sospitós: la primera pel·lícula de Hitchcock que sona a Hitchcock."
+    },
+    {
       "id": "SteamboatBillJr",
       "title": "Steamboat Bill, Jr.",
       "original_title": "Steamboat Bill, Jr.",
@@ -330,6 +390,51 @@
       "blurb_gl": "O ciclón final e a fachada de dúas toneladas que cae sobre Keaton deixándoo xusto no oco da fiestra.",
       "blurb_eu": "Azken zikloia, eta Keatonen gainera erortzen den bi tonako fatxada, bera leihoaren hutsunean bertan utziz.",
       "blurb_ca": "El cicló final i la façana de dues tones que cau sobre Keaton i el deixa just al forat de la finestra."
+    },
+    {
+      "id": "steamboat-willie_1928",
+      "title": "Steamboat Willie",
+      "original_title": "Steamboat Willie",
+      "director": "Ub Iwerks, Walt Disney",
+      "year": 1928,
+      "country": "EE. UU.",
+      "runtime": 8,
+      "lang": "en",
+      "blurb_es": "El corto con el que Mickey Mouse silba al timón de un vapor y uno de los primeros dibujos animados con sonido sincronizado. De dominio público desde 2024.",
+      "blurb_en": "The short in which Mickey Mouse whistles at the wheel of a steamboat, and one of the first cartoons with synchronised sound. In the public domain since 2024.",
+      "blurb_gl": "A curta na que Mickey Mouse asubía ao temón dun vapor e un dos primeiros debuxos animados con son sincronizado. De dominio público desde 2024.",
+      "blurb_eu": "Mickey Mouse lurrun-ontzi baten lemazainean txistuka ageri den film laburra, soinu sinkronizatua izan zuten lehen marrazki bizidunetako bat. 2024tik domeinu publikoan.",
+      "blurb_ca": "El curt en què Mickey Mouse xiula al timó d'un vapor i un dels primers dibuixos animats amb so sincronitzat. De domini públic des del 2024."
+    },
+    {
+      "id": "the-passion-of-joan-of-arc",
+      "title": "The Passion of Joan of Arc",
+      "original_title": "La Passion de Jeanne d'Arc",
+      "director": "Carl Theodor Dreyer",
+      "year": 1928,
+      "country": "Francia",
+      "runtime": 82,
+      "lang": "es",
+      "blurb_es": "El juicio de Juana de Arco contado casi solo con primeros planos: el rostro de Renée Falconetti en una de las interpretaciones más intensas del cine mudo.",
+      "blurb_en": "The trial of Joan of Arc told almost entirely in close-ups: Renée Falconetti's face in one of the most intense performances of silent cinema.",
+      "blurb_gl": "O xuízo de Xoana de Arco contado case só con primeiros planos: o rostro de Renée Falconetti nunha das interpretacións máis intensas do cine mudo.",
+      "blurb_eu": "Joana Arkokoaren epaiketa, ia lehen planoz soilik kontatua: Renée Falconettiren aurpegia, zinema mutuko interpretaziorik biziena den horietako batean.",
+      "blurb_ca": "El judici de Joana d'Arc explicat gairebé només amb primers plans: el rostre de Renée Falconetti en una de les interpretacions més intenses del cinema mut."
+    },
+    {
+      "id": "TheFallOfTheHouseOfUsher1928",
+      "title": "The Fall of the House of Usher",
+      "original_title": "The Fall of the House of Usher",
+      "director": "James Sibley Watson, Melville Webber",
+      "year": 1928,
+      "country": "EE. UU.",
+      "runtime": 13,
+      "lang": "es",
+      "blurb_es": "Poe filmado con prismas, espejos y decorados de cartón: una pieza de vanguardia hecha en un garaje de Rochester que fundó el cine experimental estadounidense.",
+      "blurb_en": "Poe filmed with prisms, mirrors and cardboard sets: an avant-garde piece made in a Rochester garage that founded American experimental film.",
+      "blurb_gl": "Poe filmado con prismas, espellos e decorados de cartón: unha peza de vangarda feita nun garaxe de Rochester que fundou o cine experimental estadounidense.",
+      "blurb_eu": "Poe prisma, ispilu eta kartoizko dekoratuekin filmatua: Rochesterreko garaje batean egindako abangoardiako pieza, AEBetako zinema esperimentalaren sortzailea.",
+      "blurb_ca": "Poe filmat amb prismes, miralls i decorats de cartró: una peça d'avantguarda feta en un garatge de Rochester que va fundar el cinema experimental nord-americà."
     },
     {
       "id": "ChelovekskinoapparatomManWithAMovieCamera",
@@ -347,6 +452,51 @@
       "blurb_ca": "Un dia en una ciutat soviètica sense actors, sense guió i sense rètols: només la càmera, el muntatge i la dona que munta la pel·lícula."
     },
     {
+      "id": "UnChienAndalou1929_201807",
+      "title": "Un Chien Andalou",
+      "original_title": "Un chien andalou",
+      "director": "Luis Buñuel",
+      "year": 1929,
+      "country": "Francia",
+      "runtime": 21,
+      "lang": "es",
+      "blurb_es": "El ojo cortado por una navaja y las hormigas que salen de una mano: el debut de Buñuel, escrito con Dalí, es el gran manifiesto surrealista del cine.",
+      "blurb_en": "The eye sliced by a razor and the ants crawling out of a hand: Buñuel's debut, written with Dalí, is cinema's great surrealist manifesto.",
+      "blurb_gl": "O ollo cortado por unha navalla e as formigas que saen dunha man: o debut de Buñuel, escrito con Dalí, é o gran manifesto surrealista do cine.",
+      "blurb_eu": "Labanaz moztutako begia eta esku batetik ateratzen diren inurriak: Buñuelen estreinako lana, Dalírekin idatzia, zinemaren manifestu surrealista handia da.",
+      "blurb_ca": "L'ull tallat per una navalla i les formigues que surten d'una mà: el debut de Buñuel, escrit amb Dalí, és el gran manifest surrealista del cinema."
+    },
+    {
+      "id": "pandoras-box-1929-by-georg-wilhelm-pabst",
+      "title": "Pandora's Box",
+      "original_title": "Die Büchse der Pandora",
+      "director": "G. W. Pabst",
+      "year": 1929,
+      "country": "Alemania",
+      "runtime": 133,
+      "lang": "es",
+      "blurb_es": "Louise Brooks, con su melena de casco, es Lulú: una mujer que arrastra a todos a la ruina sin proponérselo, en el Berlín de Weimar.",
+      "blurb_en": "Louise Brooks, with her helmet bob, is Lulu: a woman who drags everyone to ruin without meaning to, in Weimar Berlin.",
+      "blurb_gl": "Louise Brooks, coa súa melena de casco, é Lulú: unha muller que arrastra a todos á ruína sen propoñelo, no Berlín de Weimar.",
+      "blurb_eu": "Louise Brooks, kasko itxurako ilearekin, Lulu da: nahi gabe guztiak hondamenera daramatzan emakumea, Weimarreko Berlinen.",
+      "blurb_ca": "Louise Brooks, amb la seva melena de casc, és Lulú: una dona que arrossega tothom a la ruïna sense proposar-s'ho, al Berlín de Weimar."
+    },
+    {
+      "id": "all-quiet-on-the-western-front-1930_202407",
+      "title": "All Quiet on the Western Front",
+      "original_title": "All Quiet on the Western Front",
+      "director": "Lewis Milestone",
+      "year": 1930,
+      "country": "EE. UU.",
+      "runtime": 128,
+      "lang": "en",
+      "blurb_es": "Estudiantes alemanes que van a la guerra entusiasmados y mueren en las trincheras: el gran alegato antibelicista de Hollywood, Óscar a mejor película. De dominio público desde 2026.",
+      "blurb_en": "German students who go to war full of enthusiasm and die in the trenches: Hollywood's great anti-war statement, Oscar for Best Picture. In the public domain since 2026.",
+      "blurb_gl": "Estudantes alemáns que van á guerra entusiasmados e morren nas trincheiras: o gran alegato antibelicista de Hollywood, Óscar á mellor película. De dominio público desde 2026.",
+      "blurb_eu": "Gogotsu gerrara joan eta lubakietan hiltzen diren ikasle alemanak: Hollywooden gerraren aurkako aldarri handia, film onenaren Oscarra. 2026tik domeinu publikoan.",
+      "blurb_ca": "Estudiants alemanys que van a la guerra entusiasmats i moren a les trinxeres: el gran al·legat antibel·licista de Hollywood, Oscar a la millor pel·lícula. De domini públic des del 2026."
+    },
+    {
       "id": "white_zombie",
       "title": "White Zombie",
       "original_title": "White Zombie",
@@ -362,6 +512,36 @@
       "blurb_ca": "El primer llargmetratge de zombis, amb Bela Lugosi com a amo d'un enginy sucrer de morts vivents."
     },
     {
+      "id": "MyManGodfrey1936",
+      "title": "My Man Godfrey",
+      "original_title": "My Man Godfrey",
+      "director": "Gregory La Cava",
+      "year": 1936,
+      "country": "EE. UU.",
+      "runtime": 95,
+      "lang": "en",
+      "blurb_es": "Una heredera alocada contrata como mayordomo a un vagabundo durante la Gran Depresión: screwball comedy afilada, con William Powell y Carole Lombard.",
+      "blurb_en": "A scatterbrained heiress hires a tramp as her butler during the Great Depression: a sharp screwball comedy with William Powell and Carole Lombard.",
+      "blurb_gl": "Unha herdeira alocada contrata como mordomo un vagabundo durante a Gran Depresión: screwball comedy afiada, con William Powell e Carole Lombard.",
+      "blurb_eu": "Oinordeko burugabe batek eskale bat hartzen du maiordomo Depresio Handian: screwball comedy zorrotza, William Powell eta Carole Lombardekin.",
+      "blurb_ca": "Una hereva esbojarrada contracta un rodamón com a majordom durant la Gran Depressió: screwball comedy esmolada, amb William Powell i Carole Lombard."
+    },
+    {
+      "id": "NothingSacred",
+      "title": "Nothing Sacred",
+      "original_title": "Nothing Sacred",
+      "director": "William A. Wellman",
+      "year": 1937,
+      "country": "EE. UU.",
+      "runtime": 74,
+      "lang": "en",
+      "blurb_es": "Un periódico convierte en heroína a una chica que cree que va a morir… y que en realidad está sana. Sátira en Technicolor sobre la prensa sensacionalista.",
+      "blurb_en": "A newspaper turns a girl who thinks she is dying into a heroine… when she is actually perfectly healthy. A Technicolor satire of the tabloid press.",
+      "blurb_gl": "Un xornal converte en heroína unha rapaza que cre que vai morrer… e que en realidade está san. Sátira en Technicolor sobre a prensa sensacionalista.",
+      "blurb_eu": "Egunkari batek heroi bihurtzen du hilko dela uste duen neska bat… benetan osasuntsu dagoena. Prentsa sentsazionalistari buruzko satira Technicolorrez.",
+      "blurb_ca": "Un diari converteix en heroïna una noia que creu que morirà… i que en realitat està sana. Sàtira en Technicolor sobre la premsa sensacionalista."
+    },
+    {
       "id": "his_girl_friday",
       "title": "His Girl Friday",
       "original_title": "His Girl Friday",
@@ -375,6 +555,21 @@
       "blurb_gl": "A screwball comedy á súa máxima velocidade: Hawks e un duelo de diálogos solapados sen respiro.",
       "blurb_eu": "Screwball komedia bere abiadura gorenean: Hawks eta arnasarik gabeko elkarrizketa gainjarrien dueloa.",
       "blurb_ca": "La screwball comedy a la seva màxima velocitat: Hawks i un duel de diàlegs encavalcats sense respir."
+    },
+    {
+      "id": "meet_john_doe",
+      "title": "Meet John Doe",
+      "original_title": "Meet John Doe",
+      "director": "Frank Capra",
+      "year": 1941,
+      "country": "EE. UU.",
+      "runtime": 123,
+      "lang": "en",
+      "blurb_es": "Una periodista inventa una carta de suicidio y un vagabundo (Gary Cooper) acaba siendo el símbolo de un movimiento que otros quieren manipular.",
+      "blurb_en": "A reporter invents a suicide letter, and a drifter (Gary Cooper) ends up as the symbol of a movement others want to manipulate.",
+      "blurb_gl": "Unha xornalista inventa unha carta de suicidio e un vagabundo (Gary Cooper) acaba sendo o símbolo dun movemento que outros queren manipular.",
+      "blurb_eu": "Kazetari batek suizidio-gutun bat asmatzen du, eta eskale bat (Gary Cooper) beste batzuek manipulatu nahi duten mugimendu baten ikur bihurtzen da.",
+      "blurb_ca": "Una periodista inventa una carta de suïcidi i un rodamón (Gary Cooper) acaba sent el símbol d'un moviment que altres volen manipular."
     },
     {
       "id": "Detour",
@@ -467,6 +662,21 @@
       "blurb_ca": "Ida Lupino, única dona que va dirigir un cinema negre clàssic d'estudi: tensió seca en ple desert."
     },
     {
+      "id": "BeatTheDevil1953",
+      "title": "Beat the Devil",
+      "original_title": "Beat the Devil",
+      "director": "John Huston",
+      "year": 1953,
+      "country": "Reino Unido / Italia / EE. UU.",
+      "runtime": 89,
+      "lang": "en",
+      "blurb_es": "Bogart, Gina Lollobrigida y Peter Lorre, estafadores varados en un puerto italiano: Huston y Truman Capote parodian el cine de aventuras.",
+      "blurb_en": "Bogart, Gina Lollobrigida and Peter Lorre as swindlers stranded in an Italian port: Huston and Truman Capote spoof the adventure film.",
+      "blurb_gl": "Bogart, Gina Lollobrigida e Peter Lorre, estafadores varados nun porto italiano: Huston e Truman Capote parodian o cine de aventuras.",
+      "blurb_eu": "Bogart, Gina Lollobrigida eta Peter Lorre, Italiako portu batean geldirik dauden iruzurgileak: Hustonek eta Truman Capotek abentura-zinema parodiatzen dute.",
+      "blurb_ca": "Bogart, Gina Lollobrigida i Peter Lorre, estafadors encallats en un port italià: Huston i Truman Capote parodien el cinema d'aventures."
+    },
+    {
       "id": "plan-9-from-outer-space",
       "title": "Plan 9 from Outer Space",
       "original_title": "Plan 9 from Outer Space",
@@ -497,6 +707,21 @@
       "blurb_ca": "Vincent Price ofereix deu mil dòlars a qui aguanti una nit a la seva mansió. William Castle en estat pur."
     },
     {
+      "id": "ABucketOfBlood1959",
+      "title": "A Bucket of Blood",
+      "original_title": "A Bucket of Blood",
+      "director": "Roger Corman",
+      "year": 1959,
+      "country": "EE. UU.",
+      "runtime": 65,
+      "lang": "en",
+      "blurb_es": "Un camarero torpe triunfa entre los beatniks con unas esculturas demasiado realistas. Corman la rodó en cinco días y es una sátira negrísima del mundo del arte.",
+      "blurb_en": "A clumsy busboy becomes a beatnik star with sculptures that are far too realistic. Corman shot it in five days, and it is a pitch-black satire of the art world.",
+      "blurb_gl": "Un camareiro torpe triunfa entre os beatniks cunhas esculturas demasiado realistas. Corman rodouna en cinco días e é unha sátira negrísima do mundo da arte.",
+      "blurb_eu": "Zerbitzari baldar batek arrakasta du beatniken artean errealistegiak diren eskulturekin. Cormanek bost egunean filmatu zuen, eta arte-munduari buruzko satira beltz-beltza da.",
+      "blurb_ca": "Un cambrer maldestre triomfa entre els beatniks amb unes escultures massa realistes. Corman la va rodar en cinc dies i és una sàtira negríssima del món de l'art."
+    },
+    {
       "id": "TheLittleShopOfHorrors1960",
       "title": "The Little Shop of Horrors",
       "original_title": "The Little Shop of Horrors",
@@ -525,6 +750,21 @@
       "blurb_gl": "Pesadelo independente de atmosfera hipnótica que influíu en todo o cine de terror posterior.",
       "blurb_eu": "Giro hipnotikoko amesgaizto independentea, ondorengo izu-zinema guztian eragina izan zuena.",
       "blurb_ca": "Malson independent d'atmosfera hipnòtica que va influir en tot el cinema de terror posterior."
+    },
+    {
+      "id": "brain_that_wouldnt_die",
+      "title": "The Brain That Wouldn't Die",
+      "original_title": "The Brain That Wouldn't Die",
+      "director": "Joseph Green",
+      "year": 1962,
+      "country": "EE. UU.",
+      "runtime": 71,
+      "lang": "en",
+      "blurb_es": "Un cirujano mantiene viva la cabeza de su novia en una bandeja mientras busca un cuerpo nuevo. Serie B de culto, delirante y morbosa.",
+      "blurb_en": "A surgeon keeps his fiancée's head alive on a tray while he looks for a new body. Delirious, morbid cult B-movie.",
+      "blurb_gl": "Un cirurxián mantén viva a cabeza da súa moza nunha bandexa mentres busca un corpo novo. Serie B de culto, delirante e morbosa.",
+      "blurb_eu": "Zirujau batek bere emaztegaiaren burua bizirik mantentzen du erretilu batean, gorputz berri bat bilatzen duen bitartean. B serieko kultuzko filma, zoroa eta morbosoa.",
+      "blurb_ca": "Un cirurgià manté viu el cap de la seva promesa en una safata mentre busca un cos nou. Sèrie B de culte, delirant i morbosa."
     },
     {
       "id": "charade-1963-cary-grant-audrey-hepburn-comedy-mystery-romance-thriller-full-movie",

@@ -96,6 +96,114 @@
       "blurb_gl": "Retrato da industria do cine dos anos 20 desde dentro: os seus oficios, os seus salarios e como entrar neles.",
       "blurb_eu": "20ko hamarkadako zinema-industriaren erretratua barrutik: bere lanbideak, bere soldatak eta haietan nola sartu.",
       "blurb_ca": "Retrat de la indústria del cinema dels anys 20 des de dins: els seus oficis, els seus salaris i com entrar-hi."
+    },
+    {
+      "id": "cu31924030699445",
+      "title": "Moving Pictures: How They Are Made and Worked",
+      "author": "Frederick A. Talbot",
+      "year": 1912,
+      "lang": "en",
+      "blurb_es": "Uno de los primeros libros que explican el cine por dentro: cámaras, laboratorios, trucos y estudios, con fotografías de la época.",
+      "blurb_en": "One of the first books to explain cinema from the inside: cameras, laboratories, tricks and studios, with period photographs.",
+      "blurb_gl": "Un dos primeiros libros que explican o cine por dentro: cámaras, laboratorios, trucos e estudios, con fotografías da época.",
+      "blurb_eu": "Zinema barrutik azaltzen duen lehen liburuetako bat: kamerak, laborategiak, trikimailuak eta estudioak, garaiko argazkiekin.",
+      "blurb_ca": "Un dels primers llibres que expliquen el cinema per dins: càmeres, laboratoris, trucs i estudis, amb fotografies de l'època."
+    },
+    {
+      "id": "photodramaphilos01phil",
+      "title": "The Photodrama",
+      "author": "Henry Albert Phillips",
+      "year": 1914,
+      "lang": "en",
+      "blurb_es": "Un tratado temprano sobre cómo construir la trama de una película, con un guion completo de ejemplo y un glosario del oficio.",
+      "blurb_en": "An early treatise on how to build a film's plot, with a complete sample script and a glossary of the craft.",
+      "blurb_gl": "Un tratado temperán sobre como construír a trama dunha película, cun guión completo de exemplo e un glosario do oficio.",
+      "blurb_eu": "Film baten argumentua nola eraiki azaltzen duen lehen garaiko tratatua, adibide gisa gidoi oso batekin eta ofizioaren glosario batekin.",
+      "blurb_ca": "Un tractat primerenc sobre com construir la trama d'una pel·lícula, amb un guió complet d'exemple i un glossari de l'ofici."
+    },
+    {
+      "id": "techniqueofphoto00sarg",
+      "title": "The Technique of the Photoplay",
+      "author": "Epes Winthrop Sargent",
+      "year": 1916,
+      "lang": "en",
+      "blurb_es": "El manual de guion más leído de la era muda, escrito por un crítico de Moving Picture World para quienes querían vender historias a los estudios.",
+      "blurb_en": "The most widely read screenwriting manual of the silent era, written by a Moving Picture World critic for those who wanted to sell stories to the studios.",
+      "blurb_gl": "O manual de guión máis lido da era muda, escrito por un crítico de Moving Picture World para quen quería vender historias aos estudios.",
+      "blurb_eu": "Garai mutuko gidoi-eskuliburu irakurriena, Moving Picture Worldeko kritikari batek idatzia, estudioei istorioak saldu nahi zizkietenentzat.",
+      "blurb_ca": "El manual de guió més llegit de l'era muda, escrit per un crític de Moving Picture World per a qui volia vendre històries als estudis."
+    },
+    {
+      "id": "cinemaitspresent00natirich",
+      "title": "The Cinema: Its Present Position and Future Possibilities",
+      "author": "National Council of Public Morals",
+      "year": 1917,
+      "lang": "en",
+      "blurb_es": "La investigación británica sobre si el cine corrompía a los jóvenes: testimonios de maestros, policías y exhibidores en pleno pánico moral.",
+      "blurb_en": "The British inquiry into whether cinema corrupted the young: testimony from teachers, police officers and exhibitors at the height of a moral panic.",
+      "blurb_gl": "A investigación británica sobre se o cine corrompía a mocidade: testemuños de mestres, policías e exhibidores en pleno pánico moral.",
+      "blurb_eu": "Zinemak gazteak usteltzen ote zituen aztertu zuen ikerketa britainiarra: irakasle, polizia eta erakusleen lekukotzak, izu moralaren betean.",
+      "blurb_ca": "La investigació britànica sobre si el cinema corrompia els joves: testimonis de mestres, policies i exhibidors en ple pànic moral."
+    },
+    {
+      "id": "artofphotoplayma00freerich",
+      "title": "The Art of Photoplay Making",
+      "author": "Victor Oscar Freeburg",
+      "year": 1918,
+      "lang": "en",
+      "blurb_es": "Las lecciones del primer curso universitario de cine, en Columbia: el autor defiende que una película debe pensarse con imágenes, no con palabras.",
+      "blurb_en": "The lessons of the first university film course, at Columbia: the author argues that a film must be thought in images, not words.",
+      "blurb_gl": "As leccións do primeiro curso universitario de cine, en Columbia: o autor defende que unha película debe pensarse con imaxes, non con palabras.",
+      "blurb_eu": "Zinemari buruzko lehen unibertsitate-ikastaroaren ikasgaiak, Columbian: egileak dio filma irudiekin pentsatu behar dela, ez hitzekin.",
+      "blurb_ca": "Les lliçons del primer curs universitari de cinema, a Columbia: l'autor defensa que una pel·lícula s'ha de pensar amb imatges, no amb paraules."
+    },
+    {
+      "id": "cinemacraftsmans00pattuoft",
+      "title": "Cinema Craftsmanship: A Book for Photoplaywrights",
+      "author": "Frances Taylor Patterson",
+      "year": 1920,
+      "lang": "en",
+      "blurb_es": "Uno de los primeros libros de cine escritos por una mujer: Patterson, profesora en Columbia, enseña a escribir para la pantalla con ejemplos de películas reales.",
+      "blurb_en": "One of the first film books written by a woman: Patterson, who taught at Columbia, shows how to write for the screen with examples from real films.",
+      "blurb_gl": "Un dos primeiros libros de cine escritos por unha muller: Patterson, profesora en Columbia, ensina a escribir para a pantalla con exemplos de películas reais.",
+      "blurb_eu": "Emakume batek idatzitako zinemari buruzko lehen liburuetako bat: Pattersonek, Columbiako irakasleak, pantailarako idazten irakasten du benetako filmen adibideekin.",
+      "blurb_ca": "Un dels primers llibres de cinema escrits per una dona: Patterson, professora a Columbia, ensenya a escriure per a la pantalla amb exemples de pel·lícules reals."
+    },
+    {
+      "id": "cinemaparis00epstuoft",
+      "title": "Bonjour cinéma",
+      "author": "Jean Epstein",
+      "year": 1921,
+      "lang": "fr",
+      "blurb_es": "El libro-manifiesto en el que Epstein, a los 24 años, celebra la «fotogenia» y el primer plano como la poesía propia del cine. En francés.",
+      "blurb_en": "The book-manifesto in which Epstein, aged 24, celebrates “photogénie” and the close-up as cinema's own poetry. In French.",
+      "blurb_gl": "O libro-manifesto no que Epstein, aos 24 anos, celebra a «fotoxenia» e o primeiro plano como a poesía propia do cine. En francés.",
+      "blurb_eu": "Epsteinek 24 urterekin idatzitako liburu-manifestua, «fotogenia» eta lehen planoa zinemaren poesia propio gisa ospatzen dituena. Frantsesez.",
+      "blurb_ca": "El llibre-manifest en què Epstein, als 24 anys, celebra la «fotogènia» i el primer pla com la poesia pròpia del cinema. En francès."
+    },
+    {
+      "id": "lajungleducinma00dellgoog",
+      "title": "La jungle du cinéma",
+      "author": "Louis Delluc",
+      "year": 1921,
+      "lang": "fr",
+      "blurb_es": "Crónicas del crítico y cineasta que inventó la palabra «cineasta» y dio nombre al gran premio del cine francés. En francés.",
+      "blurb_en": "Pieces by the critic and filmmaker who coined the word “cinéaste” and gave his name to the great prize of French cinema. In French.",
+      "blurb_gl": "Crónicas do crítico e cineasta que inventou a palabra «cineasta» e deu nome ao gran premio do cine francés. En francés.",
+      "blurb_eu": "«Zinemagile» hitza asmatu eta Frantziako zinemaren sari handiari izena eman zion kritikari eta zinemagilearen kronikak. Frantsesez.",
+      "blurb_ca": "Cròniques del crític i cineasta que va inventar la paraula «cineasta» i va donar nom al gran premi del cinema francès. En francès."
+    },
+    {
+      "id": "pictorialbeautyo00free",
+      "title": "Pictorial Beauty on the Screen",
+      "author": "Victor Oscar Freeburg",
+      "year": 1923,
+      "lang": "en",
+      "blurb_es": "Composición, luz, movimiento y ritmo: Freeburg aplica la teoría de la pintura al plano cinematográfico en uno de los primeros estudios de estética del cine.",
+      "blurb_en": "Composition, light, movement and rhythm: Freeburg applies the theory of painting to the film shot in one of the first studies of film aesthetics.",
+      "blurb_gl": "Composición, luz, movemento e ritmo: Freeburg aplica a teoría da pintura ao plano cinematográfico nun dos primeiros estudos de estética do cine.",
+      "blurb_eu": "Konposizioa, argia, mugimendua eta erritmoa: Freeburgek pinturaren teoria plano zinematografikoari aplikatzen dio, zinemaren estetikari buruzko lehen azterlanetako batean.",
+      "blurb_ca": "Composició, llum, moviment i ritme: Freeburg aplica la teoria de la pintura al pla cinematogràfic en un dels primers estudis d'estètica del cinema."
     }
   ]
 }
