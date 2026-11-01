@@ -3,11 +3,10 @@
 > Lo mantiene Claude con `/cerrar`. Es la memoria de trabajo: dónde se quedó y qué viene después.
 
 ## Estado actual
-En producción en cinearchive.es, con el VPS al día con main (todo lo del 29 al 31 oct ya está desplegado, migración 0021 incluida). El changelog se quedó en la v1.16.
+En producción en cinearchive.es, con el VPS al día con main (todo lo del 29 al 31 oct ya está desplegado, migración 0021 incluida). Changelog al día: v1.17 y v1.18 publicadas.
 
 ## Siguientes pasos
 - [ ] Comprobar en producción lo desplegado del 29 al 31 oct: títulos y sagas, «volver» entre películas parecidas, la página del equipo y el enlace a Instagram.
-- [ ] Anotar en el changelog lo posterior a la v1.16, en los 5 idiomas: v1.17 (títulos en tu idioma, sagas, perfil con «Ver todo») y v1.18 (navegación sin bucles, búsqueda que se recuerda, Instagram, equipo, carteles nítidos, 404 por idioma).
 - [ ] Corregir en awards.json el director de Wings (1929): es William A. Wellman.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
