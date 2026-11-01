@@ -7,7 +7,6 @@ En producción en cinearchive.es, con el VPS al día con main (todo lo del 29 al
 
 ## Siguientes pasos
 - [ ] Comprobar en producción lo desplegado del 29 al 31 oct: títulos y sagas, «volver» entre películas parecidas, la página del equipo y el enlace a Instagram.
-- [ ] Corregir en awards.json el director de Wings (1929): es William A. Wellman.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
 - [x] Enviar los correos para el código de GTA VI (Xbox España: microsoft@comunicacionrrpp.es, CC xbox@comunicacionrrpp.es; Rockstar: pr@rockstargames.com, sin verificar).

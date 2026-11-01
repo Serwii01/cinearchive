@@ -29,7 +29,7 @@
         {
           "year": 2023,
           "title": "Everything Everywhere All at Once",
-          "director": "Dan Kwan",
+          "director": "Dan Kwan, Daniel Scheinert",
           "tmdbId": 545611
         },
         {
@@ -113,13 +113,13 @@
         {
           "year": 2009,
           "title": "Slumdog Millionaire",
-          "director": "Loveleen Tandan",
+          "director": "Danny Boyle",
           "tmdbId": 12405
         },
         {
           "year": 2008,
           "title": "No Country for Old Men",
-          "director": "Joel Coen",
+          "director": "Joel Coen, Ethan Coen",
           "tmdbId": 6977
         },
         {
@@ -389,7 +389,7 @@
         {
           "year": 1962,
           "title": "West Side Story",
-          "director": "Robert Wise",
+          "director": "Robert Wise, Jerome Robbins",
           "tmdbId": 1725
         },
         {
@@ -587,7 +587,7 @@
         {
           "year": 1929,
           "title": "Wings",
-          "director": "Harry d'Abbadie d'Arrast",
+          "director": "William A. Wellman",
           "tmdbId": 28966
         }
       ],
@@ -728,7 +728,7 @@
         {
           "year": 2005,
           "title": "The Child",
-          "director": "Jean-Pierre Dardenne",
+          "director": "Jean-Pierre Dardenne, Luc Dardenne",
           "tmdbId": 11490
         },
         {
@@ -764,7 +764,7 @@
         {
           "year": 1999,
           "title": "Rosetta",
-          "director": "Jean-Pierre Dardenne",
+          "director": "Jean-Pierre Dardenne, Luc Dardenne",
           "tmdbId": 11489
         },
         {
@@ -824,7 +824,7 @@
         {
           "year": 1991,
           "title": "Barton Fink",
-          "director": "Joel Coen",
+          "director": "Joel Coen, Ethan Coen",
           "tmdbId": 290
         },
         {
@@ -884,7 +884,7 @@
         {
           "year": 1982,
           "title": "Yol",
-          "director": "Yılmaz Güney",
+          "director": "Yılmaz Güney, Şerif Gören",
           "tmdbId": 52556
         },
         {
@@ -926,7 +926,7 @@
         {
           "year": 1977,
           "title": "Padre Padrone",
-          "director": "Paolo Taviani",
+          "director": "Paolo Taviani, Vittorio Taviani",
           "tmdbId": 42225
         },
         {
@@ -1064,7 +1064,7 @@
         {
           "year": 1956,
           "title": "The Silent World",
-          "director": "Jacques Cousteau",
+          "director": "Jacques-Yves Cousteau, Louis Malle",
           "tmdbId": 60234
         },
         {
