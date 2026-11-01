@@ -3,15 +3,15 @@
 > Lo mantiene Claude con `/cerrar`. Es la memoria de trabajo: dónde se quedó y qué viene después.
 
 ## Estado actual
-En producción en cinearchive.es, pero el VPS va por detrás de main: falta desplegar del 29 al 31 oct (títulos por idioma con la migración 0021, sagas, perfil, carteles nítidos, 404 por idioma, navegación sin bucles, Instagram y la página del equipo). El changelog se quedó en la v1.16.
+En producción en cinearchive.es, con el VPS al día con main (todo lo del 29 al 31 oct ya está desplegado, migración 0021 incluida). El changelog se quedó en la v1.16.
 
 ## Siguientes pasos
-- [ ] Desplegar en el VPS todo lo que hay en main hasta b25a439 (`git pull && docker compose up -d --build`, aplica la migración 0021). Después comprobar: títulos y sagas, «volver» entre películas parecidas, la página del equipo y el enlace a Instagram.
+- [ ] Comprobar en producción lo desplegado del 29 al 31 oct: títulos y sagas, «volver» entre películas parecidas, la página del equipo y el enlace a Instagram.
 - [ ] Anotar en el changelog lo posterior a la v1.16, en los 5 idiomas: v1.17 (títulos en tu idioma, sagas, perfil con «Ver todo») y v1.18 (navegación sin bucles, búsqueda que se recuerda, Instagram, equipo, carteles nítidos, 404 por idioma).
 - [ ] Corregir en awards.json el director de Wings (1929): es William A. Wellman.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
-- [ ] Enviar los correos para el código de GTA VI (Xbox España: microsoft@comunicacionrrpp.es, CC xbox@comunicacionrrpp.es; Rockstar: pr@rockstargames.com, sin verificar).
+- [x] Enviar los correos para el código de GTA VI (Xbox España: microsoft@comunicacionrrpp.es, CC xbox@comunicacionrrpp.es; Rockstar: pr@rockstargames.com, sin verificar).
 - [ ] Valorar crear una asociación cultural y pedir ISSN para optar a la subvención de revistas de cultura 2027 y a Claude for Nonprofits.
 - [ ] Si crece el tráfico: que Caddy sirva directamente lo prerenderizado y /_astro (sin pasar por Node), o Cloudflare delante.
 

@@ -1,5 +1,151 @@
 [
   {
+    "version": "1.18",
+    "date": "2026-10-31",
+    "title": {
+      "es": "Estrenos, una web más rápida y «volver» sin bucles",
+      "en": "New releases, a faster site and “back” without loops",
+      "gl": "Estreas, unha web máis rápida e «volver» sen bucles",
+      "eu": "Estreinaldiak, web azkarragoa eta «itzuli» begiztarik gabe",
+      "ca": "Estrenes, una web més ràpida i «tornar» sense bucles"
+    },
+    "changes": {
+      "es": [
+        "Estrenos: una página nueva con la cartelera de España semana a semana: lo que llega a los cines este viernes, el siguiente y el mes que viene, y lo que sigue en cartel. Se llega desde «Encuentra tu cine» y desde el pie de la web.",
+        "La web va más rápida: las páginas públicas se sirven al instante, las fichas de películas que nadie había abierto cargan en menos de un segundo en lugar de tres, y portadas y carteles se guardan en tu navegador.",
+        "«Volver» sin bucles: ir de una película a otra parecida y volver ya no te deja rebotando entre las dos. Al volver a la búsqueda los resultados siguen ahí, cambiar de idioma conserva la búsqueda y los filtros, e iniciar sesión te devuelve al mismo sitio.",
+        "Nota de Cine Archive: la ficha de cada película enseña la nota media de quienes usan Cine Archive, a partir de tres notas.",
+        "Encuentra tu cine: las ciudades salen primero en las sugerencias (con «mala» ya aparece Málaga), si falla el mapa de salas busca en otro en unos segundos y aparecen multicines que faltaban.",
+        "Artículos con buscador y filtro por temas. En la portada, el carrusel vuelve a moverse con los últimos artículos y hay una efeméride de cine cada pocos días: pasan de 33 a 80.",
+        "Carteles nítidos en móviles y pantallas de alta resolución, y cuadrículas con todas las líneas del mismo grosor y sin bloques negros al final.",
+        "Las direcciones que no existen dan una página de error 404 en su idioma, en lugar de enseñar la portada o un listado.",
+        "Con el teclado se puede saltar directamente al contenido, y los buscadores y filtros tienen nombre para los lectores de pantalla.",
+        "Nueva página del equipo de Cine Archive, y el pie enlaza a nuestra cuenta de Instagram, @cinearchive.es."
+      ],
+      "en": [
+        "New releases: a new page with Spain’s cinema listings week by week: what reaches cinemas this Friday, next Friday and next month, and what is still showing. You get there from “Find your cinema” and from the site footer.",
+        "The site is faster: public pages are served instantly, pages for films nobody had opened yet load in under a second instead of three, and covers and posters are kept in your browser.",
+        "“Back” without loops: going from one film to a similar one and back no longer leaves you bouncing between the two. Going back to search keeps your results, switching language keeps your search and filters, and signing in brings you back to the same place.",
+        "Cine Archive rating: each film page shows the average rating from people who use Cine Archive, once there are three ratings.",
+        "Find your cinema: cities come first in the suggestions (typing “mala” now finds Málaga), if the cinema map fails it searches another one within seconds, and some missing multiplexes now appear.",
+        "Articles now have a search box and a filter by topic. On the home page, the carousel moves again with the latest articles, and there is a film anniversary every few days: up from 33 to 80.",
+        "Sharp posters on phones and high-resolution screens, and grids with every line the same thickness and no black blocks at the end.",
+        "Addresses that do not exist now show a 404 error page in their language, instead of the home page or a listing.",
+        "With the keyboard you can skip straight to the content, and search boxes and filters have names for screen readers.",
+        "A new page for the Cine Archive team, and the footer links to our Instagram account, @cinearchive.es."
+      ],
+      "gl": [
+        "Estreas: unha páxina nova coa cartelera de España semana a semana: o que chega aos cines este venres, o seguinte e o mes que vén, e o que segue en cartel. Chégase desde «Atopa o teu cine» e desde o pé da web.",
+        "A web vai máis rápida: as páxinas públicas sérvense ao instante, as fichas de películas que ninguén abrira cargan en menos dun segundo en vez de tres, e portadas e carteis gárdanse no teu navegador.",
+        "«Volver» sen bucles: ir dunha película a outra parecida e volver xa non te deixa rebotando entre as dúas. Ao volver á busca os resultados seguen aí, cambiar de idioma conserva a busca e os filtros, e iniciar sesión devólvete ao mesmo sitio.",
+        "Nota de Cine Archive: a ficha de cada película amosa a nota media de quen usa Cine Archive, a partir de tres notas.",
+        "Atopa o teu cine: as cidades saen primeiro nas suxestións (con «mala» xa aparece Málaga), se falla o mapa de salas busca noutro nuns segundos e aparecen multicines que faltaban.",
+        "Artigos con buscador e filtro por temas. Na portada, o carrusel volve moverse cos últimos artigos e hai unha efeméride de cine cada poucos días: pasan de 33 a 80.",
+        "Carteis nítidos en móbiles e pantallas de alta resolución, e cuadrículas con todas as liñas do mesmo grosor e sen bloques negros ao final.",
+        "Os enderezos que non existen dan unha páxina de erro 404 no seu idioma, en vez de amosar a portada ou unha listaxe.",
+        "Co teclado pódese saltar directamente ao contido, e os buscadores e filtros teñen nome para os lectores de pantalla.",
+        "Nova páxina do equipo de Cine Archive, e o pé ligazona coa nosa conta de Instagram, @cinearchive.es."
+      ],
+      "eu": [
+        "Estreinaldiak: orri berri bat Espainiako kartelarekin, astez aste: ostiral honetan, hurrengoan eta datorren hilean zinemetara iristen dena, eta kartelean jarraitzen duena. «Aurkitu zure zinema» ataletik eta webaren oinetik iristen da.",
+        "Weba azkarrago doa: orri publikoak berehala zerbitzatzen dira, inork ireki gabeko filmen fitxak segundo batean baino gutxiagoan kargatzen dira, hiruren ordez, eta azalak eta kartelak zure nabigatzailean gordetzen dira.",
+        "«Itzuli» begiztarik gabe: film batetik antzeko batera joan eta itzultzeak ez zaitu jada bien artean errebote egiten uzten. Bilaketara itzultzean emaitzak hor jarraitzen dute, hizkuntza aldatzeak bilaketa eta iragazkiak gordetzen ditu, eta saioa hasteak leku berera itzultzen zaitu.",
+        "Cine Archiveren nota: film bakoitzaren fitxak Cine Archive erabiltzen dutenen batez besteko nota erakusten du, hiru notatik aurrera.",
+        "Aurkitu zure zinema: hiriak lehenik agertzen dira iradokizunetan («mala» idaztean Málaga agertzen da jada), aretoen mapak huts egiten badu beste batean bilatzen du segundo gutxitan, eta falta ziren multizinema batzuk agertzen dira.",
+        "Artikuluek bilatzailea eta gaika iragazteko aukera dute. Azalean, karrusela berriro mugitzen da azken artikuluekin, eta zinemaren efemeride bat dago egun gutxian behin: 33tik 80ra igo dira.",
+        "Kartel garbiak mugikorretan eta bereizmen handiko pantailetan, eta sareta guztiak lerro lodiera berarekin eta amaieran bloke beltzik gabe.",
+        "Existitzen ez diren helbideek 404 errore-orri bat ematen dute beren hizkuntzan, azala edo zerrenda bat erakutsi beharrean.",
+        "Teklatuarekin zuzenean edukira salto egin daiteke, eta bilatzaileek eta iragazkiek izena dute pantaila-irakurgailuentzat.",
+        "Cine Archiveren taldearen orri berria, eta oinak gure Instagram kontura estekatzen du, @cinearchive.es."
+      ],
+      "ca": [
+        "Estrenes: una pàgina nova amb la cartellera d’Espanya setmana a setmana: el que arriba als cinemes aquest divendres, el següent i el mes que ve, i el que continua en cartell. S’hi arriba des de «Troba el teu cinema» i des del peu de la web.",
+        "La web va més ràpida: les pàgines públiques se serveixen a l’instant, les fitxes de pel·lícules que ningú no havia obert carreguen en menys d’un segon en lloc de tres, i portades i cartells es desen al teu navegador.",
+        "«Tornar» sense bucles: anar d’una pel·lícula a una altra de semblant i tornar ja no et deixa rebotant entre totes dues. En tornar a la cerca els resultats continuen allà, canviar d’idioma conserva la cerca i els filtres, i iniciar sessió et torna al mateix lloc.",
+        "Nota de Cine Archive: la fitxa de cada pel·lícula mostra la nota mitjana de qui fa servir Cine Archive, a partir de tres notes.",
+        "Troba el teu cinema: les ciutats surten primer als suggeriments (amb «mala» ja apareix Màlaga), si falla el mapa de sales cerca en un altre en pocs segons i apareixen multicinemes que hi faltaven.",
+        "Articles amb cercador i filtre per temes. A la portada, el carrusel torna a moure’s amb els últims articles i hi ha una efemèride de cinema cada pocs dies: passen de 33 a 80.",
+        "Cartells nítids en mòbils i pantalles d’alta resolució, i quadrícules amb totes les línies del mateix gruix i sense blocs negres al final.",
+        "Les adreces que no existeixen donen una pàgina d’error 404 en el seu idioma, en lloc de mostrar la portada o un llistat.",
+        "Amb el teclat es pot saltar directament al contingut, i els cercadors i filtres tenen nom per als lectors de pantalla.",
+        "Nova pàgina de l’equip de Cine Archive, i el peu enllaça amb el nostre compte d’Instagram, @cinearchive.es."
+      ]
+    }
+  },
+  {
+    "version": "1.17",
+    "date": "2026-10-29",
+    "title": {
+      "es": "Tu reto del año, la actividad de quienes sigues y avisos de plataformas",
+      "en": "Your yearly challenge, activity from people you follow and streaming alerts",
+      "gl": "O teu reto do ano, a actividade de quen segues e avisos de plataformas",
+      "eu": "Zure urteko erronka, jarraitzen dituzunen jarduera eta plataformen abisuak",
+      "ca": "El teu repte de l’any, l’activitat de qui segueixes i avisos de plataformes"
+    },
+    "changes": {
+      "es": [
+        "Títulos en tu idioma: las listas, el diario y el perfil enseñan cada película con su título en tu idioma, también lo que importaste de Letterboxd. En castellano se usa el título de España, y las películas que aquí se estrenaron con su título original («Trainspotting», «Heat») lo conservan.",
+        "Nombres en alfabeto latino: directores, actores y equipo japoneses, chinos o rusos salen como Ryūnosuke Akutagawa en lugar de 芥川龍之介. En la página de cada persona, el nombre original va debajo.",
+        "Sagas: en la ficha de una película que forma parte de una saga, bajo «Dónde ver», aparecen las demás entregas en orden de estreno, con la película actual marcada.",
+        "Reto anual: ponte una meta de películas para el año y mira cómo vas en el diario, en «Tu año en cine» y en tu perfil: si vas por delante o por detrás y a cuántas por semana sale.",
+        "Importar también desde IMDb y Trakt: el mismo bloque que Letterboxd acepta ahora los archivos de IMDb (notas y pendientes) y de Trakt (historial con fechas, notas y pendientes). Lo que ya tenías aquí sigue ganando, y repetir la importación no duplica nada.",
+        "Actividad: una página nueva, enlazada desde tu cuenta, con lo que ven y reseñan las personas que sigues, día a día.",
+        "Avisos de plataformas: en tu cuenta eliges tu país y tus plataformas. Cuando una película de tus pendientes llega a una de ellas, por suscripción o gratis, te avisamos en Notificaciones y, si quieres, también por correo.",
+        "Perfil público más claro: arriba las cifras; debajo, los últimos visionados con sus estrellas, las favoritas, las pendientes y solo las reseñas con texto. «Ver todo» lleva a cada lista completa, y el diario público se ve como el tuyo, por años y meses.",
+        "Estadísticas: los directores y actores que más ves y la nota media que les das. «Tu año en cine» suma los actores del año y tiene los carteles más nítidos.",
+        "Puntuar una película que no estaba en el diario la apunta como vista hoy, así aparece en el diario y en lo último que has visto."
+      ],
+      "en": [
+        "Titles in your language: lists, the diary and profiles show every film with its title in your language, including what you imported from Letterboxd. In Spanish the title used in Spain is shown, and films released there under their original title (“Trainspotting”, “Heat”) keep it.",
+        "Names in the Latin alphabet: Japanese, Chinese or Russian directors, actors and crew now appear as Ryūnosuke Akutagawa instead of 芥川龍之介. On each person’s page, the original name is shown underneath.",
+        "Franchises: on the page of a film that belongs to a series, the other instalments appear under “Where to watch” in release order, with the current film highlighted.",
+        "Yearly challenge: set yourself a goal of films for the year and see how you are doing in the diary, in “Your year in film” and on your profile: whether you are ahead or behind and how many a week that means.",
+        "Import from IMDb and Trakt too: the same box as Letterboxd now accepts files from IMDb (ratings and watchlist) and Trakt (history with dates, ratings and watchlist). What you already had here still wins, and importing again creates no duplicates.",
+        "Activity: a new page, linked from your account, with what the people you follow watch and review, day by day.",
+        "Streaming alerts: in your account you pick your country and your services. When a film on your watchlist arrives on one of them, by subscription or for free, we let you know in Notifications and, if you like, by email too.",
+        "A clearer public profile: the numbers at the top; below, the latest viewings with their stars, favourites, the watchlist and only reviews with text. “See all” opens each full list, and the public diary looks like your own, by year and month.",
+        "Statistics: the directors and actors you watch most and the average rating you give them. “Your year in film” adds the year’s actors and has sharper posters.",
+        "Rating a film that was not in your diary logs it as watched today, so it shows up in the diary and among what you have watched lately."
+      ],
+      "gl": [
+        "Títulos no teu idioma: as listas, o diario e o perfil amosan cada película co seu título no teu idioma, tamén o que importaches de Letterboxd. En castelán úsase o título de España, e as películas que alí se estrearon co seu título orixinal («Trainspotting», «Heat») consérvano.",
+        "Nomes en alfabeto latino: directores, actores e equipo xaponeses, chineses ou rusos saen como Ryūnosuke Akutagawa en vez de 芥川龍之介. Na páxina de cada persoa, o nome orixinal vai debaixo.",
+        "Sagas: na ficha dunha película que forma parte dunha saga, baixo «Onde ver», aparecen as demais entregas por orde de estrea, coa película actual marcada.",
+        "Reto anual: ponte unha meta de películas para o ano e mira como vas no diario, en «O teu ano en cine» e no teu perfil: se vas por diante ou por detrás e a cantas por semana sae.",
+        "Importar tamén desde IMDb e Trakt: o mesmo bloque que Letterboxd acepta agora os ficheiros de IMDb (notas e pendentes) e de Trakt (historial con datas, notas e pendentes). O que xa tiñas aquí segue gañando, e repetir a importación non duplica nada.",
+        "Actividade: unha páxina nova, ligada desde a túa conta, co que ven e recensionan as persoas que segues, día a día.",
+        "Avisos de plataformas: na túa conta escolles o teu país e as túas plataformas. Cando unha película dos teus pendentes chega a unha delas, por subscrición ou de balde, avisámoste en Notificacións e, se queres, tamén por correo.",
+        "Perfil público máis claro: arriba as cifras; debaixo, os últimos visionados coas súas estrelas, as favoritas, as pendentes e só as recensións con texto. «Ver todo» leva a cada lista completa, e o diario público vese coma o teu, por anos e meses.",
+        "Estatísticas: os directores e actores que máis ves e a nota media que lles dás. «O teu ano en cine» suma os actores do ano e ten os carteis máis nítidos.",
+        "Puntuar unha película que non estaba no diario anótaa como vista hoxe, así aparece no diario e no último que viches."
+      ],
+      "eu": [
+        "Izenburuak zure hizkuntzan: zerrendek, egunkariak eta profilek film bakoitza zure hizkuntzako izenburuarekin erakusten dute, Letterboxdetik inportatutakoa ere bai. Gaztelaniaz Espainiako izenburua erabiltzen da, eta han jatorrizko izenburuarekin estreinatu ziren filmek («Trainspotting», «Heat») hura gordetzen dute.",
+        "Izenak alfabeto latinoan: zuzendari, aktore eta talde japoniar, txinatar edo errusiarrak Ryūnosuke Akutagawa bezala agertzen dira, 芥川龍之介 beharrean. Pertsona bakoitzaren orrian, jatorrizko izena azpian doa.",
+        "Sagak: saga bateko film baten fitxan, «Non ikusi» atalaren azpian, gainerako atalak agertzen dira estreinaldiaren arabera, uneko filma markatuta.",
+        "Urteko erronka: jarri urterako film kopuru bat helburu gisa eta ikusi nola zoazen egunkarian, «Zure urtea zineman» atalean eta zure profilean: aurretik ala atzetik zoazen eta astean zenbat dagokizun.",
+        "IMDb eta Traktetik ere inportatu: Letterboxden bloke berak onartzen ditu orain IMDbko fitxategiak (notak eta ikusteko daudenak) eta Traktekoak (historia datekin, notak eta ikusteko daudenak). Hemen lehendik zenuenak irabazten du oraindik, eta inportazioa errepikatzeak ez du ezer bikoizten.",
+        "Jarduera: orri berri bat, zure kontutik estekatua, jarraitzen dituzun pertsonek ikusten eta erreseinatzen dutenarekin, egunez egun.",
+        "Plataformen abisuak: zure kontuan zure herrialdea eta plataformak aukeratzen dituzu. Ikusteko duzun film bat horietako batera iristen denean, harpidetzaz edo doan, Jakinarazpenetan abisatzen dizugu eta, nahi baduzu, posta elektronikoz ere bai.",
+        "Profil publiko argiagoa: goian zifrak; azpian, azken ikustaldiak beren izarrekin, gogokoak, ikusteko daudenak eta testua duten erreseinak bakarrik. «Ikusi guztiak» estekak zerrenda oso bakoitzera darama, eta egunkari publikoa zurea bezala ikusten da, urtez urte eta hilabetez hilabete.",
+        "Estatistikak: gehien ikusten dituzun zuzendari eta aktoreak eta haiei ematen diezun batez besteko nota. «Zure urtea zineman» atalak urteko aktoreak gehitzen ditu eta kartelak garbiagoak dira.",
+        "Egunkarian ez zegoen film bati nota jartzeak gaur ikusitako gisa idazten du, eta horrela egunkarian eta azken ikusitakoen artean agertzen da."
+      ],
+      "ca": [
+        "Títols en el teu idioma: les llistes, el diari i el perfil mostren cada pel·lícula amb el seu títol en el teu idioma, també el que vas importar de Letterboxd. En castellà es fa servir el títol d’Espanya, i les pel·lícules que s’hi van estrenar amb el títol original («Trainspotting», «Heat») el conserven.",
+        "Noms en alfabet llatí: directors, actors i equip japonesos, xinesos o russos surten com a Ryūnosuke Akutagawa en lloc de 芥川龍之介. A la pàgina de cada persona, el nom original va a sota.",
+        "Sagues: a la fitxa d’una pel·lícula que forma part d’una saga, sota «On veure-la», apareixen les altres entregues per ordre d’estrena, amb la pel·lícula actual marcada.",
+        "Repte anual: posa’t una meta de pel·lícules per a l’any i mira com vas al diari, a «El teu any en cinema» i al teu perfil: si vas per davant o per darrere i a quantes per setmana surt.",
+        "Importa també des d’IMDb i Trakt: el mateix bloc que Letterboxd accepta ara els fitxers d’IMDb (notes i pendents) i de Trakt (historial amb dates, notes i pendents). El que ja tenies aquí continua guanyant, i repetir la importació no duplica res.",
+        "Activitat: una pàgina nova, enllaçada des del teu compte, amb el que veuen i ressenyen les persones que segueixes, dia a dia.",
+        "Avisos de plataformes: al teu compte tries el teu país i les teves plataformes. Quan una pel·lícula dels teus pendents arriba a una d’elles, per subscripció o gratis, t’avisem a Notificacions i, si vols, també per correu.",
+        "Perfil públic més clar: a dalt les xifres; a sota, els últims visionats amb les seves estrelles, les preferides, les pendents i només les ressenyes amb text. «Mira-ho tot» porta a cada llista completa, i el diari públic es veu com el teu, per anys i mesos.",
+        "Estadístiques: els directors i actors que més veus i la nota mitjana que els poses. «El teu any en cinema» hi suma els actors de l’any i té els cartells més nítids.",
+        "Puntuar una pel·lícula que no era al diari l’anota com a vista avui, així apareix al diari i entre el que has vist darrerament."
+      ]
+    }
+  },
+  {
     "version": "1.16",
     "date": "2026-10-27",
     "title": {
