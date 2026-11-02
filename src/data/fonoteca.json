@@ -1,0 +1,2167 @@
+{
+  "note": "Fonoteca: grabaciones y partituras de dominio público en Internet Archive (miniaturas en public/fonoteca/<id>.jpg), compositores y hitos. Ids de TMDB, retratos, carteles y traducciones de títulos los rellena scripts/fetch-fonoteca.mjs.",
+  "recordings": [
+    {
+      "id": "78_peer-gynt-in-the-hall-of-the-mountain-king_gbia0302564a",
+      "title": "In the Hall of the Mountain King",
+      "performer": "Edvard Grieg (comp.)",
+      "year": 1907,
+      "blurb": {
+        "es": "El fragmento de Peer Gynt que los pianistas del cine mudo usaban para cualquier persecución. Fritz Lang lo convirtió en la melodía que silba el asesino de «M».",
+        "en": "The Peer Gynt passage silent-film pianists reached for in any chase. Fritz Lang turned it into the tune the killer whistles in “M”.",
+        "gl": "O fragmento de Peer Gynt que os pianistas do cine mudo usaban para calquera persecución. Fritz Lang converteuno na melodía que asubía o asasino de «M».",
+        "eu": "Zinema mutuko pianistek edozein jazarpenetarako erabiltzen zuten Peer Gynten zatia. Fritz Langek «M» filmeko hiltzaileak txistukatzen duen doinu bihurtu zuen.",
+        "ca": "El fragment de Peer Gynt que els pianistes del cinema mut feien servir per a qualsevol persecució. Fritz Lang el va convertir en la melodia que xiula l'assassí de «M»."
+      }
+    },
+    {
+      "id": "victor-17655-b-poor-pauline",
+      "title": "Poor Pauline",
+      "performer": "Billy Murray",
+      "year": 1914,
+      "blurb": {
+        "es": "Una canción cómica sobre «Los peligros de Paulina», el serial que dejaba a su heroína atada a las vías cada semana. El cine ya inspiraba éxitos de gramófono.",
+        "en": "A comic song about “The Perils of Pauline”, the serial that left its heroine tied to the tracks every week. Films were already inspiring gramophone hits.",
+        "gl": "Unha canción cómica sobre «Os perigos de Paulina», o serial que deixaba a súa heroína atada ás vías cada semana. O cine xa inspiraba éxitos de gramófono.",
+        "eu": "«Paulinaren arriskuak» seriala, heroia astero trenbidean lotuta uzten zuena, ardatz duen abesti komikoa. Zinemak gramofono-arrakastak inspiratzen zituen jada.",
+        "ca": "Una cançó còmica sobre «Els perills de Paulina», el serial que deixava la seva heroïna lligada a les vies cada setmana. El cinema ja inspirava èxits de gramòfon."
+      }
+    },
+    {
+      "id": "78_those-charlie-chaplin-feet_victor-military-band_gbia0336987a",
+      "title": "Those Charlie Chaplin Feet",
+      "performer": "Victor Military Band",
+      "year": 1915,
+      "blurb": {
+        "es": "Un año después de crear a Charlot, Chaplin ya era tan famoso que sus andares de pato tenían canción propia. Este one-step se bailaba en todo Estados Unidos.",
+        "en": "A year after creating the Tramp, Chaplin was so famous that his duck walk had its own song. This one-step was danced all over the United States.",
+        "gl": "Un ano despois de crear a Charlot, Chaplin xa era tan famoso que os seus andares de pato tiñan canción propia. Este one-step bailábase en todo Estados Unidos.",
+        "eu": "Charlot sortu eta urtebetera, Chaplin hain zen ospetsua, ezen bere ahate-ibilerak abesti propioa baitzuen. One-step hau Estatu Batu osoan dantzatzen zen.",
+        "ca": "Un any després de crear Charlot, Chaplin ja era tan famós que el seu caminar d'ànec tenia cançó pròpia. Aquest one-step es ballava a tots els Estats Units."
+      }
+    },
+    {
+      "id": "78_hearts-and-flowers_theodore-tobani_gbia0299768b",
+      "title": "Hearts and Flowers",
+      "performer": "Theodore Moses-Tobani (comp.)",
+      "year": 1916,
+      "blurb": {
+        "es": "La música del melodrama por excelencia: sonaba cada vez que la huérfana lloraba o el desahucio llamaba a la puerta. Tanto se usó que acabó siendo una parodia de sí misma.",
+        "en": "The melodrama tune par excellence: it played whenever the orphan wept or eviction knocked at the door. It was used so much that it became a parody of itself.",
+        "gl": "A música do melodrama por excelencia: soaba cada vez que a orfa choraba ou o desafiuzamento chamaba á porta. Tanto se usou que acabou sendo unha parodia de si mesma.",
+        "eu": "Melodramaren musika nagusia: umezurtza negarrez ari zenean edo etxegabetzea atean zegoenean entzuten zen. Hainbeste erabili zen, ezen bere buruaren parodia bihurtu baitzen.",
+        "ca": "La música del melodrama per excel·lència: sonava cada vegada que l'òrfena plorava o el desnonament trucava a la porta. Es va fer servir tant que va acabar sent una paròdia d'ella mateixa."
+      }
+    },
+    {
+      "id": "edison-80459_01_6620",
+      "title": "Mickey",
+      "performer": "Vernon Dalhart",
+      "year": 1919,
+      "blurb": {
+        "es": "Escrita por Neil Moret para la película «Mickey» (1918) de Mabel Normand, es una de las primeras canciones compuestas para promocionar un estreno. Se vendió por millones en partitura.",
+        "en": "Written by Neil Moret for Mabel Normand's film “Mickey” (1918), it is one of the first songs composed to promote a release. It sold millions of copies as sheet music.",
+        "gl": "Escrita por Neil Moret para a película «Mickey» (1918) de Mabel Normand, é unha das primeiras cancións compostas para promocionar unha estrea. Vendeuse por millóns en partitura.",
+        "eu": "Neil Moretek Mabel Normanden «Mickey» (1918) filmerako idatzia, estreinaldi bat sustatzeko konposatutako lehen abestietako bat da. Milioika ale saldu ziren partituran.",
+        "ca": "Escrita per Neil Moret per a la pel·lícula «Mickey» (1918) de Mabel Normand, és una de les primeres cançons compostes per promocionar una estrena. Es va vendre per milions en partitura."
+      }
+    },
+    {
+      "id": "78_take-your-girlie-to-the-movies_billy-murray-leslie-kalmar-wendling_gbia0057033b",
+      "title": "Take Your Girlie to the Movies",
+      "performer": "Billy Murray",
+      "year": 1919,
+      "blurb": {
+        "es": "«Lleva a tu chica al cine si no puedes hacerle el amor en casa»: la sala a oscuras como refugio de las parejas, cantado con todo el desparpajo de la época.",
+        "en": "“Take your girlie to the movies if you can't make love at home”: the darkened theatre as a refuge for couples, sung with all the cheek of the era.",
+        "gl": "«Leva a túa moza ao cine se non podes facerlle o amor na casa»: a sala ás escuras como refuxio das parellas, cantado con todo o desparpajo da época.",
+        "eu": "«Eraman zure neska zinemara etxean ezin baduzu maitasuna egin»: areto iluna bikoteen babesleku gisa, garaiko lotsagabekeria guztiarekin abestua.",
+        "ca": "«Porta la teva noia al cinema si no pots fer-li l'amor a casa»: la sala a les fosques com a refugi de les parelles, cantat amb tot el desvergonyiment de l'època."
+      }
+    },
+    {
+      "id": "78_the-sheik-of-araby_the-california-ramblers-smith-wheeler-snyder_gbia0045862a",
+      "title": "The Sheik of Araby",
+      "performer": "The California Ramblers",
+      "year": 1921,
+      "blurb": {
+        "es": "Nació del furor por Rudolph Valentino en «El caíd» y se convirtió en un estándar del jazz que todavía se toca. Aquí, en una versión de baile del mismo año.",
+        "en": "Born of the Rudolph Valentino craze over “The Sheik”, it became a jazz standard still played today. Here in a dance version from the same year.",
+        "gl": "Naceu do furor por Rudolph Valentino en «O caíd» e converteuse nun estándar do jazz que aínda se toca. Aquí, nunha versión de baile do mesmo ano.",
+        "eu": "Rudolph Valentinok «Xeikha» filmean sortutako zoramenetik jaio zen, eta gaur egun oraindik jotzen den jazz-estandar bihurtu zen. Hemen, urte bereko dantza-bertsio batean.",
+        "ca": "Va néixer del furor per Rudolph Valentino a «El xeic» i es va convertir en un estàndard del jazz que encara es toca. Aquí, en una versió de ball del mateix any."
+      }
+    }
+  ],
+  "scores": [
+    {
+      "id": "musicalaccompani00languoft",
+      "title": "Musical Accompaniment of Moving Pictures",
+      "author": "Edith Lang, George West",
+      "year": 1920,
+      "blurb": {
+        "es": "El manual para pianistas y organistas de sala: cómo acompañar una persecución, un beso o un funeral, qué repertorio tener a mano y cómo improvisar sin perder la película.",
+        "en": "The manual for theatre pianists and organists: how to accompany a chase, a kiss or a funeral, what repertoire to keep at hand and how to improvise without losing the film.",
+        "gl": "O manual para pianistas e organistas de sala: como acompañar unha persecución, un bico ou un funeral, que repertorio ter a man e como improvisar sen perder a película.",
+        "eu": "Aretoetako pianista eta organistentzako eskuliburua: jazarpen bat, musu bat edo hileta bat nola lagundu, zer errepertorio izan eskura eta nola inprobisatu filma galdu gabe.",
+        "ca": "El manual per a pianistes i organistes de sala: com acompanyar una persecució, un petó o un funeral, quin repertori tenir a mà i com improvisar sense perdre la pel·lícula."
+      }
+    },
+    {
+      "id": "schirmers_photoplay_series_vol5",
+      "title": "Schirmer's Photoplay Series, vol. 5",
+      "author": "G. Schirmer",
+      "year": 1923,
+      "blurb": {
+        "es": "Piezas cortas listas para sonar en la sala, clasificadas por emociones: agitación, misterio, amor, tormenta. El catálogo musical del que bebía cualquier acompañante.",
+        "en": "Short pieces ready to play in the theatre, sorted by emotion: agitation, mystery, love, storm. The musical catalogue every accompanist drew on.",
+        "gl": "Pezas curtas listas para soar na sala, clasificadas por emocións: axitación, misterio, amor, tormenta. O catálogo musical do que bebía calquera acompañante.",
+        "eu": "Aretoan jotzeko prest zeuden pieza laburrak, emozioen arabera sailkatuak: asaldura, misterioa, maitasuna, ekaitza. Edozein laguntzailek erabiltzen zuen musika-katalogoa.",
+        "ca": "Peces curtes a punt per sonar a la sala, classificades per emocions: agitació, misteri, amor, tempesta. El catàleg musical del qual bevia qualsevol acompanyant."
+      }
+    },
+    {
+      "id": "Sheik",
+      "title": "The Son of the Sheik — cue sheet",
+      "author": "Cameo Music Service",
+      "year": 1926,
+      "blurb": {
+        "es": "La música prevista para la última película de Valentino, estrenada semanas antes de su muerte. Temas orientalistas, galopes y un vals para el romance.",
+        "en": "The music planned for Valentino's last film, released weeks before his death. Orientalist themes, gallops and a waltz for the romance.",
+        "gl": "A música prevista para a última película de Valentino, estreada semanas antes da súa morte. Temas orientalistas, galopes e un valse para o romance.",
+        "eu": "Valentinoren azken filmerako aurreikusitako musika, hil baino aste batzuk lehenago estreinatua. Gai orientalistak, galopeak eta amodiorako baltsa bat.",
+        "ca": "La música prevista per a l'última pel·lícula de Valentino, estrenada setmanes abans de la seva mort. Temes orientalistes, galops i un vals per al romanç."
+      }
+    },
+    {
+      "id": "Metropolis_cue_sheet",
+      "title": "Metropolis — cue sheet",
+      "author": "UFA",
+      "year": 1927,
+      "blurb": {
+        "es": "La hoja de acompañamiento de «Metropolis» para su estreno en Estados Unidos: un mapa de cómo debía sonar la ciudad de Fritz Lang en las salas.",
+        "en": "The accompaniment sheet for the US release of “Metropolis”: a map of how Fritz Lang's city was meant to sound in theatres.",
+        "gl": "A folla de acompañamento de «Metropolis» para a súa estrea en Estados Unidos: un mapa de como debía soar a cidade de Fritz Lang nas salas.",
+        "eu": "«Metropolis»-en laguntza-orria AEBetako estreinaldirako: Fritz Langen hiriak aretoetan nola soinatu behar zuen erakusten duen mapa.",
+        "ca": "El full d'acompanyament de «Metropolis» per a la seva estrena als Estats Units: un mapa de com havia de sonar la ciutat de Fritz Lang a les sales."
+      }
+    },
+    {
+      "id": "College1927",
+      "title": "College — cue sheet",
+      "author": "Cameo Music Service",
+      "year": 1927,
+      "blurb": {
+        "es": "La música para «El colegial» de Buster Keaton, con números de banda universitaria y aires de deporte. Hasta la comedia necesitaba su partitura.",
+        "en": "The music for Buster Keaton's “College”, with college-band numbers and sporting tunes. Even comedy needed its score.",
+        "gl": "A música para «O colexial» de Buster Keaton, con números de banda universitaria e aires de deporte. Ata a comedia necesitaba a súa partitura.",
+        "eu": "Buster Keatonen «College» filmerako musika, unibertsitateko banda-zenbakiekin eta kirol-doinuekin. Komediak ere bere partitura behar zuen.",
+        "ca": "La música per a «El col·legial» de Buster Keaton, amb números de banda universitària i aires d'esport. Fins i tot la comèdia necessitava la seva partitura."
+      }
+    },
+    {
+      "id": "Hunchback_cue",
+      "title": "The Hunchback of Notre Dame — cue sheet (1928)",
+      "author": "Universal",
+      "year": 1928,
+      "blurb": {
+        "es": "La hoja que el estudio enviaba a los cines con la película: qué pieza tocar en cada escena y durante cuántos segundos. Esta es la del reestreno de 1928 de «El jorobado de Notre Dame», con Lon Chaney.",
+        "en": "The sheet the studio sent to theatres with the film: which piece to play in each scene and for how many seconds. This one is for the 1928 re-release of “The Hunchback of Notre Dame”, with Lon Chaney.",
+        "gl": "A folla que o estudio enviaba aos cines coa película: que peza tocar en cada escena e durante cantos segundos. Esta é a da reestrea de 1928 de «O xorobado de Notre Dame», con Lon Chaney.",
+        "eu": "Estudioak filmarekin batera zinemetara bidaltzen zuen orria: eszena bakoitzean zer pieza jo eta zenbat segundoz. Hau «Notre Dameko konkorduna»-ren 1928ko berrestreinaldirakoa da, Lon Chaneyrekin.",
+        "ca": "El full que l'estudi enviava als cinemes amb la pel·lícula: quina peça tocar a cada escena i durant quants segons. Aquest és el de la reestrena del 1928 d'«El geperut de Notre Dame», amb Lon Chaney."
+      }
+    }
+  ],
+  "composers": [
+    {
+      "id": "max-steiner",
+      "name": "Max Steiner",
+      "born": 1888,
+      "died": 1971,
+      "countries": [
+        "AT",
+        "US"
+      ],
+      "blurb": {
+        "es": "El vienés que inventó el sonido de Hollywood: una orquesta que subraya cada emoción y temas propios para cada personaje.",
+        "en": "The Viennese composer who invented the Hollywood sound: an orchestra underlining every emotion and a theme for every character.",
+        "gl": "O vienés que inventou o son de Hollywood: unha orquestra que subliña cada emoción e temas propios para cada personaxe.",
+        "eu": "Hollywooden soinua asmatu zuen vienarra: emozio bakoitza azpimarratzen duen orkestra eta pertsonaia bakoitzerako gai propioak.",
+        "ca": "El vienès que va inventar el so de Hollywood: una orquestra que subratlla cada emoció i temes propis per a cada personatge."
+      },
+      "films": [
+        {
+          "title": "King Kong",
+          "year": 1933,
+          "tmdbId": 244,
+          "poster": "/lHlnxKL5GbgRibyRFI7n1Ey850i.jpg",
+          "original_title": "King Kong",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "King Kong"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "King Kong"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Gone with the Wind",
+          "year": 1939,
+          "tmdbId": 770,
+          "poster": "/lNz2Ow0wGCAvzckW7EOjE03KcYv.jpg",
+          "original_title": "Gone with the Wind",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Lo que el viento se llevó"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Lo que el viento se llevó"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Allò que el vent s’endugué"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Casablanca",
+          "year": 1942,
+          "tmdbId": 289,
+          "poster": "/lGCEKlJo2CnWydQj7aamY7s1S7Q.jpg",
+          "original_title": "Casablanca",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "eu",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Casablanca"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 3249,
+      "profile": "/nkX8cT2PWAqbzvPGixUEYYZjF4J.jpg"
+    },
+    {
+      "id": "erich-wolfgang-korngold",
+      "name": "Erich Wolfgang Korngold",
+      "born": 1897,
+      "died": 1957,
+      "countries": [
+        "AT",
+        "US"
+      ],
+      "blurb": {
+        "es": "Niño prodigio de la ópera austriaca, huyó del nazismo y llevó a Hollywood la grandeza sinfónica de Viena en las aventuras de Errol Flynn.",
+        "en": "A child prodigy of Austrian opera, he fled Nazism and brought Vienna's symphonic grandeur to Hollywood in Errol Flynn's adventures.",
+        "gl": "Neno prodixio da ópera austríaca, fuxiu do nazismo e levou a Hollywood a grandeza sinfónica de Viena nas aventuras de Errol Flynn.",
+        "eu": "Austriako operako haur prodigioa, nazismotik ihes egin zuen eta Vienako handitasun sinfonikoa eraman zuen Hollywoodera, Errol Flynnen abenturetan.",
+        "ca": "Nen prodigi de l'òpera austríaca, va fugir del nazisme i va portar a Hollywood la grandesa simfònica de Viena en les aventures d'Errol Flynn."
+      },
+      "films": [
+        {
+          "title": "The Adventures of Robin Hood",
+          "year": 1938,
+          "tmdbId": 10907,
+          "poster": "/c7LX3GMf9uXQTgVm3uxpm7E6Woc.jpg",
+          "original_title": "The Adventures of Robin Hood",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Robin de los Bosques"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Las aventuras de Robin Hood"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Les aventures de Robin Hood"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Sea Hawk",
+          "year": 1940,
+          "tmdbId": 26201,
+          "poster": "/mBJhR84lKoScUPSUfC9mO4yEhjf.jpg",
+          "original_title": "The Sea Hawk",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El halcón del mar"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El halcón de los mares"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El falcó del mar"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Kings Row",
+          "year": 1942,
+          "tmdbId": 53779,
+          "poster": "/mjOZms5qzSGibE5b6GVHg2Y5wwR.jpg",
+          "original_title": "Kings Row",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Abismo de pasión"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Pasiones borrascosas"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 67429,
+      "profile": "/50NQiPIGIpMkmMcsPvqYKKNYjHq.jpg"
+    },
+    {
+      "id": "bernard-herrmann",
+      "name": "Bernard Herrmann",
+      "born": 1911,
+      "died": 1975,
+      "countries": [
+        "US"
+      ],
+      "blurb": {
+        "es": "De «Ciudadano Kane» a «Taxi Driver», y sobre todo Hitchcock: frases cortas y obsesivas en lugar de grandes melodías, y la ducha de «Psicosis» solo con cuerdas.",
+        "en": "From “Citizen Kane” to “Taxi Driver”, and above all Hitchcock: short, obsessive phrases instead of big melodies, and the “Psycho” shower with strings alone.",
+        "gl": "De «Cidadán Kane» a «Taxi Driver», e sobre todo Hitchcock: frases curtas e obsesivas en lugar de grandes melodías, e a ducha de «Psicose» só con cordas.",
+        "eu": "«Citizen Kane»-tik «Taxi Driver»-era, eta batez ere Hitchcock: melodia handien ordez esaldi labur eta obsesiboak, eta «Psikosia»-ko dutxa sokekin bakarrik.",
+        "ca": "De «Ciutadà Kane» a «Taxi Driver», i sobretot Hitchcock: frases curtes i obsessives en lloc de grans melodies, i la dutxa de «Psicosi» només amb cordes."
+      },
+      "films": [
+        {
+          "title": "Citizen Kane",
+          "year": 1941,
+          "tmdbId": 15,
+          "poster": "/sav0jxhqiH0bPr2vZFU0Kjt2nZL.jpg",
+          "original_title": "Citizen Kane",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ciudadano Kane"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El Ciudadano Kane"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ciutadà Kane"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Vertigo",
+          "year": 1958,
+          "tmdbId": 426,
+          "poster": "/15uOEfqBNTVtDUT7hGBVCka0rZz.jpg",
+          "original_title": "Vertigo",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Vértigo"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Vértigo"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Vertigen (D’entre els morts)"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Psycho",
+          "year": 1960,
+          "tmdbId": 539,
+          "poster": "/yz4QVqPx3h1hD1DfqqQkCq3rmxW.jpg",
+          "original_title": "Psycho",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Psicosis"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Psicosi"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Psicosis"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 1045,
+      "profile": "/vpIPFhUpHBqDrbgbnaQnDCYekDI.jpg"
+    },
+    {
+      "id": "nino-rota",
+      "name": "Nino Rota",
+      "born": 1911,
+      "died": 1979,
+      "countries": [
+        "IT"
+      ],
+      "blurb": {
+        "es": "El cómplice musical de Fellini durante treinta años: circo, nostalgia y melancolía. Y el vals triste de «El padrino».",
+        "en": "Fellini's musical accomplice for thirty years: circus, nostalgia and melancholy. And the sad waltz of “The Godfather”.",
+        "gl": "O cómplice musical de Fellini durante trinta anos: circo, nostalxia e melancolía. E o valse triste de «O padriño».",
+        "eu": "Felliniren konplize musikala hogeita hamar urtez: zirkua, nostalgia eta malenkonia. Eta «Aitabitxia»-ren baltsa tristea.",
+        "ca": "El còmplice musical de Fellini durant trenta anys: circ, nostàlgia i melangia. I el vals trist d'«El padrí»."
+      },
+      "films": [
+        {
+          "title": "La Strada",
+          "year": 1954,
+          "tmdbId": 405,
+          "poster": "/rwjbT0zlsUDMztaCcWjlWuxaEL1.jpg",
+          "original_title": "La strada",
+          "original_language": "it",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "La Strada"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "8½",
+          "year": 1963,
+          "tmdbId": 422,
+          "poster": "/23VIf7zNxAgaXwIlvzd3IvOd9sY.jpg",
+          "original_title": "8½",
+          "original_language": "it",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Fellini 8½"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Fellini 8 1/2"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Godfather",
+          "year": 1972,
+          "tmdbId": 238,
+          "poster": "/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+          "original_title": "The Godfather",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El padrino"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El Padrino"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El padrí"
+              }
+            },
+            {
+              "iso_639_1": "eu",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Aitajauna"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 3098,
+      "profile": "/v42v3uM7jqwoZxDJ8MlEtT6Ol7a.jpg"
+    },
+    {
+      "id": "ennio-morricone",
+      "name": "Ennio Morricone",
+      "born": 1928,
+      "died": 2020,
+      "countries": [
+        "IT"
+      ],
+      "blurb": {
+        "es": "Silbidos, látigos, guitarras eléctricas y coros: con Sergio Leone reinventó el western y después escribió más de cuatrocientas bandas sonoras.",
+        "en": "Whistles, whips, electric guitars and choirs: with Sergio Leone he reinvented the western, then went on to write more than four hundred scores.",
+        "gl": "Asubíos, látegos, guitarras eléctricas e coros: con Sergio Leone reinventou o western e despois escribiu máis de catrocentas bandas sonoras.",
+        "eu": "Txistuak, zartailuak, gitarra elektrikoak eta koruak: Sergio Leonerekin westerna berrasmatu zuen, eta gero laurehun soinu-banda baino gehiago idatzi zituen.",
+        "ca": "Xiulets, fuets, guitarres elèctriques i cors: amb Sergio Leone va reinventar el western i després va escriure més de quatre-centes bandes sonores."
+      },
+      "films": [
+        {
+          "title": "The Good, the Bad and the Ugly",
+          "year": 1966,
+          "tmdbId": 429,
+          "poster": "/bX2xnavhMYjWDoZp1VM6VnU1xwe.jpg",
+          "original_title": "Il buono, il brutto, il cattivo",
+          "original_language": "it",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Good, the Bad and the Ugly"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El bueno, el feo y el malo"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El Bueno, El Malo y El Feo"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El bo, el lleig i el dolent"
+              }
+            },
+            {
+              "iso_639_1": "gl",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "O bo, o feo e o malo"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Once Upon a Time in the West",
+          "year": 1968,
+          "tmdbId": 335,
+          "poster": "/qbYgqOczabWNn2XKwgMtVrntD6P.jpg",
+          "original_title": "C'era una volta il West",
+          "original_language": "it",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Once Upon a Time in the West"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Hasta que llegó su hora"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Érase una vez en el Oeste"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Fins que li va arribar l’hora"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Cinema Paradiso",
+          "year": 1988,
+          "tmdbId": 11216,
+          "poster": "/aRgPnx4aPS96f7CnhJH7IG5dN1A.jpg",
+          "original_title": "Nuovo Cinema Paradiso",
+          "original_language": "it",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Cinema Paradiso"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Cinema Paradiso"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Cinema Paradiso"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Cinema Paradiso"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 1259,
+      "profile": "/AnItysU3XsiUpAuBN7gpA1R2aNl.jpg"
+    },
+    {
+      "id": "michel-legrand",
+      "name": "Michel Legrand",
+      "born": 1932,
+      "died": 2019,
+      "countries": [
+        "FR"
+      ],
+      "blurb": {
+        "es": "Jazz y canción francesa para la Nouvelle Vague. Con Jacques Demy hizo «Los paraguas de Cherburgo», una película en la que se canta cada palabra.",
+        "en": "Jazz and French chanson for the New Wave. With Jacques Demy he made “The Umbrellas of Cherbourg”, a film in which every word is sung.",
+        "gl": "Jazz e canción francesa para a Nouvelle Vague. Con Jacques Demy fixo «Os paraugas de Cherburgo», unha película na que se canta cada palabra.",
+        "eu": "Jazza eta kantu frantsesa Nouvelle Vaguerentzat. Jacques Demyrekin «Cherbourgeko aterkiak» egin zuen, hitz guztiak abestuta dituen filma.",
+        "ca": "Jazz i cançó francesa per a la Nouvelle Vague. Amb Jacques Demy va fer «Els paraigües de Cherburg», una pel·lícula en què es canta cada paraula."
+      },
+      "films": [
+        {
+          "title": "The Umbrellas of Cherbourg",
+          "year": 1964,
+          "tmdbId": 5967,
+          "poster": "/tAgTf64XKK5ir7w5C7dnB53jWWG.jpg",
+          "original_title": "Les Parapluies de Cherbourg",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Umbrellas of Cherbourg"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Los paraguas de Cherburgo"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Els paraigües de Cherbourg"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Young Girls of Rochefort",
+          "year": 1967,
+          "tmdbId": 2433,
+          "poster": "/jtxhyGaYhurH6KsjvP1jV3dDypz.jpg",
+          "original_title": "Les Demoiselles de Rochefort",
+          "original_language": "fr",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "The Young Girls of Rochefort"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Las señoritas de Rochefort"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Les senyoretes de Rochefort"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Thomas Crown Affair",
+          "year": 1968,
+          "tmdbId": 912,
+          "poster": "/oODAwa2AK3fXvK93GCbq7dFLZPi.jpg",
+          "original_title": "The Thomas Crown Affair",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El caso de Thomas Crown"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Sociedad para el crimen"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El cas de Thomas Crown"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 10934,
+      "profile": "/nkhKfgrBjWZ7BVuI8dZztkX7bcV.jpg"
+    },
+    {
+      "id": "toru-takemitsu",
+      "name": "Tōru Takemitsu",
+      "born": 1930,
+      "died": 1996,
+      "countries": [
+        "JP"
+      ],
+      "blurb": {
+        "es": "Compositor de vanguardia que trataba el silencio y el ruido como música. Del terror poético de «Kwaidan» a la tragedia de «Ran», con Kurosawa.",
+        "en": "An avant-garde composer who treated silence and noise as music. From the poetic horror of “Kwaidan” to the tragedy of “Ran” with Kurosawa.",
+        "gl": "Compositor de vangarda que trataba o silencio e o ruído como música. Do terror poético de «Kwaidan» á traxedia de «Ran», con Kurosawa.",
+        "eu": "Isiltasuna eta zarata musika gisa tratatzen zituen abangoardiako konpositorea. «Kwaidan»-en beldur poetikotik «Ran»-en tragediara, Kurosawarekin.",
+        "ca": "Compositor d'avantguarda que tractava el silenci i el soroll com a música. Del terror poètic de «Kwaidan» a la tragèdia de «Ran», amb Kurosawa."
+      },
+      "films": [
+        {
+          "title": "Woman in the Dunes",
+          "year": 1964,
+          "tmdbId": 16672,
+          "poster": "/xiBr3bIT2xpbuIKo5bLK7ebP4O1.jpg",
+          "original_title": "砂の女",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Woman in the Dunes"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La mujer de la arena"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La Mujer de la Arena"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Kwaidan",
+          "year": 1964,
+          "tmdbId": 30959,
+          "poster": "/t9UMfViYl47SdZZatKQ1JKjjCgs.jpg",
+          "original_title": "怪談",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Kwaidan"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El más allá"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El más allá"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Ran",
+          "year": 1985,
+          "tmdbId": 11645,
+          "poster": "/dGgiXMWDcS5aJTBEFu7bmaQPNox.jpg",
+          "original_title": "乱",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Ran"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ran"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Ran"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ran"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 51808,
+      "profile": "/l48fEVb1HGMilTCkxSzYuZsSPdk.jpg"
+    },
+    {
+      "id": "john-williams",
+      "name": "John Williams",
+      "born": 1932,
+      "died": null,
+      "countries": [
+        "US"
+      ],
+      "blurb": {
+        "es": "Dos notas para un tiburón y una fanfarria para una galaxia: devolvió la gran orquesta al cine comercial y firmó los temas que todo el mundo sabe tararear.",
+        "en": "Two notes for a shark and a fanfare for a galaxy: he brought the full orchestra back to mainstream cinema and wrote the themes everyone can hum.",
+        "gl": "Dúas notas para un tiburón e unha fanfarra para unha galaxia: devolveu a gran orquestra ao cine comercial e asinou os temas que todo o mundo sabe tararear.",
+        "eu": "Bi nota marrazo batentzat eta fanfarra bat galaxia batentzat: orkestra handia itzuli zion zinema komertzialari eta denok txistukatzen ditugun gaiak sinatu zituen.",
+        "ca": "Dues notes per a un tauró i una fanfara per a una galàxia: va tornar la gran orquestra al cinema comercial i va signar els temes que tothom sap taral·lejar."
+      },
+      "films": [
+        {
+          "title": "Jaws",
+          "year": 1975,
+          "tmdbId": 578,
+          "poster": "/lxM6kqilAdpdhqUl2biYp5frUxE.jpg",
+          "original_title": "Jaws",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Tiburón"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Tauró"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Tiburón"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Star Wars",
+          "year": 1977,
+          "tmdbId": 11,
+          "poster": "/fai0rspsNeJCS69wHNjOdWxcI7P.jpg",
+          "original_title": "Star Wars",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La guerra de las galaxias"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La guerra de les galàxies"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La guerra de las galaxias"
+              }
+            },
+            {
+              "iso_639_1": "eu",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Izarretako Gerra IV Itxaropen Berria"
+              }
+            },
+            {
+              "iso_639_1": "gl",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "A guerra das galaxias"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Schindler's List",
+          "year": 1993,
+          "tmdbId": 424,
+          "poster": "/sF1U4EUQS8YHUYjNl3pMGNIQyr0.jpg",
+          "original_title": "Schindler's List",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La lista de Schindler"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La llista de Schindler"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La Lista de Schindler"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 491,
+      "profile": "/wswitHP5jQNvsIxd6Yypa1Crmn1.jpg"
+    },
+    {
+      "id": "ryuichi-sakamoto",
+      "name": "Ryūichi Sakamoto",
+      "born": 1952,
+      "died": 2023,
+      "countries": [
+        "JP"
+      ],
+      "blurb": {
+        "es": "Pionero de la electrónica con Yellow Magic Orchestra, ganó el Óscar con «El último emperador» y siguió experimentando con el sonido hasta el final.",
+        "en": "An electronic pioneer with Yellow Magic Orchestra, he won the Oscar for “The Last Emperor” and kept experimenting with sound until the end.",
+        "gl": "Pioneiro da electrónica con Yellow Magic Orchestra, gañou o Óscar con «O último emperador» e seguiu experimentando co son ata o final.",
+        "eu": "Yellow Magic Orchestrarekin elektronikaren aitzindaria, Oscarra irabazi zuen «Azken enperadorea»-rekin eta soinuarekin esperimentatzen jarraitu zuen azkenera arte.",
+        "ca": "Pioner de l'electrònica amb Yellow Magic Orchestra, va guanyar l'Oscar amb «L'últim emperador» i va continuar experimentant amb el so fins al final."
+      },
+      "films": [
+        {
+          "title": "Merry Christmas, Mr. Lawrence",
+          "year": 1983,
+          "tmdbId": 11948,
+          "poster": "/sKeZzN7sXPLRe5rRlOuoXsh1qPA.jpg",
+          "original_title": "戦場のメリークリスマス",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Merry Christmas, Mr. Lawrence"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Feliz Navidad, Mr. Lawrence"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Bon Nadal, Mr. Lawrence"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Last Emperor",
+          "year": 1987,
+          "tmdbId": 746,
+          "poster": "/7TILJhdeJAaEyDiwvJZMo9SQBoe.jpg",
+          "original_title": "The Last Emperor",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El último emperador"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "L'últim emperador"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El último emperador"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Revenant",
+          "year": 2015,
+          "tmdbId": 281957,
+          "poster": "/ji3ecJphATlVgWNY0B0RVXZizdf.jpg",
+          "original_title": "The Revenant",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El renacido"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Revenant: El renacido"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El renascut"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 11382,
+      "profile": "/nYMG17bYaFkyTzs37W80G0MofPd.jpg"
+    },
+    {
+      "id": "joe-hisaishi",
+      "name": "Joe Hisaishi",
+      "born": 1950,
+      "died": null,
+      "countries": [
+        "JP"
+      ],
+      "blurb": {
+        "es": "La voz musical de Studio Ghibli: melodías sencillas al piano que crecen hasta la orquesta, en casi todas las películas de Hayao Miyazaki.",
+        "en": "The musical voice of Studio Ghibli: simple piano melodies that grow into full orchestra, in almost every Hayao Miyazaki film.",
+        "gl": "A voz musical de Studio Ghibli: melodías sinxelas ao piano que medran ata a orquestra, en case todas as películas de Hayao Miyazaki.",
+        "eu": "Studio Ghibliren ahots musikala: pianoko melodia xumeak orkestraraino hazten direnak, Hayao Miyazakiren ia film guztietan.",
+        "ca": "La veu musical de Studio Ghibli: melodies senzilles al piano que creixen fins a l'orquestra, en gairebé totes les pel·lícules de Hayao Miyazaki."
+      },
+      "films": [
+        {
+          "title": "My Neighbor Totoro",
+          "year": 1988,
+          "tmdbId": 8392,
+          "poster": "/rtGDOeG9LzoerkDGZF9dnVeLppL.jpg",
+          "original_title": "となりのトトロ",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "My Neighbor Totoro"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Mi vecino Totoro"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El meu veí Totoro"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Mi vecino Totoro"
+              }
+            },
+            {
+              "iso_639_1": "eu",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Totoro Auzokidea"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Princess Mononoke",
+          "year": 1997,
+          "tmdbId": 128,
+          "poster": "/cMYCDADoLKLbB83g4WnJegaZimC.jpg",
+          "original_title": "もののけ姫",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Princess Mononoke"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La princesa Mononoke"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "La princesa Mononoke"
+              }
+            },
+            {
+              "iso_639_1": "eu",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Mononoke printzesa"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "La princesa Mononoke"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Spirited Away",
+          "year": 2001,
+          "tmdbId": 129,
+          "poster": "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
+          "original_title": "千と千尋の神隠し",
+          "original_language": "ja",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Spirited Away"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El viaje de Chihiro"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El viatge de Chihiro"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El viaje de Chihiro"
+              }
+            },
+            {
+              "iso_639_1": "eu",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Chihiroren Bidaia"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 636,
+      "profile": "/xmDT8LoDPIyV4f7Q2yPwETSey6k.jpg"
+    },
+    {
+      "id": "alberto-iglesias",
+      "name": "Alberto Iglesias",
+      "born": 1955,
+      "died": null,
+      "countries": [
+        "ES"
+      ],
+      "blurb": {
+        "es": "El compositor donostiarra de Almodóvar y Julio Medem, y el español con más nominaciones al Óscar a la música. Cuerdas íntimas y tensión contenida.",
+        "en": "The San Sebastián-born composer for Almodóvar and Julio Medem, and the Spaniard with the most Oscar nominations for music. Intimate strings and contained tension.",
+        "gl": "O compositor donostiarra de Almodóvar e Julio Medem, e o español con máis nomeamentos ao Óscar á música. Cordas íntimas e tensión contida.",
+        "eu": "Almodóvar eta Julio Medemen konpositore donostiarra, eta musikagatik Oscarretarako izendapen gehien dituen espainiarra. Soka intimoak eta tentsio eutsia.",
+        "ca": "El compositor donostiarra d'Almodóvar i Julio Medem, i l'espanyol amb més nominacions a l'Oscar a la música. Cordes íntimes i tensió continguda."
+      },
+      "films": [
+        {
+          "title": "Talk to Her",
+          "year": 2002,
+          "tmdbId": 64,
+          "poster": "/fWDbQlOWOqjR5jZm98KjGyYmUOw.jpg",
+          "original_title": "Hable con ella",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Talk to Her"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Hable con ella"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Hable con ella"
+              }
+            }
+          ]
+        },
+        {
+          "title": "The Constant Gardener",
+          "year": 2005,
+          "tmdbId": 1985,
+          "poster": "/nkXq7V7mmJVbvwZGr3nxkHo7HkS.jpg",
+          "original_title": "The Constant Gardener",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El jardinero fiel"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "El jardinero fiel"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "El jardiner fidel"
+              }
+            },
+            {
+              "iso_639_1": "eu",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Lorezain Leiala"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Pain and Glory",
+          "year": 2019,
+          "tmdbId": 519010,
+          "poster": "/cMlueArJXXwZbeLpb4NhC3pxmBk.jpg",
+          "original_title": "Dolor y gloria",
+          "original_language": "es",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": "Pain and Glory"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 405,
+      "profile": "/rCmxMuBdpvQttspXRlSHZbDNDn0.jpg"
+    },
+    {
+      "id": "hildur-gudnadottir",
+      "name": "Hildur Guðnadóttir",
+      "born": 1982,
+      "died": null,
+      "countries": [
+        "IS"
+      ],
+      "blurb": {
+        "es": "Violonchelista islandesa que compone desde la textura y el silencio. Ganó el Óscar con «Joker», una banda sonora construida sobre su violonchelo.",
+        "en": "An Icelandic cellist who composes from texture and silence. She won the Oscar for “Joker”, a score built on her cello.",
+        "gl": "Violonchelista islandesa que compón desde a textura e o silencio. Gañou o Óscar con «Joker», unha banda sonora construída sobre o seu violonchelo.",
+        "eu": "Testuratik eta isiltasunetik konposatzen duen biolontxelista islandiarra. Oscarra irabazi zuen «Joker»-ekin, bere biolontxeloaren gainean eraikitako soinu-bandarekin.",
+        "ca": "Violoncel·lista islandesa que compon des de la textura i el silenci. Va guanyar l'Oscar amb «Joker», una banda sonora construïda sobre el seu violoncel."
+      },
+      "films": [
+        {
+          "title": "Sicario: Day of the Soldado",
+          "year": 2018,
+          "tmdbId": 400535,
+          "poster": "/OdD7A0LgLXPjqzmfcEl9sTYVPo.jpg",
+          "original_title": "Sicario: Day of the Soldado",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Sicario: El día del soldado"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Sicario: El Día Del Soldado"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Sicari: El dia del soldat"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Joker",
+          "year": 2019,
+          "tmdbId": 475557,
+          "poster": "/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
+          "original_title": "Joker",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Guasón"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": ""
+              }
+            }
+          ]
+        },
+        {
+          "title": "Women Talking",
+          "year": 2022,
+          "tmdbId": 777245,
+          "poster": "/wcTc9GveMMjAdHSlzdE0FaRCtqi.jpg",
+          "original_title": "Women Talking",
+          "original_language": "en",
+          "translations": [
+            {
+              "iso_639_1": "en",
+              "iso_3166_1": "US",
+              "data": {
+                "title": ""
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Ellas hablan"
+              }
+            },
+            {
+              "iso_639_1": "es",
+              "iso_3166_1": "MX",
+              "data": {
+                "title": "Ellas hablan"
+              }
+            },
+            {
+              "iso_639_1": "ca",
+              "iso_3166_1": "ES",
+              "data": {
+                "title": "Elles parlen"
+              }
+            }
+          ]
+        }
+      ],
+      "tmdbId": 1178828,
+      "profile": "/xkJTSLeYZkOqouzflrUNgLSC1lL.jpg"
+    }
+  ],
+  "milestones": [
+    {
+      "year": 1908,
+      "film": {
+        "title": "The Assassination of the Duke of Guise",
+        "year": 1908,
+        "tmdbId": 144586,
+        "poster": "/gjYvSoLaRRNLqamW4GpCI2wkHmO.jpg",
+        "original_title": "L'assassinat du duc de Guise",
+        "original_language": "fr",
+        "translations": [
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "data": {
+              "title": "The Assassination of the Duke de Guise"
+            }
+          }
+        ]
+      },
+      "text": {
+        "es": "Camille Saint-Saëns escribe una de las primeras partituras compuestas expresamente para una película.",
+        "en": "Camille Saint-Saëns writes one of the first scores composed specifically for a film.",
+        "gl": "Camille Saint-Saëns escribe unha das primeiras partituras compostas expresamente para unha película.",
+        "eu": "Camille Saint-Saënsek film baterako berariaz konposatutako lehen partituretako bat idazten du.",
+        "ca": "Camille Saint-Saëns escriu una de les primeres partitures compostes expressament per a una pel·lícula."
+      }
+    },
+    {
+      "year": 1927,
+      "film": {
+        "title": "The Jazz Singer",
+        "year": 1927,
+        "tmdbId": 939,
+        "poster": "/wr8Pt1GO87cwB3210TO3JTNDsUc.jpg",
+        "original_title": "The Jazz Singer",
+        "original_language": "en",
+        "translations": [
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "data": {
+              "title": ""
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "El cantor de Jazz"
+            }
+          },
+          {
+            "iso_639_1": "ca",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "El cantor de jazz"
+            }
+          }
+        ]
+      },
+      "text": {
+        "es": "Las canciones sincronizadas anuncian el fin del cine mudo y de los músicos en directo en las salas.",
+        "en": "Synchronised songs herald the end of silent film and of live musicians in theatres.",
+        "gl": "As cancións sincronizadas anuncian o fin do cine mudo e dos músicos en directo nas salas.",
+        "eu": "Abesti sinkronizatuek zinema mutuaren eta aretoetako zuzeneko musikarien amaiera iragartzen dute.",
+        "ca": "Les cançons sincronitzades anuncien la fi del cinema mut i dels músics en directe a les sales."
+      }
+    },
+    {
+      "year": 1933,
+      "film": {
+        "title": "King Kong",
+        "year": 1933,
+        "tmdbId": 244,
+        "poster": "/lHlnxKL5GbgRibyRFI7n1Ey850i.jpg",
+        "original_title": "King Kong",
+        "original_language": "en",
+        "translations": [
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "data": {
+              "title": ""
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": ""
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "MX",
+            "data": {
+              "title": "King Kong"
+            }
+          },
+          {
+            "iso_639_1": "ca",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "King Kong"
+            }
+          }
+        ]
+      },
+      "text": {
+        "es": "Max Steiner firma una banda sonora sinfónica de principio a fin y fija el modelo de Hollywood.",
+        "en": "Max Steiner writes a symphonic score from start to finish and sets the Hollywood template.",
+        "gl": "Max Steiner asina unha banda sonora sinfónica de principio a fin e fixa o modelo de Hollywood.",
+        "eu": "Max Steinerrek hasieratik amaierara soinu-banda sinfoniko bat sinatzen du eta Hollywooden eredua finkatzen du.",
+        "ca": "Max Steiner signa una banda sonora simfònica de principi a fi i fixa el model de Hollywood."
+      }
+    },
+    {
+      "year": 1960,
+      "film": {
+        "title": "Psycho",
+        "year": 1960,
+        "tmdbId": 539,
+        "poster": "/yz4QVqPx3h1hD1DfqqQkCq3rmxW.jpg",
+        "original_title": "Psycho",
+        "original_language": "en",
+        "translations": [
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "data": {
+              "title": ""
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "Psicosis"
+            }
+          },
+          {
+            "iso_639_1": "ca",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "Psicosi"
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "MX",
+            "data": {
+              "title": "Psicosis"
+            }
+          }
+        ]
+      },
+      "text": {
+        "es": "Los violines de Bernard Herrmann en la escena de la ducha: la música como cuchillo.",
+        "en": "Bernard Herrmann's violins in the shower scene: music as a knife.",
+        "gl": "Os violíns de Bernard Herrmann na escena da ducha: a música como coitelo.",
+        "eu": "Bernard Herrmannen biolinak dutxako eszenan: musika labana gisa.",
+        "ca": "Els violins de Bernard Herrmann a l'escena de la dutxa: la música com un ganivet."
+      }
+    },
+    {
+      "year": 1966,
+      "film": {
+        "title": "The Good, the Bad and the Ugly",
+        "year": 1966,
+        "tmdbId": 429,
+        "poster": "/bX2xnavhMYjWDoZp1VM6VnU1xwe.jpg",
+        "original_title": "Il buono, il brutto, il cattivo",
+        "original_language": "it",
+        "translations": [
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "data": {
+              "title": "The Good, the Bad and the Ugly"
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "El bueno, el feo y el malo"
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "MX",
+            "data": {
+              "title": "El Bueno, El Malo y El Feo"
+            }
+          },
+          {
+            "iso_639_1": "ca",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "El bo, el lleig i el dolent"
+            }
+          },
+          {
+            "iso_639_1": "gl",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "O bo, o feo e o malo"
+            }
+          }
+        ]
+      },
+      "text": {
+        "es": "Morricone y Leone: silbidos, guitarras eléctricas y coros cambian para siempre el sonido del western.",
+        "en": "Morricone and Leone: whistles, electric guitars and choirs change the sound of the western for good.",
+        "gl": "Morricone e Leone: asubíos, guitarras eléctricas e coros cambian para sempre o son do western.",
+        "eu": "Morricone eta Leone: txistuek, gitarra elektrikoek eta koruek westernaren soinua betiko aldatzen dute.",
+        "ca": "Morricone i Leone: xiulets, guitarres elèctriques i cors canvien per sempre el so del western."
+      }
+    },
+    {
+      "year": 1977,
+      "film": {
+        "title": "Star Wars",
+        "year": 1977,
+        "tmdbId": 11,
+        "poster": "/fai0rspsNeJCS69wHNjOdWxcI7P.jpg",
+        "original_title": "Star Wars",
+        "original_language": "en",
+        "translations": [
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "data": {
+              "title": ""
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "La guerra de las galaxias"
+            }
+          },
+          {
+            "iso_639_1": "ca",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "La guerra de les galàxies"
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "MX",
+            "data": {
+              "title": "La guerra de las galaxias"
+            }
+          },
+          {
+            "iso_639_1": "eu",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "Izarretako Gerra IV Itxaropen Berria"
+            }
+          },
+          {
+            "iso_639_1": "gl",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "A guerra das galaxias"
+            }
+          }
+        ]
+      },
+      "text": {
+        "es": "John Williams devuelve la gran orquesta sinfónica al cine de masas.",
+        "en": "John Williams brings the full symphony orchestra back to blockbuster cinema.",
+        "gl": "John Williams devolve a gran orquestra sinfónica ao cine de masas.",
+        "eu": "John Williamsek orkestra sinfoniko handia itzultzen dio masa-zinemari.",
+        "ca": "John Williams torna la gran orquestra simfònica al cinema de masses."
+      }
+    },
+    {
+      "year": 1982,
+      "film": {
+        "title": "Blade Runner",
+        "year": 1982,
+        "tmdbId": 78,
+        "poster": "/63N9uy8nd9j7Eog2axPQ8lbr3Wj.jpg",
+        "original_title": "Blade Runner",
+        "original_language": "en",
+        "translations": [
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "data": {
+              "title": ""
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "Blade Runner"
+            }
+          },
+          {
+            "iso_639_1": "ca",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": "Blade Runner"
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "MX",
+            "data": {
+              "title": "Blade Runner"
+            }
+          }
+        ]
+      },
+      "text": {
+        "es": "Los sintetizadores de Vangelis dan al futuro su sonido: frío, melancólico y lleno de lluvia.",
+        "en": "Vangelis's synthesisers give the future its sound: cold, melancholy and full of rain.",
+        "gl": "Os sintetizadores de Vangelis dan ao futuro o seu son: frío, melancólico e cheo de chuvia.",
+        "eu": "Vangelisen sintetizadoreek etorkizunari bere soinua ematen diote: hotza, malenkoniatsua eta euriz betea.",
+        "ca": "Els sintetitzadors de Vangelis donen al futur el seu so: fred, melangiós i ple de pluja."
+      }
+    },
+    {
+      "year": 2020,
+      "film": {
+        "title": "Joker",
+        "year": 2019,
+        "tmdbId": 475557,
+        "poster": "/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
+        "original_title": "Joker",
+        "original_language": "en",
+        "translations": [
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "data": {
+              "title": ""
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": ""
+            }
+          },
+          {
+            "iso_639_1": "es",
+            "iso_3166_1": "MX",
+            "data": {
+              "title": "Guasón"
+            }
+          },
+          {
+            "iso_639_1": "ca",
+            "iso_3166_1": "ES",
+            "data": {
+              "title": ""
+            }
+          }
+        ]
+      },
+      "text": {
+        "es": "Hildur Guðnadóttir gana el Óscar con una banda sonora construida sobre su violonchelo.",
+        "en": "Hildur Guðnadóttir wins the Oscar with a score built on her cello.",
+        "gl": "Hildur Guðnadóttir gaña o Óscar cunha banda sonora construída sobre o seu violonchelo.",
+        "eu": "Hildur Guðnadóttirrek Oscarra irabazten du bere biolontxeloaren gainean eraikitako soinu-banda batekin.",
+        "ca": "Hildur Guðnadóttir guanya l'Oscar amb una banda sonora construïda sobre el seu violoncel."
+      }
+    }
+  ]
+}

@@ -1,0 +1,333 @@
+---
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRecordings, getScores, getComposers, getMilestones, fonoThumbUrl, fonoEmbedUrl, fonoIaUrl } from '../../lib/fonoteca';
+import { posterUrl } from '../../lib/tmdb';
+import { posterSet } from '../../lib/posters';
+import { useTranslations, localizePath, langStaticPaths, normalizeLang } from '../../i18n/ui';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+
+const recordings = getRecordings(lang);
+const scores = getScores(lang);
+const composers = getComposers(lang);
+const milestones = getMilestones(lang);
+
+const regionNames = new Intl.DisplayNames([lang], { type: 'region' });
+const countries = (isos: string[]) => isos.map((c) => regionNames.of(c) ?? c).join(' · ');
+const lifespan = (c: { born: number; died: number | null }) => (c.died ? `${c.born}–${c.died}` : `${t('fonoteca.born')} ${c.born}`);
+const portrait = (path: string | null) => (path ? `https://image.tmdb.org/t/p/w185${path}` : null);
+
+const sections = [
+  { id: 'escuchar', label: t('fonoteca.listen') },
+  { id: 'partituras', label: t('fonoteca.scores') },
+  { id: 'compositores', label: t('fonoteca.composers') },
+  { id: 'hitos', label: t('fonoteca.milestones') },
+];
+---
+
+<BaseLayout title={t('fonoteca.title')} description={t('fonoteca.intro')}>
+  <section class="frame py-12" id="fonoteca" data-play={t('fonoteca.play')} data-hide={t('fonoteca.hide')}>
+    <a href={localizePath(lang, 'films')} class="label no-underline hover:text-ink">← {t('nav.films')}</a>
+    <header class="mt-6 border-b border-ink pb-6">
+      <span class="label">{t('nav.films')} · {recordings.length + scores.length} {t('fonoteca.pieces')} · {composers.length} {t('fonoteca.composers').toLowerCase()}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('fonoteca.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('fonoteca.intro')}</p>
+      <nav class="mt-6 flex flex-wrap gap-2" aria-label={t('fonoteca.title')}>
+        {sections.map((s) => <a href={`#${s.id}`} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{s.label}</a>)}
+      </nav>
+    </header>
+
+    {/* ---------- Escuchar ---------- */}
+    <section id="escuchar" class="mt-12 scroll-mt-24">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('fonoteca.listen')}</h2>
+      <p class="mt-3 max-w-2xl text-body-md text-charcoal">{t('fonoteca.listenIntro')}</p>
+      <ol class="mt-6 grid ruled grid-cols-1 border border-ink lg:grid-cols-2">
+        {recordings.map((r) => (
+          <li class="record bg-surface p-5" data-record={r.id}>
+            <div class="flex gap-5">
+              <div class="disc-wrap shrink-0" aria-hidden="true">
+                <div class="disc">
+                  <img src={fonoThumbUrl(r.id)} alt="" loading="lazy" decoding="async" />
+                </div>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="label">{r.year} · {t('cinema.publicDomain')}</p>
+                <h3 class="mt-1 font-display text-[1.45rem] leading-tight text-ink">{r.title}</h3>
+                <p class="font-mono text-meta-data text-muted">{r.performer}</p>
+                <p class="mt-2 text-body-md text-charcoal">{r.blurb}</p>
+                <div class="mt-3 flex flex-wrap items-center gap-3">
+                  <button type="button" class="play label border border-ink px-3 py-1.5 transition-colors hover:bg-ink hover:text-white" aria-expanded="false" data-src={fonoEmbedUrl(r.id)}>
+                    <span class="play-icon" aria-hidden="true">▶</span> <span class="play-label">{t('fonoteca.play')}</span>
+                  </button>
+                  <a href={fonoIaUrl(r.id)} target="_blank" rel="noopener" class="label no-underline hover:text-ink">{t('cinema.atIA')} ↗</a>
+                </div>
+              </div>
+            </div>
+            {/* El reproductor se crea al pulsar «Escuchar»: siete iframes de golpe pesaban de más. */}
+            <div class="player mt-4" hidden></div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    {/* ---------- Partituras ---------- */}
+    <section id="partituras" class="mt-16 scroll-mt-24">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('fonoteca.scores')}</h2>
+      <p class="mt-3 max-w-2xl text-body-md text-charcoal">{t('fonoteca.scoresIntro')}</p>
+      <ol class="mt-6 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-3">
+        {scores.map((s) => (
+          <li class="score flex flex-col bg-surface">
+            <div class="score-cover aspect-[4/3] overflow-hidden border-b border-ink bg-film-white">
+              <img src={fonoThumbUrl(s.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+            </div>
+            <div class="flex flex-1 flex-col p-4">
+              <p class="label">{s.year} · {s.author}</p>
+              <h3 class="mt-1 font-display text-[1.3rem] leading-tight text-ink">{s.title}</h3>
+              <p class="mt-2 flex-1 text-body-md text-charcoal">{s.blurb}</p>
+              <div class="mt-3 flex flex-wrap items-center gap-3">
+                <button type="button" class="read label border border-ink px-3 py-1.5 transition-colors hover:bg-ink hover:text-white" data-src={fonoEmbedUrl(s.id)} data-title={s.title}>{t('fonoteca.read')}</button>
+                <a href={fonoIaUrl(s.id)} target="_blank" rel="noopener" class="label no-underline hover:text-ink">{t('cinema.atIA')} ↗</a>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+      {/* Un único lector a lo ancho, debajo de la rejilla: dentro de una tarjeta estrecha no se leía. */}
+      <div id="score-viewer" class="mt-6 border border-ink bg-surface" hidden>
+        <div class="flex items-center justify-between gap-4 border-b border-ink px-4 py-2">
+          <p id="score-viewer-title" class="font-display text-[1.2rem] text-ink"></p>
+          <button type="button" id="score-viewer-close" class="label border border-ink px-3 py-1 transition-colors hover:bg-ink hover:text-white">{t('fonoteca.hide')}</button>
+        </div>
+        <div id="score-viewer-frame" class="aspect-[4/3] w-full sm:aspect-[16/10]"></div>
+      </div>
+    </section>
+
+    {/* ---------- Compositores ---------- */}
+    <section id="compositores" class="mt-16 scroll-mt-24">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('fonoteca.composers')}</h2>
+      <p class="mt-3 max-w-2xl text-body-md text-charcoal">{t('fonoteca.composersIntro')}</p>
+      <ol class="mt-6 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-3">
+        {composers.map((c) => (
+          <li id={c.id} class="composer flex flex-col bg-surface p-5 scroll-mt-24">
+            <div class="flex items-center gap-4">
+              <div class="portrait h-20 w-20 shrink-0 overflow-hidden border border-ink bg-charcoal">
+                {portrait(c.profile) && <img src={portrait(c.profile)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+              </div>
+              <div class="min-w-0">
+                <h3 class="font-display text-[1.45rem] leading-tight text-ink">{c.name}</h3>
+                <p class="font-mono text-meta-data text-muted">{lifespan(c)} · {countries(c.countries)}</p>
+              </div>
+            </div>
+            <p class="mt-3 flex-1 text-body-md text-charcoal">{c.blurb}</p>
+            <ul class="films mt-4 grid grid-cols-3 gap-2">
+              {c.films.map((f) => {
+                const src = posterUrl(f.poster, 'w185');
+                return (
+                  <li>
+                    <a href={localizePath(lang, f.path)} class="film block no-underline" title={`${f.title} (${f.year})`}>
+                      <div class="aspect-[2/3] border border-ink bg-charcoal">
+                        {src && <img src={src} srcset={posterSet(src)} sizes="(min-width: 1024px) 100px, 28vw" alt={f.title} loading="lazy" decoding="async" class="h-full w-full object-cover" />}
+                      </div>
+                      <span class="mt-1 block truncate font-mono text-[0.68rem] text-muted">{f.year}</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+            {c.tmdbId && <a href={localizePath(lang, `person/${c.tmdbId}`)} class="label mt-4 self-start no-underline hover:text-ink">{t('fonoteca.filmography')} →</a>}
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    {/* ---------- Hitos ---------- */}
+    <section id="hitos" class="mt-16 scroll-mt-24">
+      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('fonoteca.milestones')}</h2>
+      <ol class="milestones mt-6 border-l-2 border-ink">
+        {milestones.map((m) => (
+          <li class="milestone relative py-4 pl-6">
+            <span class="dot" aria-hidden="true"></span>
+            <p class="font-mono text-headline-md leading-none text-ink">{m.year}</p>
+            <p class="mt-2 max-w-2xl text-body-md text-charcoal">{m.text}</p>
+            {m.film && <a href={localizePath(lang, m.film.path)} class="label mt-2 inline-block no-underline hover:text-ink">{m.film.title} ({m.film.year}) →</a>}
+          </li>
+        ))}
+      </ol>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---------- Disco de 78 ----------
+     La web tiene las esquinas rectas por norma (border-radius: 0 !important en
+     global.css). El disco no es una esquina de la interfaz sino un dibujo, así que
+     se recorta en círculo con clip-path, que esa regla no toca. La sombra va en el
+     envoltorio con drop-shadow, que sí sigue la forma recortada. */
+  .disc-wrap {
+    width: 7.5rem;
+    height: 7.5rem;
+    filter: drop-shadow(3px 3px 0 var(--c-ink));
+    transition: filter 0.25s ease;
+  }
+  .disc {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    clip-path: circle(50%);
+    /* Surcos del disco alrededor de la etiqueta. */
+    background: repeating-radial-gradient(circle at 50% 50%, #111 0 1px, #1e1e1e 1px 3px);
+  }
+  .disc img {
+    position: absolute;
+    inset: 22%;
+    width: 56%;
+    height: 56%;
+    clip-path: circle(50%);
+    object-fit: cover;
+  }
+  .disc::after {
+    /* El agujero central. */
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    clip-path: circle(50%);
+    background: var(--c-surface);
+  }
+  .record:hover .disc,
+  .record.is-playing .disc {
+    animation: spin 1.8s linear infinite;
+  }
+  /* 78 vueltas por minuto serían 0,77 s: demasiado nervioso. Mientras suena va
+     más deprisa que al pasar el cursor, para que se note que está en marcha. */
+  .record.is-playing .disc {
+    animation-duration: 1.1s;
+  }
+  .record.is-playing .disc-wrap {
+    filter: drop-shadow(3px 3px 0 var(--c-ochre));
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .record.is-playing {
+    background: var(--c-film-white);
+  }
+
+  /* ---------- Partituras y compositores ---------- */
+  .score-cover img,
+  .portrait img {
+    transition: transform 0.4s ease, filter 0.4s ease;
+    filter: grayscale(1) contrast(1.05);
+  }
+  .score:hover .score-cover img {
+    transform: scale(1.06);
+    filter: none;
+  }
+  .composer:hover .portrait img {
+    filter: none;
+  }
+  .films .film > div {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .films .film:hover > div,
+  .films .film:focus-visible > div {
+    transform: translate(-3px, -3px);
+    box-shadow: 3px 3px 0 var(--c-ink);
+  }
+
+  /* ---------- Hitos ---------- */
+  .milestone .dot {
+    position: absolute;
+    left: -7px;
+    top: 1.35rem;
+    width: 12px;
+    height: 12px;
+    background: var(--c-ochre);
+    border: 2px solid var(--c-ink);
+    transition: transform 0.2s ease;
+  }
+  .milestone:hover .dot {
+    transform: scale(1.4) rotate(45deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .record:hover .disc,
+    .record.is-playing .disc {
+      animation: none;
+    }
+    .score-cover img,
+    .films .film > div,
+    .milestone .dot {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.getElementById('fonoteca');
+  if (root) {
+    const playLabel = root.dataset.play ?? '';
+    const hideLabel = root.dataset.hide ?? '';
+
+    // Escuchar: el reproductor de Internet Archive se crea al pulsar y se quita al
+    // volver a pulsar (quitar el iframe es la única forma de pararlo desde fuera).
+    for (const btn of root.querySelectorAll<HTMLButtonElement>('.record .play')) {
+      const card = btn.closest<HTMLElement>('.record')!;
+      const holder = card.querySelector<HTMLElement>('.player')!;
+      const label = btn.querySelector<HTMLElement>('.play-label')!;
+      const icon = btn.querySelector<HTMLElement>('.play-icon')!;
+      btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        if (open) {
+          holder.replaceChildren();
+          holder.hidden = true;
+        } else {
+          const frame = document.createElement('iframe');
+          frame.src = btn.dataset.src!;
+          frame.title = card.querySelector('h3')?.textContent ?? '';
+          // La barra del reproductor de audio de Internet Archive mide unos 30 px.
+          frame.className = 'block h-[34px] w-full border border-ink';
+          frame.allow = 'autoplay';
+          holder.replaceChildren(frame);
+          holder.hidden = false;
+        }
+        btn.setAttribute('aria-expanded', String(!open));
+        card.classList.toggle('is-playing', !open);
+        label.textContent = open ? playLabel : hideLabel;
+        icon.textContent = open ? '▶' : '■';
+      });
+    }
+
+    // Partituras: un único lector a lo ancho, debajo de la rejilla.
+    const viewer = document.getElementById('score-viewer')!;
+    const viewerFrame = document.getElementById('score-viewer-frame')!;
+    const viewerTitle = document.getElementById('score-viewer-title')!;
+    for (const btn of root.querySelectorAll<HTMLButtonElement>('.score .read')) {
+      btn.addEventListener('click', () => {
+        const frame = document.createElement('iframe');
+        frame.src = btn.dataset.src!;
+        frame.title = btn.dataset.title ?? '';
+        frame.className = 'block h-full w-full';
+        frame.allowFullscreen = true;
+        viewerFrame.replaceChildren(frame);
+        viewerTitle.textContent = btn.dataset.title ?? '';
+        viewer.hidden = false;
+        viewer.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      });
+    }
+    document.getElementById('score-viewer-close')?.addEventListener('click', () => {
+      viewerFrame.replaceChildren();
+      viewer.hidden = true;
+      document.getElementById('partituras')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  }
+</script>

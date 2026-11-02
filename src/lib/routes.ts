@@ -34,6 +34,7 @@ export const TOP_LEVEL_SECTIONS: ReadonlySet<string> = new Set([
   'figures',
   'film',
   'films',
+  'fonoteca',
   'forgot',
   'glossary',
   'info',
