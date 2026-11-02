@@ -41,6 +41,12 @@ const theme = prefs?.theme ?? 'light';
 
 // Perfil público del usuario y solicitudes de seguimiento pendientes.
 const myProfile = await getMyProfile(user.id);
+// Para la vista previa «Tu dirección será cinearchive.es/u/…» al crear el perfil.
+const profileUrlBase = (() => {
+  // localizePath quita la barra final: se añade aquí para que quede «/u/nombre».
+  const u = new URL(localizePath(lang, 'u'), Astro.site ?? Astro.url);
+  return `${u.host}${u.pathname}/`;
+})();
 const etiquetas = await badgesForUser(user.id);
 const pending = await db
   .select({ id: userTable.id, name: userTable.name, username: profile.username, hasAvatar: profile.avatarType })
@@ -155,12 +161,23 @@ const inputCls =
           })}
         >
           <header class="flex items-center justify-between gap-4 border-b border-ink px-5 py-3">
-            <h2 class="font-display text-headline-md text-ink">{t('profile.yours')}</h2>
-            {myProfile && <a href={localizePath(lang, `u/${myProfile.username}`)} class="label no-underline hover:text-ink">{t('profile.viewProfile')} →</a>}
+            <h2 class="font-display text-headline-md text-ink">{myProfile ? t('profile.yours') : t('profile.createTitle')}</h2>
+            {myProfile ? (
+              <a href={localizePath(lang, `u/${myProfile.username}`)} class="label no-underline hover:text-ink">{t('profile.viewProfile')} →</a>
+            ) : (
+              <span class="label border border-ink px-2 py-0.5">{t('profile.notCreated')}</span>
+            )}
           </header>
 
           <div class="p-5">
-            {!myProfile && <p class="mb-5 font-mono text-body-md text-muted">{t('profile.setUsernameFirst')}</p>}
+            {/* Sin perfil, los campos vacíos no decían que había que rellenarlos para
+                crearlo. Ahora se explica para qué sirve y que basta con el nombre. */}
+            {!myProfile && (
+              <div class="mb-6 border-l-4 border-ochre bg-film-white px-4 py-3">
+                <p class="text-body-md text-ink">{t('profile.createIntro')}</p>
+                <p class="mt-2 font-mono text-meta-data text-charcoal">{t('profile.createHow')}</p>
+              </div>
+            )}
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-12">
               {/* Avatar */}
@@ -171,9 +188,10 @@ const inputCls =
                   {/* Sin perfil no se desactiva: un botón gris que no hace nada parece roto.
                       Al pulsarlo se explica que antes hay que guardar el nombre de usuario. */}
                   <button id="avatar-upload" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white">{t('profile.uploadAvatar')}</button>
-                  <button id="avatar-remove" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white" disabled={!myProfile?.avatarType}>{t('profile.removeAvatar')}</button>
+                  {/* Sin foto no hay nada que quitar: un botón apagado al lado de «Subir» solo confundía. */}
+                  {myProfile?.avatarType && <button id="avatar-remove" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white">{t('profile.removeAvatar')}</button>}
                 </div>
-                <p class="text-center font-mono text-meta-data text-muted">{t('profile.avatarHint')}</p>
+                <p class="text-center font-mono text-meta-data text-muted">{myProfile ? t('profile.avatarHint') : t('profile.avatarAfterCreate')}</p>
 
                 {/* Alerta con estilo si la foto no se puede subir */}
                 <div id="avatar-alert" role="alert" hidden class="w-full border-2 border-error bg-surface p-3" data-title={t('profile.avatarErrorTitle')}>
@@ -186,8 +204,11 @@ const inputCls =
               <form id="profile-form" class="min-w-0 md:col-span-8">
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <label class="block">
-                    <span class="label mb-2 block">{t('profile.username')}</span>
-                    <div class="field-box flex items-center border border-ink bg-white focus-within:bg-film-white">
+                    <span class="label mb-2 flex flex-wrap items-center gap-x-1">
+                      {t('profile.username')}
+                      {!myProfile && <span class="bg-ochre px-1 text-on-accent">{t('profile.required')}</span>}
+                    </span>
+                    <div class={`field-box flex items-center border bg-white focus-within:bg-film-white ${myProfile ? 'border-ink' : 'border-ink outline outline-2 outline-ochre'}`}>
                       <span class="px-3 font-mono text-body-md text-muted">@</span>
                       <input
                         id="username"
@@ -208,10 +229,15 @@ const inputCls =
                     </div>
                     <span id="username-err" class="field-err mt-1 font-mono text-meta-data text-error" hidden></span>
                     <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.usernameHint')}</span>
+                    {!myProfile && (
+                      <span class="mt-1 block font-mono text-meta-data text-charcoal">
+                        {t('profile.urlPreview')} <span class="text-ink">{profileUrlBase}<span id="username-preview" class="bg-film-white">…</span></span>
+                      </span>
+                    )}
                   </label>
 
                   <label class="block">
-                    <span class="label mb-2 block">{t('profile.instagram')}</span>
+                    <span class="label mb-2 block">{t('profile.instagram')}{!myProfile && <span class="ml-1 text-muted normal-case">({t('profile.optional')})</span>}</span>
                     <div class="field-box flex items-center border border-ink bg-white focus-within:bg-film-white">
                       <span class="px-3 font-mono text-body-md text-muted">@</span>
                       <input
@@ -236,7 +262,7 @@ const inputCls =
                 </div>
 
                 <label class="mt-5 block">
-                  <span class="label mb-2 block">{t('profile.bio')}</span>
+                  <span class="label mb-2 block">{t('profile.bio')}{!myProfile && <span class="ml-1 text-muted normal-case">({t('profile.optional')})</span>}</span>
                   <textarea id="bio" name="bio" rows="3" maxlength="300" placeholder={t('profile.bioPlaceholder')} class={inputCls}>{myProfile?.bio ?? ''}</textarea>
                 </label>
 
@@ -259,7 +285,7 @@ const inputCls =
                 </div>
 
                 <div class="mt-6 flex flex-wrap items-center gap-4">
-                  <button type="submit" class="btn btn-primary">{t('profile.save')}</button>
+                  <button type="submit" class="btn btn-primary">{myProfile ? t('profile.save') : t('profile.create')}</button>
                   <span id="profile-msg" class="font-mono text-meta-data text-muted" role="status"></span>
                 </div>
               </form>
@@ -684,6 +710,17 @@ const inputCls =
         try { usernameInput.setSelectionRange(pos - 1 < 0 ? 0 : pos, pos - 1 < 0 ? 0 : pos); } catch {}
       }
     });
+
+    // Sin perfil: la dirección que tendrá se va viendo mientras se escribe, y si
+    // se llega desde el aviso de «Crea tu perfil» (#profile-editor) el cursor ya
+    // está en el único campo obligatorio.
+    const preview = document.getElementById('username-preview');
+    if (preview) {
+      const paint = () => (preview.textContent = usernameInput.value || '…');
+      usernameInput.addEventListener('input', paint);
+      paint();
+      if (location.hash === '#profile-editor') usernameInput.focus();
+    }
 
     // Instagram: mismo saneado en vivo (minúsculas, dígitos, punto y guion bajo)
     // para que no se pueda enviar un handle no válido y falle al guardar.
