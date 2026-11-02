@@ -1,7 +1,11 @@
 ---
 /**
- * «Tus visionados» en la ficha de una película: cuántas veces la has visto,
- * cuándo, y un botón para apuntar otra. Debajo de los controles de siempre.
+ * «Tus visionados» en la ficha de una película: cuántas veces la has visto y
+ * cuándo, con la opción de borrar uno. Debajo de los controles de siempre.
+ *
+ * No se apuntan desde aquí: el visionado sale de puntuar la película (con la
+ * fecha de «Cuándo la vi», o la de hoy) o de importar el historial. Un segundo
+ * formulario con su propia fecha duplicaba lo que ya hacen las estrellas.
  */
 import { useTranslations, localizePath, formatDate, type Lang } from '../i18n/ui';
 import type { Viewing } from '../lib/viewings';
@@ -22,7 +26,6 @@ const fecha = (iso: string) => formatDate(new Date(`${iso}T12:00:00Z`), lang);
   data-tmdb-id={tmdbId}
   data-l-rewatch={t('diary.rewatch')}
   data-l-delete={t('diary.delete')}
-  data-l-dup={t('diary.duplicate')}
   data-l-error={t('diary.error')}
 >
   <div class="flex items-center justify-between border-b border-ink px-3 py-2">
@@ -40,17 +43,9 @@ const fecha = (iso: string) => formatDate(new Date(`${iso}T12:00:00Z`), lang);
       </li>
     ))}
   </ul>
-  <form data-add class="flex flex-wrap items-center gap-2 border-t border-ink px-3 py-2">
-    <label class="label" for={`vw-day-${tmdbId}`}>{t('diary.add')}</label>
-    <input
-      id={`vw-day-${tmdbId}`}
-      type="date"
-      required
-      class="ml-auto border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none"
-    />
-    <button type="submit" class="btn btn-primary">+</button>
-    <p data-msg role="status" class="w-full font-mono text-meta-data text-muted empty:hidden"></p>
-  </form>
+  {/* Sin visionados, en vez de un formulario: cómo se apunta. */}
+  <p data-empty class="px-3 py-2 font-mono text-meta-data text-muted" hidden={viewings.length > 0}>{t('diary.rateToLog')}</p>
+  <p data-msg role="status" class="px-3 pb-2 font-mono text-meta-data text-error empty:hidden"></p>
 </viewings-panel>
 
 <script>
@@ -60,23 +55,18 @@ const fecha = (iso: string) => formatDate(new Date(`${iso}T12:00:00Z`), lang);
       const tmdbId = Number(d.tmdbId);
       const list = this.querySelector<HTMLUListElement>('[data-list]')!;
       const count = this.querySelector('[data-count]')!;
-      const form = this.querySelector<HTMLFormElement>('[data-add]')!;
-      const input = form.querySelector<HTMLInputElement>('input[type=date]')!;
-      const msg = form.querySelector('[data-msg]')!;
+      const empty = this.querySelector<HTMLElement>('[data-empty]')!;
+      const msg = this.querySelector('[data-msg]')!;
       const lang = document.documentElement.lang || 'es';
-
-      // Hoy en la hora LOCAL (como en «cuándo la vi»): con la de UTC, de
-      // madrugada no se podría elegir el día de verdad.
-      const n = new Date();
-      const hoy = new Date(n.getTime() - n.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-      input.max = hoy;
-      input.value = hoy;
 
       const fmt = (iso: string) =>
         new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(
           new Date(`${iso}T12:00:00Z`),
         );
-      const recount = () => (count.textContent = String(list.children.length));
+      const recount = () => {
+        count.textContent = String(list.children.length);
+        empty.hidden = list.children.length > 0;
+      };
       const say = (s: string) => {
         msg.textContent = s;
         setTimeout(() => (msg.textContent = ''), 2500);
@@ -93,21 +83,13 @@ const fecha = (iso: string) => formatDate(new Date(`${iso}T12:00:00Z`), lang);
         });
       list.querySelectorAll<HTMLElement>('li').forEach(wireDelete);
 
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const day = input.value;
-        if (!day) return;
-        const res = await fetch('/api/me/viewings', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ tmdbId, watchedOn: day }),
-        });
-        if (res.status === 409) return say(d.lDup!);
-        if (!res.ok) return say(d.lError!);
-        // Se vuelve a pedir la lista de la película y se repinta: es corta, y
-        // así el id nuevo y la marca de revisionado salen del servidor.
+      // Al puntuar en FilmControls el servidor apunta el primer visionado: se
+      // vuelve a pedir la lista (es corta) y se repinta con lo que diga él.
+      document.addEventListener('film:saved', async (e) => {
+        if ((e as CustomEvent<{ tmdbId: number }>).detail?.tmdbId !== tmdbId) return;
         const all = await fetch(`/api/me/viewings?tmdbId=${tmdbId}`).then((r) => r.json()).catch(() => null);
-        const mine: { id: number; watchedOn: string; rewatch: boolean }[] = all?.viewings ?? [];
+        if (!all) return;
+        const mine: { id: number; watchedOn: string; rewatch: boolean }[] = all.viewings ?? [];
         list.replaceChildren(
           ...mine.map((v) => {
             const li = document.createElement('li');

@@ -131,6 +131,9 @@ const t = useTranslations(lang);
           window.location.href = `${d.loginUrl}?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
           return false;
         }
+        // Puntuar apunta el primer visionado en el servidor: se avisa para que
+        // «Tus visionados» (ViewingsPanel) se repinte sin recargar la ficha.
+        if (res.ok) document.dispatchEvent(new CustomEvent('film:saved', { detail: { tmdbId } }));
         return res.ok;
       };
 
