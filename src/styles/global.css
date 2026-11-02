@@ -104,23 +104,35 @@
    * otras. Los bordes, en cambio, siempre se pintan con el mismo grosor.
    *
    * Así que cada celda pinta su filete derecho e inferior, y el marco exterior
-   * lo pone un `outline` metido 1 px hacia dentro. El marco va por encima de
-   * las celdas: los filetes de la última columna y la última fila caen justo
-   * debajo de él (no se duplican), y si la última fila no se llena, el hueco
-   * queda cerrado igualmente. Con el fondo negro ese hueco salía como un
-   * bloque negro; con bordes por los cuatro lados habría quedado abierto.
+   * lo pone un pseudoelemento por encima de las celdas: los filetes de la
+   * última columna y la última fila caen justo debajo de él (no se duplican),
+   * y si la última fila no se llena, el hueco queda cerrado igualmente. Con el
+   * fondo negro ese hueco salía como un bloque negro; con bordes por los cuatro
+   * lados habría quedado abierto.
+   *
+   * Era un `outline` metido 1 px hacia dentro, pero Chrome pinta las celdas
+   * posicionadas (las de las listas llevan `relative` para el botón «Quitar»)
+   * encima del outline de su contenedor: el marco desaparecía por arriba y por
+   * la izquierda. Un ::after con z-index va siempre por encima.
    *
    * El color es `--rule` (negro de tinta salvo que la cuadrícula diga otro).
    * `.ruled.ruled` gana a la utilidad `border`, que la cuadrícula conserva en
    * el marcado pero aquí no se pinta.
    */
   .ruled.ruled {
+    position: relative;
     border-width: 0;
-    outline: 1px solid var(--rule, var(--c-ink));
-    outline-offset: -1px;
   }
-  .ruled.ruled:empty {
-    outline: none;
+  .ruled.ruled::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border: 1px solid var(--rule, var(--c-ink));
+    pointer-events: none;
+  }
+  .ruled.ruled:empty::after {
+    content: none;
   }
   .ruled > * {
     border-right: 1px solid var(--rule, var(--c-ink));
