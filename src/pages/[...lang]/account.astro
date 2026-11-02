@@ -141,6 +141,10 @@ const inputCls =
             too_large: t('profile.errTooLarge'),
             bad_type: t('profile.errBadType'),
             heic: t('profile.errHeic'),
+            invalid: t('profile.errInvalid'),
+            too_many: t('profile.errTooMany'),
+            generic: t('profile.errGeneric'),
+            no_profile: t('profile.avatarNeedsProfile'),
           })}
           data-processing={t('profile.avatarProcessing')}
           data-crop={JSON.stringify({
@@ -164,7 +168,9 @@ const inputCls =
                 <Avatar userId={user.id} name={user.name} hasAvatar={!!myProfile?.avatarType} size={144} class="h-36 w-36" />
                 <input id="avatar-input" type="file" accept="image/*" class="hidden" />
                 <div class="flex gap-2">
-                  <button id="avatar-upload" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white" disabled={!myProfile}>{t('profile.uploadAvatar')}</button>
+                  {/* Sin perfil no se desactiva: un botón gris que no hace nada parece roto.
+                      Al pulsarlo se explica que antes hay que guardar el nombre de usuario. */}
+                  <button id="avatar-upload" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white">{t('profile.uploadAvatar')}</button>
                   <button id="avatar-remove" type="button" class="label border border-ink px-3 py-2 transition-colors hover:bg-error hover:text-white" disabled={!myProfile?.avatarType}>{t('profile.removeAvatar')}</button>
                 </div>
                 <p class="text-center font-mono text-meta-data text-muted">{t('profile.avatarHint')}</p>
@@ -181,11 +187,12 @@ const inputCls =
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <label class="block">
                     <span class="label mb-2 block">{t('profile.username')}</span>
-                    <div class="flex items-center border border-ink bg-white focus-within:bg-film-white">
+                    <div class="field-box flex items-center border border-ink bg-white focus-within:bg-film-white">
                       <span class="px-3 font-mono text-body-md text-muted">@</span>
                       <input
                         id="username"
                         name="username"
+                        aria-describedby="username-err"
                         type="text"
                         value={myProfile?.username ?? ''}
                         maxlength="20"
@@ -199,16 +206,18 @@ const inputCls =
                         class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
                       />
                     </div>
+                    <span id="username-err" class="field-err mt-1 font-mono text-meta-data text-error" hidden></span>
                     <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.usernameHint')}</span>
                   </label>
 
                   <label class="block">
                     <span class="label mb-2 block">{t('profile.instagram')}</span>
-                    <div class="flex items-center border border-ink bg-white focus-within:bg-film-white">
+                    <div class="field-box flex items-center border border-ink bg-white focus-within:bg-film-white">
                       <span class="px-3 font-mono text-body-md text-muted">@</span>
                       <input
                         id="instagram"
                         name="instagram"
+                        aria-describedby="instagram-err"
                         type="text"
                         value={myProfile?.instagram ?? ''}
                         maxlength="30"
@@ -221,6 +230,7 @@ const inputCls =
                         class="w-full bg-transparent py-2 pr-3 font-mono text-body-md text-ink placeholder:text-muted focus:outline-none"
                       />
                     </div>
+                    <span id="instagram-err" class="field-err mt-1 font-mono text-meta-data text-error" hidden></span>
                     <span class="mt-1 block font-mono text-meta-data text-muted">{t('profile.instagramHint')}</span>
                   </label>
                 </div>
@@ -241,9 +251,16 @@ const inputCls =
                   </label>
                 </fieldset>
 
+                {/* Antes el error era una línea gris pequeña junto al botón que solo se
+                    ponía roja: no se veía como error. Ahora va en un aviso como el de la foto. */}
+                <div id="profile-alert" role="alert" tabindex="-1" hidden class="mt-6 border-2 border-error bg-surface p-3">
+                  <p class="label flex items-center gap-2 text-error"><span aria-hidden="true">▲</span> {t('profile.saveErrorTitle')}</p>
+                  <p id="profile-alert-msg" class="mt-1 font-mono text-meta-data text-charcoal"></p>
+                </div>
+
                 <div class="mt-6 flex flex-wrap items-center gap-4">
                   <button type="submit" class="btn btn-primary">{t('profile.save')}</button>
-                  <span id="profile-msg" class="font-mono text-meta-data text-muted"></span>
+                  <span id="profile-msg" class="font-mono text-meta-data text-muted" role="status"></span>
                 </div>
               </form>
             </div>
@@ -680,13 +697,62 @@ const inputCls =
       }
     });
 
+    // Errores al guardar: los de un campo concreto se marcan en ese campo (borde
+    // rojo y el motivo debajo); los demás, en el aviso de encima del botón. En los
+    // dos casos se lleva la vista hasta el error: antes salía una línea pequeña
+    // junto al botón que, en el móvil, quedaba fuera de la pantalla.
+    const FIELD_ERRORS: Record<string, string> = {
+      format: 'username',
+      reserved: 'username',
+      taken: 'username',
+      username_required: 'username',
+      bad_instagram: 'instagram',
+    };
+    const palert = document.getElementById('profile-alert') as HTMLElement;
+    const palertMsg = document.getElementById('profile-alert-msg') as HTMLElement;
+    const clearProfileErrors = () => {
+      palert.hidden = true;
+      for (const id of ['username', 'instagram']) {
+        const input = document.getElementById(id) as HTMLInputElement;
+        const err = document.getElementById(`${id}-err`) as HTMLElement;
+        input.removeAttribute('aria-invalid');
+        input.closest('.field-box')?.classList.replace('border-error', 'border-ink');
+        err.hidden = true;
+        err.classList.remove('block');
+      }
+    };
+    const showProfileError = (code: string) => {
+      const msg = errors[code] || errors.generic || 'Error';
+      const field = FIELD_ERRORS[code];
+      if (field) {
+        const input = document.getElementById(field) as HTMLInputElement;
+        const err = document.getElementById(`${field}-err`) as HTMLElement;
+        input.setAttribute('aria-invalid', 'true');
+        input.closest('.field-box')?.classList.replace('border-ink', 'border-error');
+        err.textContent = msg;
+        err.hidden = false;
+        // `block` y el atributo hidden no pueden ir juntos: la utilidad gana.
+        err.classList.add('block');
+        input.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        input.focus({ preventScroll: true });
+      } else {
+        palertMsg.textContent = msg;
+        palert.hidden = false;
+        palert.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        palert.focus({ preventScroll: true });
+      }
+    };
+    usernameInput.addEventListener('input', clearProfileErrors);
+    igInput?.addEventListener('input', clearProfileErrors);
+
     let saving = false;
     profileForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (saving) return;
       saving = true;
       saveBtn.disabled = true;
-      pmsg.classList.remove('text-error');
+      clearProfileErrors();
+      clearAlert(); // el «primero guarda el perfil» de la foto ya no aplica
       pmsg.textContent = '…';
       const body = {
         username: usernameInput.value.trim().toLowerCase(),
@@ -706,13 +772,14 @@ const inputCls =
           if (editor.dataset.hasProfile === '0') { location.reload(); return; }
           setTimeout(() => (pmsg.textContent = ''), 2200);
         } else {
+          pmsg.textContent = '';
           const data = await res.json().catch(() => ({}));
-          pmsg.classList.add('text-error');
-          pmsg.textContent = errors[data.error] || 'Error';
+          // El límite de intentos responde 429 sin código propio.
+          showProfileError(res.status === 429 ? 'too_many' : data.error);
         }
       } catch {
-        pmsg.classList.add('text-error');
-        pmsg.textContent = 'Error';
+        pmsg.textContent = '';
+        showProfileError('generic');
       } finally {
         saving = false;
         saveBtn.disabled = false;
@@ -734,6 +801,14 @@ const inputCls =
 
     document.getElementById('avatar-upload')?.addEventListener('click', () => {
       clearAlert();
+      // La foto cuelga del perfil público: sin nombre de usuario guardado no hay
+      // dónde ponerla. Se explica y se lleva al campo, en vez de no hacer nada.
+      if (editor.dataset.hasProfile !== '1') {
+        showAlert(errors.no_profile || 'Error');
+        usernameInput.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        usernameInput.focus({ preventScroll: true });
+        return;
+      }
       fileInput.click();
     });
     const MAX_AVATAR_BYTES = 512 * 1024;
@@ -790,7 +865,14 @@ const inputCls =
       }
       try {
         // El servidor valida por magic bytes y recomprime (WebP) para ahorrar espacio.
-        const res = await fetch('/api/me/avatar', { method: 'POST', body: blob });
+        // content-type siempre explícito: si el navegador mandara el Blob sin tipo,
+        // la protección CSRF de Astro rechazaría la subida detrás del proxy (403),
+        // como pasaba con el DELETE de abajo.
+        const res = await fetch('/api/me/avatar', {
+          method: 'POST',
+          body: blob,
+          headers: { 'content-type': blob.type || 'image/jpeg' },
+        });
         if (res.ok) {
           location.reload();
           return;
