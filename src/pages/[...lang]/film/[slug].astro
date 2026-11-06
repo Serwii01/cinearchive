@@ -13,7 +13,6 @@ import { movieLd, breadcrumbLd } from '../../../lib/seo';
 import { getCommunityRating } from '../../../lib/community';
 import { filmSlug, parseFilmId } from '../../../lib/slug';
 import { mentionsOf } from '../../../lib/mentions';
-import { composerByPerson } from '../../../lib/fonoteca';
 import {
   director,
   directorPerson,
@@ -195,12 +194,11 @@ const untranslated = (lang === 'gl' || lang === 'eu' || lang === 'ca') && !tmdb.
 const profitVal = tmdb.budget && tmdb.revenue && tmdb.budget > 0 && tmdb.revenue > 0 ? tmdb.revenue - tmdb.budget : null;
 const companies = (tmdb.production_companies ?? []).map((c) => c.name).slice(0, 4);
 
-// Quién compuso la música: TMDB lo traía y la ficha no lo enseñaba. Si el
-// compositor tiene ficha en la Fonoteca, se enlaza también allí.
+// Quién compuso la música: TMDB lo traía y la ficha no lo enseñaba.
 const composers = (tmdb.credits?.crew ?? [])
   .filter((c) => c.job === 'Original Music Composer')
   .slice(0, 3)
-  .map((c) => ({ id: c.id, name: c.name, fonoteca: composerByPerson(c.id) }));
+  .map((c) => ({ id: c.id, name: c.name }));
 
 const facts: { label: string; value: string | null | false | undefined; composers?: typeof composers }[] = [
   { label: t('film.music'), value: composers.map((c) => c.name).join(', '), composers },
@@ -407,9 +405,6 @@ const crumbsJsonLd = breadcrumbLd([
                         <Fragment>
                           {i > 0 && ', '}
                           <a href={localizePath(lang, `person/${c.id}`)} class="underline-offset-2 hover:text-ochre-dim">{c.name}</a>
-                          {c.fonoteca && (
-                            <a href={`${localizePath(lang, 'fonoteca')}#${c.fonoteca.id}`} class="label ml-2 border border-ink px-1.5 py-0.5 no-underline hover:bg-ink hover:text-white">{t('fonoteca.inFonoteca')}</a>
-                          )}
                         </Fragment>
                       ))
                     ) : (

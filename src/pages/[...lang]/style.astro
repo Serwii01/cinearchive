@@ -81,14 +81,13 @@ const voice = voiceByLang[lang];
 
 /*
  * Movimiento: cada pieza con su demostración, dónde se usa y los valores. Son
- * los de las páginas reales (atlas.astro, fonoteca.astro, global.css): si se
+ * los de las páginas reales (atlas.astro, global.css): si se
  * cambian allí, hay que cambiarlos aquí.
  */
-type MotionId = 'lift' | 'fan' | 'disc' | 'light' | 'reveal' | 'underline' | 'cascade';
+type MotionId = 'lift' | 'fan' | 'light' | 'reveal' | 'underline' | 'cascade';
 const MOTION_SPEC: Record<MotionId, string> = {
   lift: 'translate(-4px, -4px) · box-shadow 6px 6px 0 ink · 0.22s',
   fan: 'rotate ±4–12° · translateY −30px · +0.04s / cartel · 0.5s',
-  disc: 'clip-path: circle(50%) · 1.8s / vuelta · 1.1s sonando',
   light: 'fill → ochre · scale(1.08) · drop-shadow(2px 3px 0 ink) · 0.28s',
   reveal: 'opacity 0→1 · translateY 8px→0 · cubic-bezier(0.2, 0.9, 0.3, 1.2)',
   underline: '::after · scaleX(0→1) · 0.25s',
@@ -96,45 +95,40 @@ const MOTION_SPEC: Record<MotionId, string> = {
 };
 const motionByLang: Record<Lang, Record<MotionId, [string, string]>> = {
   es: {
-    lift: ['Elevación', 'La ficha se levanta y deja una sombra dura de tinta. Fichas del atlas, carteles de la Fonoteca.'],
+    lift: ['Elevación', 'La ficha se levanta y deja una sombra dura de tinta. Fichas del atlas.'],
     fan: ['Abanico', 'Los carteles apilados se abren y suben, cada uno un poco después. Fichas del atlas, tarjeta del mapa.'],
-    disc: ['Disco', 'Los 78 de la Fonoteca giran al pasar el cursor, y más deprisa mientras suenan.'],
     light: ['Iluminar', 'El país bajo el cursor se copia encima de los demás, crece y se tiñe de ocre; el resto baja de tono.'],
     reveal: ['Aparecer', 'Las tarjetas flotantes entran subiendo con un rebote corto. Tarjeta del mapa del atlas.'],
     underline: ['Subrayado', 'Una línea ocre crece desde el centro en las pestañas. Épocas del atlas.'],
     cascade: ['Cascada', 'Al cargar, los elementos se encienden uno tras otro. Países del atlas.'],
   },
   en: {
-    lift: ['Lift', 'The card rises and leaves a hard ink shadow. Atlas cards, Sound Archive posters.'],
+    lift: ['Lift', 'The card rises and leaves a hard ink shadow. Atlas cards.'],
     fan: ['Fan', 'Stacked posters spread out and rise, each a little later. Atlas cards, map card.'],
-    disc: ['Disc', 'The Sound Archive 78s spin on hover, and faster while they play.'],
     light: ['Highlight', 'The country under the cursor is copied above the others, grows and turns ochre; the rest dim.'],
     reveal: ['Appear', 'Floating cards come in rising with a short bounce. Atlas map card.'],
     underline: ['Underline', 'An ochre line grows from the centre on tabs. Atlas eras.'],
     cascade: ['Cascade', 'On load, items light up one after another. Atlas countries.'],
   },
   gl: {
-    lift: ['Elevación', 'A ficha levántase e deixa unha sombra dura de tinta. Fichas do atlas, carteis da Fonoteca.'],
+    lift: ['Elevación', 'A ficha levántase e deixa unha sombra dura de tinta. Fichas do atlas.'],
     fan: ['Abano', 'Os carteis amoreados ábrense e soben, cada un un pouco despois. Fichas do atlas, tarxeta do mapa.'],
-    disc: ['Disco', 'Os 78 da Fonoteca xiran ao pasar o cursor, e máis axiña mentres soan.'],
     light: ['Iluminar', 'O país baixo o cursor cópiase por riba dos demais, medra e tínguese de ocre; o resto baixa de ton.'],
     reveal: ['Aparecer', 'As tarxetas flotantes entran subindo cun rebote curto. Tarxeta do mapa do atlas.'],
     underline: ['Subliñado', 'Unha liña ocre medra desde o centro nas lapelas. Épocas do atlas.'],
     cascade: ['Fervenza', 'Ao cargar, os elementos acéndense un tras outro. Países do atlas.'],
   },
   eu: {
-    lift: ['Altxatzea', 'Fitxa altxatu egiten da eta tintazko itzal gogorra uzten du. Atlaseko fitxak, Fonotekako kartelak.'],
+    lift: ['Altxatzea', 'Fitxa altxatu egiten da eta tintazko itzal gogorra uzten du. Atlaseko fitxak.'],
     fan: ['Haizemailea', 'Pilatutako kartelak zabaldu eta igo egiten dira, bakoitza pixka bat beranduago. Atlaseko fitxak, maparen txartela.'],
-    disc: ['Diskoa', 'Fonotekako 78ak biratu egiten dira kurtsorea gainetik pasatzean, eta azkarrago jotzen ari diren bitartean.'],
     light: ['Argiztatu', 'Kurtsorearen azpiko herrialdea besteen gainean kopiatzen da, hazi eta okre bihurtzen da; gainerakoak itzaltzen dira.'],
     reveal: ['Agertu', 'Txartel mugikorrak igoz sartzen dira, errebote labur batekin. Atlaseko maparen txartela.'],
     underline: ['Azpimarra', 'Okre-lerro bat erditik hazten da fitxetan. Atlaseko garaiak.'],
     cascade: ['Ur-jauzia', 'Kargatzean, elementuak bata bestearen atzetik pizten dira. Atlaseko herrialdeak.'],
   },
   ca: {
-    lift: ['Elevació', 'La fitxa s’aixeca i deixa una ombra dura de tinta. Fitxes de l’atles, cartells de la Fonoteca.'],
+    lift: ['Elevació', 'La fitxa s’aixeca i deixa una ombra dura de tinta. Fitxes de l’atles.'],
     fan: ['Ventall', 'Els cartells apilats s’obren i pugen, cadascun una mica després. Fitxes de l’atles, targeta del mapa.'],
-    disc: ['Disc', 'Els 78 de la Fonoteca giren en passar-hi el cursor, i més de pressa mentre sonen.'],
     light: ['Il·luminar', 'El país sota el cursor es copia per sobre dels altres, creix i es tenyeix d’ocre; la resta baixa de to.'],
     reveal: ['Aparèixer', 'Les targetes flotants entren pujant amb un rebot curt. Targeta del mapa de l’atles.'],
     underline: ['Subratllat', 'Una línia ocre creix des del centre a les pestanyes. Èpoques de l’atles.'],
@@ -299,11 +293,6 @@ const demoPosters = ['/cinema/1926-faust.jpg', '/cinema/the-passion-of-joan-of-a
                 {demoPosters.map((src, i) => <img src={src} alt="" class={`p${i}`} loading="lazy" decoding="async" />)}
               </div>
             )}
-            {m.id === 'disc' && (
-              <div class="d-disc-wrap">
-                <div class="d-disc"><img src="/fonoteca/victor-17655-b-poor-pauline.jpg" alt="" loading="lazy" decoding="async" /></div>
-              </div>
-            )}
             {m.id === 'light' && (
               <svg viewBox="0 0 120 70" class="h-28 w-auto" aria-hidden="true">
                 <rect class="d-cell" x="6" y="8" width="34" height="24" />
@@ -356,7 +345,7 @@ const demoPosters = ['/cinema/1926-faust.jpg', '/cinema/the-passion-of-joan-of-a
 <style>
   /*
    * Demostraciones de «Movimiento». Mismos valores que en las páginas reales
-   * (atlas.astro, fonoteca.astro): si cambian allí, se cambian aquí.
+   * (atlas.astro): si cambian allí, se cambian aquí.
    */
 
   /* Elevación */
@@ -393,34 +382,6 @@ const demoPosters = ['/cinema/1926-faust.jpg', '/cinema/the-passion-of-joan-of-a
   .demo:hover .d-fan .p1 { transform: translate(-6%, -30px) rotate(-4deg); transition-delay: 0.04s; }
   .demo:hover .d-fan .p2 { transform: translate(6%, -30px) rotate(4deg); transition-delay: 0.08s; }
   .demo:hover .d-fan .p3 { transform: translate(14%, -16px) rotate(12deg); transition-delay: 0.12s; }
-
-  /* Disco: redondo con clip-path, porque border-radius está prohibido en toda la web. */
-  .d-disc-wrap {
-    width: 7.5rem;
-    height: 7.5rem;
-    filter: drop-shadow(3px 3px 0 var(--c-ink));
-  }
-  .d-disc {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    clip-path: circle(50%);
-    background: repeating-radial-gradient(circle at 50% 50%, #111 0 1px, #1e1e1e 1px 3px);
-  }
-  .d-disc img {
-    position: absolute;
-    inset: 22%;
-    width: 56%;
-    height: 56%;
-    clip-path: circle(50%);
-    object-fit: cover;
-  }
-  .demo:hover .d-disc {
-    animation: d-spin 1.8s linear infinite;
-  }
-  @keyframes d-spin {
-    to { transform: rotate(360deg); }
-  }
 
   /* Iluminar */
   .d-cell {
@@ -497,7 +458,7 @@ const demoPosters = ['/cinema/1926-faust.jpg', '/cinema/the-passion-of-joan-of-a
     .d-lift, .d-fan img, .d-cell, .d-reveal, .d-tab::after {
       transition: none;
     }
-    .demo:hover .d-disc, .demo:hover .d-dot {
+    .demo:hover .d-dot {
       animation: none;
     }
     .d-reveal {

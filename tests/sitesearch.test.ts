@@ -56,20 +56,3 @@ describe('searchSite', () => {
     expect(searchSite('cine', 'es', 5)).toHaveLength(5);
   });
 });
-
-describe('searchSite: fonoteca', () => {
-  it('encuentra a un compositor y lleva a su tarjeta', () => {
-    const r = searchSite('morricone', 'es');
-    expect(r[0]).toMatchObject({ kind: 'fonoteca', title: 'Ennio Morricone', href: '/fonoteca#ennio-morricone' });
-  });
-
-  it('encuentra una grabación por su título, en cualquier idioma', () => {
-    const r = searchSite('charlie chaplin feet', 'en');
-    expect(r.some((h) => h.kind === 'fonoteca' && h.href.startsWith('/en/fonoteca#'))).toBe(true);
-  });
-
-  it('una película lleva a su compositor: «Vértigo» encuentra a Herrmann', () => {
-    const r = searchSite('vertigo', 'es');
-    expect(r.some((h) => h.kind === 'fonoteca' && h.title === 'Bernard Herrmann')).toBe(true);
-  });
-});

@@ -52,4 +52,4 @@ Para la BD en local: `docker run -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=cine -p
 - Postgres solo escucha en `127.0.0.1:5432` del VPS. El CRM entra por túnel SSH.
 - Variables de entorno: ver `.env.example`. El `.env` nunca se versiona.
 
-> El estado del trabajo (qué se hizo, qué falta) está en `STATUS.md`.
+> El estado del trabajo (qué se hizo, qué falta) está en `STATUS.md`. Hay que actualizarlo al terminar cada tarea, sin esperar a `/cerrar`: siempre refleja lo último que se ha hecho.

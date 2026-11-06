@@ -3,64 +3,59 @@
     "version": "1.19",
     "date": "2026-11-02",
     "title": {
-      "es": "Fonoteca, un Atlas nuevo y tu propio mapa del cine",
-      "en": "Sound Archive, a new Atlas and your own film map",
-      "gl": "Fonoteca, un Atlas novo e o teu propio mapa do cine",
-      "eu": "Fonoteka, Atlas berria eta zure zinemaren mapa",
-      "ca": "Fonoteca, un Atlas nou i el teu propi mapa del cinema"
+      "es": "Un Atlas nuevo y tu propio mapa del cine",
+      "en": "A new Atlas and your own film map",
+      "gl": "Un Atlas novo e o teu propio mapa do cine",
+      "eu": "Atlas berria eta zure zinemaren mapa",
+      "ca": "Un Atlas nou i el teu propi mapa del cinema"
     },
     "changes": {
       "es": [
-        "Fonoteca: una sección nueva dentro de Filmoteca con la música del cine. Siete grabaciones de dominio público para escuchar (1907–1921), partituras y hojas de música del cine mudo, doce compositores de Max Steiner a Hildur Guðnadóttir e hitos de la banda sonora. El buscador del archivo también la encuentra: buscar «Vértigo» lleva a Bernard Herrmann.",
-        "Las fichas de película enseñan quién compuso la música y, si está en la Fonoteca, enlazan con su tarjeta.",
         "Atlas renovado: ya no reparte el cine por países, sino que recorre 27 movimientos, del expresionismo alemán a la nueva ola griega, con su época, sus cineastas y cuatro películas. Puedes elegir una década y ver qué países tenían algo vivo entonces.",
         "«Tu mapa»: colorea los países según cuántas películas suyas has visto y te dice qué movimientos te faltan.",
         "16 películas más en Cine abierto, de Un perro andaluz y La caja de Pandora a Steamboat Willie, y 9 libros más en la biblioteca.",
         "Visionados más sencillos: al puntuar una película queda apuntada en «Tus visionados» al momento, con la fecha que elijas o la de hoy.",
+        "Las fichas de película enseñan quién compuso la música.",
         "Perfil: crear el perfil público se entiende a la primera, los errores al guardar se ven junto al campo y la foto explica qué le falta.",
         "Palmarés corregido: Wings es de William A. Wellman y Slumdog Millionaire de Danny Boyle, y las películas dirigidas a medias ya llevan las dos firmas.",
         "Las listas y las demás cuadrículas vuelven a tener el marco completo."
       ],
       "en": [
-        "Sound Archive: a new section inside Filmography with the music of cinema. Seven public-domain recordings to listen to (1907–1921), silent-era scores and sheet music, twelve composers from Max Steiner to Hildur Guðnadóttir, and soundtrack milestones. The archive search finds it too: searching “Vertigo” leads to Bernard Herrmann.",
-        "Film pages show who composed the music and, if they are in the Sound Archive, link to their card.",
         "A renewed Atlas: instead of sorting cinema by country, it now travels through 27 movements, from German Expressionism to the Greek New Wave, each with its period, its filmmakers and four films. You can pick a decade and see which countries had something alive at the time.",
         "“Your map”: it colours countries by how many of their films you have seen and tells you which movements you are missing.",
         "16 more films in Open Cinema, from Un Chien Andalou and Pandora’s Box to Steamboat Willie, and 9 more books in the library.",
         "Simpler viewings: rating a film logs it in “Your viewings” straight away, with the date you choose or today’s.",
+        "Film pages show who composed the music.",
         "Profile: creating a public profile is clear from the start, saving errors appear next to the field, and the photo tells you what it still needs.",
         "Awards corrected: Wings is by William A. Wellman and Slumdog Millionaire by Danny Boyle, and co-directed films now credit both directors.",
         "Lists and the other grids have their full frame back."
       ],
       "gl": [
-        "Fonoteca: unha sección nova dentro de Filmoteca coa música do cine. Sete gravacións de dominio público para escoitar (1907–1921), partituras e follas de música do cine mudo, doce compositores de Max Steiner a Hildur Guðnadóttir e fitos da banda sonora. O buscador do arquivo tamén a atopa: buscar «Vértigo» leva a Bernard Herrmann.",
-        "As fichas de película amosan quen compuxo a música e, se está na Fonoteca, ligan coa súa tarxeta.",
         "Atlas renovado: xa non reparte o cine por países, senón que percorre 27 movementos, do expresionismo alemán á nova onda grega, coa súa época, os seus cineastas e catro películas. Podes escoller unha década e ver que países tiñan algo vivo entón.",
         "«O teu mapa»: colorea os países segundo cantas películas deles viches e dite que movementos che faltan.",
         "16 películas máis en Cine aberto, de Un can andaluz e A caixa de Pandora a Steamboat Willie, e 9 libros máis na biblioteca.",
         "Visionados máis sinxelos: ao puntuar unha película queda apuntada en «Os teus visionados» ao momento, coa data que escollas ou a de hoxe.",
+        "As fichas de película amosan quen compuxo a música.",
         "Perfil: crear o perfil público enténdese á primeira, os erros ao gardar vense xunto ao campo e a foto explica que lle falta.",
         "Palmarés corrixido: Wings é de William A. Wellman e Slumdog Millionaire de Danny Boyle, e as películas dirixidas a medias xa levan as dúas sinaturas.",
         "As listas e as demais cuadrículas volven ter o marco completo."
       ],
       "eu": [
-        "Fonoteka: atal berria Filmotekaren barruan, zinemaren musikarekin. Entzuteko jabari publikoko zazpi grabazio (1907–1921), zinema mutuko partiturak eta musika-orriak, Max Steinerretik Hildur Guðnadóttirrera doazen hamabi konpositore eta soinu-bandaren mugarriak. Artxiboko bilatzaileak ere aurkitzen du: «Vértigo» bilatzeak Bernard Herrmannengana eramaten zaitu.",
-        "Filmen fitxek musika nork konposatu zuen erakusten dute eta, Fonotekan badago, haren txartelera estekatzen dute.",
         "Atlas berritua: zinema ez du jada herrialdeka banatzen, baizik eta 27 mugimendu zeharkatzen ditu, espresionismo alemanetik olatu berri greziarrera, bakoitza bere garaiarekin, zinemagileekin eta lau filmekin. Hamarkada bat aukeratu eta garai hartan zein herrialdetan zegoen zerbait bizirik ikus dezakezu.",
         "«Zure mapa»: herrialdeak koloreztatzen ditu haien zenbat film ikusi dituzun kontuan hartuta, eta zein mugimendu falta zaizkizun esaten dizu.",
         "16 film gehiago Zinema irekian, Un chien andalou eta Pandoraren kutxatik Steamboat Willieraino, eta 9 liburu gehiago liburutegian.",
         "Ikustaldi errazagoak: film bat puntuatzean berehala geratzen da «Zure ikustaldiak» atalean, aukeratzen duzun datarekin edo gaurkoarekin.",
+        "Filmen fitxek musika nork konposatu zuen erakusten dute.",
         "Profila: profil publikoa sortzea lehen unetik ulertzen da, gordetzeko erroreak eremuaren ondoan ikusten dira eta argazkiak zer falta zaion azaltzen du.",
         "Palmaresa zuzenduta: Wings William A. Wellmanena da eta Slumdog Millionaire Danny Boylerena, eta bi zuzendariren artean egindako filmek biak aipatzen dituzte orain.",
         "Zerrendek eta gainerako saretek berriro dute marko osoa."
       ],
       "ca": [
-        "Fonoteca: una secció nova dins de Filmoteca amb la música del cinema. Set enregistraments de domini públic per escoltar (1907–1921), partitures i fulls de música del cinema mut, dotze compositors de Max Steiner a Hildur Guðnadóttir i fites de la banda sonora. El cercador de l’arxiu també la troba: cercar «Vértigo» porta a Bernard Herrmann.",
-        "Les fitxes de pel·lícula mostren qui va compondre la música i, si és a la Fonoteca, enllacen amb la seva targeta.",
         "Atlas renovat: ja no reparteix el cinema per països, sinó que recorre 27 moviments, de l’expressionisme alemany a la nova onada grega, amb la seva època, els seus cineastes i quatre pel·lícules. Pots triar una dècada i veure quins països tenien alguna cosa viva aleshores.",
         "«El teu mapa»: acoloreix els països segons quantes pel·lícules seves has vist i et diu quins moviments et falten.",
         "16 pel·lícules més a Cinema obert, d’Un gos andalús i La capsa de Pandora a Steamboat Willie, i 9 llibres més a la biblioteca.",
         "Visionats més senzills: en puntuar una pel·lícula queda apuntada a «Els teus visionats» a l’instant, amb la data que triïs o la d’avui.",
+        "Les fitxes de pel·lícula mostren qui va compondre la música.",
         "Perfil: crear el perfil públic s’entén a la primera, els errors en desar es veuen al costat del camp i la foto explica què li falta.",
         "Palmarès corregit: Wings és de William A. Wellman i Slumdog Millionaire de Danny Boyle, i les pel·lícules dirigides a mitges ja porten les dues signatures.",
         "Les llistes i les altres quadrícules tornen a tenir el marc complet."

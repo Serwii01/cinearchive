@@ -1,5 +1,5 @@
 /**
- * Películas elegidas a mano en el contenido propio (atlas, fonoteca): en el JSON
+ * Películas elegidas a mano en el contenido propio (atlas): en el JSON
  * van con título y año, y los scripts les añaden el id, el cartel y las
  * traducciones del título de TMDB. Aquí se convierten en lo que pinta la página.
  * Pura (tiene tests).

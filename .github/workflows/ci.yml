@@ -1,0 +1,29 @@
+# Comprueba cada push y cada PR a main. El VPS despliega a mano desde main, así
+# que esto es lo único que avisa de un fallo antes de hacer `git pull` allí.
+# Sin secretos: los tests y el build no necesitan .env.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Un push nuevo cancela la comprobación anterior de la misma rama.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-y-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22 # la misma versión que el Dockerfile
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build

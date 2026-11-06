@@ -19,10 +19,9 @@ import { collections, collectionTitle, collectionBlurb } from './collections';
 import { dossiers, dossierCopy } from './dossiers';
 import { pdFilms } from './pdfilms';
 import { glossary, glossaryTerm, glossaryDef } from './reference';
-import { getRecordings, getScores, getComposers } from './fonoteca';
 import { localizePath, type Lang } from '../i18n/ui';
 
-export type SiteKind = 'article' | 'dossier' | 'collection' | 'figure' | 'periodical' | 'book' | 'cinema' | 'glossary' | 'fonoteca';
+export type SiteKind = 'article' | 'dossier' | 'collection' | 'figure' | 'periodical' | 'book' | 'cinema' | 'glossary';
 
 export interface SiteHit {
   kind: SiteKind;
@@ -91,18 +90,6 @@ function build(lang: Lang): Entry[] {
     // Se busca también por el término en castellano e inglés: «plano» y «shot»
     // llevan a la misma definición en cualquier idioma.
     push('glossary', term, glossaryDef(g, lang), `${localizePath(lang, 'glossary')}#l-${letra}`, `${g.term_es} ${g.term_en}`);
-  }
-  // Fonoteca: cada resultado lleva a su tarjeta dentro de la página (#id).
-  const fonoteca = localizePath(lang, 'fonoteca');
-  for (const r of getRecordings(lang)) {
-    push('fonoteca', r.title, `${r.performer} · ${r.year}`, `${fonoteca}#${r.id}`, r.blurb);
-  }
-  for (const s of getScores(lang)) {
-    push('fonoteca', s.title, `${s.author} · ${s.year}`, `${fonoteca}#${s.id}`, s.blurb);
-  }
-  for (const c of getComposers(lang)) {
-    // Sus películas también cuentan: buscar «Vértigo» lleva a Herrmann.
-    push('fonoteca', c.name, c.died ? `${c.born}–${c.died}` : String(c.born), `${fonoteca}#${c.id}`, `${c.blurb} ${c.films.map((f) => f.title).join(' ')}`);
   }
   return out;
 }

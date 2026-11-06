@@ -1,12 +1,13 @@
 # Estado del proyecto
 
-> Lo mantiene Claude con `/cerrar`. Es la memoria de trabajo: dónde se quedó y qué viene después.
+> Lo mantiene Claude al terminar cada tarea, sin esperar a `/cerrar`. Es la memoria de trabajo: dónde se quedó y qué viene después.
 
 ## Estado actual
-En producción en cinearchive.es, con el VPS al día con main (todo lo del 29 al 31 oct ya está desplegado, migración 0021 incluida). Changelog al día: v1.17 y v1.18 publicadas.
+En producción en cinearchive.es, con 1.095.271 visitas el 5 nov. En main está la retirada de la Fonoteca, la v1.19 corregida, la CI y better-auth 1.7.18; hay que desplegarlo para que llegue a la web. Tests (550) y build en verde.
 
 ## Siguientes pasos
-- [ ] Comprobar en producción lo desplegado del 29 al 31 oct: títulos y sagas, «volver» entre películas parecidas, la página del equipo y el enlace a Instagram.
+- [ ] Seguridad: migrar Astro 5 a 7 (y `@astrojs/node`), aparte: es lo que cierra el aviso crítico y casi todos los que quedan. `npm audit` da 8 en producción (1 crítico, 4 altos). Tras desplegar, probar el acceso con Google y GitHub, y el correo de confirmación y el de restablecer contraseña.
+- [ ] Revisar en Umami qué secciones se usan y dónde se va la gente antes de añadir nada nuevo.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
 - [x] Enviar los correos para el código de GTA VI (Xbox España: microsoft@comunicacionrrpp.es, CC xbox@comunicacionrrpp.es; Rockstar: pr@rockstargames.com, sin verificar).
@@ -15,7 +16,26 @@ En producción en cinearchive.es, con el VPS al día con main (todo lo del 29 al
 
 ## Última sesión
 
+### 2026-11-05
+- Fonoteca retirada: página, datos, imágenes, script, tests, enlaces en Filmoteca e Info, buscador, 90 textos y la demo del disco en /style. No convenció a Sergio; sigue en el historial (bbb8c8a, f2f4361). /fonoteca dará 404, sin redirección.
+- Se conservan el crédito de «Música» en las fichas (viene de TMDB) y lib/curated.ts (lo usa el Atlas); sus tests pasan a tests/curated.test.ts.
+- Changelog v1.19 subido (9aa30d1) y corregido para no anunciar la Fonoteca: «Un Atlas nuevo y tu propio mapa del cine».
+- Producción: contador en 1.095.271; portada, /team, /atlas, /changelog y /api/health responden; Instagram enlazado; sitemap correcto en /sitemap-index.xml. Sergio confirma que sagas y «volver» están bien.
+- Post de Instagram del millón (línea moderna, «1M» con portadas y fotogramas dentro), fuera del repo: Desktop/Cine-Archive-Posts/un-millon, con _build/gen-millon-v2.mjs.
+- El navegador integrado tiene bloqueados cinearchive.es e Instagram por permisos de sitio.
+- CI nueva en .github/workflows/ci.yml: tests y build con Node 22 en cada push y PR a main, sin secretos; probado en local sin .env. La primera ejecución real será al subirla.
+- Auditoría del build (976 páginas prerenderizadas): ninguna imagen sin alt, ningún title, description ni h1 ausente. Quedan 13 números de una misma revista compartiendo descripción y /offline con dos h1.
+- Dependencias: `npm audit` en producción baja de 28 a 8 avisos; better-auth pasa de 1.6.20 a 1.7.18. Probado en local con el build y un Postgres temporal: registro, entrar, salir, cambiar contraseña, /account, borrar cuenta, límite de intentos y un usuario con hash de la 1.6. No probados: acceso con Google/GitHub ni correos reales.
+- Dos problemas conocidos ya estaban resueltos y se quitan de la lista: los artículos existen en los 5 idiomas, y los nombres en alfabeto no latino se corrigen desde el 29 oct (lib/personnames.ts), también en Tu año en cine.
+
+### 2026-11-02
+- Fonoteca y su búsqueda (retiradas el 5 nov).
+- Fichas: crédito de «Música» desde TMDB. Visionados: se apuntan al puntuar y se quita «Añadir visionado».
+- Perfil: «Crea tu perfil público» se explica mejor, y los errores al guardar y la foto avisan de qué falta.
+- Listas: las rejillas recuperan el marco completo. Guía de estilo ampliada con formularios, avisos y movimiento.
+
 ### 2026-11-01
+- Atlas por 27 movimientos y décadas, con «Tu mapa»; 16 películas y 9 libros más; palmarés corregido (Wings, Slumdog Millionaire y películas codirigidas).
 - Fichas: «volver» usa el historial cuando el enlace apunta a la página anterior (lib/ui/backnav.ts, data-back en película y persona); se acabó el bucle entre películas parecidas.
 - Búsqueda: la consulta se guarda en la URL también al escribir (replaceState), así volver desde una ficha no deja /search vacío.
 - Login: ?next= validado con lib/safenext.ts (solo rutas propias, nunca /login ni otros dominios); el ?next= de búsqueda, listas, controles de ficha y middleware conserva la consulta.
@@ -59,13 +79,13 @@ En producción en cinearchive.es, con el VPS al día con main (todo lo del 29 al
 - Importación de Letterboxd: lo que ya hay en Cine Archive gana; Letterboxd solo rellena huecos y reimportar no duplica.
 - Fichas en gallego, euskera y catalán sin sinopsis traducida se sirven con noindex para no anunciar copias en castellano como traducciones.
 - Las secciones bajo /u/<usuario>/ no pueden llamarse como una página de primer nivel (diary, watchlist…): el comodín de idioma [...lang] las captura. Por eso son viewings/favorites/pending.
+- `typescript` va declarado en devDependencies a propósito: better-auth 1.7 se instala con `--legacy-peer-deps` por peers opcionales de frameworks que no usamos, y sin esa línea typescript se cae del lockfile y `npm ci` falla en Docker.
+- Antes de añadir secciones nuevas, mirar qué se usa: la Fonoteca se publicó y se retiró en tres días.
 - Una nota sin texto no es una reseña: en el perfil sale como estrellas en los visionados, no como tarjeta.
 - «Volver» usa history.back() solo si el enlace apunta exactamente a la página anterior (mismo origen, ruta y consulta); si no, navega al href. Así no hay bucles y se conserva el scroll.
 - Todo ?next= pasa por safeNext(): solo rutas que empiezan por / en el propio sitio, sin // ni /\ ni /login.
 
 ## Problemas conocidos
 - Margen de RAM y conexiones muy justo en el VPS: cualquier servicio nuevo tiene que caber en lo que queda.
-- El contenido editorial solo existe en ES/EN; en GL/EU/CA la interfaz está traducida pero los artículos no.
 - Si no hay `RESEND_API_KEY`, la confirmación de correo se desactiva sola (se avisa en el log).
-- Nombres de personas de TMDB en su alfabeto original (p. ej. «王家衛» para Wong Kar-wai en directores de Tu año en cine).
 - Toda la web (incluido lo estático) pasa por un único proceso de Node en el VPS.

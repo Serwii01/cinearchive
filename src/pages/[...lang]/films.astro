@@ -8,7 +8,6 @@ import { collections } from '../../lib/collections';
 import { figures } from '../../lib/figures';
 import { countryLabel } from '../../lib/atlas';
 import { getMovements } from '../../lib/movements';
-import { fonotecaCount } from '../../lib/fonoteca';
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
@@ -30,7 +29,6 @@ const secciones = [
   { path: 'collections', label: t('nav.collections'), desc: t('collections.intro'), n: collections.length },
   { path: 'figures', label: t('nav.figures'), desc: t('figures.intro'), n: figures.length },
   { path: 'atlas', label: t('nav.atlas'), desc: t('atlas.intro'), n: getMovements(lang).length },
-  { path: 'fonoteca', label: t('nav.fonoteca'), desc: t('fonoteca.intro'), n: fonotecaCount() },
 ];
 ---
 
@@ -49,13 +47,10 @@ const secciones = [
     {/* Las cuatro secciones que cuelgan de la Filmoteca. Van arriba, antes del
         catálogo: quien llega aquí buscando «qué hay» tiene que verlas sin
         bajar, y quien viene a por una ficha concreta usa el filtro de abajo. */}
-    {/* Cinco secciones: Cine abierto ocupa dos columnas para que todas las filas
-        se llenen (2+1 y 3 en escritorio, 2·2·2 en tableta). A cinco columnas los
-        títulos no cabían. */}
-    <nav class="mt-8 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-3" aria-label={t('films.sections')}>
+    <nav class="mt-8 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-4" aria-label={t('films.sections')}>
       {
-        secciones.map((s, i) => (
-          <a href={localizePath(lang, s.path)} class={`group flex flex-col bg-surface p-5 no-underline transition-colors hover:bg-film-white ${i === 0 ? 'sm:col-span-2' : ''}`}>
+        secciones.map((s) => (
+          <a href={localizePath(lang, s.path)} class="group flex flex-col bg-surface p-5 no-underline transition-colors hover:bg-film-white">
             <span class="flex items-baseline justify-between gap-2">
               <span class="font-display text-headline-lg leading-tight text-ink transition-colors group-hover:text-muted">{s.label}</span>
               <span class="font-mono text-meta-data text-ochre-dim">{s.n}</span>
