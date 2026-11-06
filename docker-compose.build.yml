@@ -1,0 +1,24 @@
+# Reserva: compilar en el propio VPS, para cuando GitHub o GHCR no estén disponibles.
+# Lo normal es descargar las imágenes de GHCR (ver docker-compose.yml). Compilar aquí
+# ahoga la web, sobre todo Caddy, así que construye solo lo que haga falta:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build --no-deps app
+services:
+  app:
+    pull_policy: build
+    build:
+      context: .
+      args:
+        # Dominio público en tiempo de build (canonical/sitemap/OpenGraph).
+        SITE_URL: ${SITE_URL}
+        # Analítica: el id del sitio en Umami. Va también como argumento de build
+        # porque media web es prerenderizada y ahí el script se decide al compilar.
+        # Vacío = no se emite ningún script (la web funciona igual).
+        UMAMI_WEBSITE_ID: ${UMAMI_WEBSITE_ID:-}
+        UMAMI_HOST: analitica.${DOMAIN}
+
+  caddy:
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy

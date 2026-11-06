@@ -3,10 +3,13 @@
 > Lo mantiene Claude al terminar cada tarea, sin esperar a `/cerrar`. Es la memoria de trabajo: dónde se quedó y qué viene después.
 
 ## Estado actual
-En producción en cinearchive.es, con 1.095.271 visitas el 5 nov. En main está la retirada de la Fonoteca, la v1.19 corregida, la CI y better-auth 1.7.18; hay que desplegarlo para que llegue a la web. Tests (550) y build en verde.
+En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7bf4a09): sin Fonoteca, v1.19 corregida, CI y better-auth 1.7.18. Contador en 1.345.884 ese día. En local, sin commit: imágenes en GitHub para que el VPS deje de compilar.
 
 ## Siguientes pasos
-- [ ] Seguridad: migrar Astro 5 a 7 (y `@astrojs/node`), aparte: es lo que cierra el aviso crítico y casi todos los que quedan. `npm audit` da 8 en producción (1 crítico, 4 altos). Tras desplegar, probar el acceso con Google y GitHub, y el correo de confirmación y el de restablecer contraseña.
+- [ ] Seguridad: migrar Astro 5 a 7 (y `@astrojs/node`), aparte: es lo que cierra el aviso crítico y casi todos los que quedan. `npm audit` da 8 en producción (1 crítico, 4 altos).
+- [ ] Estrenar los despliegues sin compilar: subir el cambio, esperar la CI en verde, poner públicos los paquetes `cinearchive-app` y `cinearchive-caddy` en GitHub y lanzar el Autodeploy. Medir cuánto tarda. Sin probar aún: la primera construcción en GHCR y que el VPS sea amd64.
+- [ ] Probar en producción el acceso con Google y GitHub, los correos reales y si las sesiones abiertas sobrevivieron a better-auth 1.7.
+- [ ] Mirar por qué el contador subió de 1.095.271 (5 nov) a 1.345.884 (6 nov): ¿post viral, robots o fallo de cuenta?
 - [ ] Revisar en Umami qué secciones se usan y dónde se va la gente antes de añadir nada nuevo.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
@@ -15,6 +18,12 @@ En producción en cinearchive.es, con 1.095.271 visitas el 5 nov. En main está 
 - [ ] Si crece el tráfico: que Caddy sirva directamente lo prerenderizado y /_astro (sin pasar por Node), o Cloudflare delante.
 
 ## Última sesión
+
+### 2026-11-06
+- Commit 7bf4a09 con todo lo del 5 nov; la primera CI en GitHub pasa en 33 s.
+- Por qué tardó tanto: antes el deploy reutilizaba la caché de Docker; esta vez había que reinstalar dependencias (lockfile nuevo) y compilar Caddy. Sergio no llegó a cortarlo: terminó solo.
+- Preparado (sin commit): la CI construye `app` y `caddy` en GHCR si pasan los tests; docker-compose.yml usa esas imágenes con pull_policy always, así el Autodeploy del CRM sirve sin recompilarlo; docker-compose.build.yml queda de reserva.
+- Incidente en el deploy: el VPS se puso a compilar Caddy desde cero (xcaddy) y, de 17 comprobaciones entre las 22:29 y las 22:35, 8 no respondieron. La versión nueva entró a las 22:35:12.
 
 ### 2026-11-05
 - Fonoteca retirada: página, datos, imágenes, script, tests, enlaces en Filmoteca e Info, buscador, 90 textos y la demo del disco en /style. No convenció a Sergio; sigue en el historial (bbb8c8a, f2f4361). /fonoteca dará 404, sin redirección.

@@ -1,6 +1,8 @@
-# Comprueba cada push y cada PR a main. El VPS despliega a mano desde main, así
-# que esto es lo único que avisa de un fallo antes de hacer `git pull` allí.
-# Sin secretos: los tests y el build no necesitan .env.
+# Comprueba cada push y cada PR a main y, si todo pasa, construye las imágenes.
+#
+# Las imágenes se hacen aquí y no en el VPS porque allí la compilación compite
+# con la web por 1 núcleo y 1,8 GB: el 6-11-2026, compilar Caddy dejó la web sin
+# responder a ratos. El VPS solo las descarga (pull_policy en docker-compose.yml).
 name: CI
 
 on:
@@ -27,3 +29,47 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+
+  imagenes:
+    # Solo lo que pasa los tests llega a una imagen: un commit roto no se despliega.
+    needs: test-y-build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - nombre: app
+            dockerfile: Dockerfile
+          - nombre: caddy
+            dockerfile: Dockerfile.caddy
+    steps:
+      - uses: actions/checkout@v5
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ghcr.io/serwii01/cinearchive-${{ matrix.nombre }}:latest
+            ghcr.io/serwii01/cinearchive-${{ matrix.nombre }}:${{ github.sha }}
+          labels: org.opencontainers.image.source=https://github.com/Serwii01/cinearchive
+          # Son públicos: el dominio y el id de Umami salen en el HTML de la web.
+          # Caddy no los usa y los ignora.
+          build-args: |
+            SITE_URL=https://cinearchive.es
+            UMAMI_WEBSITE_ID=9c3ed801-d7c3-4d77-8e8e-76de01a0cac1
+            UMAMI_HOST=analitica.cinearchive.es
+          # Con la caché, Caddy solo se compila cuando cambia su Dockerfile.
+          cache-from: type=gha,scope=${{ matrix.nombre }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.nombre }}

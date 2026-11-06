@@ -55,16 +55,12 @@ services:
   app:
     <<: *logging
     mem_limit: 512m
-    build:
-      context: .
-      args:
-        # Dominio público en tiempo de build (canonical/sitemap/OpenGraph).
-        SITE_URL: ${SITE_URL}
-        # Analítica: el id del sitio en Umami. Va también como argumento de build
-        # porque media web es prerenderizada y ahí el script se decide al compilar.
-        # Vacío = no se emite ningún script (la web funciona igual).
-        UMAMI_WEBSITE_ID: ${UMAMI_WEBSITE_ID:-}
-        UMAMI_HOST: analitica.${DOMAIN}
+    # La imagen se construye en GitHub Actions y aquí solo se descarga: compilar en
+    # el VPS ahoga la web. El Autodeploy sigue siendo `docker compose up -d --build`:
+    # sin sección build no compila nada, y pull_policy baja la última imagen. Si no ha
+    # cambiado, el contenedor no se toca. Reserva: docker-compose.build.yml.
+    image: ghcr.io/serwii01/cinearchive-app:latest
+    pull_policy: always
     restart: unless-stopped
     # Carga las claves (TMDB/OMDb/auth/OAuth) desde .env. Nunca se versiona.
     env_file: .env
@@ -152,9 +148,8 @@ services:
   caddy:
     <<: *logging
     mem_limit: 96m
-    build:
-      context: .
-      dockerfile: Dockerfile.caddy
+    image: ghcr.io/serwii01/cinearchive-caddy:latest
+    pull_policy: always
     restart: unless-stopped
     ports:
       - '80:80'
