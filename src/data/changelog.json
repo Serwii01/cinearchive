@@ -1,5 +1,58 @@
 [
   {
+    "version": "1.20",
+    "date": "2026-11-07",
+    "title": {
+      "es": "Una web más rápida, más segura y más estable",
+      "en": "A faster, safer and steadier site",
+      "gl": "Unha web máis rápida, máis segura e máis estable",
+      "eu": "Webgune azkarragoa, seguruagoa eta egonkorragoa",
+      "ca": "Un web més ràpid, més segur i més estable"
+    },
+    "changes": {
+      "es": [
+        "Las listas, los perfiles y los diarios cargan más rápido, sobre todo los que tienen muchas películas.",
+        "La web ya no se corta unos minutos cada vez que publicamos una novedad.",
+        "Más seguridad: la web estrena la última versión de la tecnología sobre la que está hecha y el sistema de cuentas se ha actualizado. Tu sesión, tu contraseña y tus datos siguen igual.",
+        "Copias de seguridad cada noche de las cuentas, las listas, los diarios y las reseñas.",
+        "El contador de visitas de la página de información ya solo cuenta personas: antes se colaban los programas que recorren webs de forma automática.",
+        "En el Archivo, las portadas de la Biblioteca vuelven a verse con su marco."
+      ],
+      "en": [
+        "Lists, profiles and diaries load faster, especially the ones with lots of films.",
+        "The site no longer goes down for a few minutes every time we publish something new.",
+        "More security: the site now runs on the latest version of the technology it is built on, and the account system has been updated. Your session, your password and your data stay the same.",
+        "Nightly backups of accounts, lists, diaries and reviews.",
+        "The visit counter on the about page now counts only people: programs that crawl websites automatically used to slip in.",
+        "In the Archive, Library covers have their frame back."
+      ],
+      "gl": [
+        "As listas, os perfís e os diarios cargan máis rápido, sobre todo os que teñen moitas películas.",
+        "A web xa non se corta uns minutos cada vez que publicamos unha novidade.",
+        "Máis seguridade: a web estrea a última versión da tecnoloxía sobre a que está feita e o sistema de contas actualizouse. A túa sesión, o teu contrasinal e os teus datos seguen igual.",
+        "Copias de seguridade cada noite das contas, as listas, os diarios e as recensións.",
+        "O contador de visitas da páxina de información xa só conta persoas: antes coábanse os programas que percorren webs de forma automática.",
+        "No Arquivo, as portadas da Biblioteca volven verse co seu marco."
+      ],
+      "eu": [
+        "Zerrendak, profilak eta egunerokoak azkarrago kargatzen dira, batez ere film asko dituztenak.",
+        "Webgunea ez da minutu batzuez eteten berrikuntza bat argitaratzen dugun bakoitzean.",
+        "Segurtasun handiagoa: webguneak eraikita dagoen teknologiaren azken bertsioa du orain, eta kontuen sistema eguneratu da. Zure saioa, pasahitza eta datuak lehen bezala daude.",
+        "Kontuen, zerrenden, egunerokoen eta iruzkinen segurtasun-kopiak gauero.",
+        "Informazio-orriko bisita-kontagailuak pertsonak bakarrik zenbatzen ditu orain: lehen, webguneak automatikoki arakatzen dituzten programak ere sartzen ziren.",
+        "Artxiboan, Liburutegiko azalek berriro dute beren markoa."
+      ],
+      "ca": [
+        "Les llistes, els perfils i els diaris carreguen més de pressa, sobretot els que tenen moltes pel·lícules.",
+        "El web ja no es talla uns minuts cada vegada que publiquem una novetat.",
+        "Més seguretat: el web estrena l’última versió de la tecnologia amb què està fet i el sistema de comptes s’ha actualitzat. La teva sessió, la teva contrasenya i les teves dades continuen igual.",
+        "Còpies de seguretat cada nit dels comptes, les llistes, els diaris i les ressenyes.",
+        "El comptador de visites de la pàgina d’informació ja només compta persones: abans s’hi colaven els programes que recorren webs de manera automàtica.",
+        "A l’Arxiu, les portades de la Biblioteca tornen a veure’s amb el seu marc."
+      ]
+    }
+  },
+  {
     "version": "1.19",
     "date": "2026-11-02",
     "title": {

@@ -6,17 +6,12 @@
 En producción en cinearchive.es, al día con main (8495436 desplegado o por desplegar): Astro 7, despliegues sin compilar en el VPS (menos de 1 min), contador sin visitas de rastreadores, films_cache con tope (disco al 21 %), copias nocturnas, vigilancia por correo y menos CPU en Postgres. Contador en unas 1.574.000 el 7 nov.
 
 ## Siguientes pasos
-- [ ] Mirar la web en el móvil con Astro 7 (desplegado y comprobado desde fuera: Astro v7.4.7, páginas en 200, portadas con marco). Sin probar: npm run dev.
-- [ ] Probar en producción el acceso con Google y GitHub, los correos reales y si las sesiones abiertas sobrevivieron a better-auth 1.7.
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
 - [ ] Copia de las copias fuera del VPS: el CRM 0.4.0 (cinearchiveCRM ff27fed) ya las baja desde la pestaña Servidor; probado. Queda decidir si se hace solo cada semana.
-- [ ] Mañana, en el VPS: `scripts/vps/consultas.sh` (qué consultas gastan CPU) y `docker stats --no-stream` + `uptime` para comparar con el 7 nov (carga 1,5, CPU al 100 % a ráfagas).
-- [ ] Pasado un día desde el despliegue, lanzar `scripts/vps/rastreadores.sh` en el VPS y, según lo que salga, bloquear redes o navegadores concretos en el Caddyfile.
-- [ ] Anotar la v1.20 en src/data/changelog.json (5 idiomas): web más rápida, portadas de la Biblioteca con marco, contador de visitas real.
+- [ ] 8 nov, en el CRM (pestaña Servidor): «Consultas que más gastan» y «Rastreadores (24 h)». Con eso, bloquear redes o navegadores en el Caddyfile y optimizar las consultas lentas (también las de Umami, que tardan con periodos largos). Comparar la carga con el 7 nov (1,5, CPU al 100 % a ráfagas).
 - [ ] Umami a dieta: límite de memoria de su Node, como la app (hoy ~140 MB).
 - [ ] Revisar en Umami qué secciones se usan y dónde se va la gente antes de añadir nada nuevo.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
-- [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
 - [x] Enviar los correos para el código de GTA VI (Xbox España: microsoft@comunicacionrrpp.es, CC xbox@comunicacionrrpp.es; Rockstar: pr@rockstargames.com, sin verificar).
 - [ ] Valorar crear una asociación cultural y pedir ISSN para optar a la subvención de revistas de cultura 2027 y a Claude for Nonprofits.
 - [ ] Si crece el tráfico: que Caddy sirva directamente lo prerenderizado y /_astro (sin pasar por Node), o Cloudflare delante.
@@ -24,6 +19,8 @@ En producción en cinearchive.es, al día con main (8495436 desplegado o por des
 ## Última sesión
 
 ### 2026-11-07
+- Changelog v1.20 «Una web más rápida, más segura y más estable» (5 idiomas): listas/perfiles/diarios más rápidos, sin cortes al publicar, Astro 7 y cuentas actualizadas, copias nocturnas, contador solo de personas y portadas de la Biblioteca con marco.
+- Sergio confirma que van bien la web en el móvil, el acceso con Google y GitHub y los correos.
 - Disco del VPS al 71 % (41 de 58 GB): films_cache tenía 1.016.576 películas y 17 GB (los rastreadores recorren el catálogo de TMDB a través de las fichas) y Docker guardaba 12,6 GB de compilaciones viejas. Sergio liberó lo de Docker con `docker builder prune -af`.
 - Poda diaria de films_cache (src/lib/cachecap.ts): se quedan las películas con dueño (perfil, listas, diario, catálogo del panel) y las 20.000 sueltas más recientes. La primera vez, a fondo (aparta, TRUNCATE, vuelve a meter): libera ~16 GB a los 10 min de desplegar, con la tabla bloqueada unos segundos. Probado en Postgres local con 150.000 filas.
 - Desplegado: la poda a fondo dejó films_cache de 1.017.546 a 20.246 películas en 16 s; el disco pasó del 71 % al 21 % (46 GB libres). /api/health ya dice disk ok.
