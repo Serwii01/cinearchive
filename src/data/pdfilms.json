@@ -14,7 +14,16 @@
       "blurb_en": "Cinema's first great science-fiction tale: Georges Méliès's capsule lodging in the eye of the Moon.",
       "blurb_gl": "O primeiro gran relato de ciencia ficción do cine: a cápsula que se crava no ollo da Lúa, de Georges Méliès.",
       "blurb_eu": "Zinemaren lehen zientzia-fikziozko kontakizun handia: Ilargiaren begian iltzatzen den kapsula, Georges Mélièsena.",
-      "blurb_ca": "El primer gran relat de ciència-ficció del cinema: la càpsula que es clava a l'ull de la Lluna, de Georges Méliès."
+      "blurb_ca": "El primer gran relat de ciència-ficció del cinema: la càpsula que es clava a l'ull de la Lluna, de Georges Méliès.",
+      "tags": [
+        "scifi",
+        "fantasy",
+        "adventure"
+      ],
+      "sound": false,
+      "essential": true,
+      "published": "2026-01-25",
+      "tmdbId": 775
     },
     {
       "id": "TheGreatTrainRobbery1903",
@@ -29,7 +38,103 @@
       "blurb_en": "Edwin S. Porter's founding Western, a pioneer of narrative editing and the famous shot straight at the camera.",
       "blurb_gl": "Western fundacional de Edwin S. Porter, pioneiro da montaxe narrativa e do célebre disparo á cámara.",
       "blurb_eu": "Edwin S. Porterren western sortzailea, muntaia narratiboaren eta kamerari egindako tiro ospetsuaren aitzindaria.",
-      "blurb_ca": "Western fundacional d'Edwin S. Porter, pioner del muntatge narratiu i del cèlebre tret a càmera."
+      "blurb_ca": "Western fundacional d'Edwin S. Porter, pioner del muntatge narratiu i del cèlebre tret a càmera.",
+      "tags": [
+        "western"
+      ],
+      "sound": false,
+      "published": "2011-09-05",
+      "tmdbId": 5698
+    },
+    {
+      "id": "The_Impossible_Voyage",
+      "title": "The Impossible Voyage",
+      "original_title": "Voyage à travers l’impossible",
+      "director": "Georges Méliès",
+      "year": 1904,
+      "country": "Francia",
+      "runtime": 20,
+      "lang": "en",
+      "blurb_es": "Una expedición de sabios viaja en tren, submarino y globo hasta el Sol, que se los traga: Méliès en su versión más desbordada.",
+      "blurb_en": "An expedition of scholars travels by train, submarine and balloon all the way to the Sun, which swallows them: Méliès at his most unbridled.",
+      "blurb_gl": "Unha expedición de sabios viaxa en tren, submarino e globo ata o Sol, que os engole: Méliès na súa versión máis desbordada.",
+      "blurb_eu": "Jakintsuen espedizio batek trenez, itsaspekoz eta globoz bidaiatzen du Eguzkiraino, eta honek irentsi egiten ditu: Méliès bere bertsiorik zoroenean.",
+      "blurb_ca": "Una expedició de savis viatja en tren, submarí i globus fins al Sol, que se’ls empassa: Méliès en la seva versió més desbordada.",
+      "tags": [
+        "scifi",
+        "fantasy",
+        "adventure"
+      ],
+      "sound": false,
+      "published": "2010-04-28",
+      "tmdbId": 2963
+    },
+    {
+      "id": "ElHotelElectrico",
+      "title": "El hotel eléctrico",
+      "original_title": "El hotel eléctrico",
+      "director": "Segundo de Chomón",
+      "year": 1908,
+      "country": "España",
+      "runtime": 10,
+      "lang": "en",
+      "blurb_es": "Una pareja se aloja en un hotel donde todo funciona solo, del cepillo a las maletas, hasta que la electricidad se vuelve loca: magia del aragonés Segundo de Chomón.",
+      "blurb_en": "A couple checks into a hotel where everything works by itself, from hairbrushes to suitcases, until the electricity goes haywire: magic by the Spanish pioneer Segundo de Chomón.",
+      "blurb_gl": "Unha parella aloxase nun hotel onde todo funciona só, do cepillo ás maletas, ata que a electricidade se volve tola: maxia do aragonés Segundo de Chomón.",
+      "blurb_eu": "Bikote bat hotel batean hartzen du ostatu, non dena bakarrik dabilen, eskuilatik maletetaraino, elektrizitatea erotu arte: Segundo de Chomón aragoiarraren magia.",
+      "blurb_ca": "Una parella s’allotja en un hotel on tot funciona sol, del raspall a les maletes, fins que l’electricitat es torna boja: màgia de l’aragonès Segundo de Chomón.",
+      "tags": [
+        "comedy",
+        "fantasy"
+      ],
+      "sound": false,
+      "published": "2011-04-22",
+      "tmdbId": 143634
+    },
+    {
+      "id": "falling_leaves_1912",
+      "title": "Falling Leaves",
+      "original_title": "Falling Leaves",
+      "director": "Alice Guy",
+      "year": 1912,
+      "country": "EE. UU.",
+      "runtime": 12,
+      "lang": "en",
+      "blurb_es": "Una niña intenta salvar a su hermana enferma atando de nuevo las hojas a los árboles: el cuento más tierno de Alice Guy, la primera directora de la historia.",
+      "blurb_en": "A little girl tries to save her sick sister by tying the leaves back onto the trees: the most tender tale by Alice Guy, cinema’s first woman director.",
+      "blurb_gl": "Unha nena tenta salvar a súa irmá enferma atando de novo as follas ás árbores: o conto máis tenro de Alice Guy, a primeira directora da historia.",
+      "blurb_eu": "Neskato bat bere ahizpa gaixoa salbatzen saiatzen da, hostoak zuhaitzetara berriro lotuz: Alice Guyren ipuinik samurrena, historiako lehen zuzendari emakumearena.",
+      "blurb_ca": "Una nena intenta salvar la seva germana malalta lligant de nou les fulles als arbres: el conte més tendre d’Alice Guy, la primera directora de la història.",
+      "tags": [
+        "drama"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2005-07-21",
+      "tmdbId": 147624
+    },
+    {
+      "id": "Gertie",
+      "title": "Gertie the Dinosaur",
+      "original_title": "Gertie the Dinosaur",
+      "director": "Winsor McCay",
+      "year": 1914,
+      "country": "EE. UU.",
+      "runtime": 12,
+      "lang": "en",
+      "blurb_es": "Winsor McCay dibuja a mano a Gertie, una dinosauria juguetona y desobediente: el primer personaje de dibujos animados con personalidad propia.",
+      "blurb_en": "Winsor McCay hand-draws Gertie, a playful and disobedient dinosaur: the first cartoon character with a personality of her own.",
+      "blurb_gl": "Winsor McCay debuxa a man a Gertie, unha dinosauria xoguetona e desobediente: o primeiro personaxe de debuxos animados con personalidade propia.",
+      "blurb_eu": "Winsor McCayk eskuz marrazten du Gertie, dinosauro jostalari eta desobedientea: nortasun propioa duen marrazki bizidunetako lehen pertsonaia.",
+      "blurb_ca": "Winsor McCay dibuixa a mà la Gertie, una dinosaure juganera i desobedient: el primer personatge de dibuixos animats amb personalitat pròpia.",
+      "tags": [
+        "animation",
+        "comedy"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2007-10-26",
+      "tmdbId": 100246
     },
     {
       "id": "20000LeaguesUndertheSea",
@@ -44,7 +149,15 @@
       "blurb_en": "A Jules Verne adaptation featuring some of the earliest large-scale underwater photography in cinema.",
       "blurb_gl": "Adaptación de Julio Verne coas primeiras grandes secuencias submarinas rodadas no cine.",
       "blurb_eu": "Jules Verneren egokitzapena, zineman filmatutako lehen sekuentzia submarino handiekin.",
-      "blurb_ca": "Adaptació de Jules Verne amb les primeres grans seqüències submarines rodades al cinema."
+      "blurb_ca": "Adaptació de Jules Verne amb les primeres grans seqüències submarines rodades al cinema.",
+      "tags": [
+        "adventure",
+        "scifi"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2006-03-05",
+      "tmdbId": 30266
     },
     {
       "id": "Intolerance1916",
@@ -59,7 +172,37 @@
       "blurb_en": "D. W. Griffith's monumental fresco: four interwoven eras on human intolerance.",
       "blurb_gl": "O monumental fresco de D. W. Griffith: catro épocas entrelazadas sobre a intolerancia humana.",
       "blurb_eu": "D. W. Griffithen fresko monumentala: giza intolerantziari buruzko lau garai gurutzatuak.",
-      "blurb_ca": "El monumental fresc de D. W. Griffith: quatre èpoques entrellaçades sobre la intolerància humana."
+      "blurb_ca": "El monumental fresc de D. W. Griffith: quatre èpoques entrellaçades sobre la intolerància humana.",
+      "tags": [
+        "drama"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2018-12-06",
+      "tmdbId": 3059
+    },
+    {
+      "id": "CC_1917_06_17_TheImmigrant",
+      "title": "The Immigrant",
+      "original_title": "The Immigrant",
+      "director": "Charles Chaplin",
+      "year": 1917,
+      "country": "EE. UU.",
+      "runtime": 20,
+      "lang": "en",
+      "blurb_es": "Charlot cruza el océano en un barco que no deja de balancearse y llega a América sin un céntimo: el corto favorito del propio Chaplin.",
+      "blurb_en": "The Tramp crosses the ocean on a ship that never stops rocking and reaches America penniless: Chaplin’s own favourite short.",
+      "blurb_gl": "Charlot cruza o océano nun barco que non deixa de abanear e chega a América sen un céntimo: a curta favorita do propio Chaplin.",
+      "blurb_eu": "Charlotek ozeanoa zeharkatzen du kulunkatzeari uzten ez dion itsasontzi batean, eta Ameriketara iristen da zentimorik gabe: Chaplinen beraren film labur gogokoena.",
+      "blurb_ca": "Charlot travessa l’oceà en un vaixell que no para de gronxar-se i arriba a Amèrica sense un cèntim: el curt preferit del mateix Chaplin.",
+      "tags": [
+        "comedy",
+        "romance"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2006-12-23",
+      "tmdbId": 47653
     },
     {
       "id": "BrokenBlossoms",
@@ -74,7 +217,60 @@
       "blurb_en": "An intimate Griffith melodrama of visual delicacy that anticipates chamber cinema.",
       "blurb_gl": "Melodrama íntimo de Griffith, dunha delicadeza visual que anticipa o cine de cámara.",
       "blurb_eu": "Griffithen melodrama intimoa, ganbera-zinema aurreratzen duen fintasun bisualekoa.",
-      "blurb_ca": "Melodrama íntim de Griffith, d'una delicadesa visual que anticipa el cinema de cambra."
+      "blurb_ca": "Melodrama íntim de Griffith, d'una delicadesa visual que anticipa el cinema de cambra.",
+      "tags": [
+        "drama",
+        "romance"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2008-02-26",
+      "tmdbId": 899
+    },
+    {
+      "id": "DrJekyllandMrHyde",
+      "title": "Dr. Jekyll and Mr. Hyde",
+      "original_title": "Dr. Jekyll and Mr. Hyde",
+      "director": "John S. Robertson",
+      "year": 1920,
+      "country": "EE. UU.",
+      "runtime": 82,
+      "lang": "en",
+      "blurb_es": "John Barrymore pasa de médico respetable a monstruo casi sin maquillaje, solo con el cuerpo: la gran versión muda de Stevenson.",
+      "blurb_en": "John Barrymore turns from respectable doctor into monster with barely any make-up, just his body: the great silent take on Stevenson.",
+      "blurb_gl": "John Barrymore pasa de médico respectable a monstro case sen maquillaxe, só co corpo: a gran versión muda de Stevenson.",
+      "blurb_eu": "John Barrymore mediku errespetagarria izatetik munstro izatera igarotzen da ia makillajerik gabe, gorputzarekin bakarrik: Stevensonen bertsio mutu handia.",
+      "blurb_ca": "John Barrymore passa de metge respectable a monstre gairebé sense maquillatge, només amb el cos: la gran versió muda de Stevenson.",
+      "tags": [
+        "horror",
+        "drama"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2006-11-26",
+      "tmdbId": 3016
+    },
+    {
+      "id": "OneWeek",
+      "title": "One Week",
+      "original_title": "One Week",
+      "director": "Buster Keaton, Edward F. Cline",
+      "year": 1920,
+      "country": "EE. UU.",
+      "runtime": 22,
+      "lang": "en",
+      "blurb_es": "Unos recién casados montan una casa prefabricada con las piezas cambiadas de sitio: veinte minutos de Keaton en estado puro.",
+      "blurb_en": "Newlyweds build a kit house with the pieces mixed up: twenty minutes of pure Keaton.",
+      "blurb_gl": "Uns recén casados montan unha casa prefabricada coas pezas cambiadas de sitio: vinte minutos de Keaton en estado puro.",
+      "blurb_eu": "Ezkonberri batzuek etxe aurrefabrikatu bat muntatzen dute, piezak lekuz aldatuta: hogei minutu Keaton hutsa.",
+      "blurb_ca": "Uns acabats de casar munten una casa prefabricada amb les peces canviades de lloc: vint minuts de Keaton en estat pur.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2006-08-12",
+      "tmdbId": 23282
     },
     {
       "id": "DasKabinettdesDoktorCaligariTheCabinetofDrCaligari",
@@ -89,7 +285,37 @@
       "blurb_en": "The manifesto of German Expressionism: warped sets and painted shadows for a nightmare with no center.",
       "blurb_gl": "Manifesto do expresionismo alemán: decorados deformes e sombras pintadas para un pesadelo sen centro.",
       "blurb_eu": "Espresionismo alemanaren manifestua: dekoratu deformatuak eta itzal margotuak, zentrorik gabeko amesgaizto baterako.",
-      "blurb_ca": "Manifest de l'expressionisme alemany: decorats deformes i ombres pintades per a un malson sense centre."
+      "blurb_ca": "Manifest de l'expressionisme alemany: decorats deformes i ombres pintades per a un malson sense centre.",
+      "tags": [
+        "horror",
+        "avantgarde"
+      ],
+      "sound": false,
+      "essential": true,
+      "published": "2005-07-18",
+      "tmdbId": 234
+    },
+    {
+      "id": "the-golem-how-he-came-into-the-world-full-movie-restored-720p-hd",
+      "title": "The Golem",
+      "original_title": "Der Golem, wie er in die Welt kam",
+      "director": "Paul Wegener, Carl Boese",
+      "year": 1920,
+      "country": "Alemania",
+      "runtime": 85,
+      "lang": "en",
+      "blurb_es": "En el gueto de Praga, un rabino da vida a un gigante de barro para proteger a su pueblo: una de las piedras fundacionales del cine de monstruos.",
+      "blurb_en": "In the Prague ghetto, a rabbi brings a clay giant to life to protect his people: one of the founding stones of the monster movie.",
+      "blurb_gl": "No gueto de Praga, un rabino dálle vida a un xigante de barro para protexer o seu pobo: unha das pedras fundacionais do cine de monstros.",
+      "blurb_eu": "Pragako ghettoan, errabino batek buztinezko erraldoi bati bizia ematen dio bere herria babesteko: munstro-zinemaren oinarrizko harrietako bat.",
+      "blurb_ca": "Al gueto de Praga, un rabí dona vida a un gegant de fang per protegir el seu poble: una de les pedres fundacionals del cinema de monstres.",
+      "tags": [
+        "horror",
+        "fantasy"
+      ],
+      "sound": false,
+      "published": "2021-07-30",
+      "tmdbId": 2972
     },
     {
       "id": "markofzorro-1920",
@@ -104,7 +330,14 @@
       "blurb_en": "Douglas Fairbanks founds the swashbuckler with his acrobatic, mocking Zorro.",
       "blurb_gl": "Douglas Fairbanks funda o cine de capa e espada co seu Zorro acrobático e burlón.",
       "blurb_eu": "Douglas Fairbanksek kapa eta ezpatako zinema sortzen du bere Zorro akrobatiko eta isekariarekin.",
-      "blurb_ca": "Douglas Fairbanks funda el cinema de capa i espasa amb el seu Zorro acrobàtic i burleta."
+      "blurb_ca": "Douglas Fairbanks funda el cinema de capa i espasa amb el seu Zorro acrobàtic i burleta.",
+      "tags": [
+        "adventure"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2006-01-10",
+      "tmdbId": 42657
     },
     {
       "id": "Brzdac1921",
@@ -119,7 +352,16 @@
       "blurb_en": "Chaplin’s first feature: the Tramp takes in an abandoned baby and raises him one broken window at a time. The original 1921 cut.",
       "blurb_gl": "A primeira longametraxe de Chaplin: Charlot recolle un bebé abandonado e críao a golpe de cristal roto. A montaxe orixinal de 1921.",
       "blurb_eu": "Chaplinen lehen film luzea: Charlotek haur abandonatu bat jaso eta kristal hautsiz kristal hautsi hazten du. 1921eko jatorrizko muntaketa.",
-      "blurb_ca": "El primer llargmetratge de Chaplin: Charlot recull un nadó abandonat i el cria a cop de vidre trencat. El muntatge original de 1921."
+      "blurb_ca": "El primer llargmetratge de Chaplin: Charlot recull un nadó abandonat i el cria a cop de vidre trencat. El muntatge original de 1921.",
+      "tags": [
+        "comedy",
+        "drama"
+      ],
+      "sound": false,
+      "language": "en",
+      "essential": true,
+      "published": "2017-08-12",
+      "tmdbId": 10098
     },
     {
       "id": "Haxan_tinted_and_subtitled",
@@ -134,7 +376,15 @@
       "blurb_en": "Benjamin Christensen's documentary-essay on witchcraft, poised between treatise and hallucination.",
       "blurb_gl": "Ensaio-documental sobre a bruxería de Benjamin Christensen, entre o tratado e a alucinación.",
       "blurb_eu": "Benjamin Christensenen sorginkeriari buruzko saiakera-dokumentala, tratatuaren eta haluzinazioaren artean.",
-      "blurb_ca": "Assaig-documental sobre la bruixeria de Benjamin Christensen, entre el tractat i l'al·lucinació."
+      "blurb_ca": "Assaig-documental sobre la bruixeria de Benjamin Christensen, entre el tractat i l'al·lucinació.",
+      "tags": [
+        "documentary",
+        "horror"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2007-12-07",
+      "tmdbId": 57283
     },
     {
       "id": "nanookOfTheNorth1922",
@@ -149,7 +399,14 @@
       "blurb_en": "The film that invented the feature documentary: a year in the life of an Inuit family on Hudson Bay.",
       "blurb_gl": "A película que inventou o documental de longametraxe: un ano de vida dunha familia inuit na baía de Hudson.",
       "blurb_eu": "Film luze dokumentala asmatu zuen filma: inuit familia baten urtebeteko bizitza Hudson badian.",
-      "blurb_ca": "La pel·lícula que va inventar el documental de llargmetratge: un any de vida d’una família inuit a la badia de Hudson."
+      "blurb_ca": "La pel·lícula que va inventar el documental de llargmetratge: un any de vida d’una família inuit a la badia de Hudson.",
+      "tags": [
+        "documentary"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2012-02-22",
+      "tmdbId": 669
     },
     {
       "id": "Nosferatu_most_complete_version_93_mins.",
@@ -164,7 +421,37 @@
       "blurb_en": "Murnau's symphony of horror: Count Orlok and his shadow remain cinema's defining image of the vampire.",
       "blurb_gl": "A sinfonía do horror de Murnau: o conde Orlok e a súa sombra seguen sendo a imaxe do vampiro no cine.",
       "blurb_eu": "Murnauren izuaren sinfonia: Orlok kondea eta haren itzala zinemako banpiroaren irudi izaten jarraitzen dute.",
-      "blurb_ca": "La simfonia de l'horror de Murnau: el comte Orlok i la seva ombra continuen sent la imatge del vampir al cinema."
+      "blurb_ca": "La simfonia de l'horror de Murnau: el comte Orlok i la seva ombra continuen sent la imatge del vampir al cinema.",
+      "tags": [
+        "horror"
+      ],
+      "sound": false,
+      "essential": true,
+      "published": "2007-04-10",
+      "tmdbId": 653
+    },
+    {
+      "id": "OurHospitality_29",
+      "title": "Our Hospitality",
+      "original_title": "Our Hospitality",
+      "director": "Buster Keaton, John G. Blystone",
+      "year": 1923,
+      "country": "EE. UU.",
+      "runtime": 73,
+      "lang": "en",
+      "blurb_es": "Buster Keaton se cuela, sin saberlo, en casa de la familia enemiga, que no puede matarlo mientras sea su invitado: comedia, tren antiguo y una cascada de vértigo.",
+      "blurb_en": "Buster Keaton unknowingly walks into the home of the rival family, who cannot kill him while he is their guest: comedy, an old train and a dizzying waterfall.",
+      "blurb_gl": "Buster Keaton cólase, sen sabelo, na casa da familia inimiga, que non pode matalo mentres sexa o seu convidado: comedia, tren antigo e unha fervenza de vertixe.",
+      "blurb_eu": "Buster Keaton, jakin gabe, familia etsaiaren etxean sartzen da, eta haiek ezin dute hil gonbidatua den bitartean: komedia, tren zaharra eta zorabioa ematen duen ur-jauzia.",
+      "blurb_ca": "Buster Keaton es fica, sense saber-ho, a casa de la família enemiga, que no el pot matar mentre sigui el seu convidat: comèdia, tren antic i una cascada de vertigen.",
+      "tags": [
+        "comedy",
+        "adventure"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2010-11-18",
+      "tmdbId": 701
     },
     {
       "id": "silent-safety-last",
@@ -179,7 +466,58 @@
       "blurb_en": "Harold Lloyd hanging from the hands of a clock twelve storeys up: the most famous image in silent comedy.",
       "blurb_gl": "Harold Lloyd colgado das agullas dun reloxo a doce andares de altura: a imaxe máis famosa da comedia muda.",
       "blurb_eu": "Harold Lloyd erloju baten orratzetatik zintzilik, hamabi solairuko altueran: komedia mutuko irudirik ospetsuena.",
-      "blurb_ca": "Harold Lloyd penjat de les agulles d’un rellotge a dotze pisos d’alçada: la imatge més famosa de la comèdia muda."
+      "blurb_ca": "Harold Lloyd penjat de les agulles d’un rellotge a dotze pisos d’alçada: la imatge més famosa de la comèdia muda.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2020-12-04",
+      "tmdbId": 22596
+    },
+    {
+      "id": "The_Hunchback_of_Notre_Dame",
+      "title": "The Hunchback of Notre Dame",
+      "original_title": "The Hunchback of Notre Dame",
+      "director": "Wallace Worsley",
+      "year": 1923,
+      "country": "EE. UU.",
+      "runtime": 101,
+      "lang": "en",
+      "blurb_es": "Lon Chaney se transforma en Quasimodo, con un maquillaje que le dolía de verdad, en la gran superproducción muda sobre la novela de Victor Hugo.",
+      "blurb_en": "Lon Chaney becomes Quasimodo, in make-up that genuinely hurt, in the great silent spectacle based on Victor Hugo’s novel.",
+      "blurb_gl": "Lon Chaney transfórmase en Quasimodo, cunha maquillaxe que lle doía de verdade, na gran superprodución muda sobre a novela de Victor Hugo.",
+      "blurb_eu": "Lon Chaney Quasimodo bihurtzen da, benetan min ematen zion makillajearekin, Victor Hugoren eleberrian oinarritutako ekoizpen mutu handian.",
+      "blurb_ca": "Lon Chaney es transforma en Quasimodo, amb un maquillatge que li feia mal de debò, en la gran superproducció muda sobre la novel·la de Victor Hugo.",
+      "tags": [
+        "drama",
+        "horror"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2008-05-21",
+      "tmdbId": 18987
+    },
+    {
+      "id": "BalletMcanique",
+      "title": "Ballet Mécanique",
+      "original_title": "Ballet mécanique",
+      "director": "Fernand Léger, Dudley Murphy",
+      "year": 1924,
+      "country": "Francia",
+      "runtime": 12,
+      "lang": "en",
+      "blurb_es": "Engranajes, batidoras y la sonrisa de Kiki de Montparnasse bailan al mismo ritmo: el cubismo de Fernand Léger hecho cine.",
+      "blurb_en": "Gears, whisks and Kiki de Montparnasse’s smile dance to the same beat: Fernand Léger’s cubism turned into film.",
+      "blurb_gl": "Engrenaxes, batedoras e o sorriso de Kiki de Montparnasse bailan ao mesmo ritmo: o cubismo de Fernand Léger feito cine.",
+      "blurb_eu": "Engranajeak, irabiagailuak eta Kiki de Montparnasseren irribarrea erritmo berean dantzan: Fernand Légerren kubismoa zinema bihurtua.",
+      "blurb_ca": "Engranatges, batedores i el somriure de Kiki de Montparnasse ballen al mateix ritme: el cubisme de Fernand Léger fet cinema.",
+      "tags": [
+        "avantgarde"
+      ],
+      "sound": false,
+      "published": "2017-10-20",
+      "tmdbId": 107011
     },
     {
       "id": "sherlock-jr-buster-keaton-1924",
@@ -194,7 +532,14 @@
       "blurb_en": "Buster Keaton literally steps into the screen: a peak of slapstick and self-reflexive cinema.",
       "blurb_gl": "Buster Keaton métese literalmente dentro da pantalla: unha das cumes do cine cómico e metacinematográfico.",
       "blurb_eu": "Buster Keaton pantailaren barruan sartzen da literalki: zinema komiko eta metazinematografikoaren gailurretako bat.",
-      "blurb_ca": "Buster Keaton s'endinsa literalment dins la pantalla: un dels cims del cinema còmic i metacinematogràfic."
+      "blurb_ca": "Buster Keaton s'endinsa literalment dins la pantalla: un dels cims del cinema còmic i metacinematogràfic.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2021-08-30",
+      "tmdbId": 992
     },
     {
       "id": "BillSpragueCollection-THELASTLAUGH-F.W.MURNAU-1924PUBLICDOMAIN",
@@ -209,7 +554,13 @@
       "blurb_en": "A hotel doorman loses his uniform and with it his place in the world. Murnau tells it almost without intertitles, through the camera alone.",
       "blurb_gl": "Un porteiro de hotel perde o seu uniforme e con el o seu lugar no mundo. Murnau cóntaa case sen rótulos, só coa cámara.",
       "blurb_eu": "Hoteleko atezain batek uniformea galtzen du, eta harekin batera munduan zuen tokia. Murnauk ia errotulurik gabe kontatzen du, kamerarekin bakarrik.",
-      "blurb_ca": "Un porter d’hotel perd l’uniforme i amb ell el seu lloc al món. Murnau l’explica gairebé sense rètols, només amb la càmera."
+      "blurb_ca": "Un porter d’hotel perd l’uniforme i amb ell el seu lloc al món. Murnau l’explica gairebé sense rètols, només amb la càmera.",
+      "tags": [
+        "drama"
+      ],
+      "sound": false,
+      "published": "2017-08-15",
+      "tmdbId": 5991
     },
     {
       "id": "TheThiefOfBagdad1924",
@@ -224,7 +575,15 @@
       "blurb_en": "Douglas Fairbanks leaps, flies on a carpet and wins a princess in a blockbuster of giant sets and effects that still amaze.",
       "blurb_gl": "Douglas Fairbanks salta, voa en alfombra e conquista unha princesa nunha superprodución de decorados xigantes e efectos que aínda abraian.",
       "blurb_eu": "Douglas Fairbanksek salto egiten du, alfonbran hegan egiten du eta printzesa bat konkistatzen du, dekoratu erraldoiak eta oraindik harritzen duten efektuak dituen superprodukzio batean.",
-      "blurb_ca": "Douglas Fairbanks salta, vola en catifa i conquereix una princesa en una superproducció de decorats gegants i efectes que encara meravellen."
+      "blurb_ca": "Douglas Fairbanks salta, vola en catifa i conquereix una princesa en una superproducció de decorats gegants i efectes que encara meravellen.",
+      "tags": [
+        "adventure",
+        "fantasy"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2012-07-03",
+      "tmdbId": 28963
     },
     {
       "id": "BattleshipPotemkin",
@@ -239,52 +598,14 @@
       "blurb_en": "Eisenstein's montage of attractions and the Odessa Steps sequence: a living lesson in cinema.",
       "blurb_gl": "A montaxe de atraccións de Eisenstein e a escena da escalinata de Odesa, lección viva de cine.",
       "blurb_eu": "Eisensteinen erakarpen-muntaia eta Odessako eskaileren eszena, zinemaren ikasgai bizia.",
-      "blurb_ca": "El muntatge d'atraccions d'Eisenstein i l'escena de l'escalinata d'Odessa, lliçó viva de cinema."
-    },
-    {
-      "id": "the-gold-rush-film-1925",
-      "title": "The Gold Rush",
-      "original_title": "The Gold Rush",
-      "director": "Charles Chaplin",
-      "year": 1925,
-      "country": "EE. UU.",
-      "runtime": 87,
-      "lang": "en",
-      "blurb_es": "Charlot en la fiebre del oro de Alaska: la bota hervida, el baile de los panecillos y la cabaña al borde del abismo. Versión muda de 1925.",
-      "blurb_en": "The Tramp in the Alaskan gold rush: the boiled boot, the dance of the rolls and the cabin on the edge of the abyss. The 1925 silent version.",
-      "blurb_gl": "Charlot na febre do ouro de Alasca: a bota fervida, o baile dos bolos e a cabana á beira do abismo. Versión muda de 1925.",
-      "blurb_eu": "Charlot Alaskako urre-sukarrean: bota egosia, ogi-opilen dantza eta amildegiaren ertzeko etxola. 1925eko bertsio mutua.",
-      "blurb_ca": "Charlot a la febre de l’or d’Alaska: la bota bullida, el ball dels panets i la cabana a la vora de l’abisme. Versió muda de 1925."
-    },
-    {
-      "id": "TheLostWorld1925",
-      "title": "The Lost World",
-      "original_title": "The Lost World",
-      "director": "Harry O. Hoyt",
-      "year": 1925,
-      "country": "EE. UU.",
-      "runtime": 100,
-      "lang": "en",
-      "blurb_es": "Los dinosaurios animados de Willis O'Brien, antecedente directo de King Kong.",
-      "blurb_en": "Willis O'Brien's animated dinosaurs, the direct ancestor of King Kong.",
-      "blurb_gl": "Os dinosauros animados de Willis O'Brien, antecedente directo de King Kong.",
-      "blurb_eu": "Willis O'Brienen dinosauro animatuak, King Kongen aurrekari zuzena.",
-      "blurb_ca": "Els dinosaures animats de Willis O'Brien, antecedent directe de King Kong."
-    },
-    {
-      "id": "ThePhantomoftheOpera",
-      "title": "The Phantom of the Opera",
-      "original_title": "The Phantom of the Opera",
-      "director": "Rupert Julian",
-      "year": 1925,
-      "country": "EE. UU.",
-      "runtime": 93,
-      "lang": "en",
-      "blurb_es": "Lon Chaney y su rostro descubierto: el terror gótico de Hollywood en estado puro.",
-      "blurb_en": "Lon Chaney and his unmasking: Hollywood gothic horror at its purest.",
-      "blurb_gl": "Lon Chaney e o seu rostro descuberto: o terror gótico de Hollywood en estado puro.",
-      "blurb_eu": "Lon Chaney eta haren aurpegi agerian: Hollywoodeko izu gotikoa egoera puruan.",
-      "blurb_ca": "Lon Chaney i el seu rostre descobert: el terror gòtic de Hollywood en estat pur."
+      "blurb_ca": "El muntatge d'atraccions d'Eisenstein i l'escena de l'escalinata d'Odessa, lliçó viva de cinema.",
+      "tags": [
+        "drama"
+      ],
+      "sound": false,
+      "essential": true,
+      "published": "2005-10-22",
+      "tmdbId": 643
     },
     {
       "id": "strike-eisenstein-1925-english-intertitles-hd-quality",
@@ -299,22 +620,105 @@
       "blurb_en": "Eisenstein's first feature: a workers' strike crushed by the police and cut in parallel with the slaughter of a bull. Montage as a punch.",
       "blurb_gl": "A primeira longa de Eisenstein: unha folga obreira esmagada pola policía e montada en paralelo coa matanza dun touro. A montaxe como puñada.",
       "blurb_eu": "Eisensteinen lehen film luzea: poliziak zapaldutako langile greba bat, zezen baten hilketarekin paraleloan muntatua. Muntaketa ukabilkada gisa.",
-      "blurb_ca": "El primer llarg d'Eisenstein: una vaga obrera aixafada per la policia i muntada en paral·lel amb la matança d'un toro. El muntatge com un cop de puny."
+      "blurb_ca": "El primer llarg d'Eisenstein: una vaga obrera aixafada per la policia i muntada en paral·lel amb la matança d'un toro. El muntatge com un cop de puny.",
+      "tags": [
+        "drama"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2021-10-19",
+      "tmdbId": 44967
     },
     {
-      "id": "TheGeneral_201312",
-      "title": "The General",
-      "original_title": "The General",
-      "director": "Buster Keaton, Clyde Bruckman",
-      "year": 1926,
+      "id": "CollegeDays",
+      "title": "The Freshman",
+      "original_title": "The Freshman",
+      "director": "Fred C. Newmeyer, Sam Taylor",
+      "year": 1925,
       "country": "EE. UU.",
-      "runtime": 79,
+      "runtime": 76,
       "lang": "en",
-      "blurb_es": "Keaton persigue una locomotora robada en plena guerra de Secesión. Cada acrobacia es real, y el tren que cae del puente también.",
-      "blurb_en": "Keaton chases a stolen locomotive in the middle of the Civil War. Every stunt is real, and so is the train that falls off the bridge.",
-      "blurb_gl": "Keaton persegue unha locomotora roubada en plena guerra de Secesión. Cada acrobacia é real, e o tren que cae da ponte tamén.",
-      "blurb_eu": "Keatonek lapurtutako lokomotora bat atzetik darama Sezesio Gerraren erdian. Akrobazia guztiak benetakoak dira, baita zubitik erortzen den trena ere.",
-      "blurb_ca": "Keaton persegueix una locomotora robada en plena guerra de Secessió. Cada acrobàcia és real, i el tren que cau del pont també."
+      "blurb_es": "Harold Lloyd llega a la universidad dispuesto a ser el más popular y acaba de aguador del equipo de fútbol, hasta el partido decisivo.",
+      "blurb_en": "Harold Lloyd arrives at college determined to be the most popular man on campus and ends up as the football team’s water boy, until the big game.",
+      "blurb_gl": "Harold Lloyd chega á universidade disposto a ser o máis popular e acaba de augadeiro do equipo de fútbol, ata o partido decisivo.",
+      "blurb_eu": "Harold Lloyd unibertsitatera iristen da ezagunena izateko asmoz, eta futbol-taldeko ur-emaile bukatzen du, partida erabakigarriraino.",
+      "blurb_ca": "Harold Lloyd arriba a la universitat disposat a ser el més popular i acaba d’aiguader de l’equip de futbol, fins al partit decisiu.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2020-04-20",
+      "tmdbId": 42359
+    },
+    {
+      "id": "the-gold-rush-film-1925",
+      "title": "The Gold Rush",
+      "original_title": "The Gold Rush",
+      "director": "Charles Chaplin",
+      "year": 1925,
+      "country": "EE. UU.",
+      "runtime": 87,
+      "lang": "en",
+      "blurb_es": "Charlot en la fiebre del oro de Alaska: la bota hervida, el baile de los panecillos y la cabaña al borde del abismo. Versión muda de 1925.",
+      "blurb_en": "The Tramp in the Alaskan gold rush: the boiled boot, the dance of the rolls and the cabin on the edge of the abyss. The 1925 silent version.",
+      "blurb_gl": "Charlot na febre do ouro de Alasca: a bota fervida, o baile dos bolos e a cabana á beira do abismo. Versión muda de 1925.",
+      "blurb_eu": "Charlot Alaskako urre-sukarrean: bota egosia, ogi-opilen dantza eta amildegiaren ertzeko etxola. 1925eko bertsio mutua.",
+      "blurb_ca": "Charlot a la febre de l’or d’Alaska: la bota bullida, el ball dels panets i la cabana a la vora de l’abisme. Versió muda de 1925.",
+      "tags": [
+        "comedy",
+        "adventure"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2025-09-16",
+      "tmdbId": 962
+    },
+    {
+      "id": "TheLostWorld1925",
+      "title": "The Lost World",
+      "original_title": "The Lost World",
+      "director": "Harry O. Hoyt",
+      "year": 1925,
+      "country": "EE. UU.",
+      "runtime": 100,
+      "lang": "en",
+      "blurb_es": "Los dinosaurios animados de Willis O'Brien, antecedente directo de King Kong.",
+      "blurb_en": "Willis O'Brien's animated dinosaurs, the direct ancestor of King Kong.",
+      "blurb_gl": "Os dinosauros animados de Willis O'Brien, antecedente directo de King Kong.",
+      "blurb_eu": "Willis O'Brienen dinosauro animatuak, King Kongen aurrekari zuzena.",
+      "blurb_ca": "Els dinosaures animats de Willis O'Brien, antecedent directe de King Kong.",
+      "tags": [
+        "adventure",
+        "scifi"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2013-05-02",
+      "tmdbId": 2981
+    },
+    {
+      "id": "ThePhantomoftheOpera",
+      "title": "The Phantom of the Opera",
+      "original_title": "The Phantom of the Opera",
+      "director": "Rupert Julian",
+      "year": 1925,
+      "country": "EE. UU.",
+      "runtime": 93,
+      "lang": "en",
+      "blurb_es": "Lon Chaney y su rostro descubierto: el terror gótico de Hollywood en estado puro.",
+      "blurb_en": "Lon Chaney and his unmasking: Hollywood gothic horror at its purest.",
+      "blurb_gl": "Lon Chaney e o seu rostro descuberto: o terror gótico de Hollywood en estado puro.",
+      "blurb_eu": "Lon Chaney eta haren aurpegi agerian: Hollywoodeko izu gotikoa egoera puruan.",
+      "blurb_ca": "Lon Chaney i el seu rostre descobert: el terror gòtic de Hollywood en estat pur.",
+      "tags": [
+        "horror",
+        "romance"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2005-10-26",
+      "tmdbId": 964
     },
     {
       "id": "1926-faust",
@@ -329,7 +733,83 @@
       "blurb_en": "The pact with the devil according to Murnau: Mephisto spreads his wings over the town in one of the most powerful images of German Expressionism.",
       "blurb_gl": "O pacto co demo segundo Murnau: Mefisto estende as súas ás sobre a vila nunha das imaxes máis poderosas do expresionismo alemán.",
       "blurb_eu": "Deabruarekiko ituna Murnauren arabera: Mefistok hegoak zabaltzen ditu herriaren gainean, espresionismo alemanaren irudi indartsuenetako batean.",
-      "blurb_ca": "El pacte amb el diable segons Murnau: Mefisto estén les ales sobre el poble en una de les imatges més poderoses de l'expressionisme alemany."
+      "blurb_ca": "El pacte amb el diable segons Murnau: Mefisto estén les ales sobre el poble en una de les imatges més poderoses de l'expressionisme alemany.",
+      "tags": [
+        "fantasy",
+        "horror"
+      ],
+      "sound": false,
+      "published": "2020-05-19",
+      "tmdbId": 10728
+    },
+    {
+      "id": "the-adventures-of-prince-achmed-1926-by-carl-koch",
+      "title": "The Adventures of Prince Achmed",
+      "original_title": "Die Abenteuer des Prinzen Achmed",
+      "director": "Lotte Reiniger",
+      "year": 1926,
+      "country": "Alemania",
+      "runtime": 66,
+      "lang": "en",
+      "blurb_es": "El largometraje de animación más antiguo que se conserva: Las mil y una noches recortadas en siluetas de papel por Lotte Reiniger.",
+      "blurb_en": "The oldest surviving animated feature: the Arabian Nights cut out in paper silhouettes by Lotte Reiniger.",
+      "blurb_gl": "A longametraxe de animación máis antiga que se conserva: As mil e unha noites recortadas en siluetas de papel por Lotte Reiniger.",
+      "blurb_eu": "Gordetzen den animaziozko film luzerik zaharrena: Mila gau eta bat, Lotte Reinigerrek paperezko siluetetan moztuak.",
+      "blurb_ca": "El llargmetratge d’animació més antic que es conserva: Les mil i una nits retallades en siluetes de paper per Lotte Reiniger.",
+      "tags": [
+        "animation",
+        "fantasy",
+        "adventure"
+      ],
+      "sound": false,
+      "published": "2024-08-17",
+      "tmdbId": 19354
+    },
+    {
+      "id": "TheGeneral_201312",
+      "title": "The General",
+      "original_title": "The General",
+      "director": "Buster Keaton, Clyde Bruckman",
+      "year": 1926,
+      "country": "EE. UU.",
+      "runtime": 79,
+      "lang": "en",
+      "blurb_es": "Keaton persigue una locomotora robada en plena guerra de Secesión. Cada acrobacia es real, y el tren que cae del puente también.",
+      "blurb_en": "Keaton chases a stolen locomotive in the middle of the Civil War. Every stunt is real, and so is the train that falls off the bridge.",
+      "blurb_gl": "Keaton persegue unha locomotora roubada en plena guerra de Secesión. Cada acrobacia é real, e o tren que cae da ponte tamén.",
+      "blurb_eu": "Keatonek lapurtutako lokomotora bat atzetik darama Sezesio Gerraren erdian. Akrobazia guztiak benetakoak dira, baita zubitik erortzen den trena ere.",
+      "blurb_ca": "Keaton persegueix una locomotora robada en plena guerra de Secessió. Cada acrobàcia és real, i el tren que cau del pont també.",
+      "tags": [
+        "comedy",
+        "adventure"
+      ],
+      "sound": false,
+      "language": "en",
+      "essential": true,
+      "published": "2013-12-22",
+      "tmdbId": 961
+    },
+    {
+      "id": "berlin-symphony-of-a-metropolis-1927-by-walter-ruttmann",
+      "title": "Berlin: Symphony of a Metropolis",
+      "original_title": "Berlin: Die Sinfonie der Großstadt",
+      "director": "Walter Ruttmann",
+      "year": 1927,
+      "country": "Alemania",
+      "runtime": 62,
+      "lang": "en",
+      "blurb_es": "Un día entero en el Berlín de los años veinte, del primer tren al último baile, montado como una partitura: la sinfonía urbana por excelencia.",
+      "blurb_en": "A whole day in 1920s Berlin, from the first train to the last dance, cut like a musical score: the city symphony par excellence.",
+      "blurb_gl": "Un día enteiro no Berlín dos anos vinte, do primeiro tren ao último baile, montado como unha partitura: a sinfonía urbana por excelencia.",
+      "blurb_eu": "Egun oso bat hogeiko hamarkadako Berlinen, lehen trenetik azken dantzaraino, partitura bat bezala muntatua: hiri-sinfonia bikaina.",
+      "blurb_ca": "Un dia sencer a la Berlín dels anys vint, del primer tren a l’últim ball, muntat com una partitura: la simfonia urbana per excel·lència.",
+      "tags": [
+        "documentary",
+        "avantgarde"
+      ],
+      "sound": false,
+      "published": "2024-05-29",
+      "tmdbId": 222
     },
     {
       "id": "Metropolis1927EnglishVersion",
@@ -344,7 +824,16 @@
       "blurb_en": "The vertical city, the workers underground and the robot Maria: the science fiction that designed cinema’s future. Print with English intertitles.",
       "blurb_gl": "A cidade vertical, os obreiros baixo terra e a robot María: a ciencia ficción que deseñou o futuro do cine. Copia con rótulos en inglés.",
       "blurb_eu": "Hiri bertikala, lur azpiko langileak eta Maria robota: zinemaren etorkizuna diseinatu zuen zientzia-fikzioa. Ingelesezko errotuludun kopia.",
-      "blurb_ca": "La ciutat vertical, els obrers sota terra i la robot Maria: la ciència-ficció que va dissenyar el futur del cinema. Còpia amb rètols en anglès."
+      "blurb_ca": "La ciutat vertical, els obrers sota terra i la robot Maria: la ciència-ficció que va dissenyar el futur del cinema. Còpia amb rètols en anglès.",
+      "tags": [
+        "scifi",
+        "drama"
+      ],
+      "sound": false,
+      "language": "en",
+      "essential": true,
+      "published": "2014-01-24",
+      "tmdbId": 19
     },
     {
       "id": "sunrise-a-song-of-two-humans-f.-w.-murnau-1927",
@@ -359,7 +848,16 @@
       "blurb_en": "A farmer tempted to drown his wife, and a night in the city that reconciles them. Murnau’s first Hollywood picture.",
       "blurb_gl": "Un labrego tentado de afogar a súa muller e unha noite na cidade que os reconcilia. O primeiro traballo de Murnau en Hollywood.",
       "blurb_eu": "Bere emaztea itotzeko tentazioa duen nekazari bat, eta biak adiskidetzen dituen gau bat hirian. Murnauren lehen lana Hollywooden.",
-      "blurb_ca": "Un pagès temptat d’ofegar la seva dona i una nit a la ciutat que els reconcilia. El primer treball de Murnau a Hollywood."
+      "blurb_ca": "Un pagès temptat d’ofegar la seva dona i una nit a la ciutat que els reconcilia. El primer treball de Murnau a Hollywood.",
+      "tags": [
+        "drama",
+        "romance"
+      ],
+      "sound": false,
+      "language": "en",
+      "essential": true,
+      "published": "2020-05-17",
+      "tmdbId": 631
     },
     {
       "id": "the-lodger-a-story-of-the-london-fog-1927-by-alfred-hitchcock",
@@ -374,7 +872,14 @@
       "blurb_en": "A killer of blondes in foggy London and a suspicious lodger: the first Hitchcock film that feels like Hitchcock.",
       "blurb_gl": "Un asasino de louras na Londres da néboa e un hóspede sospeitoso: a primeira película de Hitchcock que soa a Hitchcock.",
       "blurb_eu": "Ilehoriak hiltzen dituen bat Londres lainotsuan eta maizter susmagarri bat: Hitchcocken lehen filma Hitchcock usaina duena.",
-      "blurb_ca": "Un assassí de rosses a la Londres de la boira i un hoste sospitós: la primera pel·lícula de Hitchcock que sona a Hitchcock."
+      "blurb_ca": "Un assassí de rosses a la Londres de la boira i un hoste sospitós: la primera pel·lícula de Hitchcock que sona a Hitchcock.",
+      "tags": [
+        "thriller"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2024-05-29",
+      "tmdbId": 2760
     },
     {
       "id": "SteamboatBillJr",
@@ -389,7 +894,14 @@
       "blurb_en": "The final cyclone, and the two-ton house front that falls on Keaton leaving him standing exactly in the window gap.",
       "blurb_gl": "O ciclón final e a fachada de dúas toneladas que cae sobre Keaton deixándoo xusto no oco da fiestra.",
       "blurb_eu": "Azken zikloia, eta Keatonen gainera erortzen den bi tonako fatxada, bera leihoaren hutsunean bertan utziz.",
-      "blurb_ca": "El cicló final i la façana de dues tones que cau sobre Keaton i el deixa just al forat de la finestra."
+      "blurb_ca": "El cicló final i la façana de dues tones que cau sobre Keaton i el deixa just al forat de la finestra.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2005-09-29",
+      "tmdbId": 25768
     },
     {
       "id": "steamboat-willie_1928",
@@ -404,22 +916,14 @@
       "blurb_en": "The short in which Mickey Mouse whistles at the wheel of a steamboat, and one of the first cartoons with synchronised sound. In the public domain since 2024.",
       "blurb_gl": "A curta na que Mickey Mouse asubía ao temón dun vapor e un dos primeiros debuxos animados con son sincronizado. De dominio público desde 2024.",
       "blurb_eu": "Mickey Mouse lurrun-ontzi baten lemazainean txistuka ageri den film laburra, soinu sinkronizatua izan zuten lehen marrazki bizidunetako bat. 2024tik domeinu publikoan.",
-      "blurb_ca": "El curt en què Mickey Mouse xiula al timó d'un vapor i un dels primers dibuixos animats amb so sincronitzat. De domini públic des del 2024."
-    },
-    {
-      "id": "the-passion-of-joan-of-arc",
-      "title": "The Passion of Joan of Arc",
-      "original_title": "La Passion de Jeanne d'Arc",
-      "director": "Carl Theodor Dreyer",
-      "year": 1928,
-      "country": "Francia",
-      "runtime": 82,
-      "lang": "es",
-      "blurb_es": "El juicio de Juana de Arco contado casi solo con primeros planos: el rostro de Renée Falconetti en una de las interpretaciones más intensas del cine mudo.",
-      "blurb_en": "The trial of Joan of Arc told almost entirely in close-ups: Renée Falconetti's face in one of the most intense performances of silent cinema.",
-      "blurb_gl": "O xuízo de Xoana de Arco contado case só con primeiros planos: o rostro de Renée Falconetti nunha das interpretacións máis intensas do cine mudo.",
-      "blurb_eu": "Joana Arkokoaren epaiketa, ia lehen planoz soilik kontatua: Renée Falconettiren aurpegia, zinema mutuko interpretaziorik biziena den horietako batean.",
-      "blurb_ca": "El judici de Joana d'Arc explicat gairebé només amb primers plans: el rostre de Renée Falconetti en una de les interpretacions més intenses del cinema mut."
+      "blurb_ca": "El curt en què Mickey Mouse xiula al timó d'un vapor i un dels primers dibuixos animats amb so sincronitzat. De domini públic des del 2024.",
+      "tags": [
+        "animation",
+        "comedy"
+      ],
+      "sound": true,
+      "published": "2024-01-02",
+      "tmdbId": 53565
     },
     {
       "id": "TheFallOfTheHouseOfUsher1928",
@@ -434,7 +938,81 @@
       "blurb_en": "Poe filmed with prisms, mirrors and cardboard sets: an avant-garde piece made in a Rochester garage that founded American experimental film.",
       "blurb_gl": "Poe filmado con prismas, espellos e decorados de cartón: unha peza de vangarda feita nun garaxe de Rochester que fundou o cine experimental estadounidense.",
       "blurb_eu": "Poe prisma, ispilu eta kartoizko dekoratuekin filmatua: Rochesterreko garaje batean egindako abangoardiako pieza, AEBetako zinema esperimentalaren sortzailea.",
-      "blurb_ca": "Poe filmat amb prismes, miralls i decorats de cartró: una peça d'avantguarda feta en un garatge de Rochester que va fundar el cinema experimental nord-americà."
+      "blurb_ca": "Poe filmat amb prismes, miralls i decorats de cartró: una peça d'avantguarda feta en un garatge de Rochester que va fundar el cinema experimental nord-americà.",
+      "tags": [
+        "horror",
+        "avantgarde"
+      ],
+      "sound": false,
+      "published": "2010-11-03",
+      "tmdbId": 106394
+    },
+    {
+      "id": "the-man-who-laughs-1928-1080p-blu-ray-x-265-ghost",
+      "title": "The Man Who Laughs",
+      "original_title": "The Man Who Laughs",
+      "director": "Paul Leni",
+      "year": 1928,
+      "country": "EE. UU.",
+      "runtime": 110,
+      "lang": "en",
+      "blurb_es": "Un hombre condenado a una sonrisa eterna, tallada en la cara de niño, busca el amor en la Inglaterra del siglo XVII; de su rostro nació el Joker.",
+      "blurb_en": "A man condemned to an eternal smile, carved into his face as a child, looks for love in 17th-century England; his face inspired the Joker.",
+      "blurb_gl": "Un home condenado a un sorriso eterno, tallado na cara de neno, busca o amor na Inglaterra do século XVII; do seu rostro naceu o Joker.",
+      "blurb_eu": "Haurra zela aurpegian zizelkatutako betiko irribarrera kondenatutako gizon batek maitasuna bilatzen du XVII. mendeko Ingalaterran; bere aurpegitik jaio zen Joker.",
+      "blurb_ca": "Un home condemnat a un somriure etern, tallat a la cara de petit, busca l’amor a l’Anglaterra del segle XVII; del seu rostre va néixer el Joker.",
+      "tags": [
+        "drama",
+        "horror",
+        "romance"
+      ],
+      "sound": false,
+      "language": "en",
+      "published": "2025-05-12",
+      "tmdbId": 27517
+    },
+    {
+      "id": "the-passion-of-joan-of-arc",
+      "title": "The Passion of Joan of Arc",
+      "original_title": "La Passion de Jeanne d'Arc",
+      "director": "Carl Theodor Dreyer",
+      "year": 1928,
+      "country": "Francia",
+      "runtime": 82,
+      "lang": "es",
+      "blurb_es": "El juicio de Juana de Arco contado casi solo con primeros planos: el rostro de Renée Falconetti en una de las interpretaciones más intensas del cine mudo.",
+      "blurb_en": "The trial of Joan of Arc told almost entirely in close-ups: Renée Falconetti's face in one of the most intense performances of silent cinema.",
+      "blurb_gl": "O xuízo de Xoana de Arco contado case só con primeiros planos: o rostro de Renée Falconetti nunha das interpretacións máis intensas do cine mudo.",
+      "blurb_eu": "Joana Arkokoaren epaiketa, ia lehen planoz soilik kontatua: Renée Falconettiren aurpegia, zinema mutuko interpretaziorik biziena den horietako batean.",
+      "blurb_ca": "El judici de Joana d'Arc explicat gairebé només amb primers plans: el rostre de Renée Falconetti en una de les interpretacions més intenses del cinema mut.",
+      "tags": [
+        "drama"
+      ],
+      "sound": false,
+      "essential": true,
+      "published": "2020-08-24",
+      "tmdbId": 780
+    },
+    {
+      "id": "la-coquille-et-le-clergyman-1928",
+      "title": "The Seashell and the Clergyman",
+      "original_title": "La Coquille et le Clergyman",
+      "director": "Germaine Dulac",
+      "year": 1928,
+      "country": "Francia",
+      "runtime": 41,
+      "lang": "en",
+      "blurb_es": "El primer film surrealista, escrito por Antonin Artaud: los deseos de un clérigo convertidos en imágenes de sueño por Germaine Dulac.",
+      "blurb_en": "The first surrealist film, written by Antonin Artaud: a clergyman’s desires turned into dream images by Germaine Dulac.",
+      "blurb_gl": "O primeiro filme surrealista, escrito por Antonin Artaud: os desexos dun clérigo convertidos en imaxes de soño por Germaine Dulac.",
+      "blurb_eu": "Lehen film surrealista, Antonin Artaudek idatzia: apaiz baten desirak, Germaine Dulacek amets-irudi bihurtuak.",
+      "blurb_ca": "El primer film surrealista, escrit per Antonin Artaud: els desigs d’un clergue convertits en imatges de somni per Germaine Dulac.",
+      "tags": [
+        "avantgarde"
+      ],
+      "sound": false,
+      "published": "2022-11-20",
+      "tmdbId": 118014
     },
     {
       "id": "ChelovekskinoapparatomManWithAMovieCamera",
@@ -449,22 +1027,15 @@
       "blurb_en": "A day in a Soviet city with no actors, no script and no intertitles: just the camera, the editing and the woman who edits the film.",
       "blurb_gl": "Un día nunha cidade soviética sen actores, sen guión e sen rótulos: só a cámara, a montaxe e a muller que monta a película.",
       "blurb_eu": "Egun bat hiri sobietar batean, aktorerik, gidoirik eta errotulurik gabe: kamera, muntaketa eta filma muntatzen duen emakumea baino ez.",
-      "blurb_ca": "Un dia en una ciutat soviètica sense actors, sense guió i sense rètols: només la càmera, el muntatge i la dona que munta la pel·lícula."
-    },
-    {
-      "id": "UnChienAndalou1929_201807",
-      "title": "Un Chien Andalou",
-      "original_title": "Un chien andalou",
-      "director": "Luis Buñuel",
-      "year": 1929,
-      "country": "Francia",
-      "runtime": 21,
-      "lang": "es",
-      "blurb_es": "El ojo cortado por una navaja y las hormigas que salen de una mano: el debut de Buñuel, escrito con Dalí, es el gran manifiesto surrealista del cine.",
-      "blurb_en": "The eye sliced by a razor and the ants crawling out of a hand: Buñuel's debut, written with Dalí, is cinema's great surrealist manifesto.",
-      "blurb_gl": "O ollo cortado por unha navalla e as formigas que saen dunha man: o debut de Buñuel, escrito con Dalí, é o gran manifesto surrealista do cine.",
-      "blurb_eu": "Labanaz moztutako begia eta esku batetik ateratzen diren inurriak: Buñuelen estreinako lana, Dalírekin idatzia, zinemaren manifestu surrealista handia da.",
-      "blurb_ca": "L'ull tallat per una navalla i les formigues que surten d'una mà: el debut de Buñuel, escrit amb Dalí, és el gran manifest surrealista del cinema."
+      "blurb_ca": "Un dia en una ciutat soviètica sense actors, sense guió i sense rètols: només la càmera, el muntatge i la dona que munta la pel·lícula.",
+      "tags": [
+        "documentary",
+        "avantgarde"
+      ],
+      "sound": false,
+      "essential": true,
+      "published": "2006-07-01",
+      "tmdbId": 26317
     },
     {
       "id": "pandoras-box-1929-by-georg-wilhelm-pabst",
@@ -479,7 +1050,78 @@
       "blurb_en": "Louise Brooks, with her helmet bob, is Lulu: a woman who drags everyone to ruin without meaning to, in Weimar Berlin.",
       "blurb_gl": "Louise Brooks, coa súa melena de casco, é Lulú: unha muller que arrastra a todos á ruína sen propoñelo, no Berlín de Weimar.",
       "blurb_eu": "Louise Brooks, kasko itxurako ilearekin, Lulu da: nahi gabe guztiak hondamenera daramatzan emakumea, Weimarreko Berlinen.",
-      "blurb_ca": "Louise Brooks, amb la seva melena de casc, és Lulú: una dona que arrossega tothom a la ruïna sense proposar-s'ho, al Berlín de Weimar."
+      "blurb_ca": "Louise Brooks, amb la seva melena de casc, és Lulú: una dona que arrossega tothom a la ruïna sense proposar-s'ho, al Berlín de Weimar.",
+      "tags": [
+        "drama"
+      ],
+      "sound": false,
+      "published": "2024-08-16",
+      "tmdbId": 905
+    },
+    {
+      "id": "Regen",
+      "title": "Rain",
+      "original_title": "Regen",
+      "director": "Joris Ivens",
+      "year": 1929,
+      "country": "Países Bajos",
+      "runtime": 12,
+      "lang": "en",
+      "blurb_es": "Un chaparrón sobre Ámsterdam, de la primera gota a los charcos, filmado durante meses por Joris Ivens: poesía documental en doce minutos.",
+      "blurb_en": "A downpour over Amsterdam, from the first drop to the puddles, filmed over months by Joris Ivens: documentary poetry in twelve minutes.",
+      "blurb_gl": "Unha chuvieira sobre Ámsterdam, da primeira pinga ás pozas, filmada durante meses por Joris Ivens: poesía documental en doce minutos.",
+      "blurb_eu": "Zaparrada bat Amsterdamen, lehen tantatik putzuetaraino, Joris Ivensek hilabetez filmatua: poesia dokumentala hamabi minututan.",
+      "blurb_ca": "Un xàfec sobre Amsterdam, de la primera gota als bassals, filmat durant mesos per Joris Ivens: poesia documental en dotze minuts.",
+      "tags": [
+        "documentary",
+        "avantgarde"
+      ],
+      "sound": false,
+      "published": "2007-10-21",
+      "tmdbId": 128284
+    },
+    {
+      "id": "UnChienAndalou1929_201807",
+      "title": "Un Chien Andalou",
+      "original_title": "Un chien andalou",
+      "director": "Luis Buñuel",
+      "year": 1929,
+      "country": "Francia",
+      "runtime": 21,
+      "lang": "es",
+      "blurb_es": "El ojo cortado por una navaja y las hormigas que salen de una mano: el debut de Buñuel, escrito con Dalí, es el gran manifiesto surrealista del cine.",
+      "blurb_en": "The eye sliced by a razor and the ants crawling out of a hand: Buñuel's debut, written with Dalí, is cinema's great surrealist manifesto.",
+      "blurb_gl": "O ollo cortado por unha navalla e as formigas que saen dunha man: o debut de Buñuel, escrito con Dalí, é o gran manifesto surrealista do cine.",
+      "blurb_eu": "Labanaz moztutako begia eta esku batetik ateratzen diren inurriak: Buñuelen estreinako lana, Dalírekin idatzia, zinemaren manifestu surrealista handia da.",
+      "blurb_ca": "L'ull tallat per una navalla i les formigues que surten d'una mà: el debut de Buñuel, escrit amb Dalí, és el gran manifest surrealista del cinema.",
+      "tags": [
+        "avantgarde"
+      ],
+      "sound": false,
+      "published": "2018-07-31",
+      "tmdbId": 626
+    },
+    {
+      "id": "A_propos_de_Nice",
+      "title": "À propos de Nice",
+      "original_title": "À propos de Nice",
+      "director": "Jean Vigo",
+      "year": 1930,
+      "country": "Francia",
+      "runtime": 23,
+      "lang": "en",
+      "blurb_es": "Jean Vigo pasea su cámara por el carnaval y los paseos de Niza y retrata, con mucha ironía, a los ricos que toman el sol frente a los pobres.",
+      "blurb_en": "Jean Vigo walks his camera through Nice’s carnival and promenades, ironically portraying the rich sunbathing beside the poor.",
+      "blurb_gl": "Jean Vigo pasea a súa cámara polo entroido e os paseos de Niza e retrata, con moita ironía, os ricos que toman o sol fronte aos pobres.",
+      "blurb_eu": "Jean Vigok Nizako inauteri eta pasealekuetan zehar darama kamera, eta ironia handiz erretratatzen ditu eguzkitan dauden aberatsak pobreen ondoan.",
+      "blurb_ca": "Jean Vigo passeja la càmera pel carnaval i els passeigs de Niça i retrata, amb molta ironia, els rics que prenen el sol davant dels pobres.",
+      "tags": [
+        "documentary",
+        "avantgarde"
+      ],
+      "sound": false,
+      "published": "2009-01-23",
+      "tmdbId": 47831
     },
     {
       "id": "all-quiet-on-the-western-front-1930_202407",
@@ -494,7 +1136,103 @@
       "blurb_en": "German students who go to war full of enthusiasm and die in the trenches: Hollywood's great anti-war statement, Oscar for Best Picture. In the public domain since 2026.",
       "blurb_gl": "Estudantes alemáns que van á guerra entusiasmados e morren nas trincheiras: o gran alegato antibelicista de Hollywood, Óscar á mellor película. De dominio público desde 2026.",
       "blurb_eu": "Gogotsu gerrara joan eta lubakietan hiltzen diren ikasle alemanak: Hollywooden gerraren aurkako aldarri handia, film onenaren Oscarra. 2026tik domeinu publikoan.",
-      "blurb_ca": "Estudiants alemanys que van a la guerra entusiasmats i moren a les trinxeres: el gran al·legat antibel·licista de Hollywood, Oscar a la millor pel·lícula. De domini públic des del 2026."
+      "blurb_ca": "Estudiants alemanys que van a la guerra entusiasmats i moren a les trinxeres: el gran al·legat antibel·licista de Hollywood, Oscar a la millor pel·lícula. De domini públic des del 2026.",
+      "tags": [
+        "drama"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2024-07-11",
+      "tmdbId": 143
+    },
+    {
+      "id": "animal-crackers_1930",
+      "title": "Animal Crackers",
+      "original_title": "Animal Crackers",
+      "director": "Victor Heerman",
+      "year": 1930,
+      "country": "EE. UU.",
+      "runtime": 93,
+      "lang": "en",
+      "blurb_es": "Los hermanos Marx desatan el caos en una fiesta de la alta sociedad donde ha desaparecido un cuadro; Groucho es el capitán Spaulding, explorador de África.",
+      "blurb_en": "The Marx Brothers unleash chaos at a high-society party where a painting has gone missing; Groucho is Captain Spaulding, the African explorer.",
+      "blurb_gl": "Os irmáns Marx desatan o caos nunha festa da alta sociedade onde desapareceu un cadro; Groucho é o capitán Spaulding, explorador de África.",
+      "blurb_eu": "Marx anaiek kaosa askatzen dute goi-mailako festa batean, non koadro bat desagertu den; Groucho Spaulding kapitaina da, Afrikako esploratzailea.",
+      "blurb_ca": "Els germans Marx desfermen el caos en una festa de l’alta societat on ha desaparegut un quadre; Groucho és el capità Spaulding, explorador d’Àfrica.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2025-12-25",
+      "tmdbId": 13913
+    },
+    {
+      "id": "1930-earth",
+      "title": "Earth",
+      "original_title": "Zemlya",
+      "director": "Oleksandr Dovzhenko",
+      "year": 1930,
+      "country": "URSS",
+      "runtime": 78,
+      "lang": "en",
+      "blurb_es": "Campos de trigo, manzanas bajo la lluvia y la llegada del primer tractor a una aldea ucraniana: el poema visual de Dovzhenko sobre la vida y la muerte.",
+      "blurb_en": "Wheat fields, apples in the rain and the first tractor arriving in a Ukrainian village: Dovzhenko’s visual poem about life and death.",
+      "blurb_gl": "Campos de trigo, mazás baixo a chuvia e a chegada do primeiro tractor a unha aldea ucraína: o poema visual de Dovzhenko sobre a vida e a morte.",
+      "blurb_eu": "Gari-soroak, sagarrak euripean eta lehen traktorearen etorrera Ukrainako herrixka batera: Dovzhenkoren poema bisuala bizitzari eta heriotzari buruz.",
+      "blurb_ca": "Camps de blat, pomes sota la pluja i l’arribada del primer tractor a un poble ucraïnès: el poema visual de Dovjenko sobre la vida i la mort.",
+      "tags": [
+        "drama"
+      ],
+      "sound": false,
+      "language": "en",
+      "subtitles": "en",
+      "published": "2023-08-11",
+      "tmdbId": 46594
+    },
+    {
+      "id": "morocco-30-1538596735589",
+      "title": "Morocco",
+      "original_title": "Morocco",
+      "director": "Josef von Sternberg",
+      "year": 1930,
+      "country": "EE. UU.",
+      "runtime": 92,
+      "lang": "en",
+      "blurb_es": "Marlene Dietrich, cantante de cabaré con frac y sombrero de copa, y Gary Cooper, legionario: el primer gran éxito de ella en Hollywood.",
+      "blurb_en": "Marlene Dietrich, a cabaret singer in a tailcoat and top hat, and Gary Cooper, a legionnaire: her first big Hollywood hit.",
+      "blurb_gl": "Marlene Dietrich, cantante de cabaré con frac e sombreiro de copa, e Gary Cooper, lexionario: o seu primeiro gran éxito en Hollywood.",
+      "blurb_eu": "Marlene Dietrich, frak eta kopa-txapeldun kabaret-abeslaria, eta Gary Cooper, legionarioa: Hollywooden izan zuen lehen arrakasta handia.",
+      "blurb_ca": "Marlene Dietrich, cantant de cabaret amb frac i barret de copa, i Gary Cooper, legionari: el seu primer gran èxit a Hollywood.",
+      "tags": [
+        "drama",
+        "romance"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2021-01-20",
+      "tmdbId": 42641
+    },
+    {
+      "id": "theblueangel1930",
+      "title": "The Blue Angel",
+      "original_title": "Der blaue Engel",
+      "director": "Josef von Sternberg",
+      "year": 1930,
+      "country": "Alemania",
+      "runtime": 100,
+      "lang": "en",
+      "blurb_es": "Un profesor estricto se enamora de Lola Lola, la cantante del cabaré El Ángel Azul, y lo pierde todo: la película que convirtió en estrella a Marlene Dietrich.",
+      "blurb_en": "A strict teacher falls for Lola Lola, the singer at the Blue Angel cabaret, and loses everything: the film that made Marlene Dietrich a star.",
+      "blurb_gl": "Un profesor estrito namórase de Lola Lola, a cantante do cabaré O Anxo Azul, e pérdeo todo: o filme que converteu en estrela a Marlene Dietrich.",
+      "blurb_eu": "Irakasle zorrotz bat Lola Lolaz maitemintzen da, Aingeru Urdina kabareteko abeslariaz, eta dena galtzen du: Marlene Dietrich izar bihurtu zuen filma.",
+      "blurb_ca": "Un professor estricte s’enamora de Lola Lola, la cantant del cabaret L’Àngel Blau, i ho perd tot: la pel·lícula que va convertir Marlene Dietrich en estrella.",
+      "tags": [
+        "drama"
+      ],
+      "sound": true,
+      "published": "2011-01-05",
+      "tmdbId": 228
     },
     {
       "id": "white_zombie",
@@ -509,7 +1247,14 @@
       "blurb_en": "The first feature-length zombie film, with Bela Lugosi as master of a sugar mill of the undead.",
       "blurb_gl": "A primeira longametraxe de zombis, con Bela Lugosi como amo dun enxeño azucreiro de mortos viventes.",
       "blurb_eu": "Zonbien lehen film luzea, Bela Lugosi hilotz bizidunez osatutako azukre-lantegi baten jabe gisa.",
-      "blurb_ca": "El primer llargmetratge de zombis, amb Bela Lugosi com a amo d'un enginy sucrer de morts vivents."
+      "blurb_ca": "El primer llargmetratge de zombis, amb Bela Lugosi com a amo d'un enginy sucrer de morts vivents.",
+      "tags": [
+        "horror"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2004-08-06",
+      "tmdbId": 26860
     },
     {
       "id": "MyManGodfrey1936",
@@ -524,7 +1269,37 @@
       "blurb_en": "A scatterbrained heiress hires a tramp as her butler during the Great Depression: a sharp screwball comedy with William Powell and Carole Lombard.",
       "blurb_gl": "Unha herdeira alocada contrata como mordomo un vagabundo durante a Gran Depresión: screwball comedy afiada, con William Powell e Carole Lombard.",
       "blurb_eu": "Oinordeko burugabe batek eskale bat hartzen du maiordomo Depresio Handian: screwball comedy zorrotza, William Powell eta Carole Lombardekin.",
-      "blurb_ca": "Una hereva esbojarrada contracta un rodamón com a majordom durant la Gran Depressió: screwball comedy esmolada, amb William Powell i Carole Lombard."
+      "blurb_ca": "Una hereva esbojarrada contracta un rodamón com a majordom durant la Gran Depressió: screwball comedy esmolada, amb William Powell i Carole Lombard.",
+      "tags": [
+        "comedy",
+        "romance"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2010-09-07",
+      "tmdbId": 13562
+    },
+    {
+      "id": "reefer_madness1938",
+      "title": "Reefer Madness",
+      "original_title": "Reefer Madness",
+      "director": "Louis J. Gasnier",
+      "year": 1936,
+      "country": "EE. UU.",
+      "runtime": 68,
+      "lang": "en",
+      "blurb_es": "Un panfleto de 1936 sobre los peligros de la marihuana tan exagerado que décadas después se convirtió en una comedia de culto involuntaria.",
+      "blurb_en": "A 1936 scare film about the dangers of marijuana so overblown that decades later it became an unintentional cult comedy.",
+      "blurb_gl": "Un panfleto de 1936 sobre os perigos da marihuana tan esaxerado que décadas despois converteuse nunha comedia de culto involuntaria.",
+      "blurb_eu": "1936ko marihuanaren arriskuei buruzko panfleto bat, hain gehiegizkoa non hamarkada batzuk geroago nahi gabeko kultuzko komedia bihurtu zen.",
+      "blurb_ca": "Un pamflet de 1936 sobre els perills de la marihuana tan exagerat que dècades després es va convertir en una comèdia de culte involuntària.",
+      "tags": [
+        "drama"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2004-03-10",
+      "tmdbId": 37833
     },
     {
       "id": "NothingSacred",
@@ -539,7 +1314,37 @@
       "blurb_en": "A newspaper turns a girl who thinks she is dying into a heroine… when she is actually perfectly healthy. A Technicolor satire of the tabloid press.",
       "blurb_gl": "Un xornal converte en heroína unha rapaza que cre que vai morrer… e que en realidade está san. Sátira en Technicolor sobre a prensa sensacionalista.",
       "blurb_eu": "Egunkari batek heroi bihurtzen du hilko dela uste duen neska bat… benetan osasuntsu dagoena. Prentsa sentsazionalistari buruzko satira Technicolorrez.",
-      "blurb_ca": "Un diari converteix en heroïna una noia que creu que morirà… i que en realitat està sana. Sàtira en Technicolor sobre la premsa sensacionalista."
+      "blurb_ca": "Un diari converteix en heroïna una noia que creu que morirà… i que en realitat està sana. Sàtira en Technicolor sobre la premsa sensacionalista.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2008-10-02",
+      "tmdbId": 37650
+    },
+    {
+      "id": "gullivers_travels1939",
+      "title": "Gulliver’s Travels",
+      "original_title": "Gulliver’s Travels",
+      "director": "Dave Fleischer",
+      "year": 1939,
+      "country": "EE. UU.",
+      "runtime": 73,
+      "lang": "en",
+      "blurb_es": "Gulliver naufraga en Liliput, un reino de diminutos en guerra con sus vecinos por una canción: la respuesta de los Fleischer a Blancanieves.",
+      "blurb_en": "Gulliver is shipwrecked in Lilliput, a tiny kingdom at war with its neighbours over a song: the Fleischers’ answer to Snow White.",
+      "blurb_gl": "Gulliver naufraga en Liliput, un reino de diminutos en guerra cos seus veciños por unha canción: a resposta dos Fleischer a Brancaneves.",
+      "blurb_eu": "Gulliverrek naufragio egiten du Liliputen, bere auzokoekin abesti bategatik gerran dagoen ttikien erreinuan: Fleischertarren erantzuna Elurzuriri.",
+      "blurb_ca": "Gulliver naufraga a Lil·liput, un regne de diminuts en guerra amb els veïns per una cançó: la resposta dels Fleischer a la Blancaneu.",
+      "tags": [
+        "animation",
+        "adventure"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2004-08-15",
+      "tmdbId": 42518
     },
     {
       "id": "his_girl_friday",
@@ -554,7 +1359,16 @@
       "blurb_en": "Screwball comedy at top speed: Hawks and a relentless duel of overlapping dialogue.",
       "blurb_gl": "A screwball comedy á súa máxima velocidade: Hawks e un duelo de diálogos solapados sen respiro.",
       "blurb_eu": "Screwball komedia bere abiadura gorenean: Hawks eta arnasarik gabeko elkarrizketa gainjarrien dueloa.",
-      "blurb_ca": "La screwball comedy a la seva màxima velocitat: Hawks i un duel de diàlegs encavalcats sense respir."
+      "blurb_ca": "La screwball comedy a la seva màxima velocitat: Hawks i un duel de diàlegs encavalcats sense respir.",
+      "tags": [
+        "comedy",
+        "romance"
+      ],
+      "sound": true,
+      "language": "en",
+      "essential": true,
+      "published": "2005-04-15",
+      "tmdbId": 3085
     },
     {
       "id": "meet_john_doe",
@@ -569,7 +1383,39 @@
       "blurb_en": "A reporter invents a suicide letter, and a drifter (Gary Cooper) ends up as the symbol of a movement others want to manipulate.",
       "blurb_gl": "Unha xornalista inventa unha carta de suicidio e un vagabundo (Gary Cooper) acaba sendo o símbolo dun movemento que outros queren manipular.",
       "blurb_eu": "Kazetari batek suizidio-gutun bat asmatzen du, eta eskale bat (Gary Cooper) beste batzuek manipulatu nahi duten mugimendu baten ikur bihurtzen da.",
-      "blurb_ca": "Una periodista inventa una carta de suïcidi i un rodamón (Gary Cooper) acaba sent el símbol d'un moviment que altres volen manipular."
+      "blurb_ca": "Una periodista inventa una carta de suïcidi i un rodamón (Gary Cooper) acaba sent el símbol d'un moviment que altres volen manipular.",
+      "tags": [
+        "drama",
+        "comedy"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2004-12-05",
+      "tmdbId": 32574
+    },
+    {
+      "id": "superman_the_mechanical_monsters",
+      "title": "Superman: The Mechanical Monsters",
+      "original_title": "Superman: The Mechanical Monsters",
+      "director": "Dave Fleischer",
+      "year": 1941,
+      "country": "EE. UU.",
+      "runtime": 10,
+      "lang": "en",
+      "blurb_es": "Robots gigantes asaltan bancos y Superman los persigue entre rascacielos: uno de los cortos de los Fleischer que inventaron el superhéroe animado.",
+      "blurb_en": "Giant robots rob banks and Superman chases them through skyscrapers: one of the Fleischer shorts that invented the animated superhero.",
+      "blurb_gl": "Robots xigantes asaltan bancos e Superman persegueos entre rañaceos: unha das curtas dos Fleischer que inventaron o superheroe animado.",
+      "blurb_eu": "Robot erraldoiek bankuak lapurtzen dituzte eta Supermanek etxe orratzen artean jazartzen ditu: superheroi animatua asmatu zuten Fleischertarren film laburretako bat.",
+      "blurb_ca": "Robots gegants assalten bancs i Superman els persegueix entre gratacels: un dels curts dels Fleischer que van inventar el superheroi animat.",
+      "tags": [
+        "animation",
+        "scifi",
+        "adventure"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2005-03-10",
+      "tmdbId": 71129
     },
     {
       "id": "Detour",
@@ -584,7 +1430,14 @@
       "blurb_en": "B-movie film noir turned myth: fatalism, the open road, and a destiny that snaps shut like a trap.",
       "blurb_gl": "Cine negro de serie B levado ao mito: fatalismo, estrada e un destino que se pecha como unha trampa.",
       "blurb_eu": "B serieko zinema beltza mito bihurtua: fatalismoa, errepidea eta tranpa baten gisa ixten den patua.",
-      "blurb_ca": "Cinema negre de sèrie B convertit en mite: fatalisme, carretera i un destí que es tanca com un parany."
+      "blurb_ca": "Cinema negre de sèrie B convertit en mite: fatalisme, carretera i un destí que es tanca com un parany.",
+      "tags": [
+        "noir"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2007-01-18",
+      "tmdbId": 20367
     },
     {
       "id": "ScarletStreet",
@@ -599,7 +1452,14 @@
       "blurb_en": "Fritz Lang and Edward G. Robinson in a bitter noir of desire, painting and damnation.",
       "blurb_gl": "Fritz Lang e Edward G. Robinson nun negro amargo sobre o desexo, a pintura e a condena.",
       "blurb_eu": "Fritz Lang eta Edward G. Robinson desira, pintura eta kondenari buruzko zinema beltz mingots batean.",
-      "blurb_ca": "Fritz Lang i Edward G. Robinson en un negre amarg sobre el desig, la pintura i la condemna."
+      "blurb_ca": "Fritz Lang i Edward G. Robinson en un negre amarg sobre el desig, la pintura i la condemna.",
+      "tags": [
+        "noir"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2005-11-05",
+      "tmdbId": 17058
     },
     {
       "id": "the-stranger-1946_202404",
@@ -614,7 +1474,38 @@
       "blurb_en": "Orson Welles directs and stars in the hunt for a Nazi criminal hiding in a Connecticut town.",
       "blurb_gl": "Orson Welles dirixe e protagoniza a caza dun criminal nazi oculto nunha vila de Connecticut.",
       "blurb_eu": "Orson Wellesek Connecticuteko herri batean ezkutatutako nazizko kriminal baten ehiza zuzendu eta protagonizatzen du.",
-      "blurb_ca": "Orson Welles dirigeix i protagonitza la caça d’un criminal nazi ocult en un poble de Connecticut."
+      "blurb_ca": "Orson Welles dirigeix i protagonitza la caça d’un criminal nazi ocult en un poble de Connecticut.",
+      "tags": [
+        "noir",
+        "thriller"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2024-04-03",
+      "tmdbId": 20246
+    },
+    {
+      "id": "angel_and_the_badman",
+      "title": "Angel and the Badman",
+      "original_title": "Angel and the Badman",
+      "director": "James Edward Grant",
+      "year": 1947,
+      "country": "EE. UU.",
+      "runtime": 100,
+      "lang": "en",
+      "blurb_es": "Un pistolero herido, John Wayne, es cuidado por una familia cuáquera y empieza a dudar de su revólver: un wéstern distinto, casi pacifista.",
+      "blurb_en": "A wounded gunfighter, John Wayne, is nursed by a Quaker family and starts to doubt his revolver: an unusual, almost pacifist western.",
+      "blurb_gl": "Un pistoleiro ferido, John Wayne, é coidado por unha familia cuáquera e empeza a dubidar do seu revólver: un wéstern distinto, case pacifista.",
+      "blurb_eu": "Pistolari zauritu bat, John Wayne, familia kuakero batek zaintzen du, eta bere errebolberraz zalantzan hasten da: western ezberdina, ia bakezalea.",
+      "blurb_ca": "Un pistoler ferit, John Wayne, és cuidat per una família quàquera i comença a dubtar del seu revòlver: un western diferent, gairebé pacifista.",
+      "tags": [
+        "western",
+        "romance"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2005-07-07",
+      "tmdbId": 22356
     },
     {
       "id": "He_Walked_by_Night_1948",
@@ -629,7 +1520,14 @@
       "blurb_en": "A semi-documentary noir with dazzling John Alton photography that inspired the series Dragnet.",
       "blurb_gl": "Negro semidocumental de fotografía deslumbrante (John Alton) que inspirou a serie Dragnet.",
       "blurb_eu": "Argazkigintza liluragarriko zinema beltz erdi-dokumentala (John Alton), Dragnet telesaila inspiratu zuena.",
-      "blurb_ca": "Negre semidocumental de fotografia enlluernadora (John Alton) que va inspirar la sèrie Dragnet."
+      "blurb_ca": "Negre semidocumental de fotografia enlluernadora (John Alton) que va inspirar la sèrie Dragnet.",
+      "tags": [
+        "noir"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2011-04-11",
+      "tmdbId": 31556
     },
     {
       "id": "doa_ipod",
@@ -644,22 +1542,82 @@
       "blurb_en": "A poisoned man investigates his own murder before he dies: noir as a countdown.",
       "blurb_gl": "Un home envelenado investiga o seu propio asasinato antes de morrer: o negro como conta atrás.",
       "blurb_eu": "Gizon pozoitu batek bere hilketa ikertzen du hil aurretik: zinema beltza atzerako kontaketa gisa.",
-      "blurb_ca": "Un home enverinat investiga el seu propi assassinat abans de morir: el negre com a compte enrere."
+      "blurb_ca": "Un home enverinat investiga el seu propi assassinat abans de morir: el negre com a compte enrere.",
+      "tags": [
+        "noir"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2006-01-07",
+      "tmdbId": 18995
     },
     {
-      "id": "Hitch_Hiker",
-      "title": "The Hitch-Hiker",
-      "original_title": "The Hitch-Hiker",
-      "director": "Ida Lupino",
-      "year": 1953,
+      "id": "7.3-too-late-for-tears-1949",
+      "title": "Too Late for Tears",
+      "original_title": "Too Late for Tears",
+      "director": "Byron Haskin",
+      "year": 1949,
       "country": "EE. UU.",
-      "runtime": 71,
+      "runtime": 101,
       "lang": "en",
-      "blurb_es": "Ida Lupino, única mujer que dirigió un cine negro clásico de estudio: tensión seca en pleno desierto.",
-      "blurb_en": "Ida Lupino, the only woman to direct a classic studio noir: dry tension out in the desert.",
-      "blurb_gl": "Ida Lupino, única muller que dirixiu un cine negro clásico de estudo: tensión seca en pleno deserto.",
-      "blurb_eu": "Ida Lupino, estudioko zinema beltz klasiko bat zuzendu zuen emakume bakarra: tentsio lehorra basamortuaren erdian.",
-      "blurb_ca": "Ida Lupino, única dona que va dirigir un cinema negre clàssic d'estudi: tensió seca en ple desert."
+      "blurb_es": "Una bolsa con dinero cae por error en el coche de un matrimonio, y Lizabeth Scott está dispuesta a todo por quedársela: una de las grandes mujeres fatales.",
+      "blurb_en": "A bag of money lands by mistake in a married couple’s car, and Lizabeth Scott will stop at nothing to keep it: one of the great femmes fatales.",
+      "blurb_gl": "Unha bolsa con diñeiro cae por erro no coche dun matrimonio, e Lizabeth Scott está disposta a todo por quedala: unha das grandes mulleres fatais.",
+      "blurb_eu": "Diruz betetako poltsa bat okerrez senar-emazte batzuen autora erortzen da, eta Lizabeth Scott edozer egiteko prest dago hura gordetzeko: emakume fatal handietako bat.",
+      "blurb_ca": "Una bossa amb diners cau per error al cotxe d’un matrimoni, i Lizabeth Scott està disposada a tot per quedar-se-la: una de les grans dones fatals.",
+      "tags": [
+        "noir",
+        "thriller"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2022-04-16",
+      "tmdbId": 27036
+    },
+    {
+      "id": "Quicksand_clear",
+      "title": "Quicksand",
+      "original_title": "Quicksand",
+      "director": "Irving Pichel",
+      "year": 1950,
+      "country": "EE. UU.",
+      "runtime": 79,
+      "lang": "en",
+      "blurb_es": "Un mecánico coge veinte dólares de la caja para invitar a una chica y cada intento de taparlo lo hunde más: Mickey Rooney en cine negro.",
+      "blurb_en": "A mechanic borrows twenty dollars from the till to take a girl out, and every attempt to cover it up sinks him deeper: Mickey Rooney goes noir.",
+      "blurb_gl": "Un mecánico colle vinte dólares da caixa para convidar unha rapaza e cada intento de tapalo afúndeo máis: Mickey Rooney en cine negro.",
+      "blurb_eu": "Mekanikari batek hogei dolar hartzen ditu kutxatik neska bat gonbidatzeko, eta hori ezkutatzeko saiakera bakoitzak gehiago hondoratzen du: Mickey Rooney zinema beltzean.",
+      "blurb_ca": "Un mecànic agafa vint dòlars de la caixa per convidar una noia i cada intent de tapar-ho l’enfonsa més: Mickey Rooney en cinema negre.",
+      "tags": [
+        "noir"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2008-04-04",
+      "tmdbId": 23342
+    },
+    {
+      "id": "kansascityconfidencial",
+      "title": "Kansas City Confidential",
+      "original_title": "Kansas City Confidential",
+      "director": "Phil Karlson",
+      "year": 1952,
+      "country": "EE. UU.",
+      "runtime": 99,
+      "lang": "en",
+      "blurb_es": "Un exconvicto acusado de un atraco que no cometió persigue a los ladrones enmascarados hasta México: cine negro seco y sin concesiones.",
+      "blurb_en": "An ex-con framed for a robbery he did not commit tracks the masked robbers down to Mexico: lean, uncompromising noir.",
+      "blurb_gl": "Un exconvicto acusado dun atraco que non cometeu persegue os ladróns enmascarados ata México: cine negro seco e sen concesións.",
+      "blurb_eu": "Egin ez zuen lapurreta bat egotzitako preso ohi batek mozorrotutako lapurrak jazartzen ditu Mexikoraino: zinema beltz lehor eta amorerik gabea.",
+      "blurb_ca": "Un exconvicte acusat d’un atracament que no va cometre persegueix els lladres emmascarats fins a Mèxic: cinema negre sec i sense concessions.",
+      "tags": [
+        "noir",
+        "thriller"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2007-06-12",
+      "tmdbId": 21296
     },
     {
       "id": "BeatTheDevil1953",
@@ -674,7 +1632,128 @@
       "blurb_en": "Bogart, Gina Lollobrigida and Peter Lorre as swindlers stranded in an Italian port: Huston and Truman Capote spoof the adventure film.",
       "blurb_gl": "Bogart, Gina Lollobrigida e Peter Lorre, estafadores varados nun porto italiano: Huston e Truman Capote parodian o cine de aventuras.",
       "blurb_eu": "Bogart, Gina Lollobrigida eta Peter Lorre, Italiako portu batean geldirik dauden iruzurgileak: Hustonek eta Truman Capotek abentura-zinema parodiatzen dute.",
-      "blurb_ca": "Bogart, Gina Lollobrigida i Peter Lorre, estafadors encallats en un port italià: Huston i Truman Capote parodien el cinema d'aventures."
+      "blurb_ca": "Bogart, Gina Lollobrigida i Peter Lorre, estafadors encallats en un port italià: Huston i Truman Capote parodien el cinema d'aventures.",
+      "tags": [
+        "comedy",
+        "adventure"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2010-06-26",
+      "tmdbId": 22733
+    },
+    {
+      "id": "robot-monster-1953",
+      "title": "Robot Monster",
+      "original_title": "Robot Monster",
+      "director": "Phil Tucker",
+      "year": 1953,
+      "country": "EE. UU.",
+      "runtime": 63,
+      "lang": "en",
+      "blurb_es": "Un alienígena con cuerpo de gorila y casco de buzo ha exterminado a la humanidad salvo a ocho personas: serie B tan pobre que se hizo leyenda.",
+      "blurb_en": "An alien with a gorilla’s body and a diving helmet has wiped out humanity except for eight people: a B-movie so threadbare it became a legend.",
+      "blurb_gl": "Un alieníxena con corpo de gorila e casco de mergullador exterminou a humanidade agás oito persoas: serie B tan pobre que se fixo lenda.",
+      "blurb_eu": "Gorila-gorputza eta urpekari-kaskoa dituen estralurtar batek gizateria osoa suntsitu du, zortzi pertsona izan ezik: hain pobrea den B serie, non kondaira bihurtu zen.",
+      "blurb_ca": "Un alienígena amb cos de goril·la i casc de bus ha exterminat la humanitat excepte vuit persones: sèrie B tan pobra que es va fer llegenda.",
+      "tags": [
+        "scifi"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2021-04-12",
+      "tmdbId": 43353
+    },
+    {
+      "id": "Hitch_Hiker",
+      "title": "The Hitch-Hiker",
+      "original_title": "The Hitch-Hiker",
+      "director": "Ida Lupino",
+      "year": 1953,
+      "country": "EE. UU.",
+      "runtime": 71,
+      "lang": "en",
+      "blurb_es": "Ida Lupino, única mujer que dirigió un cine negro clásico de estudio: tensión seca en pleno desierto.",
+      "blurb_en": "Ida Lupino, the only woman to direct a classic studio noir: dry tension out in the desert.",
+      "blurb_gl": "Ida Lupino, única muller que dirixiu un cine negro clásico de estudo: tensión seca en pleno deserto.",
+      "blurb_eu": "Ida Lupino, estudioko zinema beltz klasiko bat zuzendu zuen emakume bakarra: tentsio lehorra basamortuaren erdian.",
+      "blurb_ca": "Ida Lupino, única dona que va dirigir un cinema negre clàssic d'estudi: tensió seca en ple desert.",
+      "tags": [
+        "noir",
+        "thriller"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2008-04-11",
+      "tmdbId": 41462
+    },
+    {
+      "id": "suddenly",
+      "title": "Suddenly",
+      "original_title": "Suddenly",
+      "director": "Lewis Allen",
+      "year": 1954,
+      "country": "EE. UU.",
+      "runtime": 76,
+      "lang": "en",
+      "blurb_es": "Frank Sinatra encabeza un trío de asesinos que toma una casa de un pueblo tranquilo para disparar al presidente cuando pase su tren.",
+      "blurb_en": "Frank Sinatra leads a trio of killers who take over a house in a quiet town to shoot the president as his train passes.",
+      "blurb_gl": "Frank Sinatra encabeza un trío de asasinos que toma unha casa dunha vila tranquila para disparar ao presidente cando pase o seu tren.",
+      "blurb_eu": "Frank Sinatrak hiltzaile hirukote bat zuzentzen du; herri lasai bateko etxe bat hartzen dute presidenteari tiro egiteko bere trena igarotzean.",
+      "blurb_ca": "Frank Sinatra encapçala un trio d’assassins que ocupa una casa d’un poble tranquil per disparar al president quan passi el seu tren.",
+      "tags": [
+        "noir",
+        "thriller"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2004-10-25",
+      "tmdbId": 18398
+    },
+    {
+      "id": "last_time_i_saw_paris",
+      "title": "The Last Time I Saw Paris",
+      "original_title": "The Last Time I Saw Paris",
+      "director": "Richard Brooks",
+      "year": 1954,
+      "country": "EE. UU.",
+      "runtime": 116,
+      "lang": "en",
+      "blurb_es": "Un escritor recuerda su amor con Elizabeth Taylor en el París alegre y desordenado de después de la guerra, sobre un relato de Fitzgerald.",
+      "blurb_en": "A writer remembers his romance with Elizabeth Taylor in the giddy, chaotic Paris after the war, from a Fitzgerald story.",
+      "blurb_gl": "Un escritor lembra o seu amor con Elizabeth Taylor no París alegre e desordenado de despois da guerra, sobre un relato de Fitzgerald.",
+      "blurb_eu": "Idazle batek Elizabeth Taylorrekin izandako amodioa gogoratzen du gerraosteko Paris alai eta nahasian, Fitzgeralden kontakizun batean oinarrituta.",
+      "blurb_ca": "Un escriptor recorda el seu amor amb Elizabeth Taylor a la París alegre i desordenada de després de la guerra, sobre un relat de Fitzgerald.",
+      "tags": [
+        "drama",
+        "romance"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2005-01-08",
+      "tmdbId": 57575
+    },
+    {
+      "id": "The_Big_Combo_1955",
+      "title": "The Big Combo",
+      "original_title": "The Big Combo",
+      "director": "Joseph H. Lewis",
+      "year": 1955,
+      "country": "EE. UU.",
+      "runtime": 87,
+      "lang": "en",
+      "blurb_es": "Un policía obsesionado intenta acabar con un jefe mafioso intocable; la fotografía en sombras de John Alton es de las mejores del cine negro.",
+      "blurb_en": "An obsessed cop tries to bring down an untouchable mob boss; John Alton’s shadowy cinematography is among the finest in film noir.",
+      "blurb_gl": "Un policía obsesionado tenta acabar cun xefe mafioso intocable; a fotografía en sombras de John Alton é das mellores do cine negro.",
+      "blurb_eu": "Polizia obsesionatu bat ukiezina den mafia-buru bat garaitzen saiatzen da; John Altonen itzalezko argazkigintza zinema beltzeko onenetakoa da.",
+      "blurb_ca": "Un policia obsessionat intenta acabar amb un cap mafiós intocable; la fotografia en ombres de John Alton és de les millors del cinema negre.",
+      "tags": [
+        "noir"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2013-07-02",
+      "tmdbId": 22342
     },
     {
       "id": "plan-9-from-outer-space",
@@ -689,22 +1768,15 @@
       "blurb_en": "Aliens who raise the dead, flying saucers on strings and Bela Lugosi’s last appearance. The cult film par excellence.",
       "blurb_gl": "Extraterrestres que resucitan os mortos, pratos voadores colgados dun fío e a última aparición de Bela Lugosi. A película de culto por excelencia.",
       "blurb_eu": "Hildakoak berpizten dituzten estralurtarrak, haritik zintzilik dauden plater hegalariak eta Bela Lugosiren azken agerraldia. Kultuzko filma bikaina.",
-      "blurb_ca": "Extraterrestres que ressusciten els morts, plats voladors penjats d’un fil i l’última aparició de Bela Lugosi. La pel·lícula de culte per excel·lència."
-    },
-    {
-      "id": "HouseOnHauntedHill1959",
-      "title": "House on Haunted Hill",
-      "original_title": "House on Haunted Hill",
-      "director": "William Castle",
-      "year": 1959,
-      "country": "EE. UU.",
-      "runtime": 75,
-      "lang": "en",
-      "blurb_es": "Vincent Price ofrece diez mil dólares a quien aguante una noche en su mansión. William Castle en estado puro.",
-      "blurb_en": "Vincent Price offers ten thousand dollars to anyone who lasts a night in his mansion. Pure William Castle.",
-      "blurb_gl": "Vincent Price ofrece dez mil dólares a quen aguante unha noite na súa mansión. William Castle en estado puro.",
-      "blurb_eu": "Vincent Pricek hamar mila dolar eskaintzen dizkio bere jauregian gau bat igarotzen duenari. William Castle bere onenean.",
-      "blurb_ca": "Vincent Price ofereix deu mil dòlars a qui aguanti una nit a la seva mansió. William Castle en estat pur."
+      "blurb_ca": "Extraterrestres que ressusciten els morts, plats voladors penjats d’un fil i l’última aparició de Bela Lugosi. La pel·lícula de culte per excel·lència.",
+      "tags": [
+        "scifi",
+        "horror"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2021-05-05",
+      "tmdbId": 10513
     },
     {
       "id": "ABucketOfBlood1959",
@@ -719,7 +1791,82 @@
       "blurb_en": "A clumsy busboy becomes a beatnik star with sculptures that are far too realistic. Corman shot it in five days, and it is a pitch-black satire of the art world.",
       "blurb_gl": "Un camareiro torpe triunfa entre os beatniks cunhas esculturas demasiado realistas. Corman rodouna en cinco días e é unha sátira negrísima do mundo da arte.",
       "blurb_eu": "Zerbitzari baldar batek arrakasta du beatniken artean errealistegiak diren eskulturekin. Cormanek bost egunean filmatu zuen, eta arte-munduari buruzko satira beltz-beltza da.",
-      "blurb_ca": "Un cambrer maldestre triomfa entre els beatniks amb unes escultures massa realistes. Corman la va rodar en cinc dies i és una sàtira negríssima del món de l'art."
+      "blurb_ca": "Un cambrer maldestre triomfa entre els beatniks amb unes escultures massa realistes. Corman la va rodar en cinc dies i és una sàtira negríssima del món de l'art.",
+      "tags": [
+        "horror",
+        "comedy"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2009-10-26",
+      "tmdbId": 22642
+    },
+    {
+      "id": "HouseOnHauntedHill1959",
+      "title": "House on Haunted Hill",
+      "original_title": "House on Haunted Hill",
+      "director": "William Castle",
+      "year": 1959,
+      "country": "EE. UU.",
+      "runtime": 75,
+      "lang": "en",
+      "blurb_es": "Vincent Price ofrece diez mil dólares a quien aguante una noche en su mansión. William Castle en estado puro.",
+      "blurb_en": "Vincent Price offers ten thousand dollars to anyone who lasts a night in his mansion. Pure William Castle.",
+      "blurb_gl": "Vincent Price ofrece dez mil dólares a quen aguante unha noite na súa mansión. William Castle en estado puro.",
+      "blurb_eu": "Vincent Pricek hamar mila dolar eskaintzen dizkio bere jauregian gau bat igarotzen duenari. William Castle bere onenean.",
+      "blurb_ca": "Vincent Price ofereix deu mil dòlars a qui aguanti una nit a la seva mansió. William Castle en estat pur.",
+      "tags": [
+        "horror"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2010-10-30",
+      "tmdbId": 15856
+    },
+    {
+      "id": "teenagers_from_outerspace",
+      "title": "Teenagers from Outer Space",
+      "original_title": "Teenagers from Outer Space",
+      "director": "Tom Graeff",
+      "year": 1959,
+      "country": "EE. UU.",
+      "runtime": 85,
+      "lang": "en",
+      "blurb_es": "Unos jóvenes extraterrestres llegan a la Tierra para criar monstruos gigantes y uno de ellos se rebela: ciencia ficción casera hecha casi en solitario.",
+      "blurb_en": "Young aliens arrive on Earth to breed giant monsters and one of them rebels: home-made science fiction made almost single-handedly.",
+      "blurb_gl": "Uns mozos extraterrestres chegan á Terra para criar monstros xigantes e un deles rebélase: ciencia ficción caseira feita case en solitario.",
+      "blurb_eu": "Estralurtar gazte batzuk Lurrera iristen dira munstro erraldoiak hazteko, eta haietako bat matxinatu egiten da: etxeko zientzia-fikzioa, ia bakarrik egina.",
+      "blurb_ca": "Uns joves extraterrestres arriben a la Terra per criar monstres gegants i un d’ells es rebel·la: ciència-ficció casolana feta gairebé en solitari.",
+      "tags": [
+        "scifi"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2007-06-22",
+      "tmdbId": 35139
+    },
+    {
+      "id": "The_Killer_Shrews_1959",
+      "title": "The Killer Shrews",
+      "original_title": "The Killer Shrews",
+      "director": "Ray Kellogg",
+      "year": 1959,
+      "country": "EE. UU.",
+      "runtime": 69,
+      "lang": "en",
+      "blurb_es": "En una isla aislada por un huracán, unas musarañas gigantes y hambrientas asedian a un grupo de científicos (son perros disfrazados).",
+      "blurb_en": "On an island cut off by a hurricane, giant starving shrews besiege a group of scientists (they are dogs in costume).",
+      "blurb_gl": "Nunha illa illada por un furacán, unhas musarañas xigantes e famentas asedian a un grupo de científicos (son cans disfrazados).",
+      "blurb_eu": "Urakan batek isolatutako uharte batean, satitsu erraldoi eta gose batzuek zientzialari talde bat setiatzen dute (mozorrotutako txakurrak dira).",
+      "blurb_ca": "En una illa aïllada per un huracà, unes musaranyes gegants i famolenques assetgen un grup de científics (són gossos disfressats).",
+      "tags": [
+        "horror",
+        "scifi"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2010-01-26",
+      "tmdbId": 43109
     },
     {
       "id": "TheLittleShopOfHorrors1960",
@@ -734,7 +1881,15 @@
       "blurb_en": "The horror comedy Corman shot in two days: a carnivorous plant with appetite and a sense of humor.",
       "blurb_gl": "A comedia de terror que Corman rodou en dous días: unha planta carnívora con apetito e sentido do humor.",
       "blurb_eu": "Cormanek bi egunetan filmatu zuen izu-komedia: janari-gogoa eta umore-sena dituen landare haragijalea.",
-      "blurb_ca": "La comèdia de terror que Corman va rodar en dos dies: una planta carnívora amb gana i sentit de l'humor."
+      "blurb_ca": "La comèdia de terror que Corman va rodar en dos dies: una planta carnívora amb gana i sentit de l'humor.",
+      "tags": [
+        "comedy",
+        "horror"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2011-03-04",
+      "tmdbId": 24452
     },
     {
       "id": "carnival_of_souls",
@@ -749,7 +1904,14 @@
       "blurb_en": "An independent nightmare of hypnotic atmosphere that influenced all later horror cinema.",
       "blurb_gl": "Pesadelo independente de atmosfera hipnótica que influíu en todo o cine de terror posterior.",
       "blurb_eu": "Giro hipnotikoko amesgaizto independentea, ondorengo izu-zinema guztian eragina izan zuena.",
-      "blurb_ca": "Malson independent d'atmosfera hipnòtica que va influir en tot el cinema de terror posterior."
+      "blurb_ca": "Malson independent d'atmosfera hipnòtica que va influir en tot el cinema de terror posterior.",
+      "tags": [
+        "horror"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2006-02-20",
+      "tmdbId": 16093
     },
     {
       "id": "brain_that_wouldnt_die",
@@ -764,7 +1926,15 @@
       "blurb_en": "A surgeon keeps his fiancée's head alive on a tray while he looks for a new body. Delirious, morbid cult B-movie.",
       "blurb_gl": "Un cirurxián mantén viva a cabeza da súa moza nunha bandexa mentres busca un corpo novo. Serie B de culto, delirante e morbosa.",
       "blurb_eu": "Zirujau batek bere emaztegaiaren burua bizirik mantentzen du erretilu batean, gorputz berri bat bilatzen duen bitartean. B serieko kultuzko filma, zoroa eta morbosoa.",
-      "blurb_ca": "Un cirurgià manté viu el cap de la seva promesa en una safata mentre busca un cos nou. Sèrie B de culte, delirant i morbosa."
+      "blurb_ca": "Un cirurgià manté viu el cap de la seva promesa en una safata mentre busca un cos nou. Sèrie B de culte, delirant i morbosa.",
+      "tags": [
+        "horror",
+        "scifi"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2004-07-12",
+      "tmdbId": 33468
     },
     {
       "id": "charade-1963-cary-grant-audrey-hepburn-comedy-mystery-romance-thriller-full-movie",
@@ -779,7 +1949,16 @@
       "blurb_en": "Audrey Hepburn, Cary Grant and loot hidden in Paris. It is public domain through an oversight: the credits left out the © symbol.",
       "blurb_gl": "Audrey Hepburn, Cary Grant e un botín agochado en París. É de dominio público por un descoido: os créditos esqueceron o símbolo ©.",
       "blurb_eu": "Audrey Hepburn, Cary Grant eta Parisen ezkutatutako harrapakin bat. Domeinu publikokoa da ahanztura batengatik: kredituetan © ikurra falta zen.",
-      "blurb_ca": "Audrey Hepburn, Cary Grant i un botí amagat a París. És de domini públic per un descuit: els crèdits van oblidar el símbol ©."
+      "blurb_ca": "Audrey Hepburn, Cary Grant i un botí amagat a París. És de domini públic per un descuit: els crèdits van oblidar el símbol ©.",
+      "tags": [
+        "thriller",
+        "romance",
+        "comedy"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2026-02-22",
+      "tmdbId": 4808
     },
     {
       "id": "Dementia13withSpanishSubtitles",
@@ -795,7 +1974,38 @@
       "blurb_en": "Coppola’s first film, shot in Ireland for Roger Corman in nine days: a castle, an inheritance and an axe murderer. With Spanish subtitles.",
       "blurb_gl": "O primeiro Coppola, rodado en Irlanda para Roger Corman en nove días: un castelo, unha herdanza e un asasino con machada. Con subtítulos en castelán.",
       "blurb_eu": "Coppolaren lehen filma, Irlandan Roger Cormanentzat bederatzi egunetan errodatua: gaztelu bat, herentzia bat eta aizkoradun hiltzaile bat. Gaztelaniazko azpitituluekin.",
-      "blurb_ca": "El primer Coppola, rodat a Irlanda per a Roger Corman en nou dies: un castell, una herència i un assassí amb destral. Amb subtítols en castellà."
+      "blurb_ca": "El primer Coppola, rodat a Irlanda per a Roger Corman en nou dies: un castell, una herència i un assassí amb destral. Amb subtítols en castellà.",
+      "tags": [
+        "horror"
+      ],
+      "sound": true,
+      "language": "en",
+      "subtitles": "es",
+      "published": "2010-03-17",
+      "tmdbId": 28503
+    },
+    {
+      "id": "mclintok_widescreen",
+      "title": "McLintock!",
+      "original_title": "McLintock!",
+      "director": "Andrew V. McLaglen",
+      "year": 1963,
+      "country": "EE. UU.",
+      "runtime": 127,
+      "lang": "en",
+      "blurb_es": "John Wayne y Maureen O’Hara, matrimonio separado y en guerra, con una pelea en el barro que es leyenda: wéstern en clave de comedia.",
+      "blurb_en": "John Wayne and Maureen O’Hara as an estranged couple at war, with a legendary mud fight: a western played for comedy.",
+      "blurb_gl": "John Wayne e Maureen O’Hara, matrimonio separado e en guerra, cunha pelexa na lama que é lenda: wéstern en clave de comedia.",
+      "blurb_eu": "John Wayne eta Maureen O’Hara, banandutako eta gerran dagoen senar-emazteak, kondaira den lokatz-borroka batekin: komedia-giroko westerna.",
+      "blurb_ca": "John Wayne i Maureen O’Hara, matrimoni separat i en guerra, amb una baralla al fang que és llegenda: western en clau de comèdia.",
+      "tags": [
+        "western",
+        "comedy"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2007-01-25",
+      "tmdbId": 15263
     },
     {
       "id": "TheTerror1963",
@@ -810,7 +2020,14 @@
       "blurb_en": "Corman gothic with Boris Karloff and a very young Jack Nicholson in a fog-bound castle.",
       "blurb_gl": "Gótico de Corman con Boris Karloff e un xovencísimo Jack Nicholson nun castelo de brétemas.",
       "blurb_eu": "Cormanen gotikoa, Boris Karloff eta Jack Nicholson oso gazte batekin, lainopeko gaztelu batean.",
-      "blurb_ca": "Gòtic de Corman amb Boris Karloff i un joveníssim Jack Nicholson en un castell de boires."
+      "blurb_ca": "Gòtic de Corman amb Boris Karloff i un joveníssim Jack Nicholson en un castell de boires.",
+      "tags": [
+        "horror"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2015-01-06",
+      "tmdbId": 31655
     },
     {
       "id": "TheLastManOnEarth_72",
@@ -826,7 +2043,15 @@
       "blurb_en": "Vincent Price alone in a city of vampires: the first adaptation of “I Am Legend”, and the one Romero admitted to copying.",
       "blurb_gl": "Vincent Price, só nunha cidade de vampiros: a primeira adaptación de «Son lenda», e a que Romero recoñeceu ter copiado.",
       "blurb_eu": "Vincent Price, bakarrik banpiroen hiri batean: «Ni kondaira naiz» nobelaren lehen egokitzapena, Romerok kopiatu zuela aitortu zuena.",
-      "blurb_ca": "Vincent Price, sol en una ciutat de vampirs: la primera adaptació de «Soc llegenda», i la que Romero va reconèixer haver copiat."
+      "blurb_ca": "Vincent Price, sol en una ciutat de vampirs: la primera adaptació de «Soc llegenda», i la que Romero va reconèixer haver copiat.",
+      "tags": [
+        "horror",
+        "scifi"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2012-12-08",
+      "tmdbId": 21159
     },
     {
       "id": "ManosTheHandsofFate",
@@ -842,7 +2067,14 @@
       "blurb_en": "Shot by an El Paso fertiliser salesman on a bet. A perennial candidate for worst film ever made and, for that very reason, a cult object.",
       "blurb_gl": "Rodada por un vendedor de fertilizantes de El Paso por unha aposta. Candidata perpetua a peor película da historia e, por iso mesmo, de culto.",
       "blurb_eu": "El Pasoko ongarri-saltzaile batek apustu batengatik errodatua. Historiako filmik txarrenaren betiko hautagaia, eta horrexegatik, gurtzakoa.",
-      "blurb_ca": "Rodada per un venedor de fertilitzants d’El Paso per una aposta. Candidata perpètua a pitjor pel·lícula de la història i, per això mateix, de culte."
+      "blurb_ca": "Rodada per un venedor de fertilitzants d’El Paso per una aposta. Candidata perpètua a pitjor pel·lícula de la història i, per això mateix, de culte.",
+      "tags": [
+        "horror"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2011-04-06",
+      "tmdbId": 22293
     },
     {
       "id": "NightOfTheLivingDeadwithSpanishSubtitles_595",
@@ -858,7 +2090,16 @@
       "blurb_en": "The film that invented the modern zombie is in the public domain thanks to a mistake in the copyright notice. With Spanish subtitles.",
       "blurb_gl": "A película que inventou o zombi moderno é de dominio público por un erro no rótulo de copyright. Con subtítulos en castelán.",
       "blurb_eu": "Zonbi modernoa asmatu zuen filma jabari publikokoa da copyright-oharreko akats bategatik. Gaztelaniazko azpitituluekin.",
-      "blurb_ca": "La pel·lícula que va inventar el zombi modern és de domini públic per un error al rètol de copyright. Amb subtítols en castellà."
+      "blurb_ca": "La pel·lícula que va inventar el zombi modern és de domini públic per un error al rètol de copyright. Amb subtítols en castellà.",
+      "tags": [
+        "horror"
+      ],
+      "sound": true,
+      "language": "en",
+      "subtitles": "es",
+      "essential": true,
+      "published": "2011-01-07",
+      "tmdbId": 10331
     },
     {
       "id": "StarWreckInThePirkining",
@@ -874,7 +2115,14 @@
       "blurb_en": "A Finnish parody of Star Trek and Babylon 5, made in a flat over seven years and released under Creative Commons: millions of downloads.",
       "blurb_gl": "Parodia finlandesa de Star Trek e Babylon 5, feita nun piso durante sete anos e liberada en Creative Commons: millóns de descargas.",
       "blurb_eu": "Star Trek eta Babylon 5-en parodia finlandiarra, etxebizitza batean zazpi urtez egina eta Creative Commons lizentziapean askatua: milioika deskarga.",
-      "blurb_ca": "Paròdia finlandesa de Star Trek i Babylon 5, feta en un pis durant set anys i alliberada en Creative Commons: milions de descàrregues."
+      "blurb_ca": "Paròdia finlandesa de Star Trek i Babylon 5, feta en un pis durant set anys i alliberada en Creative Commons: milions de descàrregues.",
+      "tags": [
+        "scifi",
+        "comedy"
+      ],
+      "sound": true,
+      "published": "2008-06-21",
+      "tmdbId": 15493
     },
     {
       "id": "ElephantsDream",
@@ -890,7 +2138,15 @@
       "blurb_en": "Blender’s first open movie: two characters explore an infinite machine. Released together with all its production files.",
       "blurb_gl": "A primeira película aberta de Blender: dous personaxes percorren unha máquina infinita. Publicouse con todos os seus ficheiros de produción.",
       "blurb_eu": "Blenderren lehen film irekia: bi pertsonaiak makina infinitu bat zeharkatzen dute. Ekoizpen-fitxategi guztiekin argitaratu zen.",
-      "blurb_ca": "La primera pel·lícula oberta de Blender: dos personatges recorren una màquina infinita. Es va publicar amb tots els seus fitxers de producció."
+      "blurb_ca": "La primera pel·lícula oberta de Blender: dos personatges recorren una màquina infinita. Es va publicar amb tots els seus fitxers de producció.",
+      "tags": [
+        "animation",
+        "scifi"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2008-07-04",
+      "tmdbId": 9761
     },
     {
       "id": "BigBuckBunny_124",
@@ -906,7 +2162,14 @@
       "blurb_en": "An animated fable from the Blender Foundation: a good-natured rabbit takes revenge on three bullying rodents. Open cinema made with free software.",
       "blurb_gl": "Fábula animada da Blender Foundation: un coello bonachón vínga­se de tres roedores abusóns. Cine aberto feito con software libre.",
       "blurb_eu": "Blender Foundationen animaziozko alegia: untxi onbera batek hiru karraskari zapaltzaileei mendeku hartzen die. Software librearekin egindako zinema irekia.",
-      "blurb_ca": "Faula animada de la Blender Foundation: un conill bonàs es venja de tres rosegadors matons. Cinema obert fet amb programari lliure."
+      "blurb_ca": "Faula animada de la Blender Foundation: un conill bonàs es venja de tres rosegadors matons. Cinema obert fet amb programari lliure.",
+      "tags": [
+        "animation",
+        "comedy"
+      ],
+      "sound": true,
+      "published": "2011-07-01",
+      "tmdbId": 10378
     },
     {
       "id": "RipARemixManifestoes",
@@ -922,7 +2185,14 @@
       "blurb_en": "A documentary on remix culture and copyright, with Girl Talk and Lawrence Lessig. Spanish-language version, remixable by licence.",
       "blurb_gl": "Documental sobre a cultura do remix e o copyright, con Girl Talk e Lawrence Lessig. Versión en castelán, remesturable por licenza.",
       "blurb_eu": "Remix-kulturari eta copyrightari buruzko dokumentala, Girl Talk eta Lawrence Lessigekin. Gaztelaniazko bertsioa, lizentziaz birnahasgarria.",
-      "blurb_ca": "Documental sobre la cultura del remix i el copyright, amb Girl Talk i Lawrence Lessig. Versió en castellà, remesclable per llicència."
+      "blurb_ca": "Documental sobre la cultura del remix i el copyright, amb Girl Talk i Lawrence Lessig. Versió en castellà, remesclable per llicència.",
+      "tags": [
+        "documentary"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2009-12-02",
+      "tmdbId": 23996
     },
     {
       "id": "sita-sings-the-blues",
@@ -937,7 +2207,14 @@
       "blurb_en": "Nina Paley interweaves the Ramayana with 1920s jazz songs in a freewheeling animation she released into the public domain.",
       "blurb_gl": "Nina Paley entrelaza o Ramaiana con cancións de jazz dos anos 20 nunha animación libre que ela mesma liberou ao dominio público.",
       "blurb_eu": "Nina Paleyk Ramayana 20ko hamarkadako jazz abestiekin gurutzatzen du, berak jabetza publikora askatu zuen animazio libre batean.",
-      "blurb_ca": "Nina Paley entrellaça el Ramayana amb cançons de jazz dels anys 20 en una animació lliure que ella mateixa va alliberar al domini públic."
+      "blurb_ca": "Nina Paley entrellaça el Ramayana amb cançons de jazz dels anys 20 en una animació lliure que ella mateixa va alliberar al domini públic.",
+      "tags": [
+        "animation"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2021-02-27",
+      "tmdbId": 20529
     },
     {
       "id": "Sintel",
@@ -953,7 +2230,15 @@
       "blurb_en": "A fantasy short from the Blender Foundation: a young woman searches for the dragon she raised, a brief epic of open animation.",
       "blurb_gl": "Curta de fantasía da Blender Foundation: unha moza busca o dragón que criou, nunha épica breve de animación libre.",
       "blurb_eu": "Blender Foundationen fantasiazko film laburra: neska gazte batek hazi zuen herensugea bilatzen du, animazio libreko epika labur batean.",
-      "blurb_ca": "Curt de fantasia de la Blender Foundation: una noia busca el drac que va criar, en una èpica breu d'animació lliure."
+      "blurb_ca": "Curt de fantasia de la Blender Foundation: una noia busca el drac que va criar, en una èpica breu d'animació lliure.",
+      "tags": [
+        "animation",
+        "fantasy"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2010-10-01",
+      "tmdbId": 45745
     },
     {
       "id": "CM19042011",
@@ -969,7 +2254,14 @@
       "blurb_en": "The first TVE documentary released under Creative Commons: a year following the intellectual property debate in Spain.",
       "blurb_gl": "O primeiro documental de TVE con licenza Creative Commons: un ano seguindo o debate sobre a propiedade intelectual en España.",
       "blurb_eu": "TVEren lehen dokumentala Creative Commons lizentziarekin: urtebete Espainiako jabetza intelektualaren eztabaidari jarraika.",
-      "blurb_ca": "El primer documental de TVE amb llicència Creative Commons: un any seguint el debat sobre la propietat intel·lectual a Espanya."
+      "blurb_ca": "El primer documental de TVE amb llicència Creative Commons: un any seguint el debat sobre la propietat intel·lectual a Espanya.",
+      "tags": [
+        "documentary"
+      ],
+      "sound": true,
+      "language": "es",
+      "published": "2011-04-20",
+      "tmdbId": 74174
     },
     {
       "id": "Decay2012-TheLhcZombieFilmfullFilm",
@@ -985,7 +2277,15 @@
       "blurb_en": "Zombies at CERN: shot in the tunnels of the Large Hadron Collider by physics PhD students, without official permission and under a free licence.",
       "blurb_gl": "Zombis no CERN: rodada nos túneles do Gran Colisor por doutorandos de física, sen permiso oficial e con licenza libre.",
       "blurb_eu": "Zonbiak CERNen: Talkagailu Handiaren tuneletan fisikako doktoregaiek errodatua, baimen ofizialik gabe eta lizentzia librearekin.",
-      "blurb_ca": "Zombis al CERN: rodada als túnels del Gran Col·lisionador per doctorands de física, sense permís oficial i amb llicència lliure."
+      "blurb_ca": "Zombis al CERN: rodada als túnels del Gran Col·lisionador per doctorands de física, sense permís oficial i amb llicència lliure.",
+      "tags": [
+        "horror",
+        "scifi"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2012-12-08",
+      "tmdbId": 148644
     },
     {
       "id": "Tears-of-Steel",
@@ -1001,7 +2301,37 @@
       "blurb_en": "Science fiction with visual effects from the Blender Foundation: a robot-ravaged Amsterdam, shot to test open-source VFX.",
       "blurb_gl": "Ciencia ficción con efectos visuais da Blender Foundation: Ámsterdam arrasada por robots, rodada para probar o VFX de código aberto.",
       "blurb_eu": "Blender Foundationen efektu bisualak dituen zientzia-fikzioa: robotek suntsitutako Amsterdam, kode irekiko VFX probatzeko filmatua.",
-      "blurb_ca": "Ciència-ficció amb efectes visuals de la Blender Foundation: Amsterdam arrasada per robots, rodada per provar el VFX de codi obert."
+      "blurb_ca": "Ciència-ficció amb efectes visuals de la Blender Foundation: Amsterdam arrasada per robots, rodada per provar el VFX de codi obert.",
+      "tags": [
+        "scifi"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2012-09-28",
+      "tmdbId": 133701
+    },
+    {
+      "id": "Caminandes1LlamaDrama",
+      "title": "Caminandes 1: Llama Drama",
+      "original_title": "Caminandes 1: Llama Drama",
+      "director": "Pablo Vázquez",
+      "year": 2013,
+      "country": "Argentina",
+      "runtime": 2,
+      "lang": "en",
+      "license": "cc-by",
+      "blurb_es": "Koro, una llama de la Patagonia, intenta cruzar una carretera cortada por una valla: el primer episodio de la serie de Pablo Vázquez.",
+      "blurb_en": "Koro, a llama from Patagonia, tries to get across a road blocked by a fence: the first episode of Pablo Vázquez’s series.",
+      "blurb_gl": "Koro, unha llama da Patagonia, tenta cruzar unha estrada cortada por un valado: o primeiro episodio da serie de Pablo Vázquez.",
+      "blurb_eu": "Koro, Patagoniako lama bat, hesi batek moztutako errepide bat zeharkatzen saiatzen da: Pablo Vázquezen seriearen lehen atala.",
+      "blurb_ca": "Koro, una llama de la Patagònia, intenta travessar una carretera tallada per una tanca: el primer episodi de la sèrie de Pablo Vázquez.",
+      "tags": [
+        "animation",
+        "comedy"
+      ],
+      "sound": true,
+      "published": "2016-03-18",
+      "tmdbId": 253777
     },
     {
       "id": "tpb-afk",
@@ -1017,7 +2347,13 @@
       "blurb_en": "The three founders of The Pirate Bay, from the website to the dock. It premiered at the Berlinale and on BitTorrent on the same day.",
       "blurb_gl": "Os tres fundadores de The Pirate Bay, da web ao banco dos acusados. Estreouse na Berlinale e en BitTorrent o mesmo día.",
       "blurb_eu": "The Pirate Bayren hiru sortzaileak, webgunetik auzitegira. Berlinalen eta BitTorrenten estreinatu zen egun berean.",
-      "blurb_ca": "Els tres fundadors de The Pirate Bay, del web al banc dels acusats. Es va estrenar a la Berlinale i a BitTorrent el mateix dia."
+      "blurb_ca": "Els tres fundadors de The Pirate Bay, del web al banc dels acusats. Es va estrenar a la Berlinale i a BitTorrent el mateix dia.",
+      "tags": [
+        "documentary"
+      ],
+      "sound": true,
+      "published": "2020-03-25",
+      "tmdbId": 50275
     },
     {
       "id": "TheInternetsOwnBoyTheStoryOfAaronSwartz",
@@ -1033,7 +2369,14 @@
       "blurb_en": "The life of Aaron Swartz, programmer and open-access activist, prosecuted for downloading academic papers. Released under Creative Commons by its makers.",
       "blurb_gl": "A vida de Aaron Swartz, programador e activista do acceso aberto, perseguido por descargar artigos académicos. Publicada en Creative Commons polos seus autores.",
       "blurb_eu": "Aaron Swartzen bizitza, programatzaile eta sarbide irekiaren aktibista, artikulu akademikoak deskargatzeagatik jazarria. Egileek Creative Commons lizentziapean argitaratua.",
-      "blurb_ca": "La vida d’Aaron Swartz, programador i activista de l’accés obert, perseguit per descarregar articles acadèmics. Publicada en Creative Commons pels seus autors."
+      "blurb_ca": "La vida d’Aaron Swartz, programador i activista de l’accés obert, perseguit per descarregar articles acadèmics. Publicada en Creative Commons pels seus autors.",
+      "tags": [
+        "documentary"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2014-06-28",
+      "tmdbId": 250658
     },
     {
       "id": "cosmos-laundromat",
@@ -1049,7 +2392,15 @@
       "blurb_en": "The Blender Foundation's opening chapter: a suicidal sheep and a cosmic salesman offer alternate lives. Free, surreal animation.",
       "blurb_gl": "Primeiro capítulo da Blender Foundation: unha ovella suicida e un vendedor cósmico ofrecen vidas alternativas. Animación libre e surreal.",
       "blurb_eu": "Blender Foundationen lehen atala: ardi suizida bat eta saltzaile kosmiko batek beste bizitza batzuk eskaintzen dituzte. Animazio libre eta surreala.",
-      "blurb_ca": "Primer capítol de la Blender Foundation: una ovella suïcida i un venedor còsmic ofereixen vides alternatives. Animació lliure i surreal."
+      "blurb_ca": "Primer capítol de la Blender Foundation: una ovella suïcida i un venedor còsmic ofereixen vides alternatives. Animació lliure i surreal.",
+      "tags": [
+        "animation",
+        "fantasy"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2026-05-27",
+      "tmdbId": 358332
     },
     {
       "id": "CaminandesLlamigos",
@@ -1065,7 +2416,61 @@
       "blurb_en": "Koro, Blender’s Patagonian llama, fights a penguin over the last berry of winter. A three-minute silent comedy.",
       "blurb_gl": "Koro, a llama patagónica de Blender, pelexa cun pingüín pola última baga do inverno. Comedia muda de tres minutos.",
       "blurb_eu": "Koro, Blenderren llama patagoniarra, pinguino batekin borrokatzen da neguko azken baiarengatik. Hiru minutuko komedia mutua.",
-      "blurb_ca": "Koro, la llama patagònica de Blender, es baralla amb un pingüí per l’última baia de l’hivern. Comèdia muda de tres minuts."
+      "blurb_ca": "Koro, la llama patagònica de Blender, es baralla amb un pingüí per l’última baia de l’hivern. Comèdia muda de tres minuts.",
+      "tags": [
+        "animation",
+        "comedy"
+      ],
+      "sound": true,
+      "published": "2017-03-05",
+      "tmdbId": 406956
+    },
+    {
+      "id": "agent327operationbarbershop",
+      "title": "Agent 327: Operation Barbershop",
+      "original_title": "Agent 327: Operation Barbershop",
+      "director": "Colin Levy, Hjalti Hjálmarsson",
+      "year": 2017,
+      "country": "Países Bajos",
+      "runtime": 4,
+      "lang": "en",
+      "license": "cc-by-nd",
+      "blurb_es": "El agente secreto holandés de los cómics de Martin Lodewijk se infiltra en una barbería que esconde algo más: piloto animado del Blender Studio.",
+      "blurb_en": "The Dutch secret agent from Martin Lodewijk’s comics infiltrates a barbershop hiding something more: an animated pilot from Blender Studio.",
+      "blurb_gl": "O axente secreto holandés dos cómics de Martin Lodewijk infíltrase nunha barbaría que agocha algo máis: piloto animado do Blender Studio.",
+      "blurb_eu": "Martin Lodewijken komikietako agente sekretu holandarra beste zerbait ezkutatzen duen bizargintza batean infiltratzen da: Blender Studioren pilotu animatua.",
+      "blurb_ca": "L’agent secret holandès dels còmics de Martin Lodewijk s’infiltra en una barberia que amaga alguna cosa més: pilot animat del Blender Studio.",
+      "tags": [
+        "animation",
+        "comedy",
+        "adventure"
+      ],
+      "sound": true,
+      "published": "2020-12-23",
+      "tmdbId": 457784
+    },
+    {
+      "id": "hero_20260106",
+      "title": "Hero",
+      "original_title": "Hero",
+      "director": "Daniel Martínez Lara",
+      "year": 2018,
+      "country": "Países Bajos",
+      "runtime": 4,
+      "lang": "en",
+      "license": "cc-by",
+      "blurb_es": "Un duelo entre dos jóvenes guerreros convertido en danza: el corto de Blender que demostró que el dibujo a mano y el 3D pueden ir juntos.",
+      "blurb_en": "A duel between two young warriors turned into a dance: the Blender short that proved hand drawing and 3D can go together.",
+      "blurb_gl": "Un duelo entre dous mozos guerreiros convertido en danza: a curta de Blender que demostrou que o debuxo a man e o 3D poden ir xuntos.",
+      "blurb_eu": "Bi gerlari gazteren arteko duelu bat dantza bihurtua: eskuzko marrazkia eta 3Da elkarrekin joan daitezkeela erakutsi zuen Blenderren film laburra.",
+      "blurb_ca": "Un duel entre dos joves guerrers convertit en dansa: el curt de Blender que va demostrar que el dibuix a mà i el 3D poden anar junts.",
+      "tags": [
+        "animation",
+        "adventure"
+      ],
+      "sound": true,
+      "published": "2026-01-06",
+      "tmdbId": 615324
     },
     {
       "id": "springopenmovie",
@@ -1081,7 +2486,37 @@
       "blurb_en": "A shepherdess and her dog wake up spring in the mountains. Blender Studio, inspired by the director’s childhood in Germany.",
       "blurb_gl": "Unha pastora e o seu can espertan a primavera nas montañas. Blender Studio, inspirada na infancia do director en Alemaña.",
       "blurb_eu": "Artzain batek eta bere txakurrak udaberria esnatzen dute mendietan. Blender Studio, zuzendariaren Alemaniako haurtzaroan inspiratua.",
-      "blurb_ca": "Una pastora i el seu gos desperten la primavera a les muntanyes. Blender Studio, inspirada en la infantesa del director a Alemanya."
+      "blurb_ca": "Una pastora i el seu gos desperten la primavera a les muntanyes. Blender Studio, inspirada en la infantesa del director a Alemanya.",
+      "tags": [
+        "animation",
+        "fantasy"
+      ],
+      "sound": true,
+      "published": "2021-01-03",
+      "tmdbId": 593048
+    },
+    {
+      "id": "coffee-run",
+      "title": "Coffee Run",
+      "original_title": "Coffee Run",
+      "director": "Hjalti Hjálmarsson",
+      "year": 2020,
+      "country": "Países Bajos",
+      "runtime": 3,
+      "lang": "en",
+      "license": "cc-by-nd",
+      "blurb_es": "Una joven se lanza a por café a toda velocidad mientras recuerda su vida: tres minutos de animación del Blender Studio hechos en pocas semanas.",
+      "blurb_en": "A young woman races off for coffee while her life flashes before her: three minutes of Blender Studio animation made in a few weeks.",
+      "blurb_gl": "Unha moza lánzase a por café a toda velocidade mentres lembra a súa vida: tres minutos de animación do Blender Studio feitos en poucas semanas.",
+      "blurb_eu": "Emakume gazte bat abiadura bizian joaten da kafe bila, bere bizitza gogoratzen duen bitartean: Blender Studioren hiru minutuko animazioa, aste gutxitan egina.",
+      "blurb_ca": "Una noia es llança a buscar cafè a tota velocitat mentre recorda la seva vida: tres minuts d’animació del Blender Studio fets en poques setmanes.",
+      "tags": [
+        "animation",
+        "comedy"
+      ],
+      "sound": true,
+      "published": "2026-01-22",
+      "tmdbId": 717986
     },
     {
       "id": "sprite-fright",
@@ -1097,7 +2532,16 @@
       "blurb_en": "An eighties-style forest slasher, with sprites: a group of British teenagers should not have stepped on those mushrooms. Blender Studio.",
       "blurb_gl": "Slasher de bosque ao estilo dos oitenta, con trasnos: uns adolescentes británicos non deberían ter pisado eses cogomelos. Blender Studio.",
       "blurb_eu": "Laurogeiko hamarkadako estiloko baso-slasherra, iratxoekin: nerabe britainiar batzuek ez zituzten perretxiko horiek zapaldu behar. Blender Studio.",
-      "blurb_ca": "Slasher de bosc a l’estil dels vuitanta, amb follets: uns adolescents britànics no haurien d’haver trepitjat aquells bolets. Blender Studio."
+      "blurb_ca": "Slasher de bosc a l’estil dels vuitanta, amb follets: uns adolescents britànics no haurien d’haver trepitjat aquells bolets. Blender Studio.",
+      "tags": [
+        "animation",
+        "horror",
+        "comedy"
+      ],
+      "sound": true,
+      "language": "en",
+      "published": "2021-11-06",
+      "tmdbId": 891761
     },
     {
       "id": "charge-blender-open-movie-1608p",
@@ -1113,7 +2557,37 @@
       "blurb_en": "An energy-starved dystopia: an old man breaks into a battery factory. Four minutes from Blender Studio, with all files open.",
       "blurb_gl": "Distopía sen enerxía: un ancián asalta unha fábrica de baterías. Catro minutos de Blender Studio, con todos os ficheiros abertos.",
       "blurb_eu": "Energiarik gabeko distopia: agure batek bateria-fabrika bat erasotzen du. Blender Studioren lau minutu, fitxategi guztiak irekita.",
-      "blurb_ca": "Distopia sense energia: un ancià assalta una fàbrica de bateries. Quatre minuts de Blender Studio, amb tots els fitxers oberts."
+      "blurb_ca": "Distopia sense energia: un ancià assalta una fàbrica de bateries. Quatre minuts de Blender Studio, amb tots els fitxers oberts.",
+      "tags": [
+        "animation",
+        "scifi"
+      ],
+      "sound": true,
+      "published": "2022-12-16",
+      "tmdbId": 1062079
+    },
+    {
+      "id": "wing_it",
+      "title": "Wing It!",
+      "original_title": "Wing It!",
+      "director": "Rik Schutte",
+      "year": 2023,
+      "country": "Países Bajos",
+      "runtime": 4,
+      "lang": "en",
+      "license": "cc-by",
+      "blurb_es": "Un gato y un perro construyen un cohete con lo que encuentran en la granja, con el resultado esperable: comedia animada del Blender Studio.",
+      "blurb_en": "A cat and a dog build a rocket out of whatever they find on the farm, with predictable results: an animated comedy from Blender Studio.",
+      "blurb_gl": "Un gato e un can constrúen un foguete co que atopan na granxa, co resultado esperable: comedia animada do Blender Studio.",
+      "blurb_eu": "Katu batek eta txakur batek suziri bat eraikitzen dute baserrian aurkitzen dutenarekin, espero zitekeen emaitzarekin: Blender Studioren komedia animatua.",
+      "blurb_ca": "Un gat i un gos construeixen un coet amb el que troben a la granja, amb el resultat esperable: comèdia animada del Blender Studio.",
+      "tags": [
+        "animation",
+        "comedy"
+      ],
+      "sound": true,
+      "published": "2026-01-06",
+      "tmdbId": 1177628
     }
   ]
 }

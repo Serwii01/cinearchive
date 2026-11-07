@@ -6,6 +6,7 @@
 En producción en cinearchive.es, al día con main (8495436 desplegado o por desplegar): Astro 7, despliegues sin compilar en el VPS (menos de 1 min), contador sin visitas de rastreadores, films_cache con tope (disco al 21 %), copias nocturnas, vigilancia por correo y menos CPU en Postgres. Contador en unas 1.574.000 el 7 nov.
 
 ## Siguientes pasos
+- [ ] Anotar Cine abierto en el changelog (v1.21).
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
 - [ ] Copia de las copias fuera del VPS: el CRM 0.4.0 (cinearchiveCRM ff27fed) ya las baja desde la pestaña Servidor; probado. Queda decidir si se hace solo cada semana.
 - [ ] 8 nov, en el CRM (pestaña Servidor): «Consultas que más gastan» y «Rastreadores (24 h)». Con eso, bloquear redes o navegadores en el Caddyfile y optimizar las consultas lentas (también las de Umami, que tardan con periodos largos). Comparar la carga con el 7 nov (1,5, CPU al 100 % a ráfagas).
@@ -19,6 +20,7 @@ En producción en cinearchive.es, al día con main (8495436 desplegado o por des
 ## Última sesión
 
 ### 2026-11-07
+- Cine abierto: 41 películas más (114 en total), verificadas en Internet Archive, con sinopsis en 5 idiomas; etiquetas de tipo, muda/sonora, idioma, imprescindibles, fecha de IA (fetch-pd.mjs) y enlace a TMDB (resolve-tmdb-ids.mjs --cine). Listado con filtros (tipo, sonido, duración, década, país, buscador) guardados en la URL y filas para empezar; ficha con botón a la ficha completa, «Si te gusta esta» y datos Movie+VideoObject para Google. Tests (584) y build en verde; revisado en el navegador en escritorio y móvil.
 - Changelog v1.20 «Una web más rápida, más segura y más estable» (5 idiomas): listas/perfiles/diarios más rápidos, sin cortes al publicar, Astro 7 y cuentas actualizadas, copias nocturnas, contador solo de personas y portadas de la Biblioteca con marco.
 - Sergio confirma que van bien la web en el móvil, el acceso con Google y GitHub y los correos.
 - Disco del VPS al 71 % (41 de 58 GB): films_cache tenía 1.016.576 películas y 17 GB (los rastreadores recorren el catálogo de TMDB a través de las fichas) y Docker guardaba 12,6 GB de compilaciones viejas. Sergio liberó lo de Docker con `docker builder prune -af`.

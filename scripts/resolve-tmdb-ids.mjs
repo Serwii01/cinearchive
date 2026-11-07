@@ -1,17 +1,23 @@
 /**
- * Resuelve el id de TMDB de cada ficha curada de src/data/films.json (para que la
- * tabla de la Filmoteca sea clicable y enlace a la ficha rica). Reejecutable: salta
- * las que ya tienen tmdbId. Empareja por título + año (verifica el año para no
- * confundir remakes); deja un aviso de las que no encuentre para revisarlas a mano.
+ * Resuelve el id de TMDB de cada ficha curada (para que sea clicable y enlace a
+ * la ficha rica, donde se puede guardar y puntuar). Reejecutable: salta las que
+ * ya tienen tmdbId. Empareja por título + año (verifica el año para no confundir
+ * remakes); deja un aviso de las que no encuentre para revisarlas a mano.
  *
- *   node --env-file=.env scripts/resolve-tmdb-ids.mjs
+ *   node --env-file=.env scripts/resolve-tmdb-ids.mjs          # Filmoteca (films.json)
+ *   node --env-file=.env scripts/resolve-tmdb-ids.mjs --cine   # Cine abierto (pdfilms.json)
+ *
+ * En Cine abierto solo se acepta el año exacto o ±1: hay muchos cortos y
+ * versiones con el mismo título, y un enlace a la película equivocada es peor
+ * que no tener enlace.
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const file = join(root, 'src', 'data', 'films.json');
+const cine = process.argv.includes('--cine');
+const file = join(root, 'src', 'data', cine ? 'pdfilms.json' : 'films.json');
 const KEY = process.env.TMDB_API_KEY;
 if (!KEY) {
   console.error('Falta TMDB_API_KEY (usa: node --env-file=.env scripts/resolve-tmdb-ids.mjs)');
@@ -31,7 +37,7 @@ async function search(query, year) {
   return d.results ?? [];
 }
 
-async function resolve(film) {
+async function resolve(film, estricto) {
   // Intenta por título, luego por título original; prioriza coincidencia de año.
   for (const q of [film.title, film.original_title].filter(Boolean)) {
     let results = await search(q, film.year);
@@ -39,19 +45,21 @@ async function resolve(film) {
     if (results.length === 0) continue;
     const exact = results.find((r) => r.release_date && Number(r.release_date.slice(0, 4)) === film.year);
     const near = results.find((r) => r.release_date && Math.abs(Number(r.release_date.slice(0, 4)) - film.year) <= 1);
-    const pick = exact ?? near ?? results[0];
+    const pick = exact ?? near ?? (estricto ? null : results[0]);
     if (pick) return { id: pick.id, matched: exact ? 'año exacto' : near ? '±1 año' : 'primer resultado' };
   }
   return null;
 }
 
 async function main() {
-  const data = JSON.parse(await readFile(file, 'utf8'));
+  const raw = await readFile(file, 'utf8');
+  const data = JSON.parse(raw);
+  const lista = cine ? data.items : data.films;
   let resolved = 0;
   const failed = [];
-  for (const film of data.films) {
+  for (const film of lista) {
     if (film.tmdbId) continue;
-    const r = await resolve(film);
+    const r = await resolve(film, cine);
     if (r) {
       film.tmdbId = r.id;
       resolved++;
@@ -62,7 +70,8 @@ async function main() {
     }
     await sleep(120);
   }
-  await writeFile(file, JSON.stringify(data, null, 2) + '\n', 'utf8');
+  const out = JSON.stringify(data, null, 2) + '\n';
+  await writeFile(file, raw.includes('\r\n') ? out.replace(/\n/g, '\r\n') : out, 'utf8');
   console.log(`\nResueltas: ${resolved} · Sin id: ${failed.length}`);
   if (failed.length) console.log('Revisar a mano:', failed.join(', '));
 }

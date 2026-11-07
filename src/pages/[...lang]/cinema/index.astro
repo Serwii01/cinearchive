@@ -1,93 +1,194 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { pdFilms, pdThumbUrl, pdLicenseLabel } from '../../../lib/pdfilms';
-import { localizedField, useTranslations, localizePath, langStaticPaths, normalizeLang, type Lang } from '../../../i18n/ui';
+import CinemaCard from '../../../components/CinemaCard.astro';
+import { pdFilms, pdIsShort, PD_TAGS, type PdFilm } from '../../../lib/pdfilms';
+import { useTranslations, localizePath, langStaticPaths, normalizeLang } from '../../../i18n/ui';
 
 export const getStaticPaths = langStaticPaths;
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
+const tTag = (tag: string) => t(`cinema.tag.${tag}` as Parameters<typeof t>[0]);
 
 const items = pdFilms.slice().sort((a, b) => a.year - b.year || a.title.localeCompare(b.title));
 const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sort((a, b) => a - b);
+const countries = [...new Set(items.map((i) => i.country))].sort((a, b) => a.localeCompare(b, 'es'));
+// Solo los tipos que tienen películas, en el orden de PD_TAGS.
+const tags = PD_TAGS.filter((tag) => items.some((i) => i.tags.includes(tag)));
+
+// Filas para empezar: lo imprescindible, el terror clásico (el tipo que más se
+// busca aquí), los grandes mudos que no están ya arriba y cortos para un rato.
+const fila = (lista: PdFilm[], n = 8) => lista.slice(0, n);
+const filas: { titulo: string; films: PdFilm[] }[] = [
+  { titulo: t('cinema.rowEssential'), films: items.filter((f) => f.essential) },
+  { titulo: t('cinema.rowHorror'), films: fila(items.filter((f) => f.tags.includes('horror') && f.year < 1970 && !f.essential)) },
+  { titulo: t('cinema.rowSilent'), films: fila(items.filter((f) => !f.sound && !f.essential && !pdIsShort(f) && f.year >= 1920).reverse()) },
+  { titulo: t('cinema.rowShorts'), films: fila(items.filter((f) => pdIsShort(f) && !f.essential).reverse()) },
+].filter((r) => r.films.length > 0);
+
+const selectCls =
+  'border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none';
 ---
 
-<BaseLayout
-  title={t('cinema.title')}
-  description={t('cinema.intro')}
->
+<BaseLayout title={t('cinema.title')} description={t('cinema.intro')}>
   <section class="frame py-12">
     <a href={localizePath(lang, 'films')} class="label no-underline hover:text-ink">← {t('nav.films')}</a>
     <header class="mt-6 border-b border-ink pb-6">
       <span class="label">{t('cinema.title')} · {items.length} {t('cinema.count')}</span>
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('cinema.title')}</h1>
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('cinema.intro')}</p>
+    </header>
 
-      <div class="mt-6 flex flex-wrap gap-3">
-        <label class="flex items-center gap-2">
+    {/* Filas para empezar. Se ocultan en cuanto se filtra: entonces lo que importa
+        es el resultado. En el móvil solo va la primera, con cuatro películas: el
+        resto empujaba el listado y los filtros varias pantallas más abajo. */}
+    <div id="cinema-rows">
+      {
+        filas.map((r, i) => (
+          <section class={`mt-10 ${i > 0 ? 'hidden sm:block' : ''}`}>
+            <h2 class="label mb-3">{r.titulo}</h2>
+            <div class="grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+              {r.films.map((f, j) => (
+                <CinemaCard film={f} lang={lang} compacta clase={j >= 4 ? 'hidden sm:flex' : ''} />
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+
+    <section class="mt-12" aria-labelledby="cinema-all">
+      <h2 id="cinema-all" class="label mb-3">{t('cinema.allFilms')}</h2>
+
+      {/* Filtros: se aplican en el navegador y se guardan en la URL, para poder
+          compartir «terror mudo» o volver de una ficha sin perderlos. */}
+      <form id="cinema-filters" class="flex flex-wrap items-end gap-3 border-b border-ink pb-4" role="search">
+        <label class="flex flex-col gap-1">
+          <span class="label">{t('search.title')}</span>
+          <input
+            id="f-q"
+            name="q"
+            type="search"
+            autocomplete="off"
+            placeholder={t('cinema.searchPlaceholder')}
+            aria-label={t('cinema.searchPlaceholder')}
+            class={`${selectCls} w-64 max-w-full py-1.5`}
+          />
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="label">{t('cinema.filterType')}</span>
+          <select id="f-tipo" name="tipo" class={selectCls}>
+            <option value="">{t('archive.all')}</option>
+            {tags.map((tag) => <option value={tag}>{tTag(tag)}</option>)}
+          </select>
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="label">{t('cinema.filterSound')}</span>
+          <select id="f-sonido" name="sonido" class={selectCls}>
+            <option value="">{t('archive.all')}</option>
+            <option value="silent">{t('cinema.silent')}</option>
+            <option value="sound">{t('cinema.sound')}</option>
+          </select>
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="label">{t('cinema.filterLength')}</span>
+          <select id="f-duracion" name="duracion" class={selectCls}>
+            <option value="">{t('archive.all')}</option>
+            <option value="short">{t('cinema.short')}</option>
+            <option value="feature">{t('cinema.feature')}</option>
+          </select>
+        </label>
+        <label class="flex flex-col gap-1">
           <span class="label">{t('archive.filterDecade')}</span>
-          <select id="filter-decade" class="border border-ink bg-white px-2 py-1 font-mono text-meta-data text-ink focus:bg-film-white focus:outline-none">
+          <select id="f-decada" name="decada" class={selectCls}>
             <option value="">{t('archive.all')}</option>
             {decades.map((d) => <option value={d}>{d}s</option>)}
           </select>
         </label>
-      </div>
-    </header>
+        <label class="flex flex-col gap-1">
+          <span class="label">{t('cinema.filterCountry')}</span>
+          <select id="f-pais" name="pais" class={selectCls}>
+            <option value="">{t('archive.all')}</option>
+            {countries.map((c) => <option value={c}>{c}</option>)}
+          </select>
+        </label>
+        <button id="f-limpiar" type="reset" class="label hidden self-center underline hover:text-ink">{t('cinema.clearFilters')}</button>
+        <p class="ml-auto self-center font-mono text-meta-data text-muted" aria-live="polite">
+          {t('cinema.showing')} <span id="f-n">{items.length}</span> / {items.length}
+        </p>
+      </form>
 
-    <div
-      id="cinema-grid"
-      class="mt-10 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-3"
-    >
-      {
-        items.map((f) => (
-          <article data-decade={Math.floor(f.year / 10) * 10} class="group flex h-full flex-col bg-surface">
-            <a href={localizePath(lang, `cinema/${f.id}`)} class="flex h-full flex-col no-underline">
-              <div class="flex items-center justify-between border-b border-ink px-3 py-2">
-                <span class="label">{pdLicenseLabel(f.license, t)}</span>
-                <span class="font-mono text-meta-data text-muted">{f.year}</span>
-              </div>
-              <div class="aspect-video overflow-hidden border-b border-ink bg-charcoal">
-                {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
-                <img
-                  src={pdThumbUrl(f.id)}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              <div class="flex flex-1 flex-col p-3">
-                <h2 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{f.title}</h2>
-                <p class="mt-1 font-mono text-meta-data text-muted">{f.director} · {f.country} · {f.runtime}′</p>
-                <p class="mt-2 text-body-md text-charcoal">{localizedField(f, 'blurb', lang)}</p>
-              </div>
-            </a>
-          </article>
-        ))
-      }
-    </div>
-    <p id="cinema-empty" class="mt-10 hidden font-mono text-body-md text-muted">{t('archive.empty')}</p>
+      <div id="cinema-grid" class="mt-6 grid ruled grid-cols-1 border border-ink sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((f) => <CinemaCard film={f} lang={lang} filtrable />)}
+      </div>
+      <p id="cinema-empty" class="mt-10 hidden font-mono text-body-md text-muted">{t('cinema.empty')}</p>
+    </section>
 
     <p class="mt-10 border-t border-ink pt-4 font-mono text-meta-data text-muted">{t('archive.credit')}</p>
   </section>
 </BaseLayout>
 
 <script>
-  const decadeSel = document.getElementById('filter-decade') as HTMLSelectElement | null;
+  // Filtros de Cine abierto. Todo en el navegador (la página es estática) y con
+  // el estado en la URL: ?tipo=horror&sonido=silent se puede compartir, y al
+  // volver de una ficha los filtros siguen puestos.
+  const form = document.getElementById('cinema-filters') as HTMLFormElement | null;
   const cells = Array.from(document.querySelectorAll<HTMLElement>('#cinema-grid > [data-decade]'));
   const empty = document.getElementById('cinema-empty');
+  const rows = document.getElementById('cinema-rows');
+  const count = document.getElementById('f-n');
+  const clear = document.getElementById('f-limpiar');
+  const campos = ['q', 'tipo', 'sonido', 'duracion', 'decada', 'pais'] as const;
+  const campo = (n: string) => form?.elements.namedItem(n) as HTMLInputElement | HTMLSelectElement | null;
 
-  const apply = () => {
-    const de = decadeSel?.value ?? '';
+  // Quita tildes para que «metropolis» encuentre «Metrópolis».
+  const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+
+  const apply = (guardar = true) => {
+    const v = Object.fromEntries(campos.map((n) => [n, campo(n)?.value ?? ''])) as Record<(typeof campos)[number], string>;
+    const q = norm(v.q);
     let visible = 0;
     for (const cell of cells) {
-      const ok = !de || cell.dataset.decade === de;
+      const d = cell.dataset;
+      const ok =
+        (!q || norm(d.search ?? '').includes(q)) &&
+        (!v.tipo || (d.tags ?? '').split(' ').includes(v.tipo)) &&
+        (!v.sonido || d.sound === v.sonido) &&
+        (!v.duracion || d.length === v.duracion) &&
+        (!v.decada || d.decade === v.decada) &&
+        (!v.pais || d.country === v.pais);
       cell.hidden = !ok;
       if (ok) visible++;
     }
+    const filtrando = campos.some((n) => v[n]);
+    if (count) count.textContent = String(visible);
     empty?.classList.toggle('hidden', visible !== 0);
+    rows?.classList.toggle('hidden', filtrando);
+    clear?.classList.toggle('hidden', !filtrando);
+
+    if (guardar) {
+      const url = new URL(location.href);
+      for (const n of campos) {
+        if (v[n]) url.searchParams.set(n, v[n]);
+        else url.searchParams.delete(n);
+      }
+      history.replaceState(history.state, '', url);
+    }
   };
 
-  decadeSel?.addEventListener('change', apply);
+  // Estado inicial desde la URL.
+  const params = new URLSearchParams(location.search);
+  for (const n of campos) {
+    const el = campo(n);
+    const val = params.get(n);
+    if (el && val) el.value = val;
+  }
+  apply(false);
+
+  form?.addEventListener('input', () => apply());
+  form?.addEventListener('change', () => apply());
+  form?.addEventListener('submit', (e) => e.preventDefault());
+  // El reset vacía los campos después del evento: se aplica en el siguiente turno.
+  form?.addEventListener('reset', () => setTimeout(() => apply()));
 </script>

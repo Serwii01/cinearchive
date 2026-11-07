@@ -1,0 +1,67 @@
+---
+/**
+ * Tarjeta de una película de Cine abierto. La usan el listado (con los datos
+ * para filtrar en el navegador), las filas de «Por dónde empezar» y el «Si te
+ * gusta esta» de cada ficha (`compacta`: sin sinopsis).
+ */
+import { pdThumbUrl, pdLicenseLabel, pdDecade, pdIsShort, type PdFilm } from '../lib/pdfilms';
+import { localizedField, useTranslations, localizePath, type Lang } from '../i18n/ui';
+
+interface Props {
+  film: PdFilm;
+  lang: Lang;
+  compacta?: boolean;
+  /** Atributos para los filtros del listado. */
+  filtrable?: boolean;
+  /** Clases extra (p. ej. ocultarla en el móvil). */
+  clase?: string;
+}
+
+const { film: f, lang, compacta = false, filtrable = false, clase = '' } = Astro.props;
+const t = useTranslations(lang);
+const datos = filtrable
+  ? {
+      'data-decade': String(pdDecade(f)),
+      'data-tags': f.tags.join(' '),
+      'data-sound': f.sound ? 'sound' : 'silent',
+      'data-length': pdIsShort(f) ? 'short' : 'feature',
+      'data-country': f.country,
+      'data-search': `${f.title} ${f.original_title} ${f.director}`.toLowerCase(),
+    }
+  : {};
+---
+
+<article class:list={['group h-full flex-col bg-surface', clase || 'flex']} {...datos}>
+  <a href={localizePath(lang, `cinema/${f.id}`)} class="flex h-full flex-col no-underline">
+    {/* En las compactas (filas y «Si te gusta esta») sobra la etiqueta: el
+        título de la fila ya lo dice, y en el móvil no cabía. */}
+    <div class="flex items-center justify-between gap-2 border-b border-ink px-3 py-2">
+      {!compacta && <span class="label truncate">{f.essential ? t('cinema.essential') : pdLicenseLabel(f.license, t)}</span>}
+      <span class="shrink-0 font-mono text-meta-data text-muted">{f.year}</span>
+    </div>
+    <div class="aspect-video overflow-hidden border-b border-ink bg-charcoal">
+      {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
+      <img
+        src={pdThumbUrl(f.id)}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+    </div>
+    <div class="flex flex-1 flex-col p-3">
+      <h3 class={`font-display leading-tight text-ink transition-colors group-hover:text-muted ${compacta ? 'text-body-lg font-medium' : 'text-headline-md'}`}>
+        {f.title}
+      </h3>
+      <p class="mt-1 font-mono text-meta-data text-muted">
+        {f.director} · {f.runtime}′{!f.sound && ` · ${t('cinema.silent')}`}
+      </p>
+      {!compacta && <p class="mt-2 text-body-md text-charcoal">{localizedField(f, 'blurb', lang)}</p>}
+      {!compacta && (
+        <p class="mt-auto pt-3 font-mono text-meta-data uppercase tracking-[0.06em] text-muted">
+          {f.tags.slice(0, 3).map((tag) => t(`cinema.tag.${tag}` as Parameters<typeof t>[0])).join(' · ')}
+        </p>
+      )}
+    </div>
+  </a>
+</article>

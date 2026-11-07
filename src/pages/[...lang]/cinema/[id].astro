@@ -1,8 +1,19 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { pdFilms, pdEmbedUrl, pdIaUrl, pdThumbUrl, pdLicenseLabel, type PdFilm } from '../../../lib/pdfilms';
-import { localizedField, useTranslations, localizePath, langStaticPaths, normalizeLang, type Lang } from '../../../i18n/ui';
+import CinemaCard from '../../../components/CinemaCard.astro';
+import {
+  pdFilms,
+  pdEmbedUrl,
+  pdIaUrl,
+  pdThumbUrl,
+  pdLicenseLabel,
+  pdRelated,
+  pdFilmPath,
+  pdVideoLd,
+  type PdFilm,
+} from '../../../lib/pdfilms';
+import { localizedField, useTranslations, localizePath, langStaticPaths, normalizeLang } from '../../../i18n/ui';
 import { breadcrumbLd } from '../../../lib/seo';
 
 export function getStaticPaths() {
@@ -17,34 +28,84 @@ export function getStaticPaths() {
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
+const tTag = (tag: string) => t(`cinema.tag.${tag}` as Parameters<typeof t>[0]);
 const { item } = Astro.props as { item: PdFilm };
 
 const blurb = localizedField(item, 'blurb', lang);
 const meta = [item.director, item.country, item.year, `${item.runtime}′`].filter(Boolean).join(' · ');
 
-// SEO: fotograma de Internet Archive como imagen social + migas de pan.
-const socialImg = pdThumbUrl(item.id);
-const crumbsJsonLd = breadcrumbLd([
-  { name: t('cinema.title'), url: new URL(localizePath(lang, 'cinema'), Astro.site).href },
-  { name: item.title, url: new URL(Astro.url.pathname, Astro.site).href },
-]);
+// «Muda, con rótulos en inglés» / «Hablada en inglés»: el nombre del idioma, en
+// el idioma de la página. Sin idioma seguro, solo «Muda» o «Sonora».
+const nombreIdioma = (code: string) => {
+  try {
+    return new Intl.DisplayNames([lang], { type: 'language' }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+};
+const sonido = item.language
+  ? t(item.sound ? 'cinema.soundIn' : 'cinema.silentIn').replace('{lang}', nombreIdioma(item.language))
+  : t(item.sound ? 'cinema.sound' : 'cinema.silent');
+const subtitulos = item.subtitles ? t('cinema.subtitlesIn').replace('{lang}', nombreIdioma(item.subtitles)) : null;
+
+const fichaCompleta = pdFilmPath(item);
+const parecidas = pdRelated(item, 4);
+
+// SEO: título que dice lo que hay («película completa»), fotograma como imagen
+// social, migas de pan y la película con su vídeo como datos estructurados.
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const thumbAbs = new URL(pdThumbUrl(item.id), Astro.site).href;
+const titulo = `${item.title} (${item.year}) · ${t('cinema.fullMovie')}`;
+const jsonLd = [
+  breadcrumbLd([
+    { name: t('cinema.title'), url: new URL(localizePath(lang, 'cinema'), Astro.site).href },
+    { name: item.title, url: pageUrl },
+  ]),
+  pdVideoLd(item, { pageUrl, thumbUrl: thumbAbs, description: blurb }),
+];
 ---
 
-<BaseLayout title={item.title} description={blurb} image={socialImg} ogType="article" jsonLd={crumbsJsonLd}>
+<BaseLayout title={titulo} description={blurb} image={pdThumbUrl(item.id)} ogType="video.movie" jsonLd={jsonLd}>
   <article class="frame py-12">
     <a href={localizePath(lang, 'cinema')} class="label no-underline hover:text-ink">← {t('cinema.backToCinema')}</a>
 
     <header class="mt-6 border-b border-ink pb-6">
-      <span class="label">{pdLicenseLabel(item.license, t)} · {item.year}</span>
+      <span class="label">
+        {item.essential && `${t('cinema.essential')} · `}{pdLicenseLabel(item.license, t)} · {item.year}
+      </span>
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{item.title}</h1>
       {item.original_title !== item.title && (
         <p class="mt-2 font-display text-headline-md italic text-muted">{item.original_title}</p>
       )}
       <p class="mt-3 font-mono text-meta-data uppercase tracking-[0.08em] text-muted">{meta}</p>
+      <p class="mt-1 font-mono text-meta-data text-muted">
+        {sonido}{subtitulos && ` · ${subtitulos}`}
+      </p>
       <p class="mt-5 max-w-2xl text-body-lg text-charcoal">{blurb}</p>
-      <a href={pdIaUrl(item.id)} target="_blank" rel="noopener noreferrer" class="btn btn-secondary mt-6 no-underline">
-        {t('cinema.atIA')} ↗
-      </a>
+
+      <ul class="mt-4 flex flex-wrap gap-2" aria-label={t('cinema.filterType')}>
+        {item.tags.map((tag) => (
+          <li>
+            <a
+              href={`${localizePath(lang, 'cinema')}?tipo=${tag}#cinema-all`}
+              class="label border border-ink px-2 py-1 no-underline hover:bg-ink hover:text-background"
+            >
+              {tTag(tag)}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-6 flex flex-wrap gap-3">
+        {fichaCompleta && (
+          <a href={localizePath(lang, fichaCompleta)} class="btn btn-primary no-underline" title={t('cinema.fullPageHint')}>
+            {t('cinema.fullPage')}
+          </a>
+        )}
+        <a href={pdIaUrl(item.id)} target="_blank" rel="noopener noreferrer" class="btn btn-secondary no-underline">
+          {t('cinema.atIA')} ↗
+        </a>
+      </div>
     </header>
 
     {/* Reproductor incrustado de Internet Archive */}
@@ -64,5 +125,14 @@ const crumbsJsonLd = breadcrumbLd([
     </div>
 
     <p class="mt-6 font-mono text-meta-data text-muted">{t('cinema.viewerNote')}</p>
+
+    {parecidas.length > 0 && (
+      <section class="mt-14" aria-labelledby="cinema-related">
+        <h2 id="cinema-related" class="label mb-3">{t('cinema.related')}</h2>
+        <div class="grid ruled grid-cols-2 border border-ink lg:grid-cols-4">
+          {parecidas.map((f) => <CinemaCard film={f} lang={lang} compacta />)}
+        </div>
+      </section>
+    )}
   </article>
 </BaseLayout>
