@@ -59,7 +59,9 @@ services:
     # el VPS ahoga la web. El Autodeploy sigue siendo `docker compose up -d --build`:
     # sin sección build no compila nada, y pull_policy baja la última imagen. Si no ha
     # cambiado, el contenedor no se toca. Reserva: docker-compose.build.yml.
-    image: ghcr.io/serwii01/cinearchive-app:latest
+    # APP_TAG: cada imagen lleva también el commit del que sale. Para volver a una
+    # versión anterior sin compilar: scripts/vps/volver.sh <commit>.
+    image: ghcr.io/serwii01/cinearchive-app:${APP_TAG:-latest}
     pull_policy: always
     restart: unless-stopped
     # Carga las claves (TMDB/OMDb/auth/OAuth) desde .env. Nunca se versiona.
@@ -146,7 +148,13 @@ services:
       - '3000'
 
   caddy:
-    <<: *logging
+    # Más log que el resto: aquí va el registro de peticiones (ver Caddyfile), y con
+    # 10 MB solo cabrían unas horas. 4 x 25 MB son un par de días.
+    logging:
+      driver: json-file
+      options:
+        max-size: '25m'
+        max-file: '4'
     mem_limit: 96m
     image: ghcr.io/serwii01/cinearchive-caddy:latest
     pull_policy: always

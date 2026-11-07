@@ -40,6 +40,26 @@ analitica.{$DOMAIN} {
 {$DOMAIN} {
 	encode gzip zstd
 
+	# --- Registro de peticiones ---
+	# Hasta el 7-11-2026 no había ninguno, y no había forma de saber quién recorría
+	# las fichas (los rastreadores llenaron la caché con un millón de películas).
+	# Va a la salida del contenedor, que Docker rota (docker-compose.yml): dura un
+	# par de días y luego se borra solo. Caddy ya tacha las cookies y la cabecera
+	# Authorization, así que no quedan sesiones en el registro. Lo resume
+	# scripts/vps/rastreadores.sh.
+	log {
+		output stdout
+		format json
+	}
+
+	# --- Rastreadores fuera ---
+	# Herramientas SEO de terceros y rastreadores conocidos por no respetar
+	# robots.txt: no traen visitas y cada ficha que piden cuesta una llamada a TMDB.
+	# Se cortan aquí, antes de que la app pinte nada. Los de IA que sí respetan
+	# robots.txt se paran allí (src/pages/robots.txt.ts).
+	@rastreadores header_regexp User-Agent (?i)(bytespider|imagesiftbot|barkrowler|dataforseobot|mj12bot|dotbot|petalbot|semrushbot|ahrefsbot|blexbot|serpstatbot|megaindex|seekportbot|zoominfobot)
+	respond @rastreadores 403
+
 	# --- Protección frente a inundación de peticiones (DoS) ---
 	# Límite por IP en el borde, antes de llegar a la app. Dos zonas: una general
 	# para toda la web y otra más estricta para la API y el login.

@@ -9,10 +9,8 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 - [ ] Astro 7 ya en main (704b48a, CI en verde): desplegar y mirar la web en el móvil (portadas de la Biblioteca, menú, diseño adaptable). Sin probar: npm run dev.
 - [ ] Probar en producción el acceso con Google y GitHub, los correos reales y si las sesiones abiertas sobrevivieron a better-auth 1.7.
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
-- [ ] Tras desplegar la poda: en el VPS, `bash scripts/vps/instalar-cron.sh` (instala copias y limpieza y hace la primera copia) y, pasados 10 min, comprobar en `docker compose logs app | grep caché` que films_cache bajó y con `df -h /` que se recuperó el disco.
 - [ ] Copia de las copias fuera del VPS (por ejemplo, que el CRM baje la última a tu PC).
-- [ ] Volver atrás a una imagen anterior por su commit (variable de etiqueta en docker-compose.yml).
-- [ ] Ver en los logs de Caddy qué rastreadores recorren las fichas y frenarlos.
+- [ ] Pasado un día desde el despliegue, lanzar `scripts/vps/rastreadores.sh` en el VPS y, según lo que salga, bloquear redes o navegadores concretos en el Caddyfile.
 - [ ] Revisar en Umami qué secciones se usan y dónde se va la gente antes de añadir nada nuevo.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
@@ -25,6 +23,10 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 ### 2026-11-07
 - Disco del VPS al 71 % (41 de 58 GB): films_cache tenía 1.016.576 películas y 17 GB (los rastreadores recorren el catálogo de TMDB a través de las fichas) y Docker guardaba 12,6 GB de compilaciones viejas. Sergio liberó lo de Docker con `docker builder prune -af`.
 - Poda diaria de films_cache (src/lib/cachecap.ts): se quedan las películas con dueño (perfil, listas, diario, catálogo del panel) y las 20.000 sueltas más recientes. La primera vez, a fondo (aparta, TRUNCATE, vuelve a meter): libera ~16 GB a los 10 min de desplegar, con la tabla bloqueada unos segundos. Probado en Postgres local con 150.000 filas.
+- Desplegado: la poda a fondo dejó films_cache de 1.017.546 a 20.246 películas en 16 s; el disco pasó del 71 % al 21 % (46 GB libres). /api/health ya dice disk ok.
+- Volver atrás: APP_TAG en docker-compose.yml y scripts/vps/volver.sh <commit> (comprueba que la imagen existe antes de tocar nada).
+- Rastreadores: robots.txt cierra la puerta a 12 de entrenamiento de IA (no a buscadores ni asistentes); Caddy da 403 a 14 que no respetan robots.txt (Bytespider, herramientas SEO…); registro de peticiones de Caddy (4 x 25 MB, un par de días) y scripts/vps/rastreadores.sh para resumirlo. La CI valida el Caddyfile con la imagen de Caddy. rastreadores.sh sin probar: aquí no hay Python.
+- Cron instalado en el VPS. Primera copia: cine 2,7 MB y umami 87 MB (unos 630 MB con los 7 días).
 - /api/health dice `disk` (ok/low/unknown; aviso por debajo del 15 % libre) y la vigilancia de GitHub avisa por correo.
 - scripts/vps: backup.sh (cada noche a las 3:30, 7 días, sin datos de films_cache, no copia si queda menos de 1 GB), restaurar.sh (pide confirmación, para el servicio), limpieza.sh (domingos: caché de compilación e imágenes sin usar de más de una semana) e instalar-cron.sh. Volcado y restauración probados en local.
 - Contador de visitas: subía unas 2,9 por segundo (1.572.824 a las 16:02, unas 250.000 al día desde el 5 nov). Causa probable: un rastreador que cambia de IP y se hace pasar por Chrome; el middleware contaba las páginas del servidor sin JavaScript y cada petición suya era una huella nueva.

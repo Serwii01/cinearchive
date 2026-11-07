@@ -73,3 +73,14 @@ jobs:
           # Con la caché, Caddy solo se compila cuando cambia su Dockerfile.
           cache-from: type=gha,scope=${{ matrix.nombre }}
           cache-to: type=gha,mode=max,scope=${{ matrix.nombre }}
+      # El Caddyfile no va dentro de la imagen: el VPS lo monta desde el repo. Si
+      # tiene un error, Caddy no arranca y la web entera se cae al desplegar. Aquí
+      # se comprueba con la misma imagen (que lleva el módulo de rate_limit): si
+      # sale en rojo, no despliegues.
+      - name: Comprobar el Caddyfile
+        if: matrix.nombre == 'caddy'
+        run: >
+          docker run --rm -e DOMAIN=example.com -e EMAIL=ci@example.com
+          -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro"
+          ghcr.io/serwii01/cinearchive-caddy:${{ github.sha }}
+          caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
