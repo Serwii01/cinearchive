@@ -11,15 +11,16 @@ import { clientIp } from './ratelimit';
  * una sola visita: se recuerda quién ha pasado (huella de IP + navegador) y no
  * se vuelve a contar hasta que lleva media hora sin aparecer.
  *
- * Qué NO cuenta: la API, los recursos estáticos, las peticiones que no piden
- * HTML, los robots conocidos y el panel de administración (que es tráfico
- * propio). Tampoco cuenta dos veces un recargado.
+ * Qué NO cuenta: la API, los robots conocidos y el panel de administración
+ * (que es tráfico propio). Tampoco cuenta dos veces un recargado.
  *
- * Dos puertas de entrada: las páginas que pinta el servidor se cuentan en el
- * middleware (contarVisita), pero las prerenderizadas las sirve Node como
- * ficheros sin pasar por él, así que esas avisan desde el navegador con un
- * POST a /api/visits (contarVisitaEstatica). Las dos comparten huella, así que
- * quien pasa por páginas de ambos tipos sigue siendo una sola visita.
+ * Una sola puerta: el navegador avisa con un POST a /api/visits al abrir
+ * cualquier página (ver BaseLayout). Antes las páginas del servidor se contaban
+ * en el middleware, sin JavaScript, y desde el 5-11-2026 un rastreador que
+ * cambiaba de IP y se hacía pasar por Chrome sumaba unas 250.000 visitas falsas
+ * al día: cada petición suya era una huella nueva. Casi ningún rastreador
+ * ejecuta JavaScript, así que contar solo lo que lo ejecuta deja fuera a la
+ * mayoría, igual que hace Umami. Lo ya sumado se quedó en el total.
  *
  * Cómo escribe: nunca una consulta por visita. Se acumula en memoria y se vuelca
  * sumando (`value = value + n`), como mucho cada 30 segundos. Si el proceso se
@@ -45,21 +46,9 @@ let volcando: Promise<void> | null = null;
 const BOTS = /bot|crawl|spider|slurp|facebookexternalhit|embedly|quora link preview|pinterest|bitlybot|whatsapp|telegram|discord|preview|monitor|uptime|curl|wget|python-requests|axios|headless|lighthouse|gpt|claude|perplexity|bytespider|semrush|ahrefs|mj12|dotbot|dataprovider|zgrab|masscan/i;
 
 /**
- * ¿Esta petición es una visita de una persona a una página?
- *
- * Exportada para poder probarla: es la regla que decide el número que se
- * enseña, y lo fácil es equivocarse contando iconos o sondas.
- */
-export function esVisita(opts: { method: string; path: string; accept: string | null; ua: string | null }): boolean {
-  if (opts.method !== 'GET') return false;
-  // Páginas, no recursos: el navegador pide HTML con Accept: text/html.
-  if (!opts.accept?.includes('text/html')) return false;
-  return esPersonaEnPagina(opts.path, opts.ua);
-}
-
-/**
- * La parte de la regla que vale para las dos puertas: una página del sitio
- * (no la API ni el panel) vista por un navegador que no es un robot conocido.
+ * ¿Es una página del sitio (no la API ni el panel) vista por un navegador que
+ * no es un robot conocido? Exportada para poder probarla: es la regla que
+ * decide el número que se enseña.
  */
 export function esPersonaEnPagina(path: string, ua: string | null): boolean {
   if (!path.startsWith('/') || path.startsWith('/api/')) return false;
@@ -103,19 +92,10 @@ async function volcar(): Promise<void> {
 }
 
 /**
- * Anota la visita si toca. No espera a la base de datos: devolver la página
- * nunca debe depender de un contador.
+ * Anota la visita si toca, a partir del aviso que manda el navegador. `path`
+ * es la página que se está viendo. No espera a la base de datos.
  */
 export function contarVisita(request: Request, path: string): void {
-  if (!esVisita({ method: request.method, path, accept: request.headers.get('accept'), ua: request.headers.get('user-agent') })) return;
-  anotar(request);
-}
-
-/**
- * Lo mismo para una página prerenderizada, a partir del aviso que manda el
- * navegador (ver BaseLayout). `path` es la página que se está viendo.
- */
-export function contarVisitaEstatica(request: Request, path: string): void {
   if (!esPersonaEnPagina(path, request.headers.get('user-agent'))) return;
   anotar(request);
 }

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { totalVisitas, contarVisitaEstatica } from '../../lib/visits';
+import { totalVisitas, contarVisita } from '../../lib/visits';
 import { check, clientIp, tooMany } from '../../lib/ratelimit';
 import { isKnownRoute } from '../../lib/routes';
 import { languages } from '../../i18n/ui';
@@ -33,10 +33,9 @@ export const GET: APIRoute = async () => {
 };
 
 /**
- * POST /api/visits — aviso de visita desde una página prerenderizada.
+ * POST /api/visits — aviso de visita desde el navegador, en cualquier página.
  *
- * Esas páginas no pasan por el middleware, que es donde se cuentan las demás
- * (ver src/lib/visits.ts). El cuerpo es `{ path }`, la ruta que se está
+ * Es la única forma de contar una visita (ver src/lib/visits.ts). El cuerpo es `{ path }`, la ruta que se está
  * viendo (lo manda BaseLayout). Responde siempre 204: el navegador
  * no espera nada y no hay por qué decirle a nadie si contó o no.
  */
@@ -46,6 +45,6 @@ export const POST: APIRoute = async ({ request }) => {
 
   const body = (await request.json().catch(() => null)) as { path?: unknown } | null;
   const path = typeof body?.path === 'string' ? body.path.slice(0, 512) : '';
-  if (path && isKnownRoute(path, LANGS)) contarVisitaEstatica(request, path);
+  if (path && isKnownRoute(path, LANGS)) contarVisita(request, path);
   return new Response(null, { status: 204 });
 };

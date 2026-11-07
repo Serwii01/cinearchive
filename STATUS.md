@@ -3,13 +3,13 @@
 > Lo mantiene Claude al terminar cada tarea, sin esperar a `/cerrar`. Es la memoria de trabajo: dónde se quedó y qué viene después.
 
 ## Estado actual
-En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7bf4a09): sin Fonoteca, v1.19 corregida, CI y better-auth 1.7.18. Contador en 1.345.884 ese día. En local, sin commit: imágenes en GitHub para que el VPS deje de compilar.
+En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7bf4a09): sin Fonoteca, v1.19 corregida, CI y better-auth 1.7.18. Contador en 1.345.884 ese día. En main (3a99246): las imágenes se construyen en GitHub; falta el primer Autodeploy con ellas. En main: el contador deja de contar rastreadores.
 
 ## Siguientes pasos
 - [ ] Seguridad: migrar Astro 5 a 7 (y `@astrojs/node`), aparte: es lo que cierra el aviso crítico y casi todos los que quedan. `npm audit` da 8 en producción (1 crítico, 4 altos).
-- [ ] Estrenar los despliegues sin compilar: subir el cambio, esperar la CI en verde, poner públicos los paquetes `cinearchive-app` y `cinearchive-caddy` en GitHub y lanzar el Autodeploy. Medir cuánto tarda. Sin probar aún: la primera construcción en GHCR y que el VPS sea amd64.
+- [ ] Estrenar los despliegues sin compilar: lanzar el Autodeploy y medir cuánto tarda. Las imágenes ya están en GHCR y se pueden bajar sin credenciales. Falta confirmar que el VPS es amd64.
 - [ ] Probar en producción el acceso con Google y GitHub, los correos reales y si las sesiones abiertas sobrevivieron a better-auth 1.7.
-- [ ] Mirar por qué el contador subió de 1.095.271 (5 nov) a 1.345.884 (6 nov): ¿post viral, robots o fallo de cuenta?
+- [ ] Tras desplegar el arreglo del contador, comprobar que vuelve a un ritmo normal (antes: unas 190 por minuto). Comparar con Umami para saber desde cuándo había visitas falsas.
 - [ ] Revisar en Umami qué secciones se usan y dónde se va la gente antes de añadir nada nuevo.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
@@ -19,10 +19,14 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 
 ## Última sesión
 
+### 2026-11-07
+- Contador de visitas: subía unas 2,9 por segundo (1.572.824 a las 16:02, unas 250.000 al día desde el 5 nov). Causa probable: un rastreador que cambia de IP y se hace pasar por Chrome; el middleware contaba las páginas del servidor sin JavaScript y cada petición suya era una huella nueva.
+- Arreglo (en main, 7 nov): ya no cuenta el middleware; todas las páginas avisan desde el navegador con el POST a /api/visits. Por decisión de Sergio, lo ya sumado se queda en el total. Tests (549) y build en verde.
+
 ### 2026-11-06
 - Commit 7bf4a09 con todo lo del 5 nov; la primera CI en GitHub pasa en 33 s.
 - Por qué tardó tanto: antes el deploy reutilizaba la caché de Docker; esta vez había que reinstalar dependencias (lockfile nuevo) y compilar Caddy. Sergio no llegó a cortarlo: terminó solo.
-- Preparado (sin commit): la CI construye `app` y `caddy` en GHCR si pasan los tests; docker-compose.yml usa esas imágenes con pull_policy always, así el Autodeploy del CRM sirve sin recompilarlo; docker-compose.build.yml queda de reserva.
+- Commit 3a99246: la CI construye `app` y `caddy` en GHCR si pasan los tests; docker-compose.yml usa esas imágenes con pull_policy always, así el Autodeploy del CRM sirve sin recompilarlo; docker-compose.build.yml queda de reserva. Primera ejecución correcta: app 1 min 20 s, Caddy algo más de 3 min.
 - Incidente en el deploy: el VPS se puso a compilar Caddy desde cero (xcaddy) y, de 17 comprobaciones entre las 22:29 y las 22:35, 8 no respondieron. La versión nueva entró a las 22:35:12.
 
 ### 2026-11-05
@@ -79,6 +83,7 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 - 23 oct: PWA (página `/offline` en tu idioma, barra inferior en móvil, botón de volver) y arreglos del contador de visitas.
 
 ## Decisiones
+- **Visitas solo con JavaScript** (7 nov): el contador cuenta el aviso del navegador, no las peticiones al servidor, para que los rastreadores no lo inflen. Lo inflado hasta entonces se queda.
 - **SSR y claves solo en el servidor**: ninguna API key se expone al navegador; todo pasa por `/api/*`.
 - **"Dónde ver" desde TMDB (JustWatch)** en lugar de Watchmode, porque su plan gratuito se agotaba.
 - **Umami dentro del Postgres existente** (base propia, no servidor propio) para no gastar 150 MB más de RAM. Versión clavada en 3.4.0.

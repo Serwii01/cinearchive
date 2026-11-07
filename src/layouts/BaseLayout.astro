@@ -161,7 +161,7 @@ const umamiSrc = umamiId && umamiHost ? `https://${umamiHost}/script.js` : '';
       <script type="application/ld+json" set:html={serializeLd(data)} />
     ))}
   </head>
-  <body class="flex min-h-screen flex-col" data-contar-visita={Astro.isPrerendered ? '' : undefined}>
+  <body class="flex min-h-screen flex-col">
     <a
       href="#contenido"
       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[1000] focus:border focus:border-ink focus:bg-ochre focus:px-4 focus:py-3 focus:font-mono focus:text-label-caps focus:uppercase focus:text-ink"
@@ -176,18 +176,16 @@ const umamiSrc = umamiId && umamiHost ? `https://${umamiHost}/script.js` : '';
     <TabBar />
     <ProfileNudge />
     <script>
-      // Visita en página prerenderizada (ver src/lib/visits.ts): esas no pasan
-      // por el middleware, que es donde se cuentan las demás, así que avisan
-      // desde aquí. Va en JSON y no con sendBeacon: Astro rechaza con 403 los
-      // POST en texto plano (su protección contra formularios de otros sitios).
-      if (document.body.hasAttribute('data-contar-visita')) {
-        fetch('/api/visits', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ path: location.pathname }),
-          keepalive: true,
-        }).catch(() => {});
-      }
+      // Aviso de visita (ver src/lib/visits.ts): solo cuenta quien ejecuta
+      // JavaScript, para que los rastreadores no inflen el total. Va en JSON y
+      // no con sendBeacon: Astro rechaza con 403 los POST en texto plano (su
+      // protección contra formularios de otros sitios).
+      fetch('/api/visits', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ path: location.pathname }),
+        keepalive: true,
+      }).catch(() => {});
     </script>
     <script>
       // Registro del service worker. Solo en el sitio compilado: en `npm run

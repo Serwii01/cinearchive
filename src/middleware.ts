@@ -9,7 +9,6 @@ import { cachePolicy, sharedTtl } from './lib/httpcache';
 import { servePage, cacheKey, hasSessionCookie } from './lib/htmlcache';
 import { backLinkSource } from './lib/backlink';
 import { isKnownRoute, legacyDefaultLangRedirect } from './lib/routes';
-import { contarVisita } from './lib/visits';
 import { startStreamAlerts } from './lib/streamjob';
 import { languages, defaultLang, localizePath, stripLangPrefix, getLangFromUrl } from './i18n/ui';
 
@@ -181,11 +180,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   }
 
-  // Contador de visitas del sitio (ver src/lib/visits.ts). Va después del 404 y
-  // del redirect para no contar lo que no es una página. No espera a la BD.
-  // Ojo: en producción las prerenderizadas no llegan aquí (Node las sirve como
-  // ficheros); esas se cuentan con el aviso del navegador a /api/visits.
-  contarVisita(request, path);
+  // Las visitas no se cuentan aquí sino con el aviso del navegador a /api/visits:
+  // contando aquí, los rastreadores sin JavaScript inflaban el total (ver
+  // src/lib/visits.ts).
 
   // Las páginas prerenderizadas (editoriales) no tienen sesión de servidor: su
   // cabecera resuelve el estado de login en el cliente vía /api/auth/get-session.
