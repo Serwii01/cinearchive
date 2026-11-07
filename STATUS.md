@@ -7,9 +7,9 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 
 ## Siguientes pasos
 - [ ] Seguridad: migrar Astro 5 a 7 (y `@astrojs/node`), aparte: es lo que cierra el aviso crítico y casi todos los que quedan. `npm audit` da 8 en producción (1 crítico, 4 altos).
-- [ ] Estrenar los despliegues sin compilar: lanzar el Autodeploy y medir cuánto tarda. Las imágenes ya están en GHCR y se pueden bajar sin credenciales. Falta confirmar que el VPS es amd64.
 - [ ] Probar en producción el acceso con Google y GitHub, los correos reales y si las sesiones abiertas sobrevivieron a better-auth 1.7.
-- [ ] Tras desplegar el arreglo del contador, comprobar que vuelve a un ritmo normal (antes: unas 190 por minuto). Comparar con Umami para saber desde cuándo había visitas falsas.
+- [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
+- [ ] Copias de seguridad automáticas de Postgres (no hay ninguna) y volver atrás a una imagen anterior por su commit.
 - [ ] Revisar en Umami qué secciones se usan y dónde se va la gente antes de añadir nada nuevo.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
@@ -21,7 +21,9 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 
 ### 2026-11-07
 - Contador de visitas: subía unas 2,9 por segundo (1.572.824 a las 16:02, unas 250.000 al día desde el 5 nov). Causa probable: un rastreador que cambia de IP y se hace pasar por Chrome; el middleware contaba las páginas del servidor sin JavaScript y cada petición suya era una huella nueva.
-- Arreglo (en main, 7 nov): ya no cuenta el middleware; todas las páginas avisan desde el navegador con el POST a /api/visits. Por decisión de Sergio, lo ya sumado se queda en el total. Tests (549) y build en verde.
+- Arreglo (ddcd6ed, desplegado): ya no cuenta el middleware; todas las páginas avisan desde el navegador con el POST a /api/visits. Por decisión de Sergio, lo ya sumado se queda en el total. Tests (549) y build en verde. Tras desplegar, de unas 190 a unas 10 por minuto.
+- Primer Autodeploy con imágenes de GHCR: menos de 1 minuto desde el CRM. El VPS es amd64.
+- Vigilancia: .github/workflows/vigilancia.yml comprueba /api/health y la portada cada 5 min (3 intentos) y GitHub avisa por correo si falla.
 
 ### 2026-11-06
 - Commit 7bf4a09 con todo lo del 5 nov; la primera CI en GitHub pasa en 33 s.

@@ -1,0 +1,48 @@
+# Vigila que la web responda y avisa si se cae.
+#
+# Va en GitHub y no en el VPS porque, si el VPS se cae, no podría avisar de que
+# se ha caído; además, allí cada proceso compite con la web por 1 núcleo.
+# Cuando una ejecución falla, GitHub manda un correo (lo normal: a quien tocó
+# este archivo por última vez). El repo es público, así que no gasta minutos.
+#
+# Ojo: GitHub no garantiza la hora exacta (a veces se retrasa varios minutos) y
+# desactiva las tareas programadas si el repo pasa 60 días sin commits. En ese
+# caso hay que volver a activarla en la pestaña Actions.
+name: Vigilancia
+
+on:
+  schedule:
+    # Cada 5 minutos, desplazado del minuto 0, que es cuando GitHub va más cargado.
+    - cron: '3-59/5 * * * *'
+  workflow_dispatch: # para probarla a mano
+
+# Si una comprobación se alarga, que no se acumulen.
+concurrency:
+  group: vigilancia
+  cancel-in-progress: false
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Comprobar la web
+        run: |
+          # Tres intentos separados por 30 s: un despliegue corta la web unos
+          # segundos y no queremos un correo por cada uno.
+          comprobar() {
+            salud=$(curl -fsS --max-time 15 https://cinearchive.es/api/health) || return 1
+            echo "$salud" | grep -q '"status":"ok"' || return 1
+            echo "$salud" | grep -q '"db":true' || return 1
+            curl -fsS --max-time 15 -o /dev/null https://cinearchive.es/ || return 1
+          }
+          for intento in 1 2 3; do
+            if comprobar; then
+              echo "La web responde (intento $intento)."
+              exit 0
+            fi
+            echo "Intento $intento: la web no responde bien."
+            [ "$intento" -lt 3 ] && sleep 30
+          done
+          echo "::error::cinearchive.es no responde o la base de datos falla tras 3 intentos."
+          exit 1
