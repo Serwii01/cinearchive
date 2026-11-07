@@ -51,6 +51,7 @@ Para la BD en local: `docker run -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=cine -p
 - Sergio despliega justo después de cada commit de Claude: el VPS siempre va al día con `main`. No hace falta anotar «desplegar» como paso pendiente.
 - Volver atrás: `scripts/vps/volver.sh <commit>` pone la imagen de ese commit (`APP_TAG`); el siguiente Autodeploy vuelve a latest.
 - Rastreadores: Caddy corta los que no respetan robots.txt y registra las peticiones (un par de días); `scripts/vps/rastreadores.sh` las resume. La CI valida el Caddyfile: si sale en rojo, no despliegues.
+- CPU: `scripts/vps/consultas.sh` lista las consultas que más tiempo de Postgres gastan (pg_stat_statements).
 - Logs: `docker compose logs -f app`. Copias: `scripts/vps/backup.sh` cada noche (cron de `scripts/vps/instalar-cron.sh`), 7 días en `backups/` del VPS, sin los datos de `films_cache`; se restauran con `scripts/vps/restaurar.sh`. El mismo cron limpia Docker los domingos.
 - Disco: `films_cache` se poda sola cada día (`src/lib/cachecap.ts`, tope de 20.000 películas sin dueño) y `/api/health` avisa si queda menos del 15 % libre.
 - Postgres solo escucha en `127.0.0.1:5432` del VPS. El CRM entra por túnel SSH.

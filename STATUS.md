@@ -10,6 +10,7 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 - [ ] Probar en producción el acceso con Google y GitHub, los correos reales y si las sesiones abiertas sobrevivieron a better-auth 1.7.
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
 - [ ] Copia de las copias fuera del VPS (por ejemplo, que el CRM baje la última a tu PC).
+- [ ] Mañana, en el VPS: `scripts/vps/consultas.sh` (qué consultas gastan CPU) y `docker stats --no-stream` + `uptime` para comparar con el 7 nov (carga 1,5, CPU al 100 % a ráfagas).
 - [ ] Pasado un día desde el despliegue, lanzar `scripts/vps/rastreadores.sh` en el VPS y, según lo que salga, bloquear redes o navegadores concretos en el Caddyfile.
 - [ ] Revisar en Umami qué secciones se usan y dónde se va la gente antes de añadir nada nuevo.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
@@ -26,6 +27,7 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 - Desplegado: la poda a fondo dejó films_cache de 1.017.546 a 20.246 películas en 16 s; el disco pasó del 71 % al 21 % (46 GB libres). /api/health ya dice disk ok.
 - Volver atrás: APP_TAG en docker-compose.yml y scripts/vps/volver.sh <commit> (comprueba que la imagen existe antes de tocar nada).
 - Rastreadores: robots.txt cierra la puerta a 12 de entrenamiento de IA (no a buscadores ni asistentes); Caddy da 403 a 14 que no respetan robots.txt (Bytespider, herramientas SEO…); registro de peticiones de Caddy (4 x 25 MB, un par de días) y scripts/vps/rastreadores.sh para resumirlo. La CI valida el Caddyfile con la imagen de Caddy. rastreadores.sh sin probar: aquí no hay Python.
+- CPU al 100 % a ráfagas (carga 1,5 en 1 núcleo, sin consultas largas en marcha): la app abría y cerraba hasta 10 conexiones a Postgres cada pocos segundos (pg las cierra a los 10 s). Ahora 2 fijas y las demás aguantan 5 min. Las listas pedían la ficha entera de cada película (16 kB); ahora Postgres devuelve solo lo que usa el resumen (probado en local contra la ficha entera). pg_stat_statements activado y scripts/vps/consultas.sh para ver qué gasta.
 - Cron instalado en el VPS. Primera copia: cine 2,7 MB y umami 87 MB (unos 630 MB con los 7 días).
 - /api/health dice `disk` (ok/low/unknown; aviso por debajo del 15 % libre) y la vigilancia de GitHub avisa por correo.
 - scripts/vps: backup.sh (cada noche a las 3:30, 7 días, sin datos de films_cache, no copia si queda menos de 1 GB), restaurar.sh (pide confirmación, para el servicio), limpieza.sh (domingos: caché de compilación e imágenes sin usar de más de una semana) e instalar-cron.sh. Volcado y restauración probados en local.

@@ -3,7 +3,7 @@
  * resultado en films_cache. OMDb tiene un límite diario bajo, así que su respuesta
  * se reutiliza desde cache durante OMDB_TTL.
  */
-import { desc, eq, inArray, isNull } from 'drizzle-orm';
+import { desc, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { db } from '../db/client';
 import { filmsCache } from '../db/schema';
 import {
@@ -189,6 +189,27 @@ function briefFromTmdb(m: TmdbMovie, titles: Titles | null, locale: string): Fil
 
 const BRIEF_CONCURRENCY = 8;
 const BRIEF_CAST = 5;
+
+/**
+ * La parte de la ficha guardada que necesita un resumen, recortada en Postgres.
+ * Del equipo técnico, solo la dirección; del reparto, los BRIEF_CAST primeros.
+ * Si briefFromTmdb o titlesFrom empiezan a usar otro campo, hay que añadirlo
+ * aquí (lo comprueba tests/films-brief.test.ts).
+ */
+export const BRIEF_KEYS = ['id', 'title', 'original_title', 'original_language', 'release_date', 'poster_path', 'genres', 'runtime'] as const;
+const BRIEF_FIELDS = sql<TmdbMovie>`jsonb_build_object(
+  ${sql.raw(BRIEF_KEYS.map((k) => `'${k}', ${'films_cache.tmdb'}->'${k}'`).join(', '))},
+  'credits', jsonb_build_object(
+    'crew', coalesce((
+      select jsonb_agg(c) from jsonb_array_elements(films_cache.tmdb->'credits'->'crew') c
+      where c->>'job' = 'Director'
+    ), '[]'::jsonb),
+    'cast', coalesce((
+      select jsonb_agg(c order by i) from jsonb_array_elements(films_cache.tmdb->'credits'->'cast') with ordinality x(c, i)
+      where i <= ${sql.raw(String(BRIEF_CAST))}
+    ), '[]'::jsonb)
+  )
+)`;
 const TITLES_NOW = 40;
 
 /** Ejecuta fn sobre la lista con BRIEF_CONCURRENCY a la vez. */
@@ -243,8 +264,12 @@ export async function getFilmsBrief(
   const out = new Map<number, FilmBrief>();
   if (tmdbIds.length === 0) return out;
 
+  // Solo los campos que usan briefFromTmdb y titlesFrom, no la ficha entera:
+  // unos 16 kB por película que Postgres mandaba y Node parseaba para quedarse
+  // con el título, el año y el cartel. Un perfil con mil películas eran 16 MB
+  // por visita; el 7-11-2026 la app y la base llevaban 125 GB cruzados.
   const cached = await db
-    .select()
+    .select({ tmdbId: filmsCache.tmdbId, titles: filmsCache.titles, tmdb: BRIEF_FIELDS })
     .from(filmsCache)
     .where(inArray(filmsCache.tmdbId, tmdbIds));
   for (const row of cached) out.set(row.tmdbId, briefFromTmdb(row.tmdb as TmdbMovie, row.titles as Titles | null, locale));
