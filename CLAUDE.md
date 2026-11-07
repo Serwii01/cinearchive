@@ -5,10 +5,10 @@ filmoteca sobre TMDB, palmarés, cuentas de usuario y recomendaciones. Producci�
 (VPS propio con Docker). El README tiene la descripción completa para humanos.
 
 ## Stack
-- **Astro 5 en modo SSR** (`@astrojs/node` standalone). El contenido editorial se prerenderiza; lo dinámico va por servidor.
+- **Astro 7 en modo SSR** (`@astrojs/node` 11 standalone). El contenido editorial se prerenderiza; lo dinámico va por servidor.
 - **PostgreSQL 16 + Drizzle ORM** (`src/db/schema.ts`, migraciones en `drizzle/`).
 - **Better Auth**: email+contraseña, Google/GitHub opcionales y confirmación de correo vía Resend.
-- **Tailwind 3**: el design system (paleta, tipografía) vive en `tailwind.config.mjs`. La estética es *Cinematic Archival Brutalism*.
+- **Tailwind 3**, por PostCSS (`postcss.config.mjs`; la integración @astrojs/tailwind no admite Astro 7): el design system (paleta, tipografía) vive en `tailwind.config.mjs`. La estética es *Cinematic Archival Brutalism*.
 - **Caddy + Docker Compose** en el VPS: `db`, `app`, `umami` (analítica propia sin cookies, en `analitica.<dominio>`) y `caddy`.
 - **Vitest** para los tests (`tests/*.test.ts`).
 - Fuentes de datos, siempre desde el servidor y cacheadas: TMDB (incluye "dónde ver" de JustWatch), OMDb, Wikidata/Wikipedia e Internet Archive.

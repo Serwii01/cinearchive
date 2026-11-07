@@ -1,6 +1,5 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import node from '@astrojs/node';
 import swVersion from './integrations/sw-version.mjs';
@@ -19,6 +18,9 @@ export default defineConfig({
   // siempre coincida: http://localhost:4321/api/auth/callback/google
   server: { port: 4321 },
   trailingSlash: 'ignore',
+  // Astro 7 cambió el valor por defecto a 'jsx', que quita los espacios entre
+  // elementos en línea (enlaces seguidos, etiquetas…) y descoloca textos.
+  compressHTML: true,
   // OJO: aquí NO va un bloque `i18n`. El enrutado por idioma lo lleva
   // src/pages/[...lang]/ (segmento opcional: /cines es español, /en/cines es
   // inglés) junto con src/middleware.ts, que redirige /es/* a la forma sin
@@ -33,9 +35,12 @@ export default defineConfig({
   // salen como /_astro/*.js externos y la CSP estricta (script-src 'self') los
   // permite. Sin esto, el menú móvil, el modo oscuro y los filtros no funcionan
   // en producción (sí en dev, donde no hay CSP).
-  vite: { build: { assetsInlineLimit: 0 } },
+  //
+  // cssTarget: Vite 8 escribe por defecto las media queries con la sintaxis nueva
+  // (width>=640px), que Safari no entiende hasta la 16.4: en iPhones algo viejos la
+  // web perdería todo el diseño adaptable. Con estos destinos sale como antes.
+  vite: { build: { assetsInlineLimit: 0, cssTarget: ['chrome87', 'edge88', 'firefox78', 'safari14'] } },
   integrations: [
-    tailwind({ applyBaseStyles: false }),
     sitemap({
       i18n: {
         defaultLocale: 'es',

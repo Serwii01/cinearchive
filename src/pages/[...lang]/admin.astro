@@ -341,7 +341,7 @@ const etiquetaSemana = (iso: string) =>
       </div>
       <div class="bg-surface p-4">
         <p class="label">{t('admin.emailFrom')}</p>
-        <p class="mt-1 break-all font-mono text-meta-data text-charcoal">{import.meta.env.EMAIL_FROM ?? process.env.EMAIL_FROM ?? SIN_DATO}</p>
+        <p class="mt-1 break-all font-mono text-meta-data text-charcoal">{process.env.EMAIL_FROM ?? SIN_DATO}</p>
       </div>
       <div class="bg-surface p-4">
         <p class="label">{t('admin.emailVerify')}</p>

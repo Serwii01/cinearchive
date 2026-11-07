@@ -45,7 +45,7 @@ habla con nuestras rutas `/api/*`, que son las que llaman a TMDB y OMDb. Además
 
 ## Stack
 
-- **Astro 5 (SSR)** + adaptador `@astrojs/node` (standalone) — render híbrido: el contenido
+- **Astro 7 (SSR)** + adaptador `@astrojs/node` (standalone) — render híbrido: el contenido
   editorial se prerenderiza (estático) y lo dinámico se sirve por servidor.
 - **PostgreSQL 16** + **Drizzle ORM** (migraciones con `drizzle-kit`).
 - **Better Auth** — email+contraseña y login social (Google/GitHub).

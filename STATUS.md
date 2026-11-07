@@ -6,7 +6,7 @@
 En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7bf4a09): sin Fonoteca, v1.19 corregida, CI y better-auth 1.7.18. Contador en 1.345.884 ese día. En main (3a99246): las imágenes se construyen en GitHub; falta el primer Autodeploy con ellas. En main: el contador deja de contar rastreadores.
 
 ## Siguientes pasos
-- [ ] Seguridad: migrar Astro 5 a 7 (y `@astrojs/node`), aparte: es lo que cierra el aviso crítico y casi todos los que quedan. `npm audit` da 8 en producción (1 crítico, 4 altos).
+- [ ] Astro 7 en la rama astro-7: Sergio decide si se fusiona en main. Probado en local (tests, build, 95 páginas en 5 idiomas, cuentas); falta el servidor de desarrollo y verlo en el móvil.
 - [ ] Probar en producción el acceso con Google y GitHub, los correos reales y si las sesiones abiertas sobrevivieron a better-auth 1.7.
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
 - [ ] Copias de seguridad automáticas de Postgres (no hay ninguna) y volver atrás a una imagen anterior por su commit.
@@ -23,6 +23,7 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 - Contador de visitas: subía unas 2,9 por segundo (1.572.824 a las 16:02, unas 250.000 al día desde el 5 nov). Causa probable: un rastreador que cambia de IP y se hace pasar por Chrome; el middleware contaba las páginas del servidor sin JavaScript y cada petición suya era una huella nueva.
 - Arreglo (ddcd6ed, desplegado): ya no cuenta el middleware; todas las páginas avisan desde el navegador con el POST a /api/visits. Por decisión de Sergio, lo ya sumado se queda en el total. Tests (549) y build en verde. Tras desplegar, de unas 190 a unas 10 por minuto.
 - Primer Autodeploy con imágenes de GHCR: menos de 1 minuto desde el CRM. El VPS es amd64.
+- Rama astro-7: Astro 5.18 a 7.4, @astrojs/node 11, Tailwind por PostCSS (la integración no admite Astro 7), compressHTML true (el nuevo valor por defecto quita espacios entre elementos en línea) y cssTarget para Safari 14 (Vite 8 escribía media queries que Safari antiguo no entiende). El compilador nuevo encontró una etiqueta rota en el Archivo: las portadas de la Biblioteca habían perdido su marco desde ca28bfb; arreglado. npm audit en producción: de 8 avisos (1 crítico, 4 altos) a 1 moderado (satori).
 - Vigilancia: .github/workflows/vigilancia.yml comprueba /api/health y la portada cada 5 min (3 intentos) y GitHub avisa por correo si falla.
 
 ### 2026-11-06
