@@ -3,15 +3,17 @@
 > Lo mantiene Claude al terminar cada tarea, sin esperar a `/cerrar`. Es la memoria de trabajo: dónde se quedó y qué viene después.
 
 ## Estado actual
-En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7bf4a09): sin Fonoteca, v1.19 corregida, CI y better-auth 1.7.18. Contador en 1.345.884 ese día. En main (3a99246): las imágenes se construyen en GitHub; falta el primer Autodeploy con ellas. En main: el contador deja de contar rastreadores.
+En producción en cinearchive.es, al día con main (8495436 desplegado o por desplegar): Astro 7, despliegues sin compilar en el VPS (menos de 1 min), contador sin visitas de rastreadores, films_cache con tope (disco al 21 %), copias nocturnas, vigilancia por correo y menos CPU en Postgres. Contador en unas 1.574.000 el 7 nov.
 
 ## Siguientes pasos
-- [ ] Astro 7 ya en main (704b48a, CI en verde): desplegar y mirar la web en el móvil (portadas de la Biblioteca, menú, diseño adaptable). Sin probar: npm run dev.
+- [ ] Mirar la web en el móvil con Astro 7 (desplegado y comprobado desde fuera: Astro v7.4.7, páginas en 200, portadas con marco). Sin probar: npm run dev.
 - [ ] Probar en producción el acceso con Google y GitHub, los correos reales y si las sesiones abiertas sobrevivieron a better-auth 1.7.
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
 - [ ] Copia de las copias fuera del VPS (por ejemplo, que el CRM baje la última a tu PC).
 - [ ] Mañana, en el VPS: `scripts/vps/consultas.sh` (qué consultas gastan CPU) y `docker stats --no-stream` + `uptime` para comparar con el 7 nov (carga 1,5, CPU al 100 % a ráfagas).
 - [ ] Pasado un día desde el despliegue, lanzar `scripts/vps/rastreadores.sh` en el VPS y, según lo que salga, bloquear redes o navegadores concretos en el Caddyfile.
+- [ ] Anotar la v1.20 en src/data/changelog.json (5 idiomas): web más rápida, portadas de la Biblioteca con marco, contador de visitas real.
+- [ ] Umami a dieta: límite de memoria de su Node, como la app (hoy ~140 MB).
 - [ ] Revisar en Umami qué secciones se usan y dónde se va la gente antes de añadir nada nuevo.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
@@ -70,31 +72,6 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 - Instagram @cinearchive.es en el pie (src/data/social.ts) y en sameAs de la Organization (lib/seo.ts).
 - Commits 453ec6c y b25a439 subidos a main. También están en main sin desplegar los del 30–31 oct: carteles nítidos, fichas más rápidas, sitemap, 404 por idioma, Encuentra tu cine y la página del equipo.
 - Fuera del repo: tema WordPress «cinearchive-productora» 1.3.0 para productora.cinearchive.es (metrajes editables desde el navegador). Registro A ya creado en el DNS de Piensa; documentado en el vault (Productora.md).
-
-### 2026-10-29
-- Changelog v1.16 en los 5 idiomas (diario, Letterboxd, Tu año en cine, medias estrellas, buscador, cuenta, Filmoteca traducida, artículos con vídeo).
-- Títulos por idioma: films_cache guarda `titles` {es,en,gl,eu,ca} (lib/titles.ts, migración 0021); listas, diario y perfil ya no mezclan idiomas tras importar de Letterboxd. Las fichas antiguas se completan solas (40 al momento, el resto en segundo plano).
-- Sagas: bajo «Dónde ver», el resto de la colección de TMDB con carteles pequeños (getSaga, sagaName, partTitle en lib/tmdb.ts).
-- Perfil público resumido: cifras, últimos visionados, favoritas, pendientes (12 de cada) y solo reseñas con texto; «Ver todo» en /u/<usuario>/viewings|favorites|pending y /u/<usuario>/reviews, de 48/24 en 24.
-- Rejillas que cierran en rectángulo (components/PosterGrid.astro, lib/grid.ts) y carteles nítidos y estrellas alineadas en Tu año en cine.
-- /u/<usuario>/<otra cosa> da 404 (PROFILE_SUBPAGES en lib/routes.ts): antes servía páginas de primer nivel y /u/x/diary daba 500.
-- Prueba de carga local: ~1.000–2.000 visitantes simultáneos estimados en el VPS; el cuello real es TMDB con fichas sin cachear.
-- Investigadas ayudas: revistas de cultura del Ministerio (próxima en primavera de 2027, pide entidad) y Claude for Nonprofits; conviene crear una asociación cultural.
-
-### 2026-10-27
-- Mi cine: diario de visionados (`/diary`, revisionados, migración 0020), medias estrellas, importar desde Letterboxd (ZIP leído en el navegador, vista previa y sin duplicar) y «Tu año en cine» (`/year/2026`, versión pública e imagen 1080×1920 para Instagram).
-- Cuenta: cambiar contraseña, descargar los datos (`/api/me/export`) y borrar la cuenta.
-- Búsqueda: «En el archivo» primero en `/search` (hemeroteca, artículos, glosario…; `/api/search/site`). Encuentra tu cine: búsqueda en la URL, ampliación automática a 50 km, «Ver en el mapa» y espejos de Overpass más rápidos.
-- Idiomas: Filmoteca con títulos y países traducidos y premios de OMDb reescritos; fichas en gallego, euskera y catalán con su texto o con noindex.
-- Recomendaciones: suman las coincidencias, baja lo parecido a lo mal valorado y peticiones a TMDB de seis en seis.
-- Contenido: 20 fanzines de culto en la hemeroteca (CC en Internet Archive), 13 películas más en Cine abierto, colecciones con mosaico de carteles, hemeroteca que alterna el fondo clásico; artículos con vídeo, fotogramas y firma, y artículos sobre el Festival de Sevilla 2026 y el tráiler de GTA VI.
-- Móvil: título de la ficha a la vista, filtros plegables en Descubrir y zonas de pulsación de 44 px.
-
-### 2026-10-25
-- Descubrir: las plataformas aparecen al elegir país (`/api/films/providers`) y las recomendaciones recuerdan mejor los gustos (`lib/recs.ts`).
-- Analítica propia con Umami en el VPS, sin cookies, con su política en `legal.ts`.
-- Repaso de la portada, el glosario, la 404 y la navegación («Que cada cosa esté donde tiene que estar»), portadas y reparto más nítidos, enlaces que faltaban y 230 textos sobrantes eliminados.
-- 23 oct: PWA (página `/offline` en tu idioma, barra inferior en móvil, botón de volver) y arreglos del contador de visitas.
 
 ## Decisiones
 - **films_cache con tope** (7 nov): 20.000 películas sin dueño como mucho; las de usuarios no se borran nunca. Las copias de seguridad no llevan sus datos.
