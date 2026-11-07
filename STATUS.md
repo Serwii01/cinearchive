@@ -20,6 +20,7 @@ En producción en cinearchive.es, al día con main (8495436 desplegado o por des
 ## Última sesión
 
 ### 2026-11-07
+- Imágenes de fuera: Cine abierto pasa de miniaturas de IA de 180 px a fotogramas de TMDB a 800 px en WebP (112 de 114; las otras 3, fotograma del vídeo con ffmpeg si está instalado; `"image": "ia"` fuerza IA, usado en Caminandes 1, que salía con el logo del episodio 3). Biblioteca: portada escaneada a 800 px como la hemeroteca (16 de 17), y portadilla (`"cover": "title"`) en 6 libros con tapa lisa o aviso de Google. 3,9 MB en total para Cine abierto. Revisadas todas a ojo en hojas de contactos.
 - Cine abierto: 41 películas más (114 en total), verificadas en Internet Archive, con sinopsis en 5 idiomas; etiquetas de tipo, muda/sonora, idioma, imprescindibles, fecha de IA (fetch-pd.mjs) y enlace a TMDB (resolve-tmdb-ids.mjs --cine). Listado con filtros (tipo, sonido, duración, década, país, buscador) guardados en la URL y filas para empezar; ficha con botón a la ficha completa, «Si te gusta esta» y datos Movie+VideoObject para Google. Tests (584) y build en verde; revisado en el navegador en escritorio y móvil.
 - Changelog v1.20 «Una web más rápida, más segura y más estable» (5 idiomas): listas/perfiles/diarios más rápidos, sin cortes al publicar, Astro 7 y cuentas actualizadas, copias nocturnas, contador solo de personas y portadas de la Biblioteca con marco.
 - Sergio confirma que van bien la web en el móvil, el acceso con Google y GitHub y los correos.

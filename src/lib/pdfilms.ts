@@ -62,6 +62,8 @@ export interface PdFilm {
   essential?: boolean;
   /** Fecha en que se publicó en Internet Archive (AAAA-MM-DD; la apunta scripts/fetch-pd.mjs). */
   published?: string;
+  /** 'ia': la imagen sale de Internet Archive aunque TMDB tenga una (ver scripts/fetch-pd.mjs). */
+  image?: 'ia';
   /** Ficha en TMDB (la apunta scripts/resolve-tmdb-ids.mjs --cine). */
   tmdbId?: number;
 }
@@ -174,8 +176,8 @@ export function pdLicenseUrl(license?: PdLicense): string | null {
 /** Ruta de la ficha completa (TMDB), donde se puede guardar y puntuar. Null si no hay. */
 export const pdFilmPath = (f: PdFilm): string | null => (f.tmdbId ? `film/${filmSlug(f.tmdbId, f.title)}` : null);
 
-/** Miniatura local (descargada con scripts/fetch-pd.mjs); no toca archive.org en runtime. */
-export const pdThumbUrl = (id: string) => `/cinema/${id}.jpg`;
+/** Imagen local (fotograma a 800 px, de scripts/fetch-pd.mjs); no toca TMDB ni archive.org en runtime. */
+export const pdThumbUrl = (id: string) => `/cinema/${id}.webp`;
 /** Reproductor incrustable de Internet Archive. */
 export const pdEmbedUrl = (id: string) => `https://archive.org/embed/${id}`;
 /** Página pública del ítem en Internet Archive. */

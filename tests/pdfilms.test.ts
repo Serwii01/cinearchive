@@ -102,7 +102,7 @@ describe('Cine abierto: la lógica', () => {
 
   it('datos estructurados: película con su vídeo entero', () => {
     const f = peli({ id: 'Nosferatu', title: 'Nosferatu', original_title: 'Nosferatu, eine Symphonie des Grauens', year: 1922, runtime: 94, published: '2010-01-02', language: 'en' });
-    const ld = pdVideoLd(f, { pageUrl: 'https://cinearchive.es/cinema/Nosferatu', thumbUrl: 'https://cinearchive.es/cinema/Nosferatu.jpg', description: 'D' }) as Record<string, any>;
+    const ld = pdVideoLd(f, { pageUrl: 'https://cinearchive.es/cinema/Nosferatu', thumbUrl: 'https://cinearchive.es/cinema/Nosferatu.webp', description: 'D' }) as Record<string, any>;
     expect(ld['@type']).toBe('Movie');
     expect(ld.alternateName).toBe('Nosferatu, eine Symphonie des Grauens');
     expect(ld.isAccessibleForFree).toBe(true);

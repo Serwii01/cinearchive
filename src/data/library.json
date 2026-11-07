@@ -59,7 +59,8 @@
       "blurb_en": "A popular tour of silent-era studios and of every craft involved in making a film.",
       "blurb_gl": "Percorrido divulgativo polos estudos da época muda e por todos os oficios que interveñen nunha película.",
       "blurb_eu": "Zinema mutuaren garaiko estudioetatik eta film batean parte hartzen duten lanbide guztietatik egindako ibilbide dibulgatiboa.",
-      "blurb_ca": "Recorregut divulgatiu pels estudis de l'època muda i per tots els oficis que intervenen en una pel·lícula."
+      "blurb_ca": "Recorregut divulgatiu pels estudis de l'època muda i per tots els oficis que intervenen en una pel·lícula.",
+      "cover": "title"
     },
     {
       "id": "writingthephotop17903gut",
@@ -95,7 +96,8 @@
       "blurb_en": "An inside portrait of the 1920s film industry: its trades, its wages and how to break into them.",
       "blurb_gl": "Retrato da industria do cine dos anos 20 desde dentro: os seus oficios, os seus salarios e como entrar neles.",
       "blurb_eu": "20ko hamarkadako zinema-industriaren erretratua barrutik: bere lanbideak, bere soldatak eta haietan nola sartu.",
-      "blurb_ca": "Retrat de la indústria del cinema dels anys 20 des de dins: els seus oficis, els seus salaris i com entrar-hi."
+      "blurb_ca": "Retrat de la indústria del cinema dels anys 20 des de dins: els seus oficis, els seus salaris i com entrar-hi.",
+      "cover": "title"
     },
     {
       "id": "cu31924030699445",
@@ -107,7 +109,8 @@
       "blurb_en": "One of the first books to explain cinema from the inside: cameras, laboratories, tricks and studios, with period photographs.",
       "blurb_gl": "Un dos primeiros libros que explican o cine por dentro: cámaras, laboratorios, trucos e estudios, con fotografías da época.",
       "blurb_eu": "Zinema barrutik azaltzen duen lehen liburuetako bat: kamerak, laborategiak, trikimailuak eta estudioak, garaiko argazkiekin.",
-      "blurb_ca": "Un dels primers llibres que expliquen el cinema per dins: càmeres, laboratoris, trucs i estudis, amb fotografies de l'època."
+      "blurb_ca": "Un dels primers llibres que expliquen el cinema per dins: càmeres, laboratoris, trucs i estudis, amb fotografies de l'època.",
+      "cover": "title"
     },
     {
       "id": "photodramaphilos01phil",
@@ -143,7 +146,8 @@
       "blurb_en": "The British inquiry into whether cinema corrupted the young: testimony from teachers, police officers and exhibitors at the height of a moral panic.",
       "blurb_gl": "A investigación británica sobre se o cine corrompía a mocidade: testemuños de mestres, policías e exhibidores en pleno pánico moral.",
       "blurb_eu": "Zinemak gazteak usteltzen ote zituen aztertu zuen ikerketa britainiarra: irakasle, polizia eta erakusleen lekukotzak, izu moralaren betean.",
-      "blurb_ca": "La investigació britànica sobre si el cinema corrompia els joves: testimonis de mestres, policies i exhibidors en ple pànic moral."
+      "blurb_ca": "La investigació britànica sobre si el cinema corrompia els joves: testimonis de mestres, policies i exhibidors en ple pànic moral.",
+      "cover": "title"
     },
     {
       "id": "artofphotoplayma00freerich",
@@ -167,7 +171,8 @@
       "blurb_en": "One of the first film books written by a woman: Patterson, who taught at Columbia, shows how to write for the screen with examples from real films.",
       "blurb_gl": "Un dos primeiros libros de cine escritos por unha muller: Patterson, profesora en Columbia, ensina a escribir para a pantalla con exemplos de películas reais.",
       "blurb_eu": "Emakume batek idatzitako zinemari buruzko lehen liburuetako bat: Pattersonek, Columbiako irakasleak, pantailarako idazten irakasten du benetako filmen adibideekin.",
-      "blurb_ca": "Un dels primers llibres de cinema escrits per una dona: Patterson, professora a Columbia, ensenya a escriure per a la pantalla amb exemples de pel·lícules reals."
+      "blurb_ca": "Un dels primers llibres de cinema escrits per una dona: Patterson, professora a Columbia, ensenya a escriure per a la pantalla amb exemples de pel·lícules reals.",
+      "cover": "title"
     },
     {
       "id": "cinemaparis00epstuoft",
@@ -191,7 +196,8 @@
       "blurb_en": "Pieces by the critic and filmmaker who coined the word “cinéaste” and gave his name to the great prize of French cinema. In French.",
       "blurb_gl": "Crónicas do crítico e cineasta que inventou a palabra «cineasta» e deu nome ao gran premio do cine francés. En francés.",
       "blurb_eu": "«Zinemagile» hitza asmatu eta Frantziako zinemaren sari handiari izena eman zion kritikari eta zinemagilearen kronikak. Frantsesez.",
-      "blurb_ca": "Cròniques del crític i cineasta que va inventar la paraula «cineasta» i va donar nom al gran premi del cinema francès. En francès."
+      "blurb_ca": "Cròniques del crític i cineasta que va inventar la paraula «cineasta» i va donar nom al gran premi del cinema francès. En francès.",
+      "cover": "title"
     },
     {
       "id": "pictorialbeautyo00free",

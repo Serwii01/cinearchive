@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { existsSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { coverUrl, periodicals, recentIssues, showcaseIssues, CLASSIC_UNTIL, type Periodical } from '../src/lib/periodicals';
-import { pdFilms, pdLicenseLabel } from '../src/lib/pdfilms';
+import { pdFilms, pdLicenseLabel, pdThumbUrl } from '../src/lib/pdfilms';
+import { books, bookCoverUrl } from '../src/lib/library';
 
 const PUBLIC = join(process.cwd(), 'public');
 
@@ -57,9 +58,16 @@ describe('recentIssues', () => {
 });
 
 describe('cine abierto', () => {
-  it('cada película tiene su miniatura descargada en public/cinema', () => {
-    const sinMiniatura = pdFilms.filter((f) => !existsSync(join(PUBLIC, 'cinema', `${f.id}.jpg`))).map((f) => f.id);
-    expect(sinMiniatura).toEqual([]);
+  it('cada película tiene su imagen descargada en public/cinema', () => {
+    // Fotogramas a 800 px en WebP (scripts/fetch-pd.mjs). El nombre sale de
+    // pdThumbUrl, como en la hemeroteca, para no tocar el test si cambia el formato.
+    const sinImagen = pdFilms.filter((f) => !existsSync(join(PUBLIC, pdThumbUrl(f.id)))).map((f) => f.id);
+    expect(sinImagen).toEqual([]);
+  });
+
+  it('cada libro tiene su portada descargada en public/library', () => {
+    const sinPortada = books.filter((b) => !existsSync(join(PUBLIC, bookCoverUrl(b.id)))).map((b) => b.id);
+    expect(sinPortada).toEqual([]);
   });
 
   it('va en orden cronológico', () => {

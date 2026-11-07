@@ -9,14 +9,16 @@ export interface Book {
   lang: string;
   blurb_es: string;
   blurb_en: string;
+  /** 'title': la imagen es la portadilla, no la tapa (ver scripts/fetch-library.mjs). */
+  cover?: 'title';
 }
 
 export const books = data.items as Book[];
 
 export const bookById = (id: string): Book | undefined => books.find((b) => b.id === id);
 
-/** Miniatura local (descargada con scripts/fetch-library.mjs); no toca archive.org en runtime. */
-export const bookCoverUrl = (id: string) => `/library/${id}.jpg`;
+/** Portada local a 600 px (de scripts/fetch-library.mjs); no toca archive.org en runtime. */
+export const bookCoverUrl = (id: string) => `/library/${id}.webp`;
 /** Visor BookReader incrustable de Internet Archive. */
 export const bookEmbedUrl = (id: string) => `https://archive.org/embed/${id}`;
 /** Página pública del ítem en Internet Archive. */

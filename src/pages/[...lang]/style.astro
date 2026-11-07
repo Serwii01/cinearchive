@@ -1,4 +1,5 @@
 ---
+import { pdThumbUrl } from '../../lib/pdfilms';
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { useTranslations, localizePath, langStaticPaths, normalizeLang, type Lang } from '../../i18n/ui';
@@ -137,7 +138,7 @@ const motionByLang: Record<Lang, Record<MotionId, [string, string]>> = {
 };
 const motion = (Object.keys(MOTION_SPEC) as MotionId[]).map((id) => ({ id, name: motionByLang[lang][id][0], desc: motionByLang[lang][id][1], spec: MOTION_SPEC[id] }));
 // Imágenes locales para las demostraciones (no tocan TMDB ni Internet Archive).
-const demoPosters = ['/cinema/1926-faust.jpg', '/cinema/the-passion-of-joan-of-arc.jpg', '/cinema/pandoras-box-1929-by-georg-wilhelm-pabst.jpg', '/cinema/BattleshipPotemkin.jpg'];
+const demoPosters = ['1926-faust', 'the-passion-of-joan-of-arc', 'pandoras-box-1929-by-georg-wilhelm-pabst', 'BattleshipPotemkin'].map(pdThumbUrl);
 ---
 
 <BaseLayout title={t('style.title')} description={t('style.intro')} noindex>
