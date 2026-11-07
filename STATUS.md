@@ -9,7 +9,7 @@ En producción en cinearchive.es, al día con main (8495436 desplegado o por des
 - [ ] Mirar la web en el móvil con Astro 7 (desplegado y comprobado desde fuera: Astro v7.4.7, páginas en 200, portadas con marco). Sin probar: npm run dev.
 - [ ] Probar en producción el acceso con Google y GitHub, los correos reales y si las sesiones abiertas sobrevivieron a better-auth 1.7.
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
-- [ ] Copia de las copias fuera del VPS (por ejemplo, que el CRM baje la última a tu PC).
+- [ ] Copia de las copias fuera del VPS: el CRM 0.4.0 (cinearchiveCRM ff27fed) ya las baja desde la pestaña Servidor; probado. Queda decidir si se hace solo cada semana.
 - [ ] Mañana, en el VPS: `scripts/vps/consultas.sh` (qué consultas gastan CPU) y `docker stats --no-stream` + `uptime` para comparar con el 7 nov (carga 1,5, CPU al 100 % a ráfagas).
 - [ ] Pasado un día desde el despliegue, lanzar `scripts/vps/rastreadores.sh` en el VPS y, según lo que salga, bloquear redes o navegadores concretos en el Caddyfile.
 - [ ] Anotar la v1.20 en src/data/changelog.json (5 idiomas): web más rápida, portadas de la Biblioteca con marco, contador de visitas real.
