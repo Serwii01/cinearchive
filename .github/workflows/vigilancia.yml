@@ -34,13 +34,19 @@ jobs:
             salud=$(curl -fsS --max-time 15 https://cinearchive.es/api/health) || return 1
             echo "$salud" | grep -q '"status":"ok"' || return 1
             echo "$salud" | grep -q '"db":true' || return 1
+            # Disco casi lleno: si se llena, Postgres se para (ver src/lib/disk.ts).
+            if echo "$salud" | grep -q '"disk":"low"'; then echo "::error::Al disco del VPS le queda menos del 15 %."; return 2; fi
             curl -fsS --max-time 15 -o /dev/null https://cinearchive.es/ || return 1
           }
           for intento in 1 2 3; do
-            if comprobar; then
+            # GitHub ejecuta con bash -e: sin el ||, el primer fallo cortaría el bucle.
+            r=0; comprobar || r=$?
+            if [ "$r" -eq 0 ]; then
               echo "La web responde (intento $intento)."
               exit 0
             fi
+            # Poco disco no se arregla reintentando: aviso directo.
+            [ "$r" -eq 2 ] && exit 1
             echo "Intento $intento: la web no responde bien."
             [ "$intento" -lt 3 ] && sleep 30
           done

@@ -10,6 +10,7 @@ import { servePage, cacheKey, hasSessionCookie } from './lib/htmlcache';
 import { backLinkSource } from './lib/backlink';
 import { isKnownRoute, legacyDefaultLangRedirect } from './lib/routes';
 import { startStreamAlerts } from './lib/streamjob';
+import { startCacheCap } from './lib/cachecap';
 import { languages, defaultLang, localizePath, stripLangPrefix, getLangFromUrl } from './i18n/ui';
 
 const LANGS = Object.keys(languages);
@@ -69,11 +70,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const { request, url } = context;
   const path = url.pathname;
 
-  // Los avisos de «ya está en tu plataforma» corren en este mismo proceso. Se
-  // arrancan con la primera petición de verdad y solo en producción: el build
-  // también carga el middleware al prerenderizar, y ahí no deben arrancar. En
-  // local se lanzan a mano desde /api/admin/stream-alerts.
-  if (import.meta.env.PROD && !context.isPrerendered) startStreamAlerts();
+  // Los avisos de «ya está en tu plataforma» y la poda de la caché de películas
+  // corren en este mismo proceso. Se arrancan con la primera petición de verdad
+  // y solo en producción: el build también carga el middleware al prerenderizar,
+  // y ahí no deben arrancar. En local, los avisos se lanzan a mano desde
+  // /api/admin/stream-alerts.
+  if (import.meta.env.PROD && !context.isPrerendered) {
+    startStreamAlerts();
+    startCacheCap();
+  }
 
   // Límite global por IP: primera barrera de la app contra inundación de
   // peticiones. Los assets estáticos no se cuentan (los amortigua Caddy).

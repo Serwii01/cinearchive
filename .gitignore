@@ -14,3 +14,6 @@ pnpm-debug.log*
 .env.production
 # macOS / editor
 .DS_Store
+
+# Copias de seguridad de Postgres en el VPS (scripts/vps/backup.sh)
+backups/

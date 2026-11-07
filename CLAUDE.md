@@ -49,7 +49,8 @@ Para la BD en local: `docker run -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=cine -p
 - GitHub Actions pasa los tests y construye las imágenes `app` y `caddy` en GHCR (`.github/workflows/ci.yml`). El VPS no compila: `git pull && docker compose up -d --build` solo descarga la última imagen (`pull_policy: always`). Hay que esperar a que la CI salga en verde, o bajará la imagen anterior. Las migraciones se aplican al arrancar `app`.
 - Reserva si GitHub o GHCR fallan: `docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build --no-deps app`. Evita compilar Caddy en el VPS: ahoga la web.
 - Sergio despliega justo después de cada commit de Claude: el VPS siempre va al día con `main`. No hace falta anotar «desplegar» como paso pendiente.
-- Logs: `docker compose logs -f app`. Backup: `pg_dump` dentro del contenedor `db`.
+- Logs: `docker compose logs -f app`. Copias: `scripts/vps/backup.sh` cada noche (cron de `scripts/vps/instalar-cron.sh`), 7 días en `backups/` del VPS, sin los datos de `films_cache`; se restauran con `scripts/vps/restaurar.sh`. El mismo cron limpia Docker los domingos.
+- Disco: `films_cache` se poda sola cada día (`src/lib/cachecap.ts`, tope de 20.000 películas sin dueño) y `/api/health` avisa si queda menos del 15 % libre.
 - Postgres solo escucha en `127.0.0.1:5432` del VPS. El CRM entra por túnel SSH.
 - Variables de entorno: ver `.env.example`. El `.env` nunca se versiona.
 

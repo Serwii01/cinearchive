@@ -6,10 +6,13 @@
 En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7bf4a09): sin Fonoteca, v1.19 corregida, CI y better-auth 1.7.18. Contador en 1.345.884 ese día. En main (3a99246): las imágenes se construyen en GitHub; falta el primer Autodeploy con ellas. En main: el contador deja de contar rastreadores.
 
 ## Siguientes pasos
-- [ ] Astro 7 en la rama astro-7: Sergio decide si se fusiona en main. Probado en local (tests, build, 95 páginas en 5 idiomas, cuentas); falta el servidor de desarrollo y verlo en el móvil.
+- [ ] Astro 7 ya en main (704b48a, CI en verde): desplegar y mirar la web en el móvil (portadas de la Biblioteca, menú, diseño adaptable). Sin probar: npm run dev.
 - [ ] Probar en producción el acceso con Google y GitHub, los correos reales y si las sesiones abiertas sobrevivieron a better-auth 1.7.
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
-- [ ] Copias de seguridad automáticas de Postgres (no hay ninguna) y volver atrás a una imagen anterior por su commit.
+- [ ] Tras desplegar la poda: en el VPS, `bash scripts/vps/instalar-cron.sh` (instala copias y limpieza y hace la primera copia) y, pasados 10 min, comprobar en `docker compose logs app | grep caché` que films_cache bajó y con `df -h /` que se recuperó el disco.
+- [ ] Copia de las copias fuera del VPS (por ejemplo, que el CRM baje la última a tu PC).
+- [ ] Volver atrás a una imagen anterior por su commit (variable de etiqueta en docker-compose.yml).
+- [ ] Ver en los logs de Caddy qué rastreadores recorren las fichas y frenarlos.
 - [ ] Revisar en Umami qué secciones se usan y dónde se va la gente antes de añadir nada nuevo.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
 - [ ] Revisar que Umami (`analitica.<dominio>`) recoge visitas y que el CRM lee sus números.
@@ -20,10 +23,14 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 ## Última sesión
 
 ### 2026-11-07
+- Disco del VPS al 71 % (41 de 58 GB): films_cache tenía 1.016.576 películas y 17 GB (los rastreadores recorren el catálogo de TMDB a través de las fichas) y Docker guardaba 12,6 GB de compilaciones viejas. Sergio liberó lo de Docker con `docker builder prune -af`.
+- Poda diaria de films_cache (src/lib/cachecap.ts): se quedan las películas con dueño (perfil, listas, diario, catálogo del panel) y las 20.000 sueltas más recientes. La primera vez, a fondo (aparta, TRUNCATE, vuelve a meter): libera ~16 GB a los 10 min de desplegar, con la tabla bloqueada unos segundos. Probado en Postgres local con 150.000 filas.
+- /api/health dice `disk` (ok/low/unknown; aviso por debajo del 15 % libre) y la vigilancia de GitHub avisa por correo.
+- scripts/vps: backup.sh (cada noche a las 3:30, 7 días, sin datos de films_cache, no copia si queda menos de 1 GB), restaurar.sh (pide confirmación, para el servicio), limpieza.sh (domingos: caché de compilación e imágenes sin usar de más de una semana) e instalar-cron.sh. Volcado y restauración probados en local.
 - Contador de visitas: subía unas 2,9 por segundo (1.572.824 a las 16:02, unas 250.000 al día desde el 5 nov). Causa probable: un rastreador que cambia de IP y se hace pasar por Chrome; el middleware contaba las páginas del servidor sin JavaScript y cada petición suya era una huella nueva.
 - Arreglo (ddcd6ed, desplegado): ya no cuenta el middleware; todas las páginas avisan desde el navegador con el POST a /api/visits. Por decisión de Sergio, lo ya sumado se queda en el total. Tests (549) y build en verde. Tras desplegar, de unas 190 a unas 10 por minuto.
 - Primer Autodeploy con imágenes de GHCR: menos de 1 minuto desde el CRM. El VPS es amd64.
-- Rama astro-7: Astro 5.18 a 7.4, @astrojs/node 11, Tailwind por PostCSS (la integración no admite Astro 7), compressHTML true (el nuevo valor por defecto quita espacios entre elementos en línea) y cssTarget para Safari 14 (Vite 8 escribía media queries que Safari antiguo no entiende). El compilador nuevo encontró una etiqueta rota en el Archivo: las portadas de la Biblioteca habían perdido su marco desde ca28bfb; arreglado. npm audit en producción: de 8 avisos (1 crítico, 4 altos) a 1 moderado (satori).
+- Astro 7 (704b48a, fusionado en main; CI en verde, imagen de app en 1 min 46 s): Astro 5.18 a 7.4, @astrojs/node 11, Tailwind por PostCSS (la integración no admite Astro 7), compressHTML true (el nuevo valor por defecto quita espacios entre elementos en línea) y cssTarget para Safari 14 (Vite 8 escribía media queries que Safari antiguo no entiende). El compilador nuevo encontró una etiqueta rota en el Archivo: las portadas de la Biblioteca habían perdido su marco desde ca28bfb; arreglado. npm audit en producción: de 8 avisos (1 crítico, 4 altos) a 1 moderado (satori).
 - Vigilancia: .github/workflows/vigilancia.yml comprueba /api/health y la portada cada 5 min (3 intentos) y GitHub avisa por correo si falla.
 
 ### 2026-11-06
@@ -86,6 +93,7 @@ En producción en cinearchive.es, al día con main desde el 6 nov a las 22:35 (7
 - 23 oct: PWA (página `/offline` en tu idioma, barra inferior en móvil, botón de volver) y arreglos del contador de visitas.
 
 ## Decisiones
+- **films_cache con tope** (7 nov): 20.000 películas sin dueño como mucho; las de usuarios no se borran nunca. Las copias de seguridad no llevan sus datos.
 - **Visitas solo con JavaScript** (7 nov): el contador cuenta el aviso del navegador, no las peticiones al servidor, para que los rastreadores no lo inflen. Lo inflado hasta entonces se queda.
 - **SSR y claves solo en el servidor**: ninguna API key se expone al navegador; todo pasa por `/api/*`.
 - **"Dónde ver" desde TMDB (JustWatch)** en lugar de Watchmode, porque su plan gratuito se agotaba.
