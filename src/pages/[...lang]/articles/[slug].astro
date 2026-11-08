@@ -58,6 +58,14 @@ const relacionadas = (article.related ?? []).map((id) => briefs.get(id)).filter(
 const nitido = (poster: string | null) => (poster ? poster.replace('/w185/', '/w500/') : null);
 const nitidoSrcset = (poster: string | null) => posterSet(poster);
 
+// Ancho real en pantalla de las fotos propias, para que el navegador elija bien
+// en srcset: el marco mide 1440 px con 48 px de margen a cada lado (16 en
+// móvil) y la rejilla separa las fotos 16 px. Si se queda corto, en pantallas
+// de alta densidad baja una versión pequeña y la foto sale blanda.
+const ANCHO_COMPLETO = '(min-width: 1440px) 1344px, (min-width: 768px) calc(100vw - 96px), calc(100vw - 32px)';
+const ANCHO_TERCIO =
+  '(min-width: 1440px) 438px, (min-width: 1024px) calc((100vw - 128px) / 3), (min-width: 768px) calc((100vw - 112px) / 2), (min-width: 640px) calc((100vw - 48px) / 2), calc(100vw - 32px)';
+
 const otros = articles.filter((a) => a.slug !== article.slug).map((a) => ({ slug: a.slug, c: articleCopy(a, lang) }));
 
 const url = new URL(Astro.url.pathname, Astro.site).href;
@@ -95,7 +103,23 @@ const jsonLd = [
     {/* Con vídeo, la portada pasa a ser su póster: pintarla además arriba la repetiría. */}
     {cover && !article.video && (
       <figure class="mt-8 border border-ink">
-        <img src={cover} alt="" width={article.image?.width ?? 1280} height={article.image?.height ?? 720} decoding="async" class="h-64 w-full object-cover sm:h-80 md:h-[28rem]" />
+        {article.image?.full ? (
+          // Foto propia: entera y a su proporción (recortada a franja, en el móvil
+          // se perdía media foto), y en alta resolución para pantallas densas.
+          <img
+            src={cover}
+            srcset={article.image.srcset}
+            sizes={ANCHO_COMPLETO}
+            alt=""
+            width={article.image.width}
+            height={article.image.height}
+            decoding="async"
+            fetchpriority="high"
+            class="block h-auto w-full"
+          />
+        ) : (
+          <img src={cover} alt="" width={article.image?.width ?? 1280} height={article.image?.height ?? 720} decoding="async" class="h-64 w-full object-cover sm:h-80 md:h-[28rem]" />
+        )}
         {article.image && <figcaption class="border-t border-ink px-3 py-2 font-mono text-meta-data text-muted">{article.image.credit}</figcaption>}
       </figure>
     )}
@@ -149,14 +173,16 @@ const jsonLd = [
         <div class="mt-6 grid grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3" data-photos>
           {article.photos.items.map((p, i) => (
             <figure class:list={['flex flex-col border border-ink bg-surface', p.width > p.height && 'sm:col-span-full']}>
-              <a href={p.src} data-photo={i} data-caption={p.caption[lang] ?? p.caption.es} class="block" aria-label={`${t('articles.photoOpen')}: ${p.caption[lang] ?? p.caption.es}`}>
+              {/* thumb y medium son la cuarta parte y la mitad de la grande
+                  (así se generan las fotos de prensa: 3600, 1800 y 900 px). */}
+              <a href={p.src} data-photo={i} data-caption={p.caption[lang] ?? p.caption.es} data-srcset={`${p.medium} ${p.width / 2}w, ${p.src} ${p.width}w`} class="block" aria-label={`${t('articles.photoOpen')}: ${p.caption[lang] ?? p.caption.es}`}>
                 <img
-                  src={p.thumb}
-                  srcset={`${p.thumb} ${p.width > p.height ? 800 : Math.round((800 * p.width) / p.height)}w, ${p.src} ${p.width}w`}
-                  sizes={p.width > p.height ? '(min-width: 1280px) 1200px, 100vw' : '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'}
+                  src={p.medium}
+                  srcset={`${p.thumb} ${p.width / 4}w, ${p.medium} ${p.width / 2}w, ${p.src} ${p.width}w`}
+                  sizes={p.width > p.height ? ANCHO_COMPLETO : ANCHO_TERCIO}
                   alt={p.caption[lang] ?? p.caption.es}
-                  width={p.width > p.height ? 800 : Math.round((800 * p.width) / p.height)}
-                  height={p.width > p.height ? Math.round((800 * p.height) / p.width) : 800}
+                  width={p.width}
+                  height={p.height}
                   loading="lazy"
                   decoding="async"
                   class="h-auto w-full bg-charcoal"
@@ -308,6 +334,10 @@ const jsonLd = [
       const ver = (i: number) => {
         actual = (i + fotos.length) % fotos.length;
         const a = fotos[actual];
+        // El visor ocupa toda la pantalla: con srcset, el móvil baja la de 1800 px
+        // y una pantalla grande o de alta densidad, la de máxima calidad.
+        img.srcset = a.dataset.srcset ?? '';
+        img.sizes = '100vw';
         img.src = a.href;
         img.alt = a.dataset.caption ?? '';
         pie.textContent = a.dataset.caption ?? '';

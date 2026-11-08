@@ -43,7 +43,16 @@ export interface Article {
    * Imagen de cabecera propia (en public/), para lo que no está en TMDB: un
    * videojuego, un festival. Si está, gana a `cover`.
    */
-  image?: { src: string; width: number; height: number; credit: string };
+  image?: {
+    src: string;
+    width: number;
+    height: number;
+    credit: string;
+    /** Versiones más grandes, para pantallas de alta densidad. */
+    srcset?: string;
+    /** Entera, sin recortar a franja: para fotos propias, donde el encuadre importa. */
+    full?: boolean;
+  };
   /** Vídeo de YouTube que se incrusta al pulsar (privacidad: nada carga antes). */
   video?: { youtubeId: string; credit: string };
   /**
@@ -54,12 +63,13 @@ export interface Article {
   /**
    * Fotos propias (photocalls, galas), con su autor y un pie por foto. Se ven
    * enteras, sin recortar: en una foto de prensa el encuadre es del fotógrafo.
-   * `src` es la grande (se abre al pulsar) y `thumb`, la de la cuadrícula.
+   * Tres tamaños: `src` a máxima calidad (el visor y las pantallas grandes),
+   * `medium` y `thumb` para la cuadrícula; el navegador elige con srcset.
    */
   photos?: {
     author: string;
     authorUrl?: string;
-    items: { src: string; thumb: string; width: number; height: number; caption: Record<Lang, string> }[];
+    items: { src: string; medium: string; thumb: string; width: number; height: number; caption: Record<Lang, string> }[];
   };
   /** Firma, si el artículo es de alguien en concreto y no de la redacción. */
   author?: string;
@@ -2926,14 +2936,21 @@ const FOTOS_SEFF = '/articles/festival-sevilla-2026-el-confidente-carta-blanca';
 const sevillaConfidente: Article = {
   slug: 'festival-sevilla-2026-el-confidente-carta-blanca',
   date: '2026-11-08',
-  image: { src: `${FOTOS_SEFF}/cover.jpg`, width: 1200, height: 800, credit: '© Ana Gómez Collado · 23.º Festival de Cine Europeo de Sevilla' },
+  image: {
+    src: `${FOTOS_SEFF}/cover.jpg`,
+    srcset: `${FOTOS_SEFF}/el-confidente-equipo-md.webp 1800w, ${FOTOS_SEFF}/el-confidente-equipo.webp 3600w`,
+    full: true,
+    width: 1600,
+    height: 1067,
+    credit: '© Ana Gómez Collado · 23.º Festival de Cine Europeo de Sevilla',
+  },
   related: [1707078, 1704914],
   photos: {
     author: 'Ana Gómez Collado',
     authorUrl: 'https://www.instagram.com/anagcolladophoto/',
     items: [
       {
-        src: `${FOTOS_SEFF}/el-confidente-equipo.webp`, thumb: `${FOTOS_SEFF}/el-confidente-equipo-sm.webp`, width: 1800, height: 1200,
+        src: `${FOTOS_SEFF}/el-confidente-equipo.webp`, medium: `${FOTOS_SEFF}/el-confidente-equipo-md.webp`, thumb: `${FOTOS_SEFF}/el-confidente-equipo-sm.webp`, width: 3600, height: 2400,
         caption: {
           es: 'El equipo de «El confidente»: el director Daniel Calparsoro, los actores Miguel Herrán y Víctor Clavijo y los productores María Luisa Gutiérrez y Álvaro Ariza.',
           en: 'The team of “El confidente”: director Daniel Calparsoro, actors Miguel Herrán and Víctor Clavijo, and producers María Luisa Gutiérrez and Álvaro Ariza.',
@@ -2943,7 +2960,7 @@ const sevillaConfidente: Article = {
         },
       },
       {
-        src: `${FOTOS_SEFF}/daniel-calparsoro.webp`, thumb: `${FOTOS_SEFF}/daniel-calparsoro-sm.webp`, width: 1200, height: 1800,
+        src: `${FOTOS_SEFF}/daniel-calparsoro.webp`, medium: `${FOTOS_SEFF}/daniel-calparsoro-md.webp`, thumb: `${FOTOS_SEFF}/daniel-calparsoro-sm.webp`, width: 2400, height: 3600,
         caption: {
           es: 'Daniel Calparsoro, director de «El confidente».',
           en: 'Daniel Calparsoro, director of “El confidente”.',
@@ -2953,7 +2970,7 @@ const sevillaConfidente: Article = {
         },
       },
       {
-        src: `${FOTOS_SEFF}/miguel-herran-1.webp`, thumb: `${FOTOS_SEFF}/miguel-herran-1-sm.webp`, width: 1200, height: 1800,
+        src: `${FOTOS_SEFF}/miguel-herran-1.webp`, medium: `${FOTOS_SEFF}/miguel-herran-1-md.webp`, thumb: `${FOTOS_SEFF}/miguel-herran-1-sm.webp`, width: 2400, height: 3600,
         caption: {
           es: 'Miguel Herrán, protagonista de «El confidente» junto a Javier Gutiérrez.',
           en: 'Miguel Herrán, who leads “El confidente” alongside Javier Gutiérrez.',
@@ -2963,7 +2980,7 @@ const sevillaConfidente: Article = {
         },
       },
       {
-        src: `${FOTOS_SEFF}/miguel-herran-2.webp`, thumb: `${FOTOS_SEFF}/miguel-herran-2-sm.webp`, width: 1200, height: 1800,
+        src: `${FOTOS_SEFF}/miguel-herran-2.webp`, medium: `${FOTOS_SEFF}/miguel-herran-2-md.webp`, thumb: `${FOTOS_SEFF}/miguel-herran-2-sm.webp`, width: 2400, height: 3600,
         caption: {
           es: 'Miguel Herrán, en la alfombra roja.',
           en: 'Miguel Herrán on the red carpet.',
@@ -2973,7 +2990,7 @@ const sevillaConfidente: Article = {
         },
       },
       {
-        src: `${FOTOS_SEFF}/victor-clavijo-1.webp`, thumb: `${FOTOS_SEFF}/victor-clavijo-1-sm.webp`, width: 1200, height: 1800,
+        src: `${FOTOS_SEFF}/victor-clavijo-1.webp`, medium: `${FOTOS_SEFF}/victor-clavijo-1-md.webp`, thumb: `${FOTOS_SEFF}/victor-clavijo-1-sm.webp`, width: 2400, height: 3600,
         caption: {
           es: 'Víctor Clavijo, en el reparto de «El confidente» y de «Carta blanca».',
           en: 'Víctor Clavijo, in the cast of both “El confidente” and “Carta blanca”.',
@@ -2983,7 +3000,7 @@ const sevillaConfidente: Article = {
         },
       },
       {
-        src: `${FOTOS_SEFF}/victor-clavijo-2.webp`, thumb: `${FOTOS_SEFF}/victor-clavijo-2-sm.webp`, width: 1200, height: 1800,
+        src: `${FOTOS_SEFF}/victor-clavijo-2.webp`, medium: `${FOTOS_SEFF}/victor-clavijo-2-md.webp`, thumb: `${FOTOS_SEFF}/victor-clavijo-2-sm.webp`, width: 2400, height: 3600,
         caption: {
           es: 'Víctor Clavijo, en la alfombra roja.',
           en: 'Víctor Clavijo on the red carpet.',
@@ -2993,7 +3010,7 @@ const sevillaConfidente: Article = {
         },
       },
       {
-        src: `${FOTOS_SEFF}/carta-blanca-equipo.webp`, thumb: `${FOTOS_SEFF}/carta-blanca-equipo-sm.webp`, width: 1800, height: 1200,
+        src: `${FOTOS_SEFF}/carta-blanca-equipo.webp`, medium: `${FOTOS_SEFF}/carta-blanca-equipo-md.webp`, thumb: `${FOTOS_SEFF}/carta-blanca-equipo-sm.webp`, width: 3600, height: 2400,
         caption: {
           es: 'El equipo de «Carta blanca», con el director y productor Gerardo Herrero, la productora Mariela Besuievsky, el guionista Lorenzo Silva y el actor Víctor Clavijo, entre otros.',
           en: 'The team of “Carta blanca”, among them director and producer Gerardo Herrero, producer Mariela Besuievsky, screenwriter Lorenzo Silva and actor Víctor Clavijo.',
