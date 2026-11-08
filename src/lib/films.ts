@@ -36,6 +36,8 @@ export interface FilmDetail {
   locations: FilmLocations | null;
   /** Hay que pedir las localizaciones a Wikidata (faltan o caducaron): lo hace el navegador. */
   locationsPending: boolean;
+  /** Hay que pedir las notas a OMDb (faltan o caducaron): lo hace el navegador. */
+  omdbPending: boolean;
   /** El título en cada idioma (de él sale el slug de la ficha en ese idioma). */
   titles: Titles | null;
 }
@@ -90,10 +92,11 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
     providers = cached.providers as Record<string, WatchAvailability>;
   }
 
-  // OMDb: reutilizar de cache si está fresca; si no, refrescar por imdb_id. Las
-  // filas de antes de omdb_fetched_at miden con fetchedAt, como hasta ahora.
-  const omdbDesde = cached?.omdbFetchedAt ?? cached?.fetchedAt;
-  const omdbFresh = !!cached?.omdb && !!omdbDesde && Date.now() - new Date(omdbDesde).getTime() < OMDB_TTL_MS;
+  // OMDb (notas de IMDb, RT y Metacritic, premios y taquilla) tampoco se pide
+  // aquí, por lo mismo que Wikidata: da 1.000 consultas al día y los robots las
+  // gastaban abriendo fichas sueltas. Se lee lo guardado y, si falta o caducó,
+  // lo pide el navegador (getOmdbFresh, por /api/films/[id]/notes).
+  const omdb = (cached?.omdb as OmdbData | null) ?? null;
 
   // Wikidata (localizaciones) ya NO se pide aquí: lo pide el navegador cuando el
   // visitante llega a esa parte de la ficha (getFilmLocationsFresh, por
@@ -106,21 +109,15 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
   const locations = esFormatoActual(guardado) ? guardado : null;
   const imdb = tmdb.imdb_id;
   const locationsPending = !!imdb && !wikidataAlDia(locations, cached?.wikidataFetchedAt ?? null);
+  // Sin omdb_fetched_at (filas de antes del 8-11-2026) cuenta como caducada: su
+  // fetchedAt se renueva solo y no dice cuándo se pidieron las notas.
+  const omdbPending = !!imdb && !omdbAlDia(omdb, cached?.omdbFetchedAt ?? null);
 
-  // Las tres cosas que faltan solo dependen de la ficha de TMDB, así que van a
-  // la vez. Antes iban una detrás de otra y una ficha sin caché tardaba la suma;
-  // ahora, lo que tarde la más lenta.
-  //   · el reparto y la dirección en alfabeto latino («中井朝一» → Asakazu
-  //     Nakai), que se guarda así en la caché, de donde leen las listas;
-  //   · las notas de OMDb y los títulos.
-  const [latin, omdbNueva, titulosNuevos] = await Promise.all([
-    latinizeMovie(tmdb),
-    !omdbFresh && imdb ? getOmdbByImdbId(imdb) : Promise.resolve(null),
-    titlesOf(tmdb),
-  ]);
+  // Las dos cosas que faltan solo dependen de la ficha de TMDB, así que van a
+  // la vez: el reparto y la dirección en alfabeto latino («中井朝一» → Asakazu
+  // Nakai), que se guarda así en la caché, de donde leen las listas, y los títulos.
+  const [latin, titulosNuevos] = await Promise.all([latinizeMovie(tmdb), titlesOf(tmdb)]);
   tmdb = latin;
-  const omdb = omdbNueva ?? (cached?.omdb as OmdbData | null) ?? null;
-  const omdbFetchedAt = omdbNueva ? new Date() : (cached?.omdbFetchedAt ?? null);
 
   // A la caché va la ficha PODADA (solo lo que la web lee: ver slimMovie); la
   // página recibe la completa que acabamos de pedir. Si TMDB falla y se sirve
@@ -130,19 +127,19 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
   // Se reescribe la fila solo si hace falta: si no estaba, si hay notas nuevas,
   // si cambian los títulos o si tiene más de un día (para que «dónde ver» y la
   // ficha guardada no se queden viejos). Antes se reescribía en cada carga.
-  if (hayQueGuardar(cached, { omdbNueva: !!omdbNueva, titles })) {
+  if (hayQueGuardar(cached, { omdbNueva: false, titles })) {
     await db
       .insert(filmsCache)
-      .values({ tmdbId, tmdb: guardar, omdb, omdbFetchedAt, providers, titles, wikidata: locations, fetchedAt: new Date() })
+      .values({ tmdbId, tmdb: guardar, providers, titles, fetchedAt: new Date() })
       .onConflictDoUpdate({
         target: filmsCache.tmdbId,
-        // Sin wikidata: es cosa de getFilmLocationsFresh, y pisarla aquí podría
-        // borrar lo que acaba de guardar una petición del navegador.
-        set: { tmdb: guardar, omdb, omdbFetchedAt, providers, titles, fetchedAt: new Date() },
+        // Sin wikidata ni omdb: son cosa de getFilmLocationsFresh y getOmdbFresh,
+        // y pisarlas aquí podría borrar lo que acaba de guardar el navegador.
+        set: { tmdb: guardar, providers, titles, fetchedAt: new Date() },
       });
   }
 
-  return { tmdb, omdb, providers, locations, locationsPending, titles };
+  return { tmdb, omdb, omdbPending, providers, locations, locationsPending, titles };
 }
 
 /** Más de esto sin reescribir, y la fila se renueva aunque no cambie nada. */
@@ -158,6 +155,35 @@ export function hayQueGuardar(
   if (nuevo.omdbNueva) return true;
   if (JSON.stringify(cached.titles ?? null) !== JSON.stringify(nuevo.titles ?? null)) return true;
   return ahora - new Date(cached.fetchedAt).getTime() > REESCRIBIR_MS;
+}
+
+/** Si las notas de OMDb guardadas sirven todavía (menos de 30 días). */
+export function omdbAlDia(omdb: OmdbData | null, fetchedAt: Date | string | null, ahora = Date.now()): boolean {
+  return omdb !== null && fetchedAt !== null && ahora - new Date(fetchedAt).getTime() < OMDB_TTL_MS;
+}
+
+/**
+ * Notas de OMDb de una película, pedidas si lo guardado falta o caducó. Solo
+ * la llama /api/films/[id]/notes, es decir, el navegador de alguien que ha
+ * abierto la ficha. Si OMDb no responde (o se agotó la cuota del día), devuelve
+ * lo que hubiera guardado; null si la ficha nunca se ha abierto.
+ */
+export async function getOmdbFresh(tmdbId: number): Promise<{ omdb: OmdbData | null; voteAverage: number } | null> {
+  const [fila] = await db
+    .select({ tmdb: filmsCache.tmdb, omdb: filmsCache.omdb, omdbFetchedAt: filmsCache.omdbFetchedAt })
+    .from(filmsCache)
+    .where(eq(filmsCache.tmdbId, tmdbId))
+    .limit(1);
+  if (!fila) return null;
+  const ficha = fila.tmdb as TmdbMovie;
+  const voteAverage = ficha.vote_average ?? 0;
+  const guardado = (fila.omdb as OmdbData | null) ?? null;
+  if (omdbAlDia(guardado, fila.omdbFetchedAt) || !ficha.imdb_id) return { omdb: guardado, voteAverage };
+  const nuevas = await getOmdbByImdbId(ficha.imdb_id);
+  if (!nuevas) return { omdb: guardado, voteAverage };
+  await db.update(filmsCache).set({ omdb: nuevas, omdbFetchedAt: new Date() }).where(eq(filmsCache.tmdbId, tmdbId));
+  for (const l of ['es', 'en', 'gl', 'eu', 'ca']) filmMemo.clear(`${tmdbId}:${l}`);
+  return { omdb: nuevas, voteAverage };
 }
 
 /** Si las localizaciones guardadas sirven todavía (formato con coordenadas y menos de 60 días). */

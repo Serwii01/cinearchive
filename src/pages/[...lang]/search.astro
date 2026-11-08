@@ -1,17 +1,33 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { normalizeLang, useTranslations, localizePath } from '../../i18n/ui';
 
 export const prerender = false;
 
 const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 
-// Buscar películas es público; buscar usuarios requiere sesión (sin directorio
-// abierto a bots). La página es accesible para todos; la sección de usuarios se
-// habilita solo con sesión.
+// Buscar películas, personas y el archivo es público; buscar usuarios requiere
+// sesión (sin directorio abierto a bots). La pestaña de usuarios se ve siempre
+// y, sin sesión, invita a entrar.
 const loggedIn = !!Astro.locals.user;
 const q = (Astro.url.searchParams.get('q') ?? '').trim();
+
+/*
+ * Pestañas, una categoría cada vez. Antes salía todo seguido (el archivo, los
+ * usuarios y las películas, una sección debajo de otra) y no se encontraba
+ * nada. Cada pestaña dice cuántos resultados tiene, así se sabe dónde mirar.
+ * El orden es el de lo que más se busca.
+ */
+const TABS = [
+  { id: 'films', label: t('search.sectionFilms') },
+  { id: 'people', label: t('search.sectionPeople') },
+  { id: 'archive', label: t('search.sectionArchive') },
+  { id: 'users', label: t('search.sectionUsers') },
+] as const;
+
+const tabClass =
+  'label flex items-center justify-between gap-3 border-b border-r border-ink px-4 py-3 text-left transition-colors hover:bg-film-white aria-selected:bg-ink aria-selected:text-white sm:justify-start sm:border-b-0';
 ---
 
 <BaseLayout title={t('search.title')}>
@@ -19,22 +35,28 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
     class="frame py-12"
     data-user-base={localizePath(lang, 'u')}
     data-film-base={localizePath(lang, 'film')}
+    data-person-base={localizePath(lang, 'person')}
     data-lang={lang}
     data-logged-in={loggedIn ? '1' : '0'}
     data-noresults={t('search.noResults')}
-    data-users={t('search.sectionUsers')}
-    data-films={t('search.sectionFilms')}
     data-login-users={t('search.loginForUsers')}
     data-login-url={localizePath(lang, 'login')}
     data-kinds={JSON.stringify({
-      article: t('search.kindArticle'),
-      dossier: t('search.kindDossier'),
-      collection: t('search.kindCollection'),
-      figure: t('search.kindFigure'),
-      periodical: t('search.kindPeriodical'),
-      book: t('search.kindBook'),
-      cinema: t('search.kindCinema'),
-      glossary: t('search.kindGlossary'),
+      cinema: t('nav.cinema'),
+      article: t('articles.short'),
+      dossier: t('nav.dossiers'),
+      collection: t('nav.collections'),
+      figure: t('nav.figures'),
+      periodical: t('archive.title'),
+      book: t('nav.library'),
+      glossary: t('nav.glossary'),
+    })}
+    data-depts={JSON.stringify({
+      Acting: t('search.dept.acting'),
+      Directing: t('search.dept.directing'),
+      Writing: t('search.dept.writing'),
+      Production: t('search.dept.production'),
+      other: t('search.dept.other'),
     })}
   >
     <header class="border-b border-ink pb-6">
@@ -59,189 +81,290 @@ const q = (Astro.url.searchParams.get('q') ?? '').trim();
 
     <p id="hint" class="mt-4 font-mono text-meta-data text-muted">{t('search.hint')}</p>
 
-    {/* Lo propio del archivo va primero: es lo que no se encuentra en ningún
-        otro sitio. */}
-    <div id="site-block" class="mt-8 hidden">
-      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('search.sectionArchive')}</h2>
-      <ul id="results-site" class="mt-4 border border-ink"></ul>
-    </div>
+    <div id="results" class="mt-8 hidden">
+      <div role="tablist" aria-label={t('search.tabs')} class="grid grid-cols-2 border-l border-t border-ink sm:flex sm:border-b sm:border-r">
+        {
+          TABS.map((tab) => (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${tab.id}`}
+              data-tab={tab.id}
+              aria-selected="false"
+              aria-controls={`panel-${tab.id}`}
+              tabindex="-1"
+              class={tabClass}
+            >
+              <span>{tab.label}</span>
+              <span data-count class="font-mono text-meta-data opacity-70" aria-live="polite">…</span>
+            </button>
+          ))
+        }
+      </div>
 
-    {/* Usuarios */}
-    <div id="users-block" class="mt-10 hidden">
-      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('search.sectionUsers')}</h2>
-      <ul id="results-users" class="mt-4 grid ruled grid-cols-1 border border-ink sm:grid-cols-2"></ul>
-    </div>
-
-    {/* Películas */}
-    <div id="films-block" class="mt-10 hidden">
-      <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('search.sectionFilms')}</h2>
-      <div id="results-films" class="mt-4 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6"></div>
+      {
+        TABS.map((tab) => (
+          <div role="tabpanel" id={`panel-${tab.id}`} aria-labelledby={`tab-${tab.id}`} data-panel={tab.id} class="mt-6" hidden>
+            <p data-loading class="font-mono text-meta-data text-muted">{t('search.loading')}</p>
+            <div data-list />
+          </div>
+        ))
+      }
     </div>
   </section>
 </BaseLayout>
 
 <script>
   import { filmSlug } from '../../lib/slug';
+
+  type Tab = 'films' | 'people' | 'archive' | 'users';
+  const ORDEN: Tab[] = ['films', 'people', 'archive', 'users'];
+
   const root = document.querySelector('[data-user-base]') as HTMLElement;
-  const userBase = root.dataset.userBase!;
-  const filmBase = root.dataset.filmBase!;
-  const lang = root.dataset.lang!;
-  const loggedIn = root.dataset.loggedIn === '1';
-  const noResults = root.dataset.noresults!;
-  const loginUsers = root.dataset.loginUsers!;
-  const loginUrl = root.dataset.loginUrl!;
+  const d = root.dataset;
+  const lang = d.lang!;
+  const loggedIn = d.loggedIn === '1';
+  const kinds = JSON.parse(d.kinds ?? '{}') as Record<string, string>;
+  const depts = JSON.parse(d.depts ?? '{}') as Record<string, string>;
 
   const form = document.getElementById('search-form') as HTMLFormElement;
   const input = document.getElementById('q') as HTMLInputElement;
   const hint = document.getElementById('hint') as HTMLElement;
-  const usersBlock = document.getElementById('users-block') as HTMLElement;
-  const filmsBlock = document.getElementById('films-block') as HTMLElement;
-  const usersList = document.getElementById('results-users') as HTMLElement;
-  const filmsGrid = document.getElementById('results-films') as HTMLElement;
-  const siteBlock = document.getElementById('site-block') as HTMLElement;
-  const siteList = document.getElementById('results-site') as HTMLElement;
-  const kinds = JSON.parse(root.dataset.kinds ?? '{}') as Record<string, string>;
+  const results = document.getElementById('results') as HTMLElement;
+  const tabs = Object.fromEntries(ORDEN.map((id) => [id, document.getElementById(`tab-${id}`) as HTMLButtonElement])) as Record<Tab, HTMLButtonElement>;
+  const panels = Object.fromEntries(ORDEN.map((id) => [id, document.getElementById(`panel-${id}`) as HTMLElement])) as Record<Tab, HTMLElement>;
 
-  const esc = (s: string) =>
-    String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+  const esc = (s: unknown) =>
+    String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+  const vacio = () => `<p class="font-mono text-meta-data text-muted">${esc(d.noresults)}</p>`;
 
-  let timer: ReturnType<typeof setTimeout>;
-  let controller: AbortController | null = null;
+  // La pestaña que eligió la persona (o la del enlace). Sin elección, se abre
+  // la primera con resultados.
+  const desdeUrl = new URLSearchParams(location.search).get('tipo') as Tab | null;
+  let elegida: Tab | null = desdeUrl && ORDEN.includes(desdeUrl) ? desdeUrl : null;
 
-  const renderUsers = (rows: { id: string; username: string; name: string; isPrivate: boolean; hasAvatar: boolean }[]) => {
-    usersBlock.classList.remove('hidden');
+  function mostrar(id: Tab, foco = false) {
+    for (const t of ORDEN) {
+      const on = t === id;
+      tabs[t].setAttribute('aria-selected', String(on));
+      tabs[t].tabIndex = on ? 0 : -1;
+      panels[t].hidden = !on;
+    }
+    if (foco) tabs[id].focus();
+  }
+
+  function contar(id: Tab, n: number | null) {
+    const el = tabs[id].querySelector('[data-count]')!;
+    el.textContent = n === null ? '…' : id === 'users' && !loggedIn ? '🔒' : String(n);
+  }
+
+  function pintar(id: Tab, html: string) {
+    panels[id].querySelector('[data-loading]')?.setAttribute('hidden', '');
+    panels[id].querySelector('[data-list]')!.innerHTML = html;
+  }
+
+  /* ------------------------------ Pintores ------------------------------ */
+
+  type Film = { tmdbId: number; title: string; originalTitle?: string; year: number | null; poster: string | null; posterSrcset?: string | null };
+  const htmlFilms = (rows: Film[]) =>
+    !rows.length
+      ? vacio()
+      : `<div class="grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">${rows
+          .map((r) => {
+            const meta = [r.originalTitle && r.originalTitle !== r.title ? esc(r.originalTitle) : '', r.year ?? ''].filter(Boolean).join(' · ');
+            const img = r.poster
+              ? `<img src="${esc(r.poster)}" ${r.posterSrcset ? `srcset="${esc(r.posterSrcset)}"` : ''} sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw" alt="${esc(r.title)}" loading="lazy" decoding="async" class="h-full w-full object-cover" />`
+              : `<div class="film-grain h-full w-full"></div>`;
+            return `<a href="${d.filmBase}/${filmSlug(r.tmdbId, r.title)}" class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+              <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">${img}</div>
+              <div class="flex flex-1 flex-col p-2">
+                <p class="font-display text-body-lg leading-tight text-ink">${esc(r.title)}</p>
+                <p class="font-mono text-meta-data text-muted">${meta}</p>
+              </div>
+            </a>`;
+          })
+          .join('')}</div>`;
+
+  type Person = { id: number; name: string; department: string | null; knownFor: string[]; photo: string | null; photoSrcset?: string | null };
+  const iniciales = (n: string) => esc((n || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join(''));
+  const htmlPeople = (rows: Person[]) =>
+    !rows.length
+      ? vacio()
+      : `<div class="grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">${rows
+          .map((p) => {
+            const foto = p.photo
+              ? `<img src="${esc(p.photo)}" ${p.photoSrcset ? `srcset="${esc(p.photoSrcset)}"` : ''} sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />`
+              : `<span class="flex h-full w-full items-center justify-center font-display text-headline-lg text-white">${iniciales(p.name)}</span>`;
+            const oficio = depts[p.department ?? ''] ?? depts.other;
+            return `<a href="${d.personBase}/${p.id}" class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+              <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">${foto}</div>
+              <div class="flex flex-1 flex-col gap-0.5 p-2">
+                <p class="font-display text-body-lg leading-tight text-ink">${esc(p.name)}</p>
+                <p class="label">${esc(oficio)}</p>
+                ${p.knownFor.length ? `<p class="mt-1 text-meta-data italic text-muted">${p.knownFor.map(esc).join(' · ')}</p>` : ''}
+              </div>
+            </a>`;
+          })
+          .join('')}</div>`;
+
+  // El archivo, agrupado por tipo en el orden de KINDS (lo que más se visita
+  // primero): Cine abierto, artículos, dosieres…
+  type SiteHit = { kind: string; title: string; meta: string; href: string };
+  const htmlArchive = (rows: SiteHit[]) => {
+    if (!rows.length) return vacio();
+    const grupos = Object.keys(kinds)
+      .map((k) => ({ k, items: rows.filter((r) => r.kind === k) }))
+      .filter((g) => g.items.length);
+    return grupos
+      .map(
+        (g) => `<section class="mb-8 last:mb-0">
+          <h2 class="label mb-2">${esc(kinds[g.k])} · ${g.items.length}</h2>
+          <ul class="border border-ink">${g.items
+            .map(
+              (r) => `<li class="border-b border-outline-variant last:border-b-0"><a href="${esc(r.href)}" class="block bg-surface px-4 py-3 no-underline hover:bg-film-white">
+                <span class="block font-display text-headline-md leading-tight text-ink">${esc(r.title)}</span>
+                ${r.meta ? `<span class="mt-0.5 block truncate font-mono text-meta-data text-muted">${esc(r.meta)}</span>` : ''}
+              </a></li>`,
+            )
+            .join('')}</ul>
+        </section>`,
+      )
+      .join('');
+  };
+
+  type User = { id: string; username: string; name: string; isPrivate: boolean; hasAvatar: boolean };
+  const htmlUsers = (rows: User[]) => {
     if (!loggedIn) {
       // El ?next= se arma aquí, con la búsqueda que haya en ese momento.
       const next = encodeURIComponent(location.pathname + location.search);
-      usersList.innerHTML = `<li class="bg-surface px-4 py-4 font-mono text-meta-data text-muted"><a href="${loginUrl}?next=${next}" class="text-ink underline decoration-ochre">${esc(loginUsers)}</a></li>`;
-      return;
+      return `<p class="font-mono text-meta-data text-muted"><a href="${d.loginUrl}?next=${next}" class="text-ink underline decoration-ochre">${esc(d.loginUsers)}</a></p>`;
     }
-    if (!rows.length) {
-      usersList.innerHTML = `<li class="bg-surface px-4 py-4 font-mono text-meta-data text-muted">${esc(noResults)}</li>`;
-      return;
-    }
-    usersList.innerHTML = rows
+    if (!rows.length) return vacio();
+    return `<ul class="grid ruled grid-cols-1 border border-ink sm:grid-cols-2">${rows
       .map((r) => {
         const avatar = r.hasAvatar
           ? `<img src="/api/avatar/${encodeURIComponent(r.id)}" alt="" class="h-full w-full object-cover" loading="lazy">`
-          : `<span class="font-display text-body-md leading-none">${esc((r.name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join(''))}</span>`;
-        return `<li class="bg-surface"><a href="${userBase}/${encodeURIComponent(r.username)}" class="flex items-center gap-3 p-4 no-underline hover:bg-film-white">
+          : `<span class="font-display text-body-md leading-none">${iniciales(r.name)}</span>`;
+        return `<li class="bg-surface"><a href="${d.userBase}/${encodeURIComponent(r.username)}" class="flex items-center gap-3 p-4 no-underline hover:bg-film-white">
           <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink text-white">${avatar}</span>
           <span class="min-w-0"><span class="block truncate font-display text-headline-md text-ink">${esc(r.name)}</span>
           <span class="block font-mono text-meta-data text-muted">@${esc(r.username)}${r.isPrivate ? ' · 🔒' : ''}</span></span>
         </a></li>`;
       })
-      .join('');
+      .join('')}</ul>`;
   };
 
-  const renderFilms = (rows: { tmdbId: number; title: string; originalTitle?: string; year: number | null; poster: string | null; posterSrcset?: string | null }[]) => {
-    filmsBlock.classList.remove('hidden');
-    if (!rows.length) {
-      filmsGrid.className = 'mt-4';
-      filmsGrid.innerHTML = `<p class="font-mono text-meta-data text-muted">${esc(noResults)}</p>`;
-      return;
-    }
-    filmsGrid.className = 'mt-4 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6';
-    filmsGrid.innerHTML = rows
-      .map((r) => {
-        const meta = [r.originalTitle && r.originalTitle !== r.title ? esc(r.originalTitle) : '', r.year ?? '']
-          .filter(Boolean)
-          .join(' · ');
-        const img = r.poster
-          ? `<img src="${esc(r.poster)}" ${r.posterSrcset ? `srcset="${esc(r.posterSrcset)}"` : ''} sizes="(min-width:1024px) 16vw, (min-width:640px) 33vw, 50vw" alt="${esc(r.title)}" loading="lazy" decoding="async" class="h-full w-full object-cover" />`
-          : `<div class="film-grain h-full w-full"></div>`;
-        return `<a href="${filmBase}/${filmSlug(r.tmdbId, r.title)}" class="group flex flex-col bg-surface no-underline hover:bg-film-white">
-          <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">${img}</div>
-          <div class="flex flex-1 flex-col p-2">
-            <p class="font-display text-body-lg leading-tight text-ink">${esc(r.title)}</p>
-            <p class="font-mono text-meta-data text-muted">${meta}</p>
-          </div>
-        </a>`;
-      })
-      .join('');
-  };
+  /* ------------------------------ Búsqueda ------------------------------ */
 
-  // Sin resultados del archivo no se enseña la sección: la de películas ya
-  // dice «sin resultados» si tampoco hay nada allí.
-  const renderSite = (rows: { kind: string; title: string; meta: string; href: string }[]) => {
-    siteBlock.classList.toggle('hidden', rows.length === 0);
-    siteList.innerHTML = rows
-      .map(
-        (r) => `<li class="border-b border-outline-variant last:border-b-0"><a href="${esc(r.href)}" class="flex flex-col gap-1 bg-surface px-4 py-3 no-underline hover:bg-film-white sm:flex-row sm:items-baseline sm:gap-4">
-          <span class="label w-32 shrink-0">${esc(kinds[r.kind] ?? r.kind)}</span>
-          <span class="min-w-0"><span class="block font-display text-headline-md leading-tight text-ink">${esc(r.title)}</span>
-          ${r.meta ? `<span class="mt-0.5 block truncate font-mono text-meta-data text-muted">${esc(r.meta)}</span>` : ''}</span>
-        </a></li>`,
-      )
-      .join('');
-  };
+  let timer: ReturnType<typeof setTimeout>;
+  let controller: AbortController | null = null;
+
+  const pedir = <T,>(url: string, signal: AbortSignal): Promise<T[]> =>
+    fetch(url, { signal, headers: { accept: 'application/json' } })
+      .then((r) => (r.ok ? r.json() : { results: [] }))
+      .then((j) => (j.results ?? []) as T[])
+      .catch(() => [] as T[]);
 
   async function run(raw: string) {
     const q = raw.trim();
+    controller?.abort();
     if (q.length < 2) {
-      controller?.abort();
-      siteBlock.classList.add('hidden');
-      usersBlock.classList.add('hidden');
-      filmsBlock.classList.add('hidden');
+      results.classList.add('hidden');
       hint.hidden = false;
       return;
     }
     hint.hidden = true;
-    controller?.abort();
+    results.classList.remove('hidden');
     controller = new AbortController();
-    const signal = controller.signal;
+    const { signal } = controller;
+    const enc = encodeURIComponent(q);
 
-    // El archivo responde al momento (índice en memoria): se pinta sin esperar
-    // a TMDB.
-    fetch(`/api/search/site?q=${encodeURIComponent(q)}&lang=${lang}`, { signal, headers: { accept: 'application/json' } })
-      .then((r) => (r.ok ? r.json() : { results: [] }))
-      .then((d) => {
-        if (!signal.aborted) renderSite(d.results ?? []);
-      })
-      .catch(() => {});
+    for (const id of ORDEN) {
+      contar(id, null);
+      panels[id].querySelector('[data-loading]')?.removeAttribute('hidden');
+      panels[id].querySelector('[data-list]')!.innerHTML = '';
+    }
+    // Mientras llega todo, se ve la pestaña elegida o la primera.
+    mostrar(elegida ?? 'films');
 
-    // Películas: siempre (búsqueda pública). Usuarios: solo con sesión.
-    const filmsP = fetch(`/api/films/search?q=${encodeURIComponent(q)}&lang=${lang}`, { signal, headers: { accept: 'application/json' } })
-      .then((r) => (r.ok ? r.json() : { results: [] }))
-      .catch(() => ({ results: [] }));
+    const fuentes: Record<Tab, Promise<unknown[]>> = {
+      films: pedir<Film>(`/api/films/search?q=${enc}&lang=${lang}`, signal),
+      people: pedir<Person>(`/api/search/people?q=${enc}&lang=${lang}`, signal),
+      archive: pedir<SiteHit>(`/api/search/site?q=${enc}&lang=${lang}`, signal),
+      users: loggedIn ? pedir<User>(`/api/users/search?q=${enc}`, signal) : Promise.resolve([]),
+    };
+    const pintores: Record<Tab, (rows: never[]) => string> = {
+      films: htmlFilms,
+      people: htmlPeople,
+      archive: htmlArchive,
+      users: htmlUsers,
+    };
 
-    if (loggedIn) {
-      const usersP = fetch(`/api/users/search?q=${encodeURIComponent(q)}`, { signal, headers: { accept: 'application/json' } })
-        .then((r) => (r.ok ? r.json() : { results: [] }))
-        .catch(() => ({ results: [] }));
-      const [users, films] = await Promise.all([usersP, filmsP]);
-      if (signal.aborted) return;
-      renderUsers(users.results ?? []);
-      renderFilms(films.results ?? []);
-    } else {
-      renderUsers([]); // muestra el aviso de inicio de sesión
-      const films = await filmsP;
-      if (signal.aborted) return;
-      renderFilms(films.results ?? []);
+    // Cada pestaña se rellena en cuanto llega lo suyo (el archivo responde al
+    // momento; TMDB tarda algo más).
+    const cuentas = await Promise.all(
+      ORDEN.map((id) =>
+        fuentes[id].then((rows) => {
+          if (signal.aborted) return 0;
+          contar(id, rows.length);
+          pintar(id, pintores[id](rows as never[]));
+          return rows.length;
+        }),
+      ),
+    );
+    if (signal.aborted) return;
+
+    // Sin elección: la primera pestaña con algo (usuarios solo con sesión).
+    if (!elegida) {
+      const i = cuentas.findIndex((n, j) => n > 0 && (ORDEN[j] !== 'users' || loggedIn));
+      mostrar(i >= 0 ? ORDEN[i] : 'films');
     }
   }
 
-  // La búsqueda va siempre a la URL, también al escribir sin pulsar Intro: si
-  // no, al abrir una película y volver, la ficha devolvía a /search vacío.
-  // replaceState y no pushState: cada letra no debe ser un paso del historial.
-  const syncUrl = (q: string) => {
+  /* ------------------------------ Eventos ------------------------------- */
+
+  // La búsqueda y la pestaña van a la URL: al abrir una ficha y volver, todo
+  // sigue igual. replaceState y no pushState: cada letra no es un paso del historial.
+  const syncUrl = () => {
     const url = new URL(location.href);
-    if (q.trim()) url.searchParams.set('q', q.trim());
+    const q = input.value.trim();
+    if (q) url.searchParams.set('q', q);
     else url.searchParams.delete('q');
+    if (elegida) url.searchParams.set('tipo', elegida);
+    else url.searchParams.delete('tipo');
     history.replaceState(history.state, '', url);
   };
+
+  for (const id of ORDEN) {
+    tabs[id].addEventListener('click', () => {
+      elegida = id;
+      mostrar(id);
+      syncUrl();
+    });
+  }
+  // Flechas para moverse entre pestañas, como pide el patrón de pestañas accesibles.
+  document.querySelector('[role="tablist"]')?.addEventListener('keydown', (e) => {
+    const ev = e as KeyboardEvent;
+    if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
+    const actual = ORDEN.findIndex((id) => tabs[id].getAttribute('aria-selected') === 'true');
+    const sig = ORDEN[(actual + (ev.key === 'ArrowRight' ? 1 : ORDEN.length - 1)) % ORDEN.length];
+    elegida = sig;
+    mostrar(sig, true);
+    syncUrl();
+    ev.preventDefault();
+  });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     clearTimeout(timer);
     run(input.value);
-    syncUrl(input.value);
+    syncUrl();
   });
   input.addEventListener('input', () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       run(input.value);
-      syncUrl(input.value);
+      syncUrl();
     }, 300);
   });
 

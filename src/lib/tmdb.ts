@@ -351,7 +351,12 @@ export interface TmdbPersonHit {
  * departamento, por popularidad: «Ozu» a secas daba tres actrices antes que a
  * Yasujirō, y «Tarkovski» al poeta Arseni antes que a Andréi.
  */
-export async function searchPeople(query: string, locale: string, limit = 8): Promise<TmdbPersonHit[]> {
+/**
+ * Personas por nombre. `primeroDireccion`: para elegir directores favoritos,
+ * la dirección va delante; en el buscador general, el orden de TMDB por
+ * popularidad (si no, «Tom» daba antes a un director olvidado que a Tom Hanks).
+ */
+export async function searchPeople(query: string, locale: string, limit = 8, primeroDireccion = true): Promise<TmdbPersonHit[]> {
   const data = await tmdbFetch<{
     results: {
       id: number;
@@ -362,7 +367,7 @@ export async function searchPeople(query: string, locale: string, limit = 8): Pr
       known_for?: { title?: string; name?: string }[];
     }[];
   }>('/search/person', { query, language: toTmdbLang(locale), include_adult: 'false', page: '1' });
-  const rank = (d: string | null | undefined) => (d === 'Directing' ? 2 : d === 'Writing' ? 1 : 0);
+  const rank = (d: string | null | undefined) => (!primeroDireccion ? 0 : d === 'Directing' ? 2 : d === 'Writing' ? 1 : 0);
   return data.results
     .map((p) => ({
       id: p.id,

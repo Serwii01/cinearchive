@@ -1,0 +1,59 @@
+---
+/**
+ * Las notas de una película, en una fila de casillas: TMDB, IMDb (con sus
+ * votos), Rotten Tomatoes y Metacritic. Qué casillas salen lo decide
+ * casillasDeNotas (lib/scores.ts, con tests).
+ *
+ * Las de IMDb, RT y Metacritic vienen de OMDb, que da 1.000 consultas al día.
+ * Los robots que recorren fichas sueltas las gastaban en poco rato y luego las
+ * personas veían la ficha sin notas. Por eso, si faltan o tienen más de 30
+ * días, la ficha sale con huecos («…») y `data-src`, y el navegador las pide a
+ * /api/films/[id]/notes al cargarse: los robots no ejecutan JavaScript. Ver
+ * getOmdbFresh en lib/films.ts.
+ */
+import type { OmdbData } from '../lib/omdb';
+import { casillasDeNotas } from '../lib/scores';
+import { locales, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  tmdbId: number;
+  lang: Lang;
+  /** La media de TMDB (0 si no tiene votos). */
+  voteAverage: number;
+  omdb: OmdbData | null;
+  /** Faltan o caducaron las de OMDb: el navegador las pedirá. */
+  pendiente?: boolean;
+}
+
+const { tmdbId, lang, voteAverage, omdb, pendiente = false } = Astro.props;
+const t = useTranslations(lang);
+
+const casillas = casillasDeNotas({
+  voteAverage,
+  omdb,
+  pendiente,
+  formatoNumero: (n) => n.toLocaleString(locales[lang]),
+  textoVotos: t('film.communityVotes'),
+  etiquetaImdb: t('film.imdb'),
+});
+
+// Clases enteras (no interpoladas) para que Tailwind las genere. En móvil van
+// de dos en dos y, si son impares, una casilla vacía cierra la rejilla.
+const cols = ['', 'sm:grid-cols-1', 'sm:grid-cols-2', 'sm:grid-cols-3', 'sm:grid-cols-4'][casillas.length];
+const src = pendiente ? `/api/films/${tmdbId}/notes?lang=${lang}` : undefined;
+---
+
+{
+  casillas.length > 0 && (
+    <div id="notas" data-src={src} aria-busy={pendiente ? 'true' : undefined} class:list={['mt-8 grid ruled grid-cols-2 border border-ink', cols]}>
+      {casillas.map((c) => (
+        <div class="bg-film-white p-3">
+          <span class="label">{c.label}</span>
+          <p class:list={['font-display text-headline-md', c.hueco ? 'text-muted' : 'text-ink']}>{c.value}</p>
+          {c.sub && <p class="font-mono text-meta-data text-muted">{c.sub}</p>}
+        </div>
+      ))}
+      {casillas.length % 2 === 1 && <div class="bg-film-white sm:hidden" aria-hidden="true" />}
+    </div>
+  )
+}

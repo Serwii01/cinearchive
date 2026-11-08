@@ -1,0 +1,33 @@
+---
+/**
+ * GET /api/films/:id/notes?lang=xx — la fila de notas de una ficha (TMDB, IMDb,
+ * Rotten Tomatoes, Metacritic), en HTML, para que el navegador la cambie por
+ * los huecos «…».
+ *
+ * La pide el script de la ficha al cargarse, cuando las notas de OMDb faltan o
+ * tienen más de 30 días. Así la consulta a OMDb (1.000 al día) la provoca una
+ * persona y no los robots, que no ejecutan JavaScript (ver getOmdbFresh en
+ * lib/films.ts). Si no hay ninguna nota, la respuesta va vacía y la fila se quita.
+ */
+import FilmScores from '../../../../components/FilmScores.astro';
+import { getOmdbFresh } from '../../../../lib/films';
+import { rateLimit, clientIp } from '../../../../lib/ratelimit';
+import { normalizeLang } from '../../../../i18n/ui';
+
+export const prerender = false;
+export const partial = true;
+
+const tmdbId = Number(Astro.params.id);
+const lang = normalizeLang(Astro.url.searchParams.get('lang') ?? undefined);
+const valido = Number.isInteger(tmdbId) && tmdbId > 0;
+// Una persona abre unas pocas fichas por minuto; con esto nadie puede usar la
+// ruta para gastar la cuota de OMDb en bucle.
+const permitido = valido && rateLimit(`notes:${clientIp(Astro.request)}`, 30, 60_000);
+const datos = permitido ? await getOmdbFresh(tmdbId).catch(() => null) : null;
+
+Astro.response.headers.set('cache-control', 'private, max-age=300');
+if (!valido) Astro.response.status = 400;
+else if (!permitido) Astro.response.status = 429;
+---
+
+{datos && <FilmScores tmdbId={tmdbId} lang={lang} voteAverage={datos.voteAverage} omdb={datos.omdb} />}

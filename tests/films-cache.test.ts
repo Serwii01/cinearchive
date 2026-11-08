@@ -48,9 +48,15 @@ describe('localizaciones de Wikidata', () => {
     expect(ruta).toContain('rateLimit(');
   });
 
-  it('las notas de OMDb miden su antigüedad con su propia fecha', () => {
+  it('las notas de OMDb miden su antigüedad con su propia fecha y no se piden al pintar la ficha', () => {
     const src = readFileSync('src/lib/films.ts', 'utf8');
-    expect(src).toMatch(/omdbFetchedAt \?\? cached\?\.fetchedAt/);
+    expect(src).toMatch(/omdbAlDia\(omdb, cached\?\.omdbFetchedAt \?\? null\)/);
+    // Los robots gastaban la cuota diaria de OMDb (1.000) abriendo fichas sueltas.
+    const loadFilm = src.slice(src.indexOf('async function loadFilm'), src.indexOf('export function hayQueGuardar'));
+    expect(loadFilm).not.toMatch(/getOmdbByImdbId\(/);
+    const ruta = readFileSync('src/pages/api/films/[id]/notes.astro', 'utf8');
+    expect(ruta).toContain('getOmdbFresh(');
+    expect(ruta).toContain('rateLimit(');
   });
 });
 
