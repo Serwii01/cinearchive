@@ -40,6 +40,8 @@ const patchSchema = z.object({
   // Elegidos con el buscador de personas: con el id, recomendar no adivina.
   favoritePeople: z.array(z.object({ id: z.number().int().positive(), name: z.string().min(1).max(120) })).max(12).optional(),
   theme: z.enum(['light', 'dark']).optional(),
+  // Correo cuando alguien te sigue (ver lib/followmail.ts).
+  followEmail: z.boolean().optional(),
 });
 
 /** PATCH — actualizar preferencias. */
@@ -67,6 +69,7 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
       favoriteDirectors: favoriteDirectors ?? [],
       favoritePeople: favoritePeople ?? [],
       theme: data.theme ?? 'light',
+      followEmail: data.followEmail ?? false,
       updatedAt: new Date(),
     })
     .onConflictDoUpdate({
@@ -77,6 +80,7 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
         ...(favoriteDirectors !== undefined ? { favoriteDirectors } : {}),
         ...(favoritePeople !== undefined ? { favoritePeople } : {}),
         ...(data.theme !== undefined ? { theme: data.theme } : {}),
+        ...(data.followEmail !== undefined ? { followEmail: data.followEmail } : {}),
         updatedAt: new Date(),
       },
     });

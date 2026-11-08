@@ -6,6 +6,8 @@ import ListPicker from '../../../components/ListPicker.astro';
 import ViewingsPanel from '../../../components/ViewingsPanel.astro';
 import FilmLocations from '../../../components/FilmLocations.astro';
 import FilmScores from '../../../components/FilmScores.astro';
+import FilmSocial from '../../../components/FilmSocial.astro';
+import { filmReviews, followedWhoWatched } from '../../../lib/filmsocial';
 import { filmViewings, type Viewing } from '../../../lib/viewings';
 import { normalizeLang, locales, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
 import { resolveBackLink } from '../../../lib/backlink';
@@ -139,6 +141,14 @@ if (Astro.locals.user) {
 }
 
 // Las notas (TMDB, IMDb, RT, Metacritic) las pinta components/FilmScores.astro.
+
+// La parte social (components/FilmSocial.astro). Si la base de datos falla, la
+// ficha sale igual, sin ella.
+const visor = Astro.locals.user?.id ?? null;
+const [reseñas, seguidos] = await Promise.all([
+  filmReviews(tmdbId, visor).catch(() => []),
+  visor ? followedWhoWatched(tmdbId, visor).catch(() => null) : Promise.resolve(null),
+]);
 
 // Tráiler (YouTube), reparto y películas similares (ya vienen en la tmdb cacheada).
 const trailer = trailerKey(tmdb);
@@ -337,7 +347,7 @@ const crumbsJsonLd = breadcrumbLd([
             />
             <span class="flex flex-col justify-center gap-1 p-3 sm:p-4">
               <span class="label group-hover:text-background">{t('cinema.watchFreeHere')}</span>
-              <span class="font-display text-headline-md text-ink group-hover:text-background">▶ {t('cinema.watchFreeCta')}</span>
+              <span class="font-display text-headline-md text-ink group-hover:text-background">▶︎ {t('cinema.watchFreeCta')}</span>
             </span>
           </a>
         )}
@@ -352,7 +362,7 @@ const crumbsJsonLd = breadcrumbLd([
                 <div class="film-grain aspect-video w-full"></div>
               )}
               <span class="absolute inset-0 flex items-center justify-center bg-ink/30 transition-colors group-hover:bg-ink/50">
-                <span class="btn btn-primary pointer-events-none">▶ {t('film.playTrailer')}</span>
+                <span class="btn btn-primary pointer-events-none">▶︎ {t('film.playTrailer')}</span>
               </span>
             </button>
           </div>
@@ -558,6 +568,9 @@ const crumbsJsonLd = breadcrumbLd([
       </section>
     )}
 
+
+    {/* Reseñas de la comunidad y quién de la gente que sigues la ha visto. */}
+    <FilmSocial lang={lang} tmdbId={tmdbId} reviews={reseñas} followed={seguidos} viewerId={Astro.locals.user?.id ?? null} />
 
     {/* Películas similares */}
     {similar.length > 0 && (

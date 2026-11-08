@@ -5,6 +5,7 @@ import { db } from '../../db/client';
 import { follows } from '../../db/schema';
 import { getProfileByUsername, getMyProfile } from '../../lib/social';
 import { check, tooMany } from '../../lib/ratelimit';
+import { avisarSeguidor } from '../../lib/followmail';
 
 export const prerender = false;
 
@@ -25,7 +26,8 @@ export const POST: APIRoute = async ({ locals, request }) => {
   const capped = limited(locals.user.id);
   if (capped) return capped;
   // Para seguir hay que tener perfil (username): así la red social es coherente.
-  if (!(await getMyProfile(locals.user.id))) return bad('need_profile');
+  const yo = await getMyProfile(locals.user.id);
+  if (!yo) return bad('need_profile');
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return bad('invalid');
 
@@ -34,10 +36,17 @@ export const POST: APIRoute = async ({ locals, request }) => {
   if (target.userId === locals.user.id) return bad('self');
 
   const status = target.isPrivate ? 'pending' : 'accepted';
-  await db
+  const nuevo = await db
     .insert(follows)
     .values({ followerId: locals.user.id, followingId: target.userId, status })
-    .onConflictDoNothing();
+    .onConflictDoNothing()
+    .returning({ status: follows.status });
+
+  // Correo a la persona seguida, si lo ha pedido. Sin esperar: si tarda o
+  // falla, seguir funciona igual.
+  if (nuevo.length) {
+    void avisarSeguidor({ id: locals.user.id, name: locals.user.name ?? yo.username, username: yo.username }, target.userId, status === 'pending').catch(() => {});
+  }
 
   // Estado real (por si ya existía una relación previa).
   const [row] = await db

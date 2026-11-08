@@ -1,0 +1,101 @@
+---
+/**
+ * Botón de «me gusta» (corazón dibujado, no emoji) con su recuento, para
+ * reseñas y listas públicas. Sin sesión lleva a entrar; en lo propio solo
+ * enseña el número. El script pone y quita sin recargar (/api/me/likes).
+ */
+import { heartSvg } from '../lib/ui/icons';
+import { getMyProfile } from '../lib/social';
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
+
+type Props = {
+  lang: Lang;
+  likes: number;
+  liked: boolean;
+  /** Es tuyo: no se puede dar «me gusta» a lo propio. */
+  own?: boolean;
+  loggedIn: boolean;
+  class?: string;
+} & ({ kind: 'review'; username: string; tmdbId: number } | { kind: 'list'; listId: string });
+
+const p = Astro.props;
+const t = useTranslations(p.lang);
+const base = 'inline-flex items-center gap-1.5 font-mono text-meta-data';
+const destino = p.kind === 'review' ? JSON.stringify({ kind: 'review', username: p.username, tmdbId: p.tmdbId }) : JSON.stringify({ kind: 'list', listId: p.listId });
+const login = `${localizePath(p.lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`;
+// Para dar «me gusta» hace falta perfil, como para seguir: así el aviso que le
+// llega al autor dice quién ha sido. Se pregunta una vez por página, aunque
+// haya muchos botones.
+const locals = Astro.locals as typeof Astro.locals & { __perfil?: Promise<unknown> };
+const conPerfil = p.loggedIn && Astro.locals.user ? !!(await (locals.__perfil ??= getMyProfile(Astro.locals.user.id))) : false;
+---
+
+{
+  p.own ? (
+    p.likes > 0 && (
+      <span class:list={[base, 'text-muted', p.class]} title={t('likes.section')}>
+        <Fragment set:html={heartSvg(true)} />
+        {p.likes}
+      </span>
+    )
+  ) : p.loggedIn && !conPerfil ? (
+    <a href={`${localizePath(p.lang, 'account')}#profile-editor`} title={t('likes.needProfile')} aria-label={t('likes.needProfile')} class:list={[base, 'tap text-muted no-underline hover:text-ink', p.class]}>
+      <Fragment set:html={heartSvg(false)} />
+      {p.likes > 0 && p.likes}
+    </a>
+  ) : p.loggedIn ? (
+    <button
+      type="button"
+      data-like={destino}
+      data-label-on={t('likes.unlike')}
+      data-label-off={t('likes.like')}
+      aria-pressed={p.liked ? 'true' : 'false'}
+      aria-label={p.liked ? t('likes.unlike') : t('likes.like')}
+      title={p.liked ? t('likes.unlike') : t('likes.like')}
+      class:list={[base, 'tap text-muted transition-colors hover:text-ink aria-pressed:text-error', p.class]}
+    >
+      <span data-heart set:html={heartSvg(p.liked)} />
+      <span data-likes>{p.likes > 0 ? p.likes : ''}</span>
+    </button>
+  ) : (
+    <a href={login} title={t('likes.login')} aria-label={t('likes.login')} class:list={[base, 'tap text-muted no-underline hover:text-ink', p.class]}>
+      <Fragment set:html={heartSvg(false)} />
+      {p.likes > 0 && p.likes}
+    </a>
+  )
+}
+
+<script>
+  import { heartSvg } from '../lib/ui/icons';
+
+  // Un solo escuchador para todos los botones de la página (puede haber muchos
+  // en las reseñas de una ficha). Se marca al momento y se corrige si falla.
+  if (!(window as unknown as { __likes?: boolean }).__likes) {
+    (window as unknown as { __likes?: boolean }).__likes = true;
+    document.addEventListener('click', async (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-like]');
+      if (!btn || btn.disabled) return;
+      const pintar = (liked: boolean, likes: number) => {
+        btn.setAttribute('aria-pressed', String(liked));
+        const label = liked ? btn.dataset.labelOn! : btn.dataset.labelOff!;
+        btn.setAttribute('aria-label', label);
+        btn.title = label;
+        btn.querySelector('[data-heart]')!.innerHTML = heartSvg(liked);
+        btn.querySelector('[data-likes]')!.textContent = likes > 0 ? String(likes) : '';
+      };
+      const antes = { liked: btn.getAttribute('aria-pressed') === 'true', likes: Number(btn.querySelector('[data-likes]')?.textContent || 0) };
+      pintar(!antes.liked, Math.max(0, antes.likes + (antes.liked ? -1 : 1)));
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/me/likes', { method: 'POST', headers: { 'content-type': 'application/json' }, body: btn.dataset.like });
+        if (!res.ok) throw new Error(String(res.status));
+        const d = (await res.json()) as { liked: boolean; likes: number };
+        pintar(d.liked, d.likes);
+      } catch {
+        pintar(antes.liked, antes.likes);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+</script>

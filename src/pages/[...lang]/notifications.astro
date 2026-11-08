@@ -2,6 +2,7 @@
 import { posterSet } from '../../lib/posters';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Avatar from '../../components/Avatar.astro';
+import { LOCK_SVG } from '../../lib/ui/icons';
 import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../i18n/ui';
 import { db } from '../../db/client';
 import { follows, user as userTable, profile, streamAlerts } from '../../db/schema';
@@ -10,6 +11,7 @@ import { getFilmsBrief } from '../../lib/films';
 import { providerLogoUrl } from '../../lib/tmdb';
 import { filmSlug } from '../../lib/slug';
 import { getMyProfile, getConnections, markNotificationsSeen } from '../../lib/social';
+import { likeNotifications } from '../../lib/filmsocial';
 
 export const prerender = false;
 
@@ -53,6 +55,12 @@ for (const a of alerts) {
     row.isNew ||= !a.seenAt;
   } else alertRows.push({ tmdbId: a.tmdbId, at: a.createdAt, isNew: !a.seenAt, providers: [prov] });
 }
+
+// «Me gusta» recibidos en reseñas y listas. Lo nuevo es lo posterior a la
+// última visita a esta página (se lee antes de marcarla).
+const likes = myProfile ? await likeNotifications(userId) : [];
+const vistoAntes = myProfile?.notificationsSeenAt ?? null;
+const likeBriefs = await getFilmsBrief([...new Set(likes.flatMap((l) => (l.tmdbId ? [l.tmdbId] : [])))], lang);
 
 // Al abrir esta página, lo "nuevo" queda visto (limpia el badge de seguidores y avisos).
 await markNotificationsSeen(userId);
@@ -112,6 +120,41 @@ await markNotificationsSeen(userId);
       </p>
     ) : (
       <>
+        {/* «Me gusta» en tus reseñas y listas */}
+        <div class="mt-10" id="likes">
+          <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('likes.section')} <span class="label">· {likes.length}</span></h2>
+          {likes.length === 0 ? (
+            <p class="mt-3 font-mono text-body-md text-muted">{t('likes.none')}</p>
+          ) : (
+            <ul class="mt-4 grid ruled grid-cols-1 border border-ink">
+              {likes.map((l) => {
+                const film = l.tmdbId ? likeBriefs.get(l.tmdbId) : undefined;
+                const href = l.kind === 'review'
+                  ? localizePath(lang, `u/${myProfile.username}/review/${l.tmdbId}`)
+                  : localizePath(lang, `lists/${l.listId}`);
+                const texto = l.kind === 'review'
+                  ? t('likes.notifReview').replace('{film}', film?.title ?? `#${l.tmdbId}`)
+                  : t('likes.notifList').replace('{list}', l.listName ?? '');
+                const [antes, despues] = texto.split('{user}');
+                const nuevo = !vistoAntes || l.at > vistoAntes;
+                return (
+                  <li class="bg-surface">
+                    <a href={href} class="flex items-center gap-3 p-3 no-underline hover:bg-film-white">
+                      <Avatar userId={l.userId} name={l.name} hasAvatar={l.hasAvatar} size={40} class="h-10 w-10" />
+                      <span class="min-w-0">
+                        <span class="block text-body-md text-charcoal">
+                          {antes}<strong class="font-medium text-ink">@{l.username}</strong>{despues}
+                        </span>
+                        <span class="label">{formatDate(l.at, lang)}{nuevo && <span class="ml-2 bg-ochre px-1 text-on-accent">{t('alerts.new')}</span>}</span>
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+
         {/* Solicitudes de seguimiento */}
         <div class="mt-10" id="requests">
           <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('profile.requests')} <span class="label">· {pending.length}</span></h2>
@@ -151,7 +194,7 @@ await markNotificationsSeen(userId);
                     <Avatar userId={r.id} name={r.name} hasAvatar={r.hasAvatar} size={40} class="h-10 w-10" />
                     <span class="min-w-0">
                       <span class="block truncate font-display text-headline-md text-ink">{r.name}</span>
-                      <span class="block font-mono text-meta-data text-muted">@{r.username}{r.isPrivate ? ' · 🔒' : ''}</span>
+                      <span class="block font-mono text-meta-data text-muted">@{r.username}{r.isPrivate && <> · <Fragment set:html={LOCK_SVG} /></>}</span>
                     </span>
                   </a>
                 </li>

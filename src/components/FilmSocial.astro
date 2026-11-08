@@ -1,0 +1,87 @@
+---
+/**
+ * La parte social de la ficha: quién de la gente que sigues la ha visto y las
+ * reseñas de la comunidad. Discreta a propósito: va al final, antes de las
+ * similares, y no aparece si no hay nada que enseñar. Tres reseñas a la vista;
+ * el resto, plegado (sin JavaScript: <details>).
+ */
+import Avatar from './Avatar.astro';
+import ReviewCard from './ReviewCard.astro';
+import type { FilmReview, FollowedViewer } from '../lib/filmsocial';
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  tmdbId: number;
+  reviews: FilmReview[];
+  followed: { people: FollowedViewer[]; total: number } | null;
+  viewerId: string | null;
+}
+
+const { lang, tmdbId, reviews, followed, viewerId } = Astro.props;
+const t = useTranslations(lang);
+const VISIBLES = 3;
+const perfil = (u: string) => localizePath(lang, `u/${u}`);
+const hay = reviews.length > 0 || (followed?.total ?? 0) > 0;
+// Tantas columnas como reseñas, hasta tres: con una sola, tres columnas dejaban
+// dos casillas vacías. Clases enteras para que Tailwind las genere.
+const cols = (n: number) => ['md:grid-cols-1', 'md:grid-cols-1', 'md:grid-cols-2', 'md:grid-cols-3'][Math.min(n, 3)];
+---
+
+{
+  hay && (
+    <section class="mt-14" aria-labelledby="film-social">
+      <h2 id="film-social" class="border-b border-ink pb-3 text-headline-lg text-ink">
+        {t('film.reviews')}
+        {reviews.length > 0 && <span class="label"> · {reviews.length}</span>}
+      </h2>
+
+      {followed && followed.total > 0 && (
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+          <ul class="flex -space-x-1">
+            {followed.people.map((p) => (
+              <li>
+                <a
+                  href={perfil(p.username)}
+                  title={p.rating != null ? `${p.name} · ${p.rating.toLocaleString(lang)}/5` : p.name}
+                  class="block no-underline"
+                >
+                  <Avatar userId={p.userId} name={p.name} hasAvatar={p.hasAvatar} size={28} />
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="font-mono text-meta-data text-muted">
+            {followed.total === 1 ? t('film.followedSawOne') : t('film.followedSaw').replace('{n}', String(followed.total))}
+          </p>
+        </div>
+      )}
+
+      {reviews.length > 0 && (
+        <>
+          <ul class:list={['mt-4 grid ruled grid-cols-1 border border-ink', cols(Math.min(reviews.length, VISIBLES))]}>
+            {reviews.slice(0, VISIBLES).map((r) => (
+              <li class="flex flex-col bg-surface p-4">
+                <ReviewCard r={r} lang={lang} tmdbId={tmdbId} viewerId={viewerId} />
+              </li>
+            ))}
+          </ul>
+          {reviews.length > VISIBLES && (
+            <details class="group mt-3">
+              <summary class="label cursor-pointer list-none hover:text-ink">
+                {t('film.reviewsAll').replace('{n}', String(reviews.length))} <span class="group-open:hidden">↓&#xFE0E;</span>
+              </summary>
+              <ul class:list={['mt-3 grid ruled grid-cols-1 border border-ink', cols(reviews.length - VISIBLES)]}>
+                {reviews.slice(VISIBLES).map((r) => (
+                  <li class="flex flex-col bg-surface p-4">
+                    <ReviewCard r={r} lang={lang} tmdbId={tmdbId} viewerId={viewerId} />
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </>
+      )}
+    </section>
+  )
+}

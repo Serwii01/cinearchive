@@ -16,6 +16,7 @@ const t = useTranslations(lang);
   data-l-nolists={t('lists.noLists')}
   data-l-save={t('controls.save')}
   data-l-saved={t('controls.saved')}
+  data-l-error={t('lists.actionError')}
   data-login-url={localizePath(lang, 'login')}
   data-login-label={t('film.addToList')}
   class="block border border-ink bg-film-white"
@@ -72,7 +73,7 @@ const t = useTranslations(lang);
           render(lists);
           const msg = this.querySelector('[data-msg]');
           if (msg) {
-            msg.textContent = res.every((r) => r.ok) ? d.lSaved! : '⚠';
+            msg.textContent = res.every((r) => r.ok) ? d.lSaved! : d.lError!;
             setTimeout(() => (msg.textContent = ''), 1500);
           }
         });

@@ -38,6 +38,7 @@ const people = [
   ...(prefs?.favoriteDirectors ?? []).filter((n) => !nombresConId.has(n.toLowerCase())).map((name) => ({ id: null, name })),
 ];
 const theme = prefs?.theme ?? 'light';
+const followEmail = prefs?.followEmail ?? false;
 
 // Perfil público del usuario y solicitudes de seguimiento pendientes.
 const myProfile = await getMyProfile(user.id);
@@ -359,6 +360,12 @@ const inputCls =
               </div>
             </fieldset>
 
+            {/* Correo por seguidor nuevo: apagado por defecto. */}
+            <label class="mt-6 flex items-start gap-3">
+              <input type="checkbox" name="followEmail" checked={followEmail} class="mt-1 h-4 w-4 accent-ink" />
+              <span class="text-body-md text-charcoal">{t('account.followEmail')}</span>
+            </label>
+
             <div class="mt-8 flex flex-wrap items-center gap-4">
               <button type="submit" class="btn btn-primary">{t('account.save')}</button>
               <span data-msg class="font-mono text-meta-data text-muted"></span>
@@ -672,7 +679,8 @@ const inputCls =
     // Con id van como personas; los nombres sueltos heredados, como nombres.
     const favoritePeople = people.filter((p): p is { id: number; name: string } => p.id != null);
     const favoriteDirectors = people.map((p) => p.name);
-    const body = { locale: lang, favoriteGenres: genres, theme, favoriteDirectors, favoritePeople };
+    const followEmail = (form.querySelector('input[name="followEmail"]') as HTMLInputElement | null)?.checked ?? false;
+    const body = { locale: lang, favoriteGenres: genres, theme, favoriteDirectors, favoritePeople, followEmail };
 
     const res = await fetch('/api/me/preferences', {
       method: 'PATCH',

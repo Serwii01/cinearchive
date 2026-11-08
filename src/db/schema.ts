@@ -272,6 +272,8 @@ export const userPreferences = pgTable('user_preferences', {
   watchProviders: integer('watch_providers').array().notNull().default([]),
   /** Además del aviso en la web, un correo. Desactivado salvo que lo pida. */
   alertsEmail: boolean('alerts_email').notNull().default(false),
+  /** Correo cuando alguien empieza a seguirte o te pide seguirte. Apagado por defecto. */
+  followEmail: boolean('follow_email').notNull().default(false),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
@@ -397,6 +399,49 @@ export const follows = pgTable(
     // índices la PK compuesta no cubre los filtros por una sola columna.
     followingIdx: index('follows_following_idx').on(t.followingId, t.status),
     followerIdx: index('follows_follower_idx').on(t.followerId, t.status),
+  }),
+);
+
+/**
+ * «Me gusta» en reseñas. Una reseña es la fila de user_films de su autor con
+ * nota, así que se identifica por (autor, película). Si el autor la borra, se
+ * borran también sus «me gusta» (api/me/films).
+ */
+export const reviewLikes = pgTable(
+  'review_likes',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    authorId: text('author_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    tmdbId: integer('tmdb_id').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.authorId, t.tmdbId] }),
+    // Contar los de una reseña y avisar a su autor de los nuevos.
+    targetIdx: index('review_likes_target_idx').on(t.authorId, t.tmdbId),
+    authorDateIdx: index('review_likes_author_date_idx').on(t.authorId, t.createdAt),
+  }),
+);
+
+/** «Me gusta» en listas públicas. */
+export const listLikes = pgTable(
+  'list_likes',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    listId: text('list_id')
+      .notNull()
+      .references(() => userLists.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.listId] }),
+    listIdx: index('list_likes_list_idx').on(t.listId, t.createdAt),
   }),
 );
 

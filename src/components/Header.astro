@@ -111,7 +111,7 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
         aria-controls="mobile-menu"
         class="flex items-center border-l border-ink px-4 font-mono text-headline-md leading-none transition-colors hover:bg-ink hover:text-white xl:hidden"
       >
-        <span data-icon aria-hidden="true">☰</span>
+        <span data-icon aria-hidden="true">☰︎</span>
       </button>
     </div>
   </div>
@@ -161,7 +161,7 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
   btn?.addEventListener('click', () => {
     const isOpen = menu?.classList.toggle('hidden') === false;
     btn.setAttribute('aria-expanded', String(isOpen));
-    if (icon) icon.textContent = isOpen ? '✕' : '☰';
+    if (icon) icon.textContent = isOpen ? '✕' : '☰︎';
   });
 </script>
 

@@ -292,3 +292,64 @@ export function streamAlertEmail(lang: Lang, lines: string[], url: string): Buil
   const c: Copy = { ...a, subject: a.subject(lines.length) };
   return { subject: c.subject, html: layout(c, url, lines), text: plain(c, url, lines) };
 }
+
+type FollowCopy = Omit<Copy, 'subject' | 'intro'> & {
+  subject: (quien: string, pide: boolean) => string;
+  intro: (pide: boolean) => string;
+};
+
+const FOLLOW: Record<Lang, FollowCopy> = {
+  es: {
+    subject: (q, pide) => (pide ? `${q} quiere seguirte en Cine Archive` : `${q} ha empezado a seguirte en Cine Archive`),
+    title: 'Tienes un seguidor nuevo',
+    intro: (pide) => (pide ? 'Tu perfil es privado, así que te pide permiso para seguirte:' : 'Ha empezado a seguirte:'),
+    cta: 'Ver mis notificaciones',
+    note: 'Desde tus notificaciones puedes ver su perfil y, si te lo ha pedido, aceptarlo o rechazarlo.',
+    ignore: 'Puedes dejar de recibir estos correos en tu cuenta, en «Preferencias».',
+    fallback: 'Si el botón no funciona, copia esta dirección en tu navegador:',
+  },
+  en: {
+    subject: (q, pide) => (pide ? `${q} wants to follow you on Cine Archive` : `${q} started following you on Cine Archive`),
+    title: 'You have a new follower',
+    intro: (pide) => (pide ? 'Your profile is private, so they are asking to follow you:' : 'They started following you:'),
+    cta: 'See my notifications',
+    note: 'From your notifications you can see their profile and, if they asked, accept or decline.',
+    ignore: 'You can stop these emails from your account, under “Preferences”.',
+    fallback: 'If the button does not work, copy this address into your browser:',
+  },
+  gl: {
+    subject: (q, pide) => (pide ? `${q} quere seguirte en Cine Archive` : `${q} comezou a seguirte en Cine Archive`),
+    title: 'Tes un seguidor novo',
+    intro: (pide) => (pide ? 'O teu perfil é privado, así que che pide permiso para seguirte:' : 'Comezou a seguirte:'),
+    cta: 'Ver as miñas notificacións',
+    note: 'Desde as túas notificacións podes ver o seu perfil e, se cho pediu, aceptalo ou rexeitalo.',
+    ignore: 'Podes deixar de recibir estes correos na túa conta, en «Preferencias».',
+    fallback: 'Se o botón non funciona, copia este enderezo no teu navegador:',
+  },
+  eu: {
+    subject: (q, pide) => (pide ? `${q}-k Cine Archiven jarraitu nahi zaitu` : `${q} Cine Archiven jarraitzen hasi zaizu`),
+    title: 'Jarraitzaile berri bat duzu',
+    intro: (pide) => (pide ? 'Zure profila pribatua da, beraz zu jarraitzeko baimena eskatzen dizu:' : 'Jarraitzen hasi zaizu:'),
+    cta: 'Ikusi nire jakinarazpenak',
+    note: 'Zure jakinarazpenetatik bere profila ikus dezakezu eta, eskatu badizu, onartu edo baztertu.',
+    ignore: 'Zure kontuan, «Hobespenak» atalean, utz diezaiokezu mezu hauek jasotzeari.',
+    fallback: 'Botoiak funtzionatzen ez badu, kopiatu helbide hau nabigatzailean:',
+  },
+  ca: {
+    subject: (q, pide) => (pide ? `${q} et vol seguir a Cine Archive` : `${q} ha començat a seguir-te a Cine Archive`),
+    title: 'Tens un seguidor nou',
+    intro: (pide) => (pide ? 'El teu perfil és privat, així que et demana permís per seguir-te:' : 'Ha començat a seguir-te:'),
+    cta: 'Veure les meves notificacions',
+    note: 'Des de les teves notificacions pots veure el seu perfil i, si t’ho ha demanat, acceptar-lo o rebutjar-lo.',
+    ignore: 'Pots deixar de rebre aquests correus al teu compte, a «Preferències».',
+    fallback: 'Si el botó no funciona, copia aquesta adreça al teu navegador:',
+  },
+};
+
+/** Correo de «alguien te sigue» (o te pide seguirte, si tu perfil es privado). */
+export function followEmail(lang: Lang, quien: { name: string; username: string }, pide: boolean, url: string): BuiltEmail {
+  const a = FOLLOW[lang] ?? FOLLOW[defaultLang];
+  const c: Copy = { ...a, subject: a.subject(quien.name || `@${quien.username}`, pide), intro: a.intro(pide) };
+  const lines = [`${quien.name} (@${quien.username})`];
+  return { subject: c.subject, html: layout(c, url, lines), text: plain(c, url, lines) };
+}

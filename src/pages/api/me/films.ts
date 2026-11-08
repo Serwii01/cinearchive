@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { z } from 'zod';
 import { and, eq } from 'drizzle-orm';
 import { db } from '../../../db/client';
-import { userFilms } from '../../../db/schema';
+import { userFilms, reviewLikes } from '../../../db/schema';
 import { invalidateRecommendations } from '../../../lib/recs';
 import { invalidateStats } from '../../../lib/stats';
 import { aplicarReglas, fechaVista, hoyEnEspana } from '../../../lib/filmstate';
@@ -105,6 +105,12 @@ export const POST: APIRoute = async ({ locals, request }) => {
     await ensureFirstViewing(locals.user.id, tmdbId, primerVisionado);
   }
 
+  // Sin texto ya no es una reseña: sus «me gusta» se van con ella, para que no
+  // reaparezcan si algún día escribe otra.
+  if (note !== undefined && !String(note ?? '').trim()) {
+    await db.delete(reviewLikes).where(and(eq(reviewLikes.authorId, locals.user.id), eq(reviewLikes.tmdbId, tmdbId)));
+  }
+
   invalidateRecommendations(locals.user.id);
   invalidateStats(locals.user.id);
   return Response.json({ ok: true });
@@ -122,6 +128,7 @@ export const DELETE: APIRoute = async ({ locals, request }) => {
   await db
     .delete(userFilms)
     .where(and(eq(userFilms.userId, locals.user.id), eq(userFilms.tmdbId, parsed.data.tmdbId)));
+  await db.delete(reviewLikes).where(and(eq(reviewLikes.authorId, locals.user.id), eq(reviewLikes.tmdbId, parsed.data.tmdbId)));
   invalidateRecommendations(locals.user.id);
   invalidateStats(locals.user.id);
   return Response.json({ ok: true });

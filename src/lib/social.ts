@@ -2,6 +2,7 @@ import { and, count, desc, eq, gt, isNotNull, isNull, lt, lte, or, sql } from 'd
 import { db } from '../db/client';
 import { profile, follows, user, userFilms, userViewings, streamAlerts } from '../db/schema';
 import { buildFeed, pageFeed, type FeedItem } from './feed';
+import { newLikeCount } from './filmsocial';
 import type { Profile } from '../db/schema';
 
 /* ------------------------------------------------------------------ *
@@ -107,6 +108,8 @@ export interface MyProfile {
   instagram: string | null;
   isPrivate: boolean;
   avatarType: string | null;
+  /** Última vez que abrió las notificaciones (para marcar lo «nuevo»). */
+  notificationsSeenAt: Date | null;
 }
 
 /** Perfil del propio usuario por id (sin bytes del avatar; puede no existir aún). */
@@ -119,6 +122,7 @@ export async function getMyProfile(userId: string): Promise<MyProfile | null> {
       instagram: profile.instagram,
       isPrivate: profile.isPrivate,
       avatarType: profile.avatarType,
+      notificationsSeenAt: profile.notificationsSeenAt,
     })
     .from(profile)
     .where(eq(profile.userId, userId))
@@ -245,7 +249,10 @@ export async function notificationCount(userId: string): Promise<number> {
     .from(follows)
     .where(and(...conds));
 
-  return Number(pend?.c ?? 0) + Number(nf?.c ?? 0) + alerts;
+  // Y los «me gusta» nuevos en sus reseñas y listas.
+  const likes = await newLikeCount(userId, p.seen);
+
+  return Number(pend?.c ?? 0) + Number(nf?.c ?? 0) + alerts + likes;
 }
 
 /** Marca las notificaciones como vistas (limpia el "nuevo" de los seguidores). */

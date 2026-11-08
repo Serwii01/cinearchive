@@ -8,6 +8,8 @@ import { userLists, userListFilms, profile, user as userTable } from '../../../d
 import { eq } from 'drizzle-orm';
 import { getFilmsBrief } from '../../../lib/films';
 import { followState, canViewActivity } from '../../../lib/social';
+import { listLikeState } from '../../../lib/filmsocial';
+import LikeButton from '../../../components/LikeButton.astro';
 
 export const prerender = false;
 
@@ -39,6 +41,9 @@ if (!isOwner && list.isPublic && owner) {
 }
 // 404 (no revelar la existencia de listas privadas ni ajenas).
 if (!allowed) return new Response(null, { status: 404 });
+
+// «Me gusta» de la lista: solo en las públicas.
+const megusta = list.isPublic ? await listLikeState(list.id, viewer?.id ?? null) : null;
 
 const rows = await db
   .select({ tmdbId: userListFilms.tmdbId })
@@ -104,7 +109,10 @@ const listDesc = `${list.name} · ${films.length} ${t('lists.count')}${owner ? `
         )}
       </div>
       {(list.isPublic || isOwner) && (
-        <div class="flex shrink-0 flex-wrap gap-2">
+        <div class="flex shrink-0 flex-wrap items-center gap-2">
+          {list.isPublic && megusta && (
+            <LikeButton kind="list" listId={list.id} likes={megusta.likes} liked={megusta.liked} own={isOwner} loggedIn={!!viewer} lang={lang} class="mr-2" />
+          )}
           {list.isPublic && (
             <button
               type="button"

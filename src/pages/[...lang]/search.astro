@@ -116,6 +116,7 @@ const tabClass =
 
 <script>
   import { filmSlug } from '../../lib/slug';
+  import { LOCK_SVG } from '../../lib/ui/icons';
 
   type Tab = 'films' | 'people' | 'archive' | 'users';
   const ORDEN: Tab[] = ['films', 'people', 'archive', 'users'];
@@ -155,7 +156,9 @@ const tabClass =
 
   function contar(id: Tab, n: number | null) {
     const el = tabs[id].querySelector('[data-count]')!;
-    el.textContent = n === null ? '…' : id === 'users' && !loggedIn ? '🔒' : String(n);
+    // Sin sesión, un candado dibujado (no emoji) en vez del número.
+    if (n !== null && id === 'users' && !loggedIn) el.innerHTML = LOCK_SVG;
+    else el.textContent = n === null ? '…' : String(n);
   }
 
   function pintar(id: Tab, html: string) {
@@ -248,7 +251,7 @@ const tabClass =
         return `<li class="bg-surface"><a href="${d.userBase}/${encodeURIComponent(r.username)}" class="flex items-center gap-3 p-4 no-underline hover:bg-film-white">
           <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink text-white">${avatar}</span>
           <span class="min-w-0"><span class="block truncate font-display text-headline-md text-ink">${esc(r.name)}</span>
-          <span class="block font-mono text-meta-data text-muted">@${esc(r.username)}${r.isPrivate ? ' · 🔒' : ''}</span></span>
+          <span class="block font-mono text-meta-data text-muted">@${esc(r.username)}${r.isPrivate ? ` · ${LOCK_SVG}` : ''}</span></span>
         </a></li>`;
       })
       .join('')}</ul>`;

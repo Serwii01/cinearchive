@@ -14,6 +14,8 @@ import { getFilmsBrief } from '../../../../../lib/films';
 import { filmSlug } from '../../../../../lib/slug';
 import { getProfileByUsername, followState, canViewActivity } from '../../../../../lib/social';
 import { reviewLd } from '../../../../../lib/seo';
+import { reviewLikeState } from '../../../../../lib/filmsocial';
+import LikeButton from '../../../../../components/LikeButton.astro';
 
 export const prerender = false;
 
@@ -53,6 +55,8 @@ const filmHref = localizePath(lang, `film/${filmSlug(tmdbId, brief?.title)}`);
 const profileHref = localizePath(lang, `u/${target.username}`);
 const reviewedAt = row.reviewedAt ?? row.updatedAt;
 const isOwner = viewer?.id === target.userId;
+// «Me gusta» de la reseña (solo si tiene texto: sin él no es una reseña).
+const megusta = row.note?.trim() ? await reviewLikeState(target.userId, tmdbId, viewer?.id ?? null) : null;
 const title = `${t('profile.review')} · ${brief?.title ?? `#${tmdbId}`} · @${target.username}`;
 
 // Compartir la reseña como imagen de historia (Instagram): solo el dueño y solo si
@@ -117,6 +121,19 @@ const ld = target.isPrivate
           <Badges badges={etiquetas} size="sm" />
           <span class="font-mono text-meta-data text-muted">·</span>
           <time id="view-date" datetime={aInputDate(reviewedAt)} class="font-mono text-meta-data text-muted">{formatDate(reviewedAt, lang)}</time>
+          {megusta && (
+            <LikeButton
+              kind="review"
+              username={target.username}
+              tmdbId={tmdbId}
+              likes={megusta.likes}
+              liked={megusta.liked}
+              own={isOwner}
+              loggedIn={!!viewer}
+              lang={lang}
+              class="ml-auto"
+            />
+          )}
         </div>
 
         {/* Vista de la reseña (con ids estables para el dueño, actualizables al editar) */}

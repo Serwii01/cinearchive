@@ -451,6 +451,7 @@ const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lan
 
 <script>
   import { shareStoryImage } from '../../../lib/ui/share';
+  import { LOCK_SVG } from '../../../lib/ui/icons';
 
   const btn = document.getElementById('follow-btn') as HTMLButtonElement | null;
   if (btn) {
@@ -559,7 +560,7 @@ const storyImg = `/api/og/profile/${encodeURIComponent(target.username)}.png?lan
           const avatar = r.hasAvatar
             ? `<img src="/api/avatar/${encodeURIComponent(r.id)}" alt="" class="h-full w-full object-cover" loading="lazy">`
             : `<span class="font-display text-body-md leading-none">${esc(initials)}</span>`;
-          const lock = r.isPrivate ? ' · 🔒' : '';
+          const lock = r.isPrivate ? ` · ${LOCK_SVG}` : '';
           // Solo el propietario ve la acción (y nunca sobre sí mismo, que no aparece aquí).
           const action = self
             ? `<span class="flex shrink-0 items-center gap-1 pr-3" data-actbox data-uid="${esc(r.id)}" data-uname="${esc(r.username)}" data-type="${type}" data-label="${esc(actionLabel)}">${actBtn(actionLabel)}</span>`
