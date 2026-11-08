@@ -3,6 +3,7 @@ export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { sortedGlossary, glossaryTerm, glossaryDef } from '../../lib/reference';
 import { useTranslations, localizePath, langStaticPaths, normalizeLang, type Lang } from '../../i18n/ui';
+import { definedTermSetLd } from '../../lib/seo';
 
 export const getStaticPaths = langStaticPaths;
 
@@ -30,9 +31,18 @@ for (const g of terms) {
   grupos.get(k)!.push(g);
 }
 const letras = [...grupos.keys()];
+
+// SEO: el glosario como conjunto de términos definidos (DefinedTermSet).
+const jsonLd = definedTermSetLd({
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  name: t('glossary.title'),
+  description: t('glossary.intro'),
+  inLanguage: lang,
+  terms: terms.map((g) => ({ name: glossaryTerm(g, lang), description: glossaryDef(g, lang) })),
+});
 ---
 
-<BaseLayout title={t('glossary.title')} description={t('glossary.intro')}>
+<BaseLayout title={t('glossary.title')} description={t('glossary.intro')} jsonLd={jsonLd}>
   <section class="frame py-12">
     <header class="border-b border-ink pb-6">
       <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">← {t('nav.archive')}</a>

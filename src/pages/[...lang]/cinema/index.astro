@@ -2,6 +2,7 @@
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CinemaCard from '../../../components/CinemaCard.astro';
+import CinemaGroupNav from '../../../components/CinemaGroupNav.astro';
 import { pdFilms, pdIsShort, PD_TAGS, type PdFilm } from '../../../lib/pdfilms';
 import { useTranslations, localizePath, langStaticPaths, normalizeLang } from '../../../i18n/ui';
 
@@ -57,6 +58,8 @@ const selectCls =
         ))
       }
     </div>
+
+    <CinemaGroupNav lang={lang} clase="mt-12 border-t border-ink pt-8" />
 
     <section class="mt-12" aria-labelledby="cinema-all">
       <h2 id="cinema-all" class="label mb-3">{t('cinema.allFilms')}</h2>

@@ -211,3 +211,95 @@ export function articleLd(opts: {
   if (opts.inLanguage) ld.inLanguage = opts.inLanguage;
   return ld;
 }
+
+/**
+ * Libro de la Biblioteca: se lee entero aquí, gratis, porque es de dominio
+ * público. `bookFormat: EBook` y el acceso libre son lo que distingue esta
+ * página de una ficha de librería.
+ */
+export function bookLd(opts: {
+  url: string;
+  name: string;
+  author: string;
+  year: number;
+  inLanguage: string;
+  description: string;
+  image: string;
+  sameAs: string;
+}): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Book',
+    url: opts.url,
+    name: opts.name,
+    author: { '@type': 'Person', name: opts.author },
+    datePublished: String(opts.year),
+    inLanguage: opts.inLanguage,
+    description: opts.description,
+    image: opts.image,
+    bookFormat: 'https://schema.org/EBook',
+    isAccessibleForFree: true,
+    license: 'https://creativecommons.org/publicdomain/mark/1.0/',
+    // El ítem original en Internet Archive: dice a los buscadores que es la
+    // misma obra, no una copia que compite con él.
+    sameAs: opts.sameAs,
+  };
+}
+
+/** Número de una revista o un periódico de la Hemeroteca, con la cabecera a la que pertenece. */
+export function publicationIssueLd(opts: {
+  url: string;
+  title: string;
+  issue: string;
+  year: number;
+  periodical: 'magazine' | 'newspaper';
+  publisher?: string;
+  inLanguage: string;
+  description: string;
+  image: string;
+  sameAs: string;
+}): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'PublicationIssue',
+    url: opts.url,
+    name: `${opts.title} — ${opts.issue}`,
+    issueNumber: opts.issue,
+    datePublished: String(opts.year),
+    inLanguage: opts.inLanguage,
+    description: opts.description,
+    image: opts.image,
+    isAccessibleForFree: true,
+    sameAs: opts.sameAs,
+    isPartOf: {
+      '@type': opts.periodical === 'newspaper' ? 'Newspaper' : 'Periodical',
+      name: opts.title,
+      ...(opts.publisher ? { publisher: { '@type': 'Organization', name: opts.publisher } } : {}),
+    },
+  };
+}
+
+/** Glosario: un conjunto de términos con su definición. */
+export function definedTermSetLd(opts: {
+  url: string;
+  name: string;
+  description: string;
+  inLanguage: string;
+  terms: { name: string; description: string }[];
+}): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTermSet',
+    '@id': opts.url,
+    url: opts.url,
+    name: opts.name,
+    description: opts.description,
+    inLanguage: opts.inLanguage,
+    hasDefinedTerm: opts.terms.map((term) => ({
+      '@type': 'DefinedTerm',
+      name: term.name,
+      description: term.description,
+      inDefinedTermSet: opts.url,
+    })),
+  };
+}

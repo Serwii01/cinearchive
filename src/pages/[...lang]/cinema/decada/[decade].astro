@@ -1,0 +1,17 @@
+---
+export const prerender = true;
+import CinemaGroup from '../../../../components/CinemaGroup.astro';
+import { pdDecades, pdDecade, pdFilms } from '../../../../lib/pdfilms';
+import { langStaticPaths, normalizeLang } from '../../../../i18n/ui';
+
+// Una página por década con películas suficientes (ver pdDecades) y por idioma.
+export function getStaticPaths() {
+  return langStaticPaths().flatMap(({ params }) =>
+    pdDecades().map((decade) => ({ params: { ...params, decade: String(decade) }, props: { decade } })),
+  );
+}
+
+const { decade } = Astro.props as { decade: number };
+---
+
+<CinemaGroup lang={normalizeLang(Astro.params.lang)} actual={{ decade }} films={pdFilms.filter((f) => pdDecade(f) === decade)} />

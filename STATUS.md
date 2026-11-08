@@ -6,7 +6,9 @@
 En producción en cinearchive.es, al día con main (8495436 desplegado o por desplegar): Astro 7, despliegues sin compilar en el VPS (menos de 1 min), contador sin visitas de rastreadores, films_cache con tope (disco al 21 %), copias nocturnas, vigilancia por correo y menos CPU en Postgres. Contador en unas 1.574.000 el 7 nov.
 
 ## Siguientes pasos
-- [ ] Anotar Cine abierto en el changelog (v1.21).
+- [ ] Anotar Cine abierto en el changelog (v1.21), con las páginas por tipo y década y el enlace desde las fichas.
+- [ ] Sergio: dar de alta la web en Google Search Console y Bing Webmaster Tools (verificación por DNS) y enviar sitemap-index.xml. Con eso, ver qué búsquedas traen gente y escribir artículos para ellas.
+- [ ] Difundir la web: lista de sitios en el vault (SEO y difusión).
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
 - [ ] Copia de las copias fuera del VPS: el CRM 0.4.0 (cinearchiveCRM ff27fed) ya las baja desde la pestaña Servidor; probado. Queda decidir si se hace solo cada semana.
 - [ ] 8 nov, en el CRM (pestaña Servidor): «Consultas que más gastan» y «Rastreadores (24 h)». Con eso, bloquear redes o navegadores en el Caddyfile y optimizar las consultas lentas (también las de Umami, que tardan con periodos largos). Comparar la carga con el 7 nov (1,5, CPU al 100 % a ráfagas).
@@ -18,6 +20,9 @@ En producción en cinearchive.es, al día con main (8495436 desplegado o por des
 - [ ] Si crece el tráfico: que Caddy sirva directamente lo prerenderizado y /_astro (sin pasar por Node), o Cloudflare delante.
 
 ## Última sesión
+
+### 2026-11-08
+- SEO: la ficha de cada película que está en Cine abierto enlaza con «Ver la película completa» (pdFilmByTmdbId). Páginas propias por tipo y por década en Cine abierto (/cinema/tipo/<tipo>, /cinema/decada/<década>; 15 tipos con muda y cortos, 10 décadas, mínimo 3 películas), con título y descripción propios, ItemList y enlaces entre ellas (CinemaGroup, CinemaGroupNav); las etiquetas de la ficha llevan ahí en vez de a ?tipo=. JSON-LD e imagen social en Biblioteca (Book), Hemeroteca (PublicationIssue) y Glosario (DefinedTermSet). Tests (593) y build en verde; revisado en el navegador en escritorio y móvil.
 
 ### 2026-11-07
 - Imágenes de fuera: Cine abierto pasa de miniaturas de IA de 180 px a fotogramas de TMDB a 800 px en WebP (112 de 114; las otras 3, fotograma del vídeo con ffmpeg si está instalado; `"image": "ia"` fuerza IA, usado en Caminandes 1, que salía con el logo del episodio 3). Biblioteca: portada escaneada a 800 px como la hemeroteca (16 de 17), y portadilla (`"cover": "title"`) en 6 libros con tapa lisa o aviso de Google. 3,9 MB en total para Cine abierto. Revisadas todas a ojo en hojas de contactos.

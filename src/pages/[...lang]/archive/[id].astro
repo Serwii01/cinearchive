@@ -1,7 +1,8 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { periodicals, embedUrl, iaUrl, type Periodical } from '../../../lib/periodicals';
+import { periodicals, embedUrl, iaUrl, coverUrl, type Periodical } from '../../../lib/periodicals';
+import { publicationIssueLd, breadcrumbLd } from '../../../lib/seo';
 import { localizedField, useTranslations, localizePath, langStaticPaths, normalizeLang, type Lang } from '../../../i18n/ui';
 
 export function getStaticPaths() {
@@ -20,9 +21,30 @@ const { item } = Astro.props as { item: Periodical };
 
 const blurb = localizedField(item, 'blurb', lang);
 const typeLabel = t(item.type === 'magazine' ? 'archive.type.magazine' : 'archive.type.newspaper');
+
+// SEO: el número (PublicationIssue) dentro de su cabecera, con portada y migas.
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = [
+  breadcrumbLd([
+    { name: t('nav.archive'), url: new URL(localizePath(lang, 'archive'), Astro.site).href },
+    { name: `${item.title} — ${item.issue}`, url: pageUrl },
+  ]),
+  publicationIssueLd({
+    url: pageUrl,
+    title: item.title,
+    issue: item.issue,
+    year: item.year,
+    periodical: item.type === 'newspaper' ? 'newspaper' : 'magazine',
+    publisher: item.publisher || undefined,
+    inLanguage: item.lang,
+    description: blurb,
+    image: new URL(coverUrl(item.id), Astro.site).href,
+    sameAs: iaUrl(item.id),
+  }),
+];
 ---
 
-<BaseLayout title={`${item.title} — ${item.issue}`} description={blurb}>
+<BaseLayout title={`${item.title} — ${item.issue}`} description={blurb} image={coverUrl(item.id)} jsonLd={jsonLd}>
   <article class="frame py-12">
     <a href={localizePath(lang, 'archive')} class="label no-underline hover:text-ink">← {t('archive.backToArchive')}</a>
 

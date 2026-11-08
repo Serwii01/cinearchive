@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('../src/db/client', () => ({ db: {} }));
 
-import { movieLd, personLd, reviewLd, itemListLd, organizationLd } from '../src/lib/seo';
+import { movieLd, personLd, reviewLd, itemListLd, organizationLd, bookLd, publicationIssueLd, definedTermSetLd } from '../src/lib/seo';
 import { urlset, localizedEntries, xmlEscape } from '../src/lib/sitemap';
 import { communityScore, MIN_RATINGS } from '../src/lib/community';
 
@@ -95,5 +95,33 @@ describe('organizationLd', () => {
   it('sin perfiles, no deja un sameAs vacío', () => {
     expect(organizationLd(base)).not.toHaveProperty('sameAs');
     expect(organizationLd({ ...base, sameAs: [] })).not.toHaveProperty('sameAs');
+  });
+});
+
+describe('datos estructurados de Biblioteca, Hemeroteca y Glosario', () => {
+  it('el libro se declara como libro electrónico gratis, ligado a su ítem de Internet Archive', () => {
+    const ld = bookLd({ url: 'u', name: 'Film Technique', author: 'V. Pudovkin', year: 1933, inLanguage: 'en', description: 'd', image: 'i', sameAs: 'https://archive.org/details/x' }) as Record<string, any>;
+    expect(ld['@type']).toBe('Book');
+    expect(ld.author).toEqual({ '@type': 'Person', name: 'V. Pudovkin' });
+    expect(ld.datePublished).toBe('1933');
+    expect(ld.bookFormat).toBe('https://schema.org/EBook');
+    expect(ld.isAccessibleForFree).toBe(true);
+    expect(ld.sameAs).toBe('https://archive.org/details/x');
+  });
+
+  it('el número de revista cuelga de su cabecera; el periódico, de un Newspaper', () => {
+    const base = { url: 'u', title: 'Photoplay', issue: 'Enero 1925', year: 1925, inLanguage: 'en', description: 'd', image: 'i', sameAs: 's' };
+    const revista = publicationIssueLd({ ...base, periodical: 'magazine', publisher: 'Photoplay Publishing' }) as Record<string, any>;
+    expect(revista['@type']).toBe('PublicationIssue');
+    expect(revista.name).toBe('Photoplay — Enero 1925');
+    expect(revista.isPartOf).toEqual({ '@type': 'Periodical', name: 'Photoplay', publisher: { '@type': 'Organization', name: 'Photoplay Publishing' } });
+    const periodico = publicationIssueLd({ ...base, periodical: 'newspaper' }) as Record<string, any>;
+    expect(periodico.isPartOf).toEqual({ '@type': 'Newspaper', name: 'Photoplay' });
+  });
+
+  it('cada término del glosario apunta a su conjunto', () => {
+    const ld = definedTermSetLd({ url: 'https://x/glossary', name: 'Glosario', description: 'd', inLanguage: 'es', terms: [{ name: 'Raccord', description: 'Continuidad' }] }) as Record<string, any>;
+    expect(ld['@type']).toBe('DefinedTermSet');
+    expect(ld.hasDefinedTerm).toEqual([{ '@type': 'DefinedTerm', name: 'Raccord', description: 'Continuidad', inDefinedTermSet: 'https://x/glossary' }]);
   });
 });

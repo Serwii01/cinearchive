@@ -9,6 +9,13 @@ import {
   pdIsShort,
   pdLicenseUrl,
   PD_TAGS,
+  PD_GROUP_MIN,
+  pdByKind,
+  pdKinds,
+  pdDecades,
+  pdDecade,
+  pdKindLabelKey,
+  pdFilmByTmdbId,
   type PdFilm,
 } from '../src/lib/pdfilms';
 
@@ -123,5 +130,36 @@ describe('Cine abierto: la lógica', () => {
   it('la ficha completa lleva el slug con el id de TMDB', () => {
     expect(pdFilmPath(peli({ tmdbId: 653, title: 'Nosferatu' }))).toBe('film/nosferatu-653');
     expect(pdFilmPath(peli({}))).toBeNull();
+  });
+});
+
+describe('Cine abierto: páginas por tipo y por década', () => {
+  it('solo hay página donde hay películas suficientes', () => {
+    for (const k of pdKinds()) expect(pdByKind(k).length, k).toBeGreaterThanOrEqual(PD_GROUP_MIN);
+    for (const d of pdDecades()) expect(pdFilms.filter((f) => pdDecade(f) === d).length, String(d)).toBeGreaterThanOrEqual(PD_GROUP_MIN);
+  });
+
+  it('«muda» y «corto» tienen página y se calculan bien', () => {
+    expect(pdKinds()).toContain('silent');
+    expect(pdKinds()).toContain('short');
+    expect(pdByKind('silent').every((f) => !f.sound)).toBe(true);
+    expect(pdByKind('short').every((f) => f.runtime < 40)).toBe(true);
+  });
+
+  it('cada tipo con página tiene su nombre en los 5 idiomas', () => {
+    const ui = readFileSync('src/i18n/ui.ts', 'utf8');
+    for (const k of pdKinds()) expect(ui.split(`'${pdKindLabelKey(k)}':`).length - 1, k).toBe(5);
+  });
+
+  it('las décadas van en orden y una película con pocas compañeras no crea página', () => {
+    const otras = [1925, 1926, 1927, 1955].map((year, i) => ({ id: String(i), year, tags: ['drama'], sound: true, runtime: 90 }) as PdFilm);
+    expect(pdDecades(otras)).toEqual([1920]);
+    expect(pdKinds(otras)).toEqual(['drama']);
+  });
+
+  it('encuentra la película gratis desde su ficha de TMDB', () => {
+    const conTmdb = pdFilms.find((f) => f.tmdbId)!;
+    expect(pdFilmByTmdbId(conTmdb.tmdbId!)?.id).toBe(conTmdb.id);
+    expect(pdFilmByTmdbId(-1)).toBeUndefined();
   });
 });

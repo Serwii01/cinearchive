@@ -1,7 +1,8 @@
 ---
 export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { books, bookEmbedUrl, bookIaUrl, type Book } from '../../../lib/library';
+import { books, bookEmbedUrl, bookIaUrl, bookCoverUrl, type Book } from '../../../lib/library';
+import { bookLd, breadcrumbLd } from '../../../lib/seo';
 import { localizedField, useTranslations, localizePath, langStaticPaths, normalizeLang, type Lang } from '../../../i18n/ui';
 
 export function getStaticPaths() {
@@ -19,9 +20,28 @@ const t = useTranslations(lang);
 const { item } = Astro.props as { item: Book };
 
 const blurb = localizedField(item, 'blurb', lang);
+
+// SEO: el libro (Book, legible gratis) con su portada y las migas de pan.
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = [
+  breadcrumbLd([
+    { name: t('nav.library'), url: new URL(localizePath(lang, 'library'), Astro.site).href },
+    { name: item.title, url: pageUrl },
+  ]),
+  bookLd({
+    url: pageUrl,
+    name: item.title,
+    author: item.author,
+    year: item.year,
+    inLanguage: item.lang,
+    description: blurb,
+    image: new URL(bookCoverUrl(item.id), Astro.site).href,
+    sameAs: bookIaUrl(item.id),
+  }),
+];
 ---
 
-<BaseLayout title={item.title} description={blurb}>
+<BaseLayout title={item.title} description={blurb} image={bookCoverUrl(item.id)} jsonLd={jsonLd}>
   <article class="frame py-12">
     <a href={localizePath(lang, 'library')} class="label no-underline hover:text-ink">← {t('library.backToLibrary')}</a>
 

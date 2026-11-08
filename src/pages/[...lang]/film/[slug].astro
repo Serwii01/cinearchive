@@ -10,6 +10,7 @@ import { resolveBackLink } from '../../../lib/backlink';
 import { getFilm } from '../../../lib/films';
 import { translateAwards } from '../../../lib/omdb';
 import { movieLd, breadcrumbLd } from '../../../lib/seo';
+import { pdFilmByTmdbId, pdThumbUrl } from '../../../lib/pdfilms';
 import { getCommunityRating } from '../../../lib/community';
 import { filmSlug, parseFilmId } from '../../../lib/slug';
 import { mentionsOf } from '../../../lib/mentions';
@@ -241,6 +242,10 @@ const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t, [
   Astro.site?.hostname,
 ]);
 
+// Si está en Cine abierto, la ficha lo dice bien arriba: es lo que más busca
+// quien llega desde Google («ver X completa») y enlaza la página del vídeo.
+const gratis = pdFilmByTmdbId(tmdbId);
+
 // SEO: imagen social (fotograma > cartel) y datos estructurados (Movie + migas).
 const socialImg = backdropUrl(tmdb.backdrop_path, 'w1280') ?? posterUrl(tmdb.poster_path, 'w780');
 const filmUrl = new URL(Astro.url.pathname, Astro.site).href;
@@ -360,6 +365,27 @@ const crumbsJsonLd = breadcrumbLd([
         </div>
 
         <p class="prose-archive mt-6 max-w-2xl text-body-lg text-charcoal">{tmdb.overview}</p>
+
+        {gratis && (
+          <a
+            href={localizePath(lang, `cinema/${gratis.id}`)}
+            class="group mt-8 flex items-stretch border border-ink bg-film-white no-underline hover:bg-ink"
+          >
+            <img
+              src={pdThumbUrl(gratis.id)}
+              alt=""
+              width="160"
+              height="90"
+              loading="lazy"
+              decoding="async"
+              class="w-28 shrink-0 border-r border-ink object-cover sm:w-40"
+            />
+            <span class="flex flex-col justify-center gap-1 p-3 sm:p-4">
+              <span class="label group-hover:text-background">{t('cinema.watchFreeHere')}</span>
+              <span class="font-display text-headline-md text-ink group-hover:text-background">▶ {t('cinema.watchFreeCta')}</span>
+            </span>
+          </a>
+        )}
 
         {/* Tráiler (YouTube, carga diferida al pulsar → privacidad) */}
         {trailer && (

@@ -72,6 +72,10 @@ export const pdFilms = data.items as PdFilm[];
 
 export const pdFilmById = (id: string): PdFilm | undefined => pdFilms.find((f) => f.id === id);
 
+const porTmdb = new Map(pdFilms.filter((f) => f.tmdbId).map((f) => [f.tmdbId!, f]));
+/** La de Cine abierto que corresponde a una ficha de TMDB, si se puede ver entera aquí. */
+export const pdFilmByTmdbId = (tmdbId: number): PdFilm | undefined => porTmdb.get(tmdbId);
+
 /**
  * Texto de la insignia de licencia. Dominio público (y CC0, que es su
  * equivalente) usan la etiqueta traducida; las Creative Commons se escriben
@@ -86,6 +90,40 @@ export function pdLicenseLabel(license: PdLicense | undefined, t: (k: 'cinema.pu
 export const pdIsShort = (f: PdFilm): boolean => f.runtime > 0 && f.runtime < PD_SHORT_MAX;
 
 export const pdDecade = (f: PdFilm): number => Math.floor(f.year / 10) * 10;
+
+/**
+ * Páginas propias por tipo y por década (/cinema/tipo/horror, /cinema/decada/1920).
+ *
+ * Los filtros del listado guardan su estado en `?tipo=`, y Google no trata eso
+ * como páginas distintas: «películas de terror clásicas gratis» o «cine mudo
+ * online» no tenían dónde caer. Además de los tipos, «muda» y «corto» tienen
+ * página porque son de lo que más se busca. Por debajo de PD_GROUP_MIN no se
+ * crea: una página con una o dos películas es contenido pobre para un buscador.
+ */
+export const PD_GROUP_MIN = 3;
+export const PD_EXTRA_KINDS = ['silent', 'short'] as const;
+export type PdKind = PdTag | (typeof PD_EXTRA_KINDS)[number];
+
+export function pdByKind(kind: PdKind, all: PdFilm[] = pdFilms): PdFilm[] {
+  if (kind === 'silent') return all.filter((f) => !f.sound);
+  if (kind === 'short') return all.filter(pdIsShort);
+  return all.filter((f) => f.tags.includes(kind));
+}
+
+/** Tipos con página propia, en el orden de PD_TAGS y luego muda y corto. */
+export const pdKinds = (all: PdFilm[] = pdFilms): PdKind[] =>
+  [...PD_TAGS, ...PD_EXTRA_KINDS].filter((k) => pdByKind(k, all).length >= PD_GROUP_MIN);
+
+/** Décadas con página propia, de la más antigua a la más reciente. */
+export const pdDecades = (all: PdFilm[] = pdFilms): number[] =>
+  [...new Set(all.map(pdDecade))].filter((d) => all.filter((f) => pdDecade(f) === d).length >= PD_GROUP_MIN).sort((a, b) => a - b);
+
+/** Clave de i18n con el nombre del tipo (los tipos de PD_TAGS y los dos extra). */
+export const pdKindLabelKey = (kind: PdKind): string =>
+  (PD_EXTRA_KINDS as readonly string[]).includes(kind) ? `cinema.kind.${kind}` : `cinema.tag.${kind}`;
+
+export const pdKindPath = (kind: PdKind) => `cinema/tipo/${kind}`;
+export const pdDecadePath = (decade: number) => `cinema/decada/${decade}`;
 
 /**
  * Otras de Cine abierto para ver después de esta. Puntúa lo que se suele

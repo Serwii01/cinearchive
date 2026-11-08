@@ -1,0 +1,57 @@
+---
+/**
+ * Enlaces a las páginas de Cine abierto por tipo y por década. Va en el listado
+ * y en cada una de esas páginas: además de servir para moverse, es lo que deja
+ * a los buscadores llegar a todas desde cualquiera.
+ */
+import { pdKinds, pdDecades, pdKindPath, pdDecadePath, pdKindLabelKey, type PdKind } from '../lib/pdfilms';
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** La página en la que se está, que sale marcada y sin enlace. */
+  actual?: { kind: PdKind } | { decade: number };
+  clase?: string;
+}
+
+const { lang, actual, clase = '' } = Astro.props;
+const t = useTranslations(lang);
+
+const tipos = pdKinds().map((k) => ({
+  path: pdKindPath(k),
+  label: t(pdKindLabelKey(k) as Parameters<typeof t>[0]),
+  on: !!actual && 'kind' in actual && actual.kind === k,
+}));
+const decadas = pdDecades().map((d) => ({
+  path: pdDecadePath(d),
+  label: `${d}s`,
+  on: !!actual && 'decade' in actual && actual.decade === d,
+}));
+
+const chip = 'label border border-ink px-2 py-1 no-underline hover:bg-ink hover:text-background';
+const chipOn = 'label border border-ink bg-ink px-2 py-1 text-background';
+---
+
+<nav class={`grid gap-6 md:grid-cols-2 ${clase}`} aria-label={t('cinema.title')}>
+  {
+    [
+      { titulo: t('cinema.byKind'), items: tipos },
+      { titulo: t('cinema.byDecade'), items: decadas },
+    ].map((g) => (
+      <div>
+        <h2 class="label mb-3">{g.titulo}</h2>
+        <ul class="flex flex-wrap gap-2">
+          {g.items.map((i) => (
+            <li>
+              {i.on ? (
+                <span class={chipOn} aria-current="page">{i.label}</span>
+              ) : (
+                <a href={localizePath(lang, i.path)} class={chip}>{i.label}</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</nav>

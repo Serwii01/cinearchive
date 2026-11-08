@@ -1,0 +1,15 @@
+---
+export const prerender = true;
+import CinemaGroup from '../../../../components/CinemaGroup.astro';
+import { pdKinds, pdByKind, type PdKind } from '../../../../lib/pdfilms';
+import { langStaticPaths, normalizeLang } from '../../../../i18n/ui';
+
+// Una página por tipo con películas suficientes (ver pdKinds) y por idioma.
+export function getStaticPaths() {
+  return langStaticPaths().flatMap(({ params }) => pdKinds().map((kind) => ({ params: { ...params, kind }, props: { kind } })));
+}
+
+const { kind } = Astro.props as { kind: PdKind };
+---
+
+<CinemaGroup lang={normalizeLang(Astro.params.lang)} actual={{ kind }} films={pdByKind(kind)} />

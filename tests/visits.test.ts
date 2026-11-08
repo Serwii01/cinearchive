@@ -66,7 +66,13 @@ describe('solo cuenta quien ejecuta JavaScript', () => {
 
   it('todas las páginas que pintan algo usan el layout que avisa', () => {
     // Si una página no usa BaseLayout, nadie la cuenta. Las que solo
-    // redirigen no pintan nada.
+    // redirigen no pintan nada. Vale también pintarse con un componente que lo
+    // use por dentro (las páginas por tipo y década de Cine abierto usan CinemaGroup).
+    const conLayout = (src: string) =>
+      src.includes('BaseLayout') ||
+      [...src.matchAll(/from '(?:\.\.\/)+components\/(\w+\.astro)'/g)].some((m) =>
+        readFileSync(join('src/components', m[1]), 'utf8').includes('BaseLayout'),
+      );
     const sueltas: string[] = [];
     const recorrer = (dir: string) => {
       for (const e of readdirSync(dir, { withFileTypes: true })) {
@@ -74,7 +80,7 @@ describe('solo cuenta quien ejecuta JavaScript', () => {
         if (e.isDirectory()) recorrer(ruta);
         else if (ruta.endsWith('.astro')) {
           const src = readFileSync(ruta, 'utf8');
-          if (!src.includes('BaseLayout') && !/^return Astro\.redirect\(/m.test(src)) sueltas.push(ruta);
+          if (!conLayout(src) && !/^return Astro\.redirect\(/m.test(src)) sueltas.push(ruta);
         }
       }
     };

@@ -11,6 +11,8 @@ import {
   pdRelated,
   pdFilmPath,
   pdVideoLd,
+  pdKindPath,
+  pdKinds,
   type PdFilm,
 } from '../../../lib/pdfilms';
 import { localizedField, useTranslations, localizePath, langStaticPaths, normalizeLang } from '../../../i18n/ui';
@@ -50,6 +52,8 @@ const subtitulos = item.subtitles ? t('cinema.subtitlesIn').replace('{lang}', no
 
 const fichaCompleta = pdFilmPath(item);
 const parecidas = pdRelated(item, 4);
+// Los tipos con página propia; los que tienen muy pocas películas van al filtro.
+const conPagina = new Set<string>(pdKinds());
 
 // SEO: título que dice lo que hay («película completa»), fotograma como imagen
 // social, migas de pan y la película con su vídeo como datos estructurados.
@@ -87,7 +91,7 @@ const jsonLd = [
         {item.tags.map((tag) => (
           <li>
             <a
-              href={`${localizePath(lang, 'cinema')}?tipo=${tag}#cinema-all`}
+              href={conPagina.has(tag) ? localizePath(lang, pdKindPath(tag)) : `${localizePath(lang, 'cinema')}?tipo=${tag}#cinema-all`}
               class="label border border-ink px-2 py-1 no-underline hover:bg-ink hover:text-background"
             >
               {tTag(tag)}
