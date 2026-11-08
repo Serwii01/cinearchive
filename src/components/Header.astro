@@ -82,13 +82,19 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
         </svg>
       </a>
 
-      {/* Avatar + notificaciones (se rellenan en cliente si hay sesión con perfil) */}
+      {/* Avatar + notificaciones (se rellenan en cliente si hay sesión con perfil).
+          Los dos huecos (.sn-ph) miden lo mismo que la campana y la foto: si la
+          última vez había perfil (html[data-perfil], de theme-init.js), se ven
+          desde el primer momento y lo que llega después no empuja nada. */}
       <social-nav
         class="contents"
         data-notif={localizePath(lang, 'notifications')}
         data-profile-base={localizePath(lang, 'u')}
         data-notif-label={t('nav.notifications')}
-      ></social-nav>
+      >
+        <span aria-hidden="true" class="sn-ph hidden items-center border-l border-ink px-4 xl:flex"><span class="block h-[18px] w-[18px]"></span></span>
+        <span aria-hidden="true" class="sn-ph flex items-center border-l border-ink px-3"><span class="block h-7 w-7 border border-ink"></span></span>
+      </social-nav>
 
       {/* Idioma y modo oscuro: solo en escritorio; en móvil/tablet van en el menú desplegable */}
       <div class="hidden xl:flex"><ThemeToggle /></div>
@@ -168,6 +174,7 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
   // de forma síncrona al cargar; luego se revalida en segundo plano y solo se
   // vuelve a pintar si los datos cambiaron.
   const SUMMARY_KEY = 'cine:social-summary';
+  const PERFIL_KEY = 'cine:perfil';
 
   class SocialNav extends HTMLElement {
     connectedCallback() {
@@ -210,11 +217,20 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
         this.innerHTML = ''; // sin sesión o sin perfil
         try {
           sessionStorage.removeItem(SUMMARY_KEY);
+          localStorage.removeItem(PERFIL_KEY);
         } catch {
           /* ignore */
         }
+        delete document.documentElement.dataset.perfil;
         return;
       }
+      // Para que la próxima página reserve el hueco antes de pintar (theme-init.js).
+      try {
+        localStorage.setItem(PERFIL_KEY, '1');
+      } catch {
+        /* ignore */
+      }
+      document.documentElement.dataset.perfil = '1';
       const esc = (s: string) =>
         String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
       const notifUrl = this.dataset.notif!;

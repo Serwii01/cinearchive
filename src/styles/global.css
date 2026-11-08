@@ -52,6 +52,11 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    /* El hueco de la barra de desplazamiento, siempre reservado. En Windows la
+       barra ocupa 15 px: las páginas largas la tenían y las cortas no, y al
+       pasar de una a otra todo lo centrado (la cabecera la primera) se movía
+       7-8 px. En móvil y en Mac la barra flota encima y esto no cambia nada. */
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -259,4 +264,27 @@
 body {
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+}
+
+/* --- Cabecera sin saltos ----------------------------------------------------
+   Los enlaces de la cuenta vienen pintados en las dos variantes (AuthNav.astro)
+   y aquí se enseña la buena. data-state lo pone el servidor («user»/«guest»)
+   o, en las páginas generadas de antemano, se queda en «auto» y decide
+   html[data-auth], que pone theme-init.js antes de pintar. Va fuera de @layer
+   para que Tailwind no lo descarte: no lleva clases que pueda encontrar. */
+auth-nav[data-state='guest'] [data-variant='user'],
+auth-nav[data-state='user'] [data-variant='guest'],
+auth-nav[data-state='auto'] [data-variant='user'] {
+  display: none;
+}
+html[data-auth='user'] auth-nav[data-state='auto'] [data-variant='user'] {
+  display: contents;
+}
+html[data-auth='user'] auth-nav[data-state='auto'] [data-variant='guest'] {
+  display: none;
+}
+/* Hueco de la campana y la foto (Header.astro, <social-nav>): solo si la
+   última vez había perfil. Mide lo mismo que lo que se pinta después. */
+html:not([data-perfil]) social-nav .sn-ph {
+  display: none;
 }

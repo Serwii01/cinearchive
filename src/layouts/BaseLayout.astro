@@ -3,6 +3,7 @@ import '../styles/global.css';
 // Mismo fichero que importa global.css: Vite lo deduplica y la URL con hash coincide.
 import garamondUrl from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2?url';
 import geistUrl from '@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2?url';
+import spaceMonoUrl from '@fontsource/space-mono/files/space-mono-latin-400-normal.woff2?url';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Ticker from '../components/Ticker.astro';
@@ -88,11 +89,14 @@ const umamiSrc = umamiId && umamiHost ? `https://${umamiHost}/script.js` : '';
     {/* Adelanta la conexión a los hosts de imágenes para acelerar la carga */}
     <link rel="preconnect" href="https://image.tmdb.org" />
     <link rel="dns-prefetch" href="https://archive.org" />
-    {/* Las dos fuentes que se ven nada más abrir (títulos y texto). Sin esto el
-        navegador no las descubre hasta leer el CSS, y el texto salta de la
-        fuente del sistema a la buena cuando ya se estaba leyendo. */}
+    {/* Las tres fuentes que se ven nada más abrir (títulos, texto y etiquetas).
+        Sin esto el navegador no las descubre hasta leer el CSS, y el texto salta
+        de la fuente del sistema a la buena cuando ya se estaba leyendo. Space
+        Mono es la de las etiquetas («ARCHIVO», «FILMOTECA»…): sin precarga, el
+        menú de la cabecera se ensanchaba unos 30 px al llegar y todo se movía. */}
     <link rel="preload" href={garamondUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={geistUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={spaceMonoUrl} as="font" type="font/woff2" crossorigin />
     {/* Color de la barra del navegador (y de la barra de estado de la app
         instalada). Sigue al tema de la WEB, no al del sistema: el tema se elige
         a mano y por defecto es claro, así que con `media="(prefers-color-scheme)"`
