@@ -51,6 +51,16 @@ export interface Article {
    * código de tiempo y un pie. Van a su tamaño real; no se agrandan.
    */
   stills?: { credit: Record<Lang, string>; items: { src: string; time: string; caption: Record<Lang, string> }[] };
+  /**
+   * Fotos propias (photocalls, galas), con su autor y un pie por foto. Se ven
+   * enteras, sin recortar: en una foto de prensa el encuadre es del fotógrafo.
+   * `src` es la grande (se abre al pulsar) y `thumb`, la de la cuadrícula.
+   */
+  photos?: {
+    author: string;
+    authorUrl?: string;
+    items: { src: string; thumb: string; width: number; height: number; caption: Record<Lang, string> }[];
+  };
   /** Firma, si el artículo es de alguien en concreto y no de la redacción. */
   author?: string;
   sources: { label: string; url: string }[];
@@ -2908,7 +2918,179 @@ const cineAbiertoTrece: Article = {
   },
 };
 
+/* ------------------------------------------------------------------ *
+ * Festival de Sevilla 2026: «El confidente» y «Carta blanca».
+ * Primera crónica con fotos propias (Ana Gómez Collado).
+ * ------------------------------------------------------------------ */
+const FOTOS_SEFF = '/articles/festival-sevilla-2026-el-confidente-carta-blanca';
+const sevillaConfidente: Article = {
+  slug: 'festival-sevilla-2026-el-confidente-carta-blanca',
+  date: '2026-11-08',
+  image: { src: `${FOTOS_SEFF}/cover.jpg`, width: 1200, height: 800, credit: '© Ana Gómez Collado · 23.º Festival de Cine Europeo de Sevilla' },
+  related: [1707078, 1704914],
+  photos: {
+    author: 'Ana Gómez Collado',
+    authorUrl: 'https://www.instagram.com/anagcolladophoto/',
+    items: [
+      {
+        src: `${FOTOS_SEFF}/el-confidente-equipo.webp`, thumb: `${FOTOS_SEFF}/el-confidente-equipo-sm.webp`, width: 1800, height: 1200,
+        caption: {
+          es: 'El equipo de «El confidente»: el director Daniel Calparsoro, los actores Miguel Herrán y Víctor Clavijo y los productores María Luisa Gutiérrez y Álvaro Ariza.',
+          en: 'The team of “El confidente”: director Daniel Calparsoro, actors Miguel Herrán and Víctor Clavijo, and producers María Luisa Gutiérrez and Álvaro Ariza.',
+          gl: 'O equipo de «El confidente»: o director Daniel Calparsoro, os actores Miguel Herrán e Víctor Clavijo e os produtores María Luisa Gutiérrez e Álvaro Ariza.',
+          eu: '«El confidente» filmaren taldea: Daniel Calparsoro zuzendaria, Miguel Herrán eta Víctor Clavijo aktoreak, eta María Luisa Gutiérrez eta Álvaro Ariza ekoizleak.',
+          ca: 'L’equip d’«El confidente»: el director Daniel Calparsoro, els actors Miguel Herrán i Víctor Clavijo i els productors María Luisa Gutiérrez i Álvaro Ariza.',
+        },
+      },
+      {
+        src: `${FOTOS_SEFF}/daniel-calparsoro.webp`, thumb: `${FOTOS_SEFF}/daniel-calparsoro-sm.webp`, width: 1200, height: 1800,
+        caption: {
+          es: 'Daniel Calparsoro, director de «El confidente».',
+          en: 'Daniel Calparsoro, director of “El confidente”.',
+          gl: 'Daniel Calparsoro, director de «El confidente».',
+          eu: 'Daniel Calparsoro, «El confidente» filmaren zuzendaria.',
+          ca: 'Daniel Calparsoro, director d’«El confidente».',
+        },
+      },
+      {
+        src: `${FOTOS_SEFF}/miguel-herran-1.webp`, thumb: `${FOTOS_SEFF}/miguel-herran-1-sm.webp`, width: 1200, height: 1800,
+        caption: {
+          es: 'Miguel Herrán, protagonista de «El confidente» junto a Javier Gutiérrez.',
+          en: 'Miguel Herrán, who leads “El confidente” alongside Javier Gutiérrez.',
+          gl: 'Miguel Herrán, protagonista de «El confidente» xunto a Javier Gutiérrez.',
+          eu: 'Miguel Herrán, «El confidente» filmaren protagonista Javier Gutiérrezekin batera.',
+          ca: 'Miguel Herrán, protagonista d’«El confidente» al costat de Javier Gutiérrez.',
+        },
+      },
+      {
+        src: `${FOTOS_SEFF}/miguel-herran-2.webp`, thumb: `${FOTOS_SEFF}/miguel-herran-2-sm.webp`, width: 1200, height: 1800,
+        caption: {
+          es: 'Miguel Herrán, en la alfombra roja.',
+          en: 'Miguel Herrán on the red carpet.',
+          gl: 'Miguel Herrán, na alfombra vermella.',
+          eu: 'Miguel Herrán, alfonbra gorrian.',
+          ca: 'Miguel Herrán, a la catifa vermella.',
+        },
+      },
+      {
+        src: `${FOTOS_SEFF}/victor-clavijo-1.webp`, thumb: `${FOTOS_SEFF}/victor-clavijo-1-sm.webp`, width: 1200, height: 1800,
+        caption: {
+          es: 'Víctor Clavijo, en el reparto de «El confidente» y de «Carta blanca».',
+          en: 'Víctor Clavijo, in the cast of both “El confidente” and “Carta blanca”.',
+          gl: 'Víctor Clavijo, no reparto de «El confidente» e de «Carta blanca».',
+          eu: 'Víctor Clavijo, «El confidente» eta «Carta blanca» filmen aktore-zerrendan.',
+          ca: 'Víctor Clavijo, al repartiment d’«El confidente» i de «Carta blanca».',
+        },
+      },
+      {
+        src: `${FOTOS_SEFF}/victor-clavijo-2.webp`, thumb: `${FOTOS_SEFF}/victor-clavijo-2-sm.webp`, width: 1200, height: 1800,
+        caption: {
+          es: 'Víctor Clavijo, en la alfombra roja.',
+          en: 'Víctor Clavijo on the red carpet.',
+          gl: 'Víctor Clavijo, na alfombra vermella.',
+          eu: 'Víctor Clavijo, alfonbra gorrian.',
+          ca: 'Víctor Clavijo, a la catifa vermella.',
+        },
+      },
+      {
+        src: `${FOTOS_SEFF}/carta-blanca-equipo.webp`, thumb: `${FOTOS_SEFF}/carta-blanca-equipo-sm.webp`, width: 1800, height: 1200,
+        caption: {
+          es: 'El equipo de «Carta blanca», con el director y productor Gerardo Herrero, la productora Mariela Besuievsky, el guionista Lorenzo Silva y el actor Víctor Clavijo, entre otros.',
+          en: 'The team of “Carta blanca”, among them director and producer Gerardo Herrero, producer Mariela Besuievsky, screenwriter Lorenzo Silva and actor Víctor Clavijo.',
+          gl: 'O equipo de «Carta blanca», co director e produtor Gerardo Herrero, a produtora Mariela Besuievsky, o guionista Lorenzo Silva e o actor Víctor Clavijo, entre outros.',
+          eu: '«Carta blanca» filmaren taldea; besteak beste, Gerardo Herrero zuzendari eta ekoizlea, Mariela Besuievsky ekoizlea, Lorenzo Silva gidoilaria eta Víctor Clavijo aktorea.',
+          ca: 'L’equip de «Carta blanca», amb el director i productor Gerardo Herrero, la productora Mariela Besuievsky, el guionista Lorenzo Silva i l’actor Víctor Clavijo, entre d’altres.',
+        },
+      },
+    ],
+  },
+  sources: [
+    { label: 'Los lunes seriéfilos · «El confidente»: Javier Gutiérrez y Miguel Herrán en el nuevo thriller de Calparsoro', url: 'https://www.loslunesseriefilos.com/2026/10/el-confidente-javier-gutierrez-miguel-herran.html' },
+    { label: 'El blog de cine español · «El confidente», al Festival de Cine Europeo de Sevilla', url: 'https://www.elblogdecineespanol.com/?p=85017' },
+    { label: 'Seminci · The Confidant', url: 'https://www.seminci.com/en/peliculas/the-confidant/' },
+    { label: 'Filmand · «El confidente» llegará a los cines el 29 de enero', url: 'https://filmand.es/el-confidente-presenta-su-trailer-y-llegara-a-salas-de-cine-el-proximo-29-de-enero/' },
+    { label: 'Wikipedia · The Confidant (film)', url: 'https://en.wikipedia.org/wiki/The_Confidant_(film)' },
+    { label: 'El Imparcial · Gerardo Herrero lleva a la gran pantalla la Guerra del Rif en «Carta blanca»', url: 'https://www.elimparcial.es/noticia/303984/cultura/gerardo-herrero-lleva-a-la-gran-pantalla-la-guerra-del-rif-en-carta-blanca.html' },
+    { label: 'El blog de cine español · «Carta blanca», estreno mundial en el Festival de Sevilla', url: 'https://www.elblogdecineespanol.com/?p=84936' },
+    { label: 'Mundo Cine · Las 15 películas del Festival de Sevilla 2026 que no hay que perderse', url: 'https://mundocine.es/noticias/festivales/festival-de-sevilla-2026-pone-venta-entradas-15-peliculas-no-te-puedes-perder-programacion' },
+    { label: 'Cineconn · El cine español en el Festival de Sevilla 2026', url: 'https://cineconn.es/el-cine-espanol-en-el-festival-de-sevilla-2026/' },
+  ],
+  copy: {
+    es: {
+      kicker: 'Crónica · Festival de Sevilla',
+      title: '«El confidente» y «Carta blanca», en la alfombra roja del Festival de Sevilla',
+      lead: 'Daniel Calparsoro y Miguel Herrán presentaron su thriller sobre un confidente de la policía en los años de ETA; Gerardo Herrero y Lorenzo Silva, su película sobre la Guerra del Rif. Víctor Clavijo estuvo en las dos. Fotografías de Ana Gómez Collado.',
+      body: [
+        'El sábado 7 de noviembre, segunda jornada del 23.º Festival de Cine Europeo de Sevilla, pasaron por la alfombra roja los equipos de dos películas españolas de Proyecciones Especiales que todavía no han llegado a los cines: **«El confidente»**, de Daniel Calparsoro, y **«Carta blanca»**, de Gerardo Herrero. Además de la fecha, comparten actor: Víctor Clavijo está en el reparto de las dos.',
+        '## «El confidente»',
+        'Es un thriller inspirado en hechos reales, con el trabajo del periodista Pablo Muñoz como base. Javier Gutiérrez interpreta a un policía veterano, curtido por décadas de atentados de ETA, y Miguel Herrán a su joven confidente, un chico de la kale borroka que se niega a matar. Son dos hombres de orígenes y principios opuestos a los que unen la soledad, la lealtad y la sensación de abandono, y que en una operación peligrosa cruzan límites de los que después tendrán que responder. El guion es de Fernando Navarro («Verónica», «Tierra de nadie»), y completan el reparto Itsaso Arana, Emilio Palacios, Víctor Clavijo, Miguel Garcés y Patricia Vico.',
+        'Se rodó en Gipuzkoa y en el sur de Francia, y transcurre en los años dos mil, con saltos a los ochenta. La producen María Luisa Gutiérrez y Álvaro Ariza, en una producción de Bowfinger International Pictures y Esto También Pasará con Sony Pictures, Movistar Plus+ y Atresmedia. Tuvo su estreno mundial en la Seminci de Valladolid, fuera de concurso, y llegará a los cines el **29 de enero de 2027**. En Sevilla posaron Calparsoro, Herrán, Clavijo y los dos productores.',
+        '## «Carta blanca»',
+        'La película de Gerardo Herrero lleva al cine la Guerra del Rif a partir de la novela de Lorenzo Silva, que firma el guion con Daniel Corpas. En 1921, el joven Juan Faura (Iván Pellicer) se alista en la Legión para que lo manden a Marruecos y acaba envuelto en la venganza del sargento Antonio Bermejo (Víctor Clavijo), que ha perdido a su hermano en el Desastre de Annual. Parte de un episodio poco conocido: una incursión de soldados a los que sus mandos dieron carta blanca. En el reparto están también Salva Reina, Joel Bosqued, Almagro San Miguel y Fran Berenguer.',
+        'Herrero la dirige y la produce junto a Mariela Besuievsky. Sevilla acoge su estreno mundial; después inaugurará el Festival Internacional de Cine de Almería, el 13 de noviembre, y llegará a los cines el **6 de enero de 2027** con Karma Films. En la alfombra roja estuvieron Herrero, Besuievsky, Silva y Clavijo. Datos comprobados el 8 de noviembre de 2026.',
+      ],
+    },
+    en: {
+      kicker: 'Report · Seville Film Festival',
+      title: '“El confidente” and “Carta blanca” on the red carpet at the Seville Film Festival',
+      lead: 'Daniel Calparsoro and Miguel Herrán presented their thriller about a police informant in the ETA years; Gerardo Herrero and Lorenzo Silva, their film about the Rif War. Víctor Clavijo was in both. Photographs by Ana Gómez Collado.',
+      body: [
+        'On Saturday 7 November, the second day of the 23rd Seville European Film Festival, the teams of two Spanish films from the Special Screenings section, neither yet released in cinemas, walked the red carpet: **“El confidente”**, by Daniel Calparsoro, and **“Carta blanca”**, by Gerardo Herrero. Besides the date, they share an actor: Víctor Clavijo is in the cast of both.',
+        '## “El confidente”',
+        'It is a thriller inspired by real events, built on the work of journalist Pablo Muñoz. Javier Gutiérrez plays a veteran police officer hardened by decades of ETA attacks, and Miguel Herrán his young informant, a kid from the kale borroka street violence who refuses to kill. They are two men of opposite backgrounds and principles, bound by loneliness, loyalty and a sense of abandonment, who cross lines during a dangerous operation that they will later have to answer for. The screenplay is by Fernando Navarro (“Veronica”, “No Man’s Land”), and the cast also includes Itsaso Arana, Emilio Palacios, Víctor Clavijo, Miguel Garcés and Patricia Vico.',
+        'It was shot in Gipuzkoa and the south of France and is set in the 2000s, with flashbacks to the eighties. It is produced by María Luisa Gutiérrez and Álvaro Ariza, in a production by Bowfinger International Pictures and Esto También Pasará with Sony Pictures, Movistar Plus+ and Atresmedia. It had its world premiere at the Valladolid International Film Festival (Seminci), out of competition, and opens in cinemas on **29 January 2027**. In Seville, Calparsoro, Herrán, Clavijo and the two producers posed for the cameras.',
+        '## “Carta blanca”',
+        'Gerardo Herrero’s film brings the Rif War to the screen, adapting the novel by Lorenzo Silva, who wrote the screenplay with Daniel Corpas. In 1921, young Juan Faura (Iván Pellicer) joins the Spanish Legion to be sent to Morocco and gets caught up in the revenge of Sergeant Antonio Bermejo (Víctor Clavijo), whose brother was killed in the Disaster of Annual. It draws on a little-known episode: a raid by soldiers whose commanders gave them a free hand —carta blanca. The cast also includes Salva Reina, Joel Bosqued, Almagro San Miguel and Fran Berenguer.',
+        'Herrero directs and produces it with Mariela Besuievsky. Seville hosts its world premiere; it will then open the Almería International Film Festival on 13 November and reach cinemas on **6 January 2027** through Karma Films. On the red carpet were Herrero, Besuievsky, Silva and Clavijo. Checked on 8 November 2026.',
+      ],
+    },
+    gl: {
+      kicker: 'Crónica · Festival de Sevilla',
+      title: '«El confidente» e «Carta blanca», na alfombra vermella do Festival de Sevilla',
+      lead: 'Daniel Calparsoro e Miguel Herrán presentaron o seu thriller sobre un confidente da policía nos anos de ETA; Gerardo Herrero e Lorenzo Silva, a súa película sobre a Guerra do Rif. Víctor Clavijo estivo nas dúas. Fotografías de Ana Gómez Collado.',
+      body: [
+        'O sábado 7 de novembro, segunda xornada do 23.º Festival de Cine Europeo de Sevilla, pasaron pola alfombra vermella os equipos de dúas películas españolas de Proxeccións Especiais que aínda non chegaron aos cines: **«El confidente»**, de Daniel Calparsoro, e **«Carta blanca»**, de Gerardo Herrero. Ademais da data, comparten actor: Víctor Clavijo está no reparto das dúas.',
+        '## «El confidente»',
+        'É un thriller inspirado en feitos reais, co traballo do xornalista Pablo Muñoz como base. Javier Gutiérrez interpreta un policía veterano, curtido por décadas de atentados de ETA, e Miguel Herrán o seu novo confidente, un rapaz da kale borroka que se nega a matar. Son dous homes de orixes e principios opostos aos que unen a soidade, a lealdade e a sensación de abandono, e que nunha operación perigosa cruzan límites dos que despois terán que responder. O guión é de Fernando Navarro («Verónica», «Tierra de nadie»), e completan o reparto Itsaso Arana, Emilio Palacios, Víctor Clavijo, Miguel Garcés e Patricia Vico.',
+        'Rodouse en Gipuzkoa e no sur de Francia, e transcorre nos anos dous mil, con saltos aos oitenta. Prodúcena María Luisa Gutiérrez e Álvaro Ariza, nunha produción de Bowfinger International Pictures e Esto También Pasará con Sony Pictures, Movistar Plus+ e Atresmedia. Tivo a súa estrea mundial na Seminci de Valladolid, fóra de concurso, e chegará aos cines o **29 de xaneiro de 2027**. En Sevilla posaron Calparsoro, Herrán, Clavijo e os dous produtores.',
+        '## «Carta blanca»',
+        'A película de Gerardo Herrero leva ao cine a Guerra do Rif a partir da novela de Lorenzo Silva, que asina o guión con Daniel Corpas. En 1921, o novo Juan Faura (Iván Pellicer) alístase na Lexión para que o manden a Marrocos e acaba envolto na vinganza do sarxento Antonio Bermejo (Víctor Clavijo), que perdeu o seu irmán no Desastre de Annual. Parte dun episodio pouco coñecido: unha incursión de soldados aos que os seus mandos deron carta branca. No reparto están tamén Salva Reina, Joel Bosqued, Almagro San Miguel e Fran Berenguer.',
+        'Herrero dirixe e produce a película xunto a Mariela Besuievsky. Sevilla acolle a súa estrea mundial; despois inaugurará o Festival Internacional de Cine de Almería, o 13 de novembro, e chegará aos cines o **6 de xaneiro de 2027** con Karma Films. Na alfombra vermella estiveron Herrero, Besuievsky, Silva e Clavijo. Datos comprobados o 8 de novembro de 2026.',
+      ],
+    },
+    eu: {
+      kicker: 'Kronika · Sevillako Jaialdia',
+      title: '«El confidente» eta «Carta blanca», Sevillako Jaialdiko alfonbra gorrian',
+      lead: 'Daniel Calparsorok eta Miguel Herránek ETAren urteetako polizia-konfidente bati buruzko thrillerra aurkeztu zuten; Gerardo Herrerok eta Lorenzo Silvak, Rifeko Gerrari buruzko filma. Víctor Clavijo bietan egon zen. Argazkiak: Ana Gómez Collado.',
+      body: [
+        'Azaroaren 7an, larunbatarekin, Sevillako Europako Zinema Jaialdiaren 23. edizioko bigarren egunean, Emanaldi Berezien saileko bi film espainiarren taldeak igaro ziren alfonbra gorritik, biak oraindik zinema-aretoetara iritsi gabe: Daniel Calparsororen **«El confidente»** eta Gerardo Herreroren **«Carta blanca»**. Dataz gain, aktore bat partekatzen dute: Víctor Clavijo bien aktore-zerrendan dago.',
+        '## «El confidente»',
+        'Benetako gertaeretan oinarritutako thrillerra da, Pablo Muñoz kazetariaren lana abiapuntu hartuta. Javier Gutiérrezek polizia beterano bat antzezten du, ETAren hamarkadetako atentatuek gogortua, eta Miguel Herránek haren konfidente gaztea, hiltzeari uko egiten dion kale borrokako mutil bat. Jatorri eta printzipio kontrakoak dituzten bi gizon dira, bakardadeak, leialtasunak eta abandonu-sentimenduak elkartuak, eta operazio arriskutsu batean muga batzuk gainditzen dituzte, gero erantzun beharko dutenak. Gidoia Fernando Navarrorena da («Verónica», «Tierra de nadie»), eta Itsaso Arana, Emilio Palacios, Víctor Clavijo, Miguel Garcés eta Patricia Vico dira beste aktoreetako batzuk.',
+        'Gipuzkoan eta Frantziako hegoaldean filmatu zen, eta bi mila urteetan gertatzen da, laurogeiko hamarkadarako jauziekin. María Luisa Gutiérrezek eta Álvaro Arizak ekoitzi dute, Bowfinger International Pictures eta Esto También Pasará etxeen ekoizpenean, Sony Pictures, Movistar Plus+ eta Atresmediarekin. Mundu mailako estreinaldia Valladolideko Seminci jaialdian izan zuen, lehiaketatik kanpo, eta **2027ko urtarrilaren 29an** iritsiko da zinema-aretoetara. Sevillan Calparsoro, Herrán, Clavijo eta bi ekoizleak jarri ziren kameren aurrean.',
+        '## «Carta blanca»',
+        'Gerardo Herreroren filmak Rifeko Gerra dakar pantailara, Lorenzo Silvaren eleberrian oinarrituta; Silvak berak idatzi du gidoia Daniel Corpasekin. 1921ean, Juan Faura gazteak (Iván Pellicer) Legioan izena ematen du Marokora bidal dezaten, eta Antonio Bermejo sarjentuaren (Víctor Clavijo) mendekuan nahasita amaitzen du; Bermejok bere anaia galdu du Annualgo Hondamendian. Gutxi ezagutzen den pasarte batetik abiatzen da: buruzagiek esku librea —carta blanca— eman zieten soldaduen eraso bat. Aktore-zerrendan Salva Reina, Joel Bosqued, Almagro San Miguel eta Fran Berenguer ere badaude.',
+        'Herrerok zuzendu eta ekoitzi du, Mariela Besuievskyrekin batera. Sevillak hartzen du mundu mailako estreinaldia; ondoren Almeriako Nazioarteko Zinema Jaialdia inauguratuko du, azaroaren 13an, eta **2027ko urtarrilaren 6an** iritsiko da aretoetara, Karma Filmsen eskutik. Alfonbra gorrian Herrero, Besuievsky, Silva eta Clavijo egon ziren. Datuak 2026ko azaroaren 8an egiaztatuak.',
+      ],
+    },
+    ca: {
+      kicker: 'Crònica · Festival de Sevilla',
+      title: '«El confidente» i «Carta blanca», a la catifa vermella del Festival de Sevilla',
+      lead: 'Daniel Calparsoro i Miguel Herrán van presentar el seu thriller sobre un confident de la policia en els anys d’ETA; Gerardo Herrero i Lorenzo Silva, la seva pel·lícula sobre la Guerra del Rif. Víctor Clavijo va ser a totes dues. Fotografies d’Ana Gómez Collado.',
+      body: [
+        'Dissabte 7 de novembre, segona jornada del 23è Festival de Cinema Europeu de Sevilla, van passar per la catifa vermella els equips de dues pel·lícules espanyoles de Projeccions Especials que encara no han arribat als cinemes: **«El confidente»**, de Daniel Calparsoro, i **«Carta blanca»**, de Gerardo Herrero. A més de la data, comparteixen actor: Víctor Clavijo és al repartiment de totes dues.',
+        '## «El confidente»',
+        'És un thriller inspirat en fets reals, amb la feina del periodista Pablo Muñoz com a base. Javier Gutiérrez interpreta un policia veterà, endurit per dècades d’atemptats d’ETA, i Miguel Herrán el seu jove confident, un noi de la kale borroka que es nega a matar. Són dos homes d’orígens i principis oposats que uneixen la solitud, la lleialtat i la sensació d’abandonament, i que en una operació perillosa travessen límits dels quals després hauran de respondre. El guió és de Fernando Navarro («Verónica», «Tierra de nadie»), i completen el repartiment Itsaso Arana, Emilio Palacios, Víctor Clavijo, Miguel Garcés i Patricia Vico.',
+        'Es va rodar a Guipúscoa i al sud de França, i transcorre als anys dos mil, amb salts als vuitanta. La produeixen María Luisa Gutiérrez i Álvaro Ariza, en una producció de Bowfinger International Pictures i Esto También Pasará amb Sony Pictures, Movistar Plus+ i Atresmedia. Va tenir l’estrena mundial a la Seminci de Valladolid, fora de concurs, i arribarà als cinemes el **29 de gener de 2027**. A Sevilla hi van posar Calparsoro, Herrán, Clavijo i els dos productors.',
+        '## «Carta blanca»',
+        'La pel·lícula de Gerardo Herrero porta al cinema la Guerra del Rif a partir de la novel·la de Lorenzo Silva, que signa el guió amb Daniel Corpas. El 1921, el jove Juan Faura (Iván Pellicer) s’allista a la Legió perquè l’enviïn al Marroc i acaba embolicat en la venjança del sergent Antonio Bermejo (Víctor Clavijo), que ha perdut el seu germà al Desastre d’Annual. Parteix d’un episodi poc conegut: una incursió de soldats als quals els seus comandaments van donar carta blanca. Al repartiment també hi ha Salva Reina, Joel Bosqued, Almagro San Miguel i Fran Berenguer.',
+        'Herrero la dirigeix i la produeix amb Mariela Besuievsky. Sevilla n’acull l’estrena mundial; després inaugurarà el Festival Internacional de Cinema d’Almeria, el 13 de novembre, i arribarà als cinemes el **6 de gener de 2027** amb Karma Films. A la catifa vermella hi van ser Herrero, Besuievsky, Silva i Clavijo. Dades comprovades el 8 de novembre de 2026.',
+      ],
+    },
+  },
+};
+
 export const articles: Article[] = [
+  sevillaConfidente,
   sevilla2026,
   fanzinesDeCulto,
   cineAbiertoTrece,

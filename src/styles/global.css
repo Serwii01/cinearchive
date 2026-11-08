@@ -288,3 +288,38 @@ html[data-auth='user'] auth-nav[data-state='auto'] [data-variant='guest'] {
 html:not([data-perfil]) social-nav .sn-ph {
   display: none;
 }
+
+/* Visor de fotos de los artículos (<dialog>). Siempre oscuro, también con el
+   tema claro: una foto se mira mejor sobre negro. Colores fijos y no los del
+   tema porque estos se invierten en modo oscuro. */
+.photo-viewer {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgb(0 0 0 / 0.94);
+  color: #f4f4f4;
+}
+.photo-viewer::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+.photo-viewer-credit {
+  color: #a8a8a8;
+}
+.photo-viewer-btn {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid #f4f4f4;
+  color: #f4f4f4;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.photo-viewer-btn:hover,
+.photo-viewer-btn:focus-visible {
+  background: #f4f4f4;
+  color: #000;
+}

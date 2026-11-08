@@ -129,6 +129,64 @@ const jsonLd = [
       }
     </div>
 
+    {/* Fotos propias: en columnas, cada una entera (horizontales y verticales
+        mezcladas, sin recortar). Sin JavaScript, el enlace abre la foto grande;
+        con él, se ve en un visor dentro de la página. */}
+    {article.photos && (
+      <section class="mt-12" aria-labelledby="article-photos">
+        <h2 id="article-photos" class="border-b border-ink pb-3 text-headline-lg text-ink">{t('articles.photos')}</h2>
+        <p class="mt-3 font-mono text-meta-data text-muted">
+          {t('articles.photosBy').split('{name}')[0]}
+          {article.photos.authorUrl ? (
+            <a href={article.photos.authorUrl} target="_blank" rel="noopener noreferrer" class="text-charcoal hover:text-ink">{article.photos.author} ↗︎</a>
+          ) : (
+            article.photos.author
+          )}
+        </p>
+        {/* Rejilla en el orden del texto: las horizontales (fotos de grupo) a todo
+            lo ancho y las verticales en filas. Con columnas CSS el orden se leía
+            de arriba abajo y la crónica quedaba desordenada. */}
+        <div class="mt-6 grid grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3" data-photos>
+          {article.photos.items.map((p, i) => (
+            <figure class:list={['flex flex-col border border-ink bg-surface', p.width > p.height && 'sm:col-span-full']}>
+              <a href={p.src} data-photo={i} data-caption={p.caption[lang] ?? p.caption.es} class="block" aria-label={`${t('articles.photoOpen')}: ${p.caption[lang] ?? p.caption.es}`}>
+                <img
+                  src={p.thumb}
+                  srcset={`${p.thumb} ${p.width > p.height ? 800 : Math.round((800 * p.width) / p.height)}w, ${p.src} ${p.width}w`}
+                  sizes={p.width > p.height ? '(min-width: 1280px) 1200px, 100vw' : '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'}
+                  alt={p.caption[lang] ?? p.caption.es}
+                  width={p.width > p.height ? 800 : Math.round((800 * p.width) / p.height)}
+                  height={p.width > p.height ? Math.round((800 * p.height) / p.width) : 800}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-auto w-full bg-charcoal"
+                />
+              </a>
+              <figcaption class="border-t border-ink px-3 py-2 text-body-md leading-snug text-charcoal">{p.caption[lang] ?? p.caption.es}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <dialog id="photo-viewer" class="photo-viewer" aria-label={t('articles.photos')}>
+          {/* La foto ocupa el hueco que sobra y el pie tiene alto fijo: así los
+              botones no se mueven al pasar de una horizontal a una vertical. */}
+          <div class="flex h-[100dvh] w-[100vw] flex-col p-3 sm:p-6" data-viewer-frame>
+            <div class="flex min-h-0 flex-1 items-center justify-center" data-viewer-stage>
+              <img alt="" class="max-h-full max-w-full object-contain" data-viewer-img />
+            </div>
+            <div class="mx-auto mt-3 flex w-full max-w-3xl shrink-0 flex-col items-center gap-2">
+              <p class="h-[6.5rem] w-full overflow-y-auto text-center text-body-md sm:h-[3.25rem]" data-viewer-caption></p>
+              <p class="photo-viewer-credit font-mono text-meta-data"><span data-viewer-count></span> · © {article.photos.author}</p>
+              <div class="flex gap-2">
+              <button type="button" class="photo-viewer-btn font-mono text-meta-data" data-viewer-prev aria-label={t('articles.photoPrev')}>←&#xFE0E;</button>
+              <button type="button" class="photo-viewer-btn font-mono text-meta-data" data-viewer-close>{t('articles.photoClose')}</button>
+              <button type="button" class="photo-viewer-btn font-mono text-meta-data" data-viewer-next aria-label={t('articles.photoNext')}>→&#xFE0E;</button>
+              </div>
+            </div>
+          </div>
+        </dialog>
+      </section>
+    )}
+
     {article.stills && (
       <section class="mt-12">
         <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('articles.stills')}</h2>
@@ -237,5 +295,43 @@ const jsonLd = [
       f.style.border = '0';
       vw.replaceChildren(f);
     });
+
+    // Visor de fotos: <dialog> nativo (Esc cierra, el foco queda dentro).
+    // Flechas del teclado y botones para pasar; pulsar fuera de la foto cierra.
+    const visor = document.getElementById('photo-viewer') as HTMLDialogElement | null;
+    const fotos = [...document.querySelectorAll<HTMLAnchorElement>('[data-photo]')];
+    if (visor && fotos.length) {
+      const img = visor.querySelector<HTMLImageElement>('[data-viewer-img]')!;
+      const pie = visor.querySelector<HTMLElement>('[data-viewer-caption]')!;
+      const cuenta = visor.querySelector<HTMLElement>('[data-viewer-count]')!;
+      let actual = 0;
+      const ver = (i: number) => {
+        actual = (i + fotos.length) % fotos.length;
+        const a = fotos[actual];
+        img.src = a.href;
+        img.alt = a.dataset.caption ?? '';
+        pie.textContent = a.dataset.caption ?? '';
+        cuenta.textContent = `${actual + 1} / ${fotos.length}`;
+      };
+      fotos.forEach((a, i) =>
+        a.addEventListener('click', (e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey) return; // abrir en pestaña nueva sigue funcionando
+          e.preventDefault();
+          ver(i);
+          visor.showModal();
+        }),
+      );
+      visor.querySelector('[data-viewer-prev]')?.addEventListener('click', () => ver(actual - 1));
+      visor.querySelector('[data-viewer-next]')?.addEventListener('click', () => ver(actual + 1));
+      visor.querySelector('[data-viewer-close]')?.addEventListener('click', () => visor.close());
+      visor.addEventListener('click', (e) => {
+        const el = e.target as HTMLElement;
+        if (el === visor || el.matches('[data-viewer-frame], [data-viewer-stage]')) visor.close();
+      });
+      visor.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') ver(actual - 1);
+        if (e.key === 'ArrowRight') ver(actual + 1);
+      });
+    }
   </script>
 </BaseLayout>
