@@ -60,6 +60,13 @@ analitica.{$DOMAIN} {
 	@rastreadores header_regexp User-Agent (?i)(bytespider|imagesiftbot|barkrowler|dataforseobot|mj12bot|dotbot|petalbot|semrushbot|ahrefsbot|blexbot|serpstatbot|megaindex|seekportbot|zoominfobot)
 	respond @rastreadores 403
 
+	# IPs sueltas que rastrean sin decir quiénes son. 141.148.181.241 (Oracle
+	# Cloud) pidió unas 5.800 fichas en pocas horas el 8-11-2026 haciéndose pasar
+	# por un navegador. Solo esa dirección, no su red: si alguna vez fuese una
+	# persona tras una VPN, el corte no llegaría a nadie más.
+	@ips_bloqueadas remote_ip 141.148.181.241
+	respond @ips_bloqueadas 403
+
 	# --- Protección frente a inundación de peticiones (DoS) ---
 	# Límite por IP en el borde, antes de llegar a la app. Dos zonas: una general
 	# para toda la web y otra más estricta para la API y el login.

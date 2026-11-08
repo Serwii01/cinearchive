@@ -80,7 +80,10 @@ describe('solo cuenta quien ejecuta JavaScript', () => {
         if (e.isDirectory()) recorrer(ruta);
         else if (ruta.endsWith('.astro')) {
           const src = readFileSync(ruta, 'utf8');
-          if (!conLayout(src) && !/^return Astro\.redirect\(/m.test(src)) sueltas.push(ruta);
+          // Los trozos de página (`partial`) los mete el navegador dentro de una
+          // página que ya contó la visita: contarlos sería contarla dos veces.
+          const trozo = /^export const partial = true/m.test(src);
+          if (!conLayout(src) && !trozo && !/^return Astro\.redirect\(/m.test(src)) sueltas.push(ruta);
         }
       }
     };

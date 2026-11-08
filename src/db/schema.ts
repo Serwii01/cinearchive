@@ -103,6 +103,12 @@ export const filmsCache = pgTable(
      * título no sirve para listas que se leen en otro idioma.
      */
     titles: jsonb('titles'),
+    /**
+     * Cuándo se pidieron las notas de OMDb. Antes se medía con `fetchedAt`,
+     * que se renueva en cada visita: las fichas visitadas a menudo no
+     * refrescaban nunca sus notas.
+     */
+    omdbFetchedAt: timestamp('omdb_fetched_at'),
     wikidata: jsonb('wikidata'),
     wikidataFetchedAt: timestamp('wikidata_fetched_at'),
     fetchedAt: timestamp('fetched_at').notNull().defaultNow(),

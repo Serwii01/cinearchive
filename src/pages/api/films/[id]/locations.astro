@@ -1,0 +1,32 @@
+---
+/**
+ * GET /api/films/:id/locations?lang=xx — la sección de localizaciones de una
+ * ficha, en HTML, para que el navegador la ponga en su sitio.
+ *
+ * La pide el script de la ficha cuando el visitante llega a esa parte. Así la
+ * consulta a Wikidata la provoca una persona y no los rastreadores, que no
+ * ejecutan JavaScript (ver getFilmLocationsFresh en lib/films.ts). Si no hay
+ * nada que enseñar, la respuesta va vacía y el hueco desaparece.
+ */
+import FilmLocations from '../../../../components/FilmLocations.astro';
+import { getFilmLocationsFresh } from '../../../../lib/films';
+import { rateLimit, clientIp } from '../../../../lib/ratelimit';
+import { normalizeLang } from '../../../../i18n/ui';
+
+export const prerender = false;
+export const partial = true;
+
+const tmdbId = Number(Astro.params.id);
+const lang = normalizeLang(Astro.url.searchParams.get('lang') ?? undefined);
+const valido = Number.isInteger(tmdbId) && tmdbId > 0;
+// Una persona abre unas pocas fichas por minuto; con esto, nadie puede usar la
+// ruta para mandar consultas a Wikidata en bucle.
+const permitido = valido && rateLimit(`locations:${clientIp(Astro.request)}`, 20, 60_000);
+const datos = permitido ? await getFilmLocationsFresh(tmdbId).catch(() => null) : null;
+
+Astro.response.headers.set('cache-control', 'private, max-age=300');
+if (!valido) Astro.response.status = 400;
+else if (!permitido) Astro.response.status = 429;
+---
+
+{datos?.locations && <FilmLocations locations={datos.locations} lang={lang} tmdbId={tmdbId} busqueda={datos.busqueda} />}
