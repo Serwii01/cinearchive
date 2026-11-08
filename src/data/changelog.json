@@ -3,14 +3,21 @@
     "version": "1.20",
     "date": "2026-11-07",
     "title": {
-      "es": "Una web más rápida, más segura y más estable",
-      "en": "A faster, safer and steadier site",
-      "gl": "Unha web máis rápida, máis segura e máis estable",
-      "eu": "Webgune azkarragoa, seguruagoa eta egonkorragoa",
-      "ca": "Un web més ràpid, més segur i més estable"
+      "es": "Más cine abierto y una web más rápida y segura",
+      "en": "More open cinema and a faster, safer site",
+      "gl": "Máis cine aberto e unha web máis rápida e segura",
+      "eu": "Zinema ireki gehiago eta webgune azkarrago eta seguruagoa",
+      "ca": "Més cinema obert i un web més ràpid i segur"
     },
     "changes": {
       "es": [
+        "Cine abierto crece hasta las 114 películas: 41 más, todas completas, gratis y legales.",
+        "En Cine abierto puedes filtrar por tipo, muda o sonora, duración, década y país, o buscar por título o director. Los filtros se quedan en el enlace, así que puedes compartir «terror mudo» tal cual.",
+        "Páginas propias para cada tipo y cada década: terror, cine mudo, cortos, los años 20…",
+        "Cada película de Cine abierto dice si es muda o sonora y en qué idioma, sugiere otras parecidas y lleva a su ficha completa, donde puedes guardarla en tus listas o en tu diario.",
+        "Si una película se puede ver entera en Cine abierto, su ficha te lo dice y te lleva directamente.",
+        "Las películas de Cine abierto aparecen con su título en tu idioma: «El acorazado Potemkin», no «Battleship Potemkin». Y el buscador las encuentra por cualquiera de sus títulos.",
+        "Las imágenes de Cine abierto y las portadas de la Biblioteca se ven nítidas, en vez de las miniaturas borrosas de antes.",
         "Las listas, los perfiles y los diarios cargan más rápido, sobre todo los que tienen muchas películas.",
         "La web ya no se corta unos minutos cada vez que publicamos una novedad.",
         "Más seguridad: la web estrena la última versión de la tecnología sobre la que está hecha y el sistema de cuentas se ha actualizado. Tu sesión, tu contraseña y tus datos siguen igual.",
@@ -19,6 +26,13 @@
         "En el Archivo, las portadas de la Biblioteca vuelven a verse con su marco."
       ],
       "en": [
+        "Open Cinema grows to 114 films: 41 more, all in full, free and legal.",
+        "In Open Cinema you can filter by type, silent or sound, length, decade and country, or search by title or director. Filters stay in the link, so you can share “silent horror” as it is.",
+        "Pages of their own for each type and each decade: horror, silent films, shorts, the 1920s…",
+        "Each Open Cinema film tells you whether it is silent or sound and in which language, suggests similar ones and links to its full page, where you can save it to your lists or your diary.",
+        "If a film can be watched in full in Open Cinema, its page tells you and takes you straight there.",
+        "Open Cinema films now show their title in your language, and the search finds them by any of their titles.",
+        "Open Cinema images and Library covers are now sharp, instead of the blurry thumbnails they used to be.",
         "Lists, profiles and diaries load faster, especially the ones with lots of films.",
         "The site no longer goes down for a few minutes every time we publish something new.",
         "More security: the site now runs on the latest version of the technology it is built on, and the account system has been updated. Your session, your password and your data stay the same.",
@@ -27,6 +41,13 @@
         "In the Archive, Library covers have their frame back."
       ],
       "gl": [
+        "Cine aberto medra ata as 114 películas: 41 máis, todas completas, de balde e legais.",
+        "En Cine aberto podes filtrar por tipo, muda ou sonora, duración, década e país, ou buscar por título ou director. Os filtros quedan na ligazón, así que podes compartir «terror mudo» tal cal.",
+        "Páxinas propias para cada tipo e cada década: terror, cine mudo, curtas, os anos 20…",
+        "Cada película de Cine aberto di se é muda ou sonora e en que idioma, suxire outras parecidas e leva á súa ficha completa, onde podes gardala nas túas listas ou no teu diario.",
+        "Se unha película se pode ver enteira en Cine aberto, a súa ficha dio e lévate directamente.",
+        "As películas de Cine aberto aparecen co título co que se estrearon aquí, e non só co inglés. E o buscador atópaas por calquera dos seus títulos.",
+        "As imaxes de Cine aberto e as portadas da Biblioteca vense nítidas, en vez das miniaturas borrosas de antes.",
         "As listas, os perfís e os diarios cargan máis rápido, sobre todo os que teñen moitas películas.",
         "A web xa non se corta uns minutos cada vez que publicamos unha novidade.",
         "Máis seguridade: a web estrea a última versión da tecnoloxía sobre a que está feita e o sistema de contas actualizouse. A túa sesión, o teu contrasinal e os teus datos seguen igual.",
@@ -35,6 +56,13 @@
         "No Arquivo, as portadas da Biblioteca volven verse co seu marco."
       ],
       "eu": [
+        "Zinema irekiak 114 film ditu orain: 41 gehiago, denak osorik, doan eta legez.",
+        "Zinema irekian motaren, mutua ala soinuduna izatearen, iraupenaren, hamarkadaren eta herrialdearen arabera iragaz dezakezu, edo izenburuaren edo zuzendariaren arabera bilatu. Iragazkiak estekan geratzen dira, beraz «beldurrezko zinema mutua» dagoen bezala parteka dezakezu.",
+        "Mota eta hamarkada bakoitzak bere orria du: beldurra, zinema mutua, film laburrak, 20ko hamarkada…",
+        "Zinema irekiko film bakoitzak esaten du mutua ala soinuduna den eta zer hizkuntzatan dagoen, antzekoak proposatzen ditu eta bere fitxa osora eramaten zaitu, non zure zerrendetan edo egunerokoan gorde dezakezun.",
+        "Film bat Zinema irekian osorik ikus badaiteke, bere fitxak esaten dizu eta zuzenean eramaten zaitu.",
+        "Zinema irekiko filmak hemen estreinatu ziren izenburuarekin agertzen dira, ez bakarrik ingelesezkoarekin, eta bilatzaileak edozein izenbururekin aurkitzen ditu.",
+        "Zinema irekiko irudiak eta Liburutegiko azalak garbi ikusten dira orain, lehengo miniatura lausoen ordez.",
         "Zerrendak, profilak eta egunerokoak azkarrago kargatzen dira, batez ere film asko dituztenak.",
         "Webgunea ez da minutu batzuez eteten berrikuntza bat argitaratzen dugun bakoitzean.",
         "Segurtasun handiagoa: webguneak eraikita dagoen teknologiaren azken bertsioa du orain, eta kontuen sistema eguneratu da. Zure saioa, pasahitza eta datuak lehen bezala daude.",
@@ -43,6 +71,13 @@
         "Artxiboan, Liburutegiko azalek berriro dute beren markoa."
       ],
       "ca": [
+        "Cinema obert creix fins a les 114 pel·lícules: 41 més, totes completes, gratis i legals.",
+        "A Cinema obert pots filtrar per tipus, muda o sonora, durada, dècada i país, o cercar per títol o director. Els filtres es queden a l’enllaç, així que pots compartir «terror mut» tal qual.",
+        "Pàgines pròpies per a cada tipus i cada dècada: terror, cinema mut, curts, els anys 20…",
+        "Cada pel·lícula de Cinema obert diu si és muda o sonora i en quin idioma, en suggereix d’altres de semblants i porta a la seva fitxa completa, on pots desar-la a les teves llistes o al teu diari.",
+        "Si una pel·lícula es pot veure sencera a Cinema obert, la seva fitxa t’ho diu i t’hi porta directament.",
+        "Les pel·lícules de Cinema obert apareixen amb el seu títol en el teu idioma: «El cuirassat Potemkin», no «Battleship Potemkin». I el cercador les troba per qualsevol dels seus títols.",
+        "Les imatges de Cinema obert i les portades de la Biblioteca es veuen nítides, en lloc de les miniatures borroses d’abans.",
         "Les llistes, els perfils i els diaris carreguen més de pressa, sobretot els que tenen moltes pel·lícules.",
         "El web ja no es talla uns minuts cada vegada que publiquem una novetat.",
         "Més seguretat: el web estrena l’última versió de la tecnologia amb què està fet i el sistema de comptes s’ha actualitzat. La teva sessió, la teva contrasenya i les teves dades continuen igual.",

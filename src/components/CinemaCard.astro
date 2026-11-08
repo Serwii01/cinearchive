@@ -4,7 +4,7 @@
  * para filtrar en el navegador), las filas de «Por dónde empezar» y el «Si te
  * gusta esta» de cada ficha (`compacta`: sin sinopsis).
  */
-import { pdThumbUrl, pdLicenseLabel, pdDecade, pdIsShort, type PdFilm } from '../lib/pdfilms';
+import { pdThumbUrl, pdLicenseLabel, pdDecade, pdIsShort, pdTitle, pdSearchText, type PdFilm } from '../lib/pdfilms';
 import { localizedField, useTranslations, localizePath, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -26,7 +26,7 @@ const datos = filtrable
       'data-sound': f.sound ? 'sound' : 'silent',
       'data-length': pdIsShort(f) ? 'short' : 'feature',
       'data-country': f.country,
-      'data-search': `${f.title} ${f.original_title} ${f.director}`.toLowerCase(),
+      'data-search': pdSearchText(f).toLowerCase(),
     }
   : {};
 ---
@@ -51,7 +51,7 @@ const datos = filtrable
     </div>
     <div class="flex flex-1 flex-col p-3">
       <h3 class={`font-display leading-tight text-ink transition-colors group-hover:text-muted ${compacta ? 'text-body-lg font-medium' : 'text-headline-md'}`}>
-        {f.title}
+        {pdTitle(f, lang)}
       </h3>
       <p class="mt-1 font-mono text-meta-data text-muted">
         {f.director} · {f.runtime}′{!f.sound && ` · ${t('cinema.silent')}`}

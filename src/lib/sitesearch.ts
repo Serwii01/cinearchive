@@ -17,7 +17,7 @@ import { books } from './library';
 import { figures } from './figures';
 import { collections, collectionTitle, collectionBlurb } from './collections';
 import { dossiers, dossierCopy } from './dossiers';
-import { pdFilms } from './pdfilms';
+import { pdFilms, pdTitle, pdSearchText } from './pdfilms';
 import { glossary, glossaryTerm, glossaryDef } from './reference';
 import { localizePath, type Lang } from '../i18n/ui';
 
@@ -78,10 +78,11 @@ function build(lang: Lang): Entry[] {
   for (const f of pdFilms) {
     push(
       'cinema',
-      f.title,
+      pdTitle(f, lang),
       `${f.director} · ${f.year}`,
       localizePath(lang, `cinema/${f.id}`),
-      `${f.original_title} ${f.country} ${blurb(f, lang)}`,
+      // Todos los títulos: «Potemkin» o «acorazado» la encuentran en cualquier idioma.
+      `${pdSearchText(f)} ${f.country} ${blurb(f, lang)}`,
     );
   }
   for (const g of glossary) {

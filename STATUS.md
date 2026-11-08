@@ -6,9 +6,9 @@
 En producción en cinearchive.es, al día con main (8495436 desplegado o por desplegar): Astro 7, despliegues sin compilar en el VPS (menos de 1 min), contador sin visitas de rastreadores, films_cache con tope (disco al 21 %), copias nocturnas, vigilancia por correo y menos CPU en Postgres. Contador en unas 1.574.000 el 7 nov.
 
 ## Siguientes pasos
-- [ ] Anotar Cine abierto en el changelog (v1.21), con las páginas por tipo y década y el enlace desde las fichas.
 - [ ] Sergio: dar de alta la web en Google Search Console y Bing Webmaster Tools (verificación por DNS) y enviar sitemap-index.xml. Con eso, ver qué búsquedas traen gente y escribir artículos para ellas.
 - [ ] Difundir la web: lista de sitios en el vault (SEO y difusión).
+- [ ] (Aparcado) Más cine con permiso: la NFB de Canadá deja incrustar (nfb.ca/film/<slug>/embed/player/, oEmbed con datos). Probado el 8 nov desde España: 44 de 50 se ven (todas las clásicas de McLaren, Óscar…). Sus condiciones piden uso no comercial y enlace a la NFB; antes, pedirles permiso por escrito. El reproductor carga Google Tag Manager: cargarlo solo al pulsar, frame-src en la CSP y mención en privacidad.
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
 - [ ] Copia de las copias fuera del VPS: el CRM 0.4.0 (cinearchiveCRM ff27fed) ya las baja desde la pestaña Servidor; probado. Queda decidir si se hace solo cada semana.
 - [ ] 8 nov, en el CRM (pestaña Servidor): «Consultas que más gastan» y «Rastreadores (24 h)». Con eso, bloquear redes o navegadores en el Caddyfile y optimizar las consultas lentas (también las de Umami, que tardan con periodos largos). Comparar la carga con el 7 nov (1,5, CPU al 100 % a ráfagas).
@@ -22,6 +22,8 @@ En producción en cinearchive.es, al día con main (8495436 desplegado o por des
 ## Última sesión
 
 ### 2026-11-08
+- Cine abierto con el título de cada idioma: `titles` en pdfilms.json, traídos de TMDB (scripts/fetch-pd-titles.mjs, variante de España primero) y revisados a mano (fuera títulos de Latinoamérica, subtítulos largos en inglés y un catalán que mezclaba dos películas). pdTitle: gl/eu/ca caen en el castellano si falta; si no, el título de siempre. Se usa en tarjetas, fichas, páginas por tipo y década, portada, teletipo, buscador del sitio y JSON-LD; el buscador encuentra la película por cualquiera de sus títulos. «Battleship Potemkin» sale como «El acorazado Potemkin» en castellano y «El cuirassat Potemkin» en catalán. Tests (596), build y navegador OK. Anotado en la v1.20.
+- Changelog: lo de Cine abierto (41 películas, filtros, páginas por tipo y década, fichas, enlace desde la ficha completa, imágenes nítidas) entra en la v1.20 en vez de abrir la v1.21. La v1.20 se titula ahora «Más cine abierto y una web más rápida y segura». Sergio no quiere versiones cada dos días.
 - SEO: la ficha de cada película que está en Cine abierto enlaza con «Ver la película completa» (pdFilmByTmdbId). Páginas propias por tipo y por década en Cine abierto (/cinema/tipo/<tipo>, /cinema/decada/<década>; 15 tipos con muda y cortos, 10 décadas, mínimo 3 películas), con título y descripción propios, ItemList y enlaces entre ellas (CinemaGroup, CinemaGroupNav); las etiquetas de la ficha llevan ahí en vez de a ?tipo=. JSON-LD e imagen social en Biblioteca (Book), Hemeroteca (PublicationIssue) y Glosario (DefinedTermSet). Tests (593) y build en verde; revisado en el navegador en escritorio y móvil.
 
 ### 2026-11-07

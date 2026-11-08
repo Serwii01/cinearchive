@@ -16,6 +16,8 @@ import {
   pdDecade,
   pdKindLabelKey,
   pdFilmByTmdbId,
+  pdTitle,
+  pdSearchText,
   type PdFilm,
 } from '../src/lib/pdfilms';
 
@@ -161,5 +163,32 @@ describe('Cine abierto: páginas por tipo y por década', () => {
     const conTmdb = pdFilms.find((f) => f.tmdbId)!;
     expect(pdFilmByTmdbId(conTmdb.tmdbId!)?.id).toBe(conTmdb.id);
     expect(pdFilmByTmdbId(-1)).toBeUndefined();
+  });
+});
+
+describe('Cine abierto: títulos en cada idioma', () => {
+  const peli = { id: 'p', title: 'Battleship Potemkin', original_title: 'Bronenosets Potyomkin', director: 'Sergei Eisenstein' } as PdFilm;
+
+  it('usa el título del idioma; en gallego, euskera y catalán cae en el castellano', () => {
+    const f = { ...peli, titles: { es: 'El acorazado Potemkin', ca: 'El cuirassat Potemkin' } } as PdFilm;
+    expect(pdTitle(f, 'es')).toBe('El acorazado Potemkin');
+    expect(pdTitle(f, 'ca')).toBe('El cuirassat Potemkin');
+    expect(pdTitle(f, 'gl')).toBe('El acorazado Potemkin');
+    expect(pdTitle(f, 'eu')).toBe('El acorazado Potemkin');
+    // En inglés no se toma el castellano: mejor el de siempre.
+    expect(pdTitle(f, 'en')).toBe('Battleship Potemkin');
+    expect(pdTitle(peli, 'es')).toBe('Battleship Potemkin');
+  });
+
+  it('el buscador encuentra la película por cualquiera de sus títulos', () => {
+    const f = { ...peli, titles: { es: 'El acorazado Potemkin' } } as PdFilm;
+    const texto = pdSearchText(f);
+    for (const t of ['Battleship Potemkin', 'Bronenosets Potyomkin', 'El acorazado Potemkin', 'Sergei Eisenstein']) expect(texto).toContain(t);
+  });
+
+  it('ningún título apuntado está vacío ni lleva espacios de sobra', () => {
+    for (const f of pdFilms) {
+      for (const [l, t] of Object.entries(f.titles ?? {})) expect(t, `${f.id}:${l}`).toBe(t.trim() || 'vacío');
+    }
   });
 });

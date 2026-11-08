@@ -3,7 +3,7 @@ export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CinemaCard from '../../../components/CinemaCard.astro';
 import CinemaGroupNav from '../../../components/CinemaGroupNav.astro';
-import { pdFilms, pdIsShort, PD_TAGS, type PdFilm } from '../../../lib/pdfilms';
+import { pdFilms, pdIsShort, pdTitle, PD_TAGS, type PdFilm } from '../../../lib/pdfilms';
 import { useTranslations, localizePath, langStaticPaths, normalizeLang } from '../../../i18n/ui';
 
 export const getStaticPaths = langStaticPaths;
@@ -12,7 +12,7 @@ const lang = normalizeLang(Astro.params.lang);
 const t = useTranslations(lang);
 const tTag = (tag: string) => t(`cinema.tag.${tag}` as Parameters<typeof t>[0]);
 
-const items = pdFilms.slice().sort((a, b) => a.year - b.year || a.title.localeCompare(b.title));
+const items = pdFilms.slice().sort((a, b) => a.year - b.year || pdTitle(a, lang).localeCompare(pdTitle(b, lang), lang));
 const decades = [...new Set(items.map((i) => Math.floor(i.year / 10) * 10))].sort((a, b) => a - b);
 const countries = [...new Set(items.map((i) => i.country))].sort((a, b) => a.localeCompare(b, 'es'));
 // Solo los tipos que tienen películas, en el orden de PD_TAGS.

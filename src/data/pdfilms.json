@@ -23,7 +23,12 @@
       "sound": false,
       "essential": true,
       "published": "2026-01-25",
-      "tmdbId": 775
+      "tmdbId": 775,
+      "titles": {
+        "es": "El viaje a la Luna",
+        "en": "A Trip to the Moon",
+        "ca": "Viatge a la Lluna"
+      }
     },
     {
       "id": "TheGreatTrainRobbery1903",
@@ -44,7 +49,11 @@
       ],
       "sound": false,
       "published": "2011-09-05",
-      "tmdbId": 5698
+      "tmdbId": 5698,
+      "titles": {
+        "es": "Asalto y robo de un tren",
+        "en": "The Great Train Robbery"
+      }
     },
     {
       "id": "The_Impossible_Voyage",
@@ -67,7 +76,11 @@
       ],
       "sound": false,
       "published": "2010-04-28",
-      "tmdbId": 2963
+      "tmdbId": 2963,
+      "titles": {
+        "es": "Viaje a través de lo imposible",
+        "en": "The Impossible Voyage"
+      }
     },
     {
       "id": "ElHotelElectrico",
@@ -89,7 +102,11 @@
       ],
       "sound": false,
       "published": "2011-04-22",
-      "tmdbId": 143634
+      "tmdbId": 143634,
+      "titles": {
+        "es": "El hotel eléctrico",
+        "en": "The Electric Hotel"
+      }
     },
     {
       "id": "falling_leaves_1912",
@@ -111,7 +128,10 @@
       "sound": false,
       "language": "en",
       "published": "2005-07-21",
-      "tmdbId": 147624
+      "tmdbId": 147624,
+      "titles": {
+        "en": "Falling Leaves"
+      }
     },
     {
       "id": "Gertie",
@@ -134,7 +154,10 @@
       "sound": false,
       "language": "en",
       "published": "2007-10-26",
-      "tmdbId": 100246
+      "tmdbId": 100246,
+      "titles": {
+        "en": "Gertie the Dinosaur"
+      }
     },
     {
       "id": "20000LeaguesUndertheSea",
@@ -157,7 +180,11 @@
       "sound": false,
       "language": "en",
       "published": "2006-03-05",
-      "tmdbId": 30266
+      "tmdbId": 30266,
+      "titles": {
+        "es": "20.000 leguas de viaje submarino",
+        "en": "20,000 Leagues Under the Sea"
+      }
     },
     {
       "id": "Intolerance1916",
@@ -179,7 +206,12 @@
       "sound": false,
       "language": "en",
       "published": "2018-12-06",
-      "tmdbId": 3059
+      "tmdbId": 3059,
+      "titles": {
+        "es": "Intolerancia",
+        "en": "Intolerance",
+        "ca": "Intolerància"
+      }
     },
     {
       "id": "CC_1917_06_17_TheImmigrant",
@@ -202,7 +234,11 @@
       "sound": false,
       "language": "en",
       "published": "2006-12-23",
-      "tmdbId": 47653
+      "tmdbId": 47653,
+      "titles": {
+        "es": "Charlot emigrante",
+        "en": "The Immigrant"
+      }
     },
     {
       "id": "BrokenBlossoms",
@@ -225,7 +261,12 @@
       "sound": false,
       "language": "en",
       "published": "2008-02-26",
-      "tmdbId": 899
+      "tmdbId": 899,
+      "titles": {
+        "es": "Lirios rotos",
+        "en": "Broken Blossoms",
+        "ca": "Lliris trencats"
+      }
     },
     {
       "id": "DrJekyllandMrHyde",
@@ -248,7 +289,12 @@
       "sound": false,
       "language": "en",
       "published": "2006-11-26",
-      "tmdbId": 3016
+      "tmdbId": 3016,
+      "titles": {
+        "es": "El hombre y la bestia",
+        "en": "Dr. Jekyll and Mr. Hyde",
+        "ca": "El Dr. Jekyll i el Sr. Hyde"
+      }
     },
     {
       "id": "OneWeek",
@@ -270,7 +316,12 @@
       "sound": false,
       "language": "en",
       "published": "2006-08-12",
-      "tmdbId": 23282
+      "tmdbId": 23282,
+      "titles": {
+        "es": "Una semana",
+        "en": "One Week",
+        "ca": "Una setmana"
+      }
     },
     {
       "id": "DasKabinettdesDoktorCaligariTheCabinetofDrCaligari",
@@ -293,7 +344,12 @@
       "sound": false,
       "essential": true,
       "published": "2005-07-18",
-      "tmdbId": 234
+      "tmdbId": 234,
+      "titles": {
+        "es": "El gabinete del doctor Caligari",
+        "en": "The Cabinet of Dr. Caligari",
+        "ca": "El gabinet del Dr. Caligari"
+      }
     },
     {
       "id": "the-golem-how-he-came-into-the-world-full-movie-restored-720p-hd",
@@ -315,7 +371,11 @@
       ],
       "sound": false,
       "published": "2021-07-30",
-      "tmdbId": 2972
+      "tmdbId": 2972,
+      "titles": {
+        "es": "El Golem",
+        "en": "The Golem"
+      }
     },
     {
       "id": "markofzorro-1920",
@@ -337,7 +397,11 @@
       "sound": false,
       "language": "en",
       "published": "2006-01-10",
-      "tmdbId": 42657
+      "tmdbId": 42657,
+      "titles": {
+        "es": "La marca del Zorro",
+        "en": "The Mark of Zorro"
+      }
     },
     {
       "id": "Brzdac1921",
@@ -361,7 +425,12 @@
       "language": "en",
       "essential": true,
       "published": "2017-08-12",
-      "tmdbId": 10098
+      "tmdbId": 10098,
+      "titles": {
+        "es": "El chico",
+        "en": "The Kid",
+        "ca": "The Kid"
+      }
     },
     {
       "id": "Haxan_tinted_and_subtitled",
@@ -384,7 +453,10 @@
       "sound": false,
       "language": "en",
       "published": "2007-12-07",
-      "tmdbId": 57283
+      "tmdbId": 57283,
+      "titles": {
+        "es": "La brujería a través de los tiempos"
+      }
     },
     {
       "id": "nanookOfTheNorth1922",
@@ -406,7 +478,12 @@
       "sound": false,
       "language": "en",
       "published": "2012-02-22",
-      "tmdbId": 669
+      "tmdbId": 669,
+      "titles": {
+        "es": "Nanuk, el esquimal",
+        "en": "Nanook of the North",
+        "ca": "Nanuk l'esquimal"
+      }
     },
     {
       "id": "Nosferatu_most_complete_version_93_mins.",
@@ -428,7 +505,11 @@
       "sound": false,
       "essential": true,
       "published": "2007-04-10",
-      "tmdbId": 653
+      "tmdbId": 653,
+      "titles": {
+        "es": "Nosferatu",
+        "en": "Nosferatu"
+      }
     },
     {
       "id": "OurHospitality_29",
@@ -451,7 +532,12 @@
       "sound": false,
       "language": "en",
       "published": "2010-11-18",
-      "tmdbId": 701
+      "tmdbId": 701,
+      "titles": {
+        "es": "La ley de la hospitalidad",
+        "en": "Our Hospitality",
+        "ca": "La nostra hospitalitat"
+      }
     },
     {
       "id": "silent-safety-last",
@@ -473,7 +559,12 @@
       "sound": false,
       "language": "en",
       "published": "2020-12-04",
-      "tmdbId": 22596
+      "tmdbId": 22596,
+      "titles": {
+        "es": "El hombre mosca",
+        "en": "Safety Last!",
+        "ca": "L’home mosca"
+      }
     },
     {
       "id": "The_Hunchback_of_Notre_Dame",
@@ -496,7 +587,11 @@
       "sound": false,
       "language": "en",
       "published": "2008-05-21",
-      "tmdbId": 18987
+      "tmdbId": 18987,
+      "titles": {
+        "es": "El jorobado de Notre Dame",
+        "en": "The Hunchback of Notre Dame"
+      }
     },
     {
       "id": "BalletMcanique",
@@ -517,7 +612,8 @@
       ],
       "sound": false,
       "published": "2017-10-20",
-      "tmdbId": 107011
+      "tmdbId": 107011,
+      "titles": {}
     },
     {
       "id": "sherlock-jr-buster-keaton-1924",
@@ -539,7 +635,12 @@
       "sound": false,
       "language": "en",
       "published": "2021-08-30",
-      "tmdbId": 992
+      "tmdbId": 992,
+      "titles": {
+        "es": "El moderno Sherlock Holmes",
+        "en": "Sherlock Jr.",
+        "ca": "Sherlock Jr"
+      }
     },
     {
       "id": "BillSpragueCollection-THELASTLAUGH-F.W.MURNAU-1924PUBLICDOMAIN",
@@ -560,7 +661,11 @@
       ],
       "sound": false,
       "published": "2017-08-15",
-      "tmdbId": 5991
+      "tmdbId": 5991,
+      "titles": {
+        "es": "El último",
+        "en": "The Last Laugh"
+      }
     },
     {
       "id": "TheThiefOfBagdad1924",
@@ -583,7 +688,12 @@
       "sound": false,
       "language": "en",
       "published": "2012-07-03",
-      "tmdbId": 28963
+      "tmdbId": 28963,
+      "titles": {
+        "es": "El ladrón de Bagdad",
+        "en": "The Thief of Bagdad",
+        "ca": "El lladre de Bagdad"
+      }
     },
     {
       "id": "BattleshipPotemkin",
@@ -605,7 +715,12 @@
       "sound": false,
       "essential": true,
       "published": "2005-10-22",
-      "tmdbId": 643
+      "tmdbId": 643,
+      "titles": {
+        "es": "El acorazado Potemkin",
+        "en": "Battleship Potemkin",
+        "ca": "El cuirassat Potemkin"
+      }
     },
     {
       "id": "strike-eisenstein-1925-english-intertitles-hd-quality",
@@ -627,7 +742,11 @@
       "sound": false,
       "language": "en",
       "published": "2021-10-19",
-      "tmdbId": 44967
+      "tmdbId": 44967,
+      "titles": {
+        "es": "La huelga",
+        "en": "Strike"
+      }
     },
     {
       "id": "CollegeDays",
@@ -649,7 +768,11 @@
       "sound": false,
       "language": "en",
       "published": "2020-04-20",
-      "tmdbId": 42359
+      "tmdbId": 42359,
+      "titles": {
+        "es": "El estudiante novato",
+        "en": "The Freshman"
+      }
     },
     {
       "id": "the-gold-rush-film-1925",
@@ -672,7 +795,12 @@
       "sound": false,
       "language": "en",
       "published": "2025-09-16",
-      "tmdbId": 962
+      "tmdbId": 962,
+      "titles": {
+        "es": "La quimera del oro",
+        "en": "The Gold Rush",
+        "ca": "La quimera de l’or"
+      }
     },
     {
       "id": "TheLostWorld1925",
@@ -695,7 +823,12 @@
       "sound": false,
       "language": "en",
       "published": "2013-05-02",
-      "tmdbId": 2981
+      "tmdbId": 2981,
+      "titles": {
+        "es": "El mundo perdido",
+        "en": "The Lost World",
+        "ca": "El món perdut"
+      }
     },
     {
       "id": "ThePhantomoftheOpera",
@@ -718,7 +851,12 @@
       "sound": false,
       "language": "en",
       "published": "2005-10-26",
-      "tmdbId": 964
+      "tmdbId": 964,
+      "titles": {
+        "es": "El fantasma de la ópera",
+        "en": "The Phantom of the Opera",
+        "ca": "El fantasma de l'Òpera"
+      }
     },
     {
       "id": "1926-faust",
@@ -740,7 +878,12 @@
       ],
       "sound": false,
       "published": "2020-05-19",
-      "tmdbId": 10728
+      "tmdbId": 10728,
+      "titles": {
+        "es": "Fausto",
+        "en": "Faust",
+        "ca": "Faust"
+      }
     },
     {
       "id": "the-adventures-of-prince-achmed-1926-by-carl-koch",
@@ -763,7 +906,12 @@
       ],
       "sound": false,
       "published": "2024-08-17",
-      "tmdbId": 19354
+      "tmdbId": 19354,
+      "titles": {
+        "es": "Las aventuras del príncipe Achmed",
+        "en": "The Adventures of Prince Achmed",
+        "ca": "Les aventures del Príncep Achmed"
+      }
     },
     {
       "id": "TheGeneral_201312",
@@ -787,7 +935,12 @@
       "language": "en",
       "essential": true,
       "published": "2013-12-22",
-      "tmdbId": 961
+      "tmdbId": 961,
+      "titles": {
+        "es": "El maquinista de La General",
+        "en": "The General",
+        "ca": "El maquinista de la general"
+      }
     },
     {
       "id": "berlin-symphony-of-a-metropolis-1927-by-walter-ruttmann",
@@ -809,7 +962,11 @@
       ],
       "sound": false,
       "published": "2024-05-29",
-      "tmdbId": 222
+      "tmdbId": 222,
+      "titles": {
+        "es": "Berlín, sinfonía de una gran ciudad",
+        "en": "Berlin: Symphony of a Great City"
+      }
     },
     {
       "id": "Metropolis1927EnglishVersion",
@@ -833,7 +990,11 @@
       "language": "en",
       "essential": true,
       "published": "2014-01-24",
-      "tmdbId": 19
+      "tmdbId": 19,
+      "titles": {
+        "es": "Metrópolis",
+        "ca": "Metròpolis"
+      }
     },
     {
       "id": "sunrise-a-song-of-two-humans-f.-w.-murnau-1927",
@@ -857,7 +1018,12 @@
       "language": "en",
       "essential": true,
       "published": "2020-05-17",
-      "tmdbId": 631
+      "tmdbId": 631,
+      "titles": {
+        "es": "Amanecer",
+        "en": "Sunrise: A Song of Two Humans",
+        "ca": "Aurora"
+      }
     },
     {
       "id": "the-lodger-a-story-of-the-london-fog-1927-by-alfred-hitchcock",
@@ -879,7 +1045,11 @@
       "sound": false,
       "language": "en",
       "published": "2024-05-29",
-      "tmdbId": 2760
+      "tmdbId": 2760,
+      "titles": {
+        "es": "El enemigo de las rubias",
+        "en": "The Lodger: A Story of the London Fog"
+      }
     },
     {
       "id": "SteamboatBillJr",
@@ -901,7 +1071,12 @@
       "sound": false,
       "language": "en",
       "published": "2005-09-29",
-      "tmdbId": 25768
+      "tmdbId": 25768,
+      "titles": {
+        "es": "El héroe del río",
+        "en": "Steamboat Bill, Jr.",
+        "ca": "L’heroi del riu"
+      }
     },
     {
       "id": "steamboat-willie_1928",
@@ -923,7 +1098,10 @@
       ],
       "sound": true,
       "published": "2024-01-02",
-      "tmdbId": 53565
+      "tmdbId": 53565,
+      "titles": {
+        "en": "Steamboat Willie"
+      }
     },
     {
       "id": "TheFallOfTheHouseOfUsher1928",
@@ -945,7 +1123,11 @@
       ],
       "sound": false,
       "published": "2010-11-03",
-      "tmdbId": 106394
+      "tmdbId": 106394,
+      "titles": {
+        "en": "The Fall of the House of Usher",
+        "ca": "La caiguda de la casa Usher"
+      }
     },
     {
       "id": "the-man-who-laughs-1928-1080p-blu-ray-x-265-ghost",
@@ -969,7 +1151,11 @@
       "sound": false,
       "language": "en",
       "published": "2025-05-12",
-      "tmdbId": 27517
+      "tmdbId": 27517,
+      "titles": {
+        "es": "El hombre que ríe",
+        "en": "The Man Who Laughs"
+      }
     },
     {
       "id": "the-passion-of-joan-of-arc",
@@ -991,7 +1177,12 @@
       "sound": false,
       "essential": true,
       "published": "2020-08-24",
-      "tmdbId": 780
+      "tmdbId": 780,
+      "titles": {
+        "es": "La pasión de Juana de Arco",
+        "en": "The Passion of Joan of Arc",
+        "ca": "La passió de Joana d'Arc"
+      }
     },
     {
       "id": "la-coquille-et-le-clergyman-1928",
@@ -1012,7 +1203,10 @@
       ],
       "sound": false,
       "published": "2022-11-20",
-      "tmdbId": 118014
+      "tmdbId": 118014,
+      "titles": {
+        "en": "The Seashell and the Clergyman"
+      }
     },
     {
       "id": "ChelovekskinoapparatomManWithAMovieCamera",
@@ -1035,7 +1229,11 @@
       "sound": false,
       "essential": true,
       "published": "2006-07-01",
-      "tmdbId": 26317
+      "tmdbId": 26317,
+      "titles": {
+        "es": "El hombre de la cámara",
+        "en": "Man with a Movie Camera"
+      }
     },
     {
       "id": "pandoras-box-1929-by-georg-wilhelm-pabst",
@@ -1056,7 +1254,12 @@
       ],
       "sound": false,
       "published": "2024-08-16",
-      "tmdbId": 905
+      "tmdbId": 905,
+      "titles": {
+        "es": "La caja de Pandora",
+        "en": "Pandora's Box",
+        "ca": "Lulú, la caixa de Pandora"
+      }
     },
     {
       "id": "Regen",
@@ -1078,7 +1281,10 @@
       ],
       "sound": false,
       "published": "2007-10-21",
-      "tmdbId": 128284
+      "tmdbId": 128284,
+      "titles": {
+        "en": "Rain"
+      }
     },
     {
       "id": "UnChienAndalou1929_201807",
@@ -1099,7 +1305,12 @@
       ],
       "sound": false,
       "published": "2018-07-31",
-      "tmdbId": 626
+      "tmdbId": 626,
+      "titles": {
+        "es": "Un perro andaluz",
+        "en": "Un Chien Andalou",
+        "ca": "Un chien andalou"
+      }
     },
     {
       "id": "A_propos_de_Nice",
@@ -1121,7 +1332,10 @@
       ],
       "sound": false,
       "published": "2009-01-23",
-      "tmdbId": 47831
+      "tmdbId": 47831,
+      "titles": {
+        "es": "A propósito de Niza"
+      }
     },
     {
       "id": "all-quiet-on-the-western-front-1930_202407",
@@ -1143,7 +1357,12 @@
       "sound": true,
       "language": "en",
       "published": "2024-07-11",
-      "tmdbId": 143
+      "tmdbId": 143,
+      "titles": {
+        "es": "Sin novedad en el frente",
+        "en": "All Quiet on the Western Front",
+        "ca": "Res de nou al front de l’oest"
+      }
     },
     {
       "id": "animal-crackers_1930",
@@ -1165,7 +1384,12 @@
       "sound": true,
       "language": "en",
       "published": "2025-12-25",
-      "tmdbId": 13913
+      "tmdbId": 13913,
+      "titles": {
+        "es": "El conflicto de los Marx",
+        "en": "Animal Crackers",
+        "ca": "El conflicte dels Marx"
+      }
     },
     {
       "id": "1930-earth",
@@ -1188,7 +1412,12 @@
       "language": "en",
       "subtitles": "en",
       "published": "2023-08-11",
-      "tmdbId": 46594
+      "tmdbId": 46594,
+      "titles": {
+        "es": "Tierra",
+        "en": "Earth",
+        "ca": "La terra"
+      }
     },
     {
       "id": "morocco-30-1538596735589",
@@ -1211,7 +1440,11 @@
       "sound": true,
       "language": "en",
       "published": "2021-01-20",
-      "tmdbId": 42641
+      "tmdbId": 42641,
+      "titles": {
+        "es": "Marruecos",
+        "en": "Morocco"
+      }
     },
     {
       "id": "theblueangel1930",
@@ -1232,7 +1465,12 @@
       ],
       "sound": true,
       "published": "2011-01-05",
-      "tmdbId": 228
+      "tmdbId": 228,
+      "titles": {
+        "es": "El ángel azul",
+        "en": "The Blue Angel",
+        "ca": "L'Àngel Blau"
+      }
     },
     {
       "id": "white_zombie",
@@ -1254,7 +1492,12 @@
       "sound": true,
       "language": "en",
       "published": "2004-08-06",
-      "tmdbId": 26860
+      "tmdbId": 26860,
+      "titles": {
+        "es": "La legión de los hombres sin alma",
+        "en": "White Zombie",
+        "ca": "Morts vivents"
+      }
     },
     {
       "id": "MyManGodfrey1936",
@@ -1277,7 +1520,11 @@
       "sound": true,
       "language": "en",
       "published": "2010-09-07",
-      "tmdbId": 13562
+      "tmdbId": 13562,
+      "titles": {
+        "es": "Al servicio de las damas",
+        "en": "My Man Godfrey"
+      }
     },
     {
       "id": "reefer_madness1938",
@@ -1299,7 +1546,11 @@
       "sound": true,
       "language": "en",
       "published": "2004-03-10",
-      "tmdbId": 37833
+      "tmdbId": 37833,
+      "titles": {
+        "es": "Locura de la marihuana",
+        "en": "Reefer Madness"
+      }
     },
     {
       "id": "NothingSacred",
@@ -1321,7 +1572,12 @@
       "sound": true,
       "language": "en",
       "published": "2008-10-02",
-      "tmdbId": 37650
+      "tmdbId": 37650,
+      "titles": {
+        "es": "La reina de Nueva York",
+        "en": "Nothing Sacred",
+        "ca": "La reina de Nova York"
+      }
     },
     {
       "id": "gullivers_travels1939",
@@ -1344,7 +1600,12 @@
       "sound": true,
       "language": "en",
       "published": "2004-08-15",
-      "tmdbId": 42518
+      "tmdbId": 42518,
+      "titles": {
+        "es": "Los viajes de Gulliver",
+        "en": "Gulliver's Travels",
+        "ca": "Els viatges de Gulliver"
+      }
     },
     {
       "id": "his_girl_friday",
@@ -1368,7 +1629,12 @@
       "language": "en",
       "essential": true,
       "published": "2005-04-15",
-      "tmdbId": 3085
+      "tmdbId": 3085,
+      "titles": {
+        "es": "Luna nueva",
+        "en": "His Girl Friday",
+        "ca": "Lluna nova"
+      }
     },
     {
       "id": "meet_john_doe",
@@ -1391,7 +1657,12 @@
       "sound": true,
       "language": "en",
       "published": "2004-12-05",
-      "tmdbId": 32574
+      "tmdbId": 32574,
+      "titles": {
+        "es": "Juan Nadie",
+        "en": "Meet John Doe",
+        "ca": "L’home del carrer"
+      }
     },
     {
       "id": "superman_the_mechanical_monsters",
@@ -1415,7 +1686,11 @@
       "sound": true,
       "language": "en",
       "published": "2005-03-10",
-      "tmdbId": 71129
+      "tmdbId": 71129,
+      "titles": {
+        "es": "Los Monstruos Mecánicos",
+        "en": "The Mechanical Monsters"
+      }
     },
     {
       "id": "Detour",
@@ -1437,7 +1712,12 @@
       "sound": true,
       "language": "en",
       "published": "2007-01-18",
-      "tmdbId": 20367
+      "tmdbId": 20367,
+      "titles": {
+        "es": "Desvío",
+        "en": "Detour",
+        "ca": "Desviació"
+      }
     },
     {
       "id": "ScarletStreet",
@@ -1459,7 +1739,12 @@
       "sound": true,
       "language": "en",
       "published": "2005-11-05",
-      "tmdbId": 17058
+      "tmdbId": 17058,
+      "titles": {
+        "es": "Perversidad",
+        "en": "Scarlet Street",
+        "ca": "Perversitat"
+      }
     },
     {
       "id": "the-stranger-1946_202404",
@@ -1482,7 +1767,12 @@
       "sound": true,
       "language": "en",
       "published": "2024-04-03",
-      "tmdbId": 20246
+      "tmdbId": 20246,
+      "titles": {
+        "es": "El extraño",
+        "en": "The Stranger",
+        "ca": "El desconegut"
+      }
     },
     {
       "id": "angel_and_the_badman",
@@ -1505,7 +1795,12 @@
       "sound": true,
       "language": "en",
       "published": "2005-07-07",
-      "tmdbId": 22356
+      "tmdbId": 22356,
+      "titles": {
+        "es": "El ángel y el pistolero",
+        "en": "Angel and the Badman",
+        "ca": "L'àngel i el pistoler"
+      }
     },
     {
       "id": "He_Walked_by_Night_1948",
@@ -1527,7 +1822,12 @@
       "sound": true,
       "language": "en",
       "published": "2011-04-11",
-      "tmdbId": 31556
+      "tmdbId": 31556,
+      "titles": {
+        "es": "Orden: caza sin cuartel",
+        "en": "He Walked by Night",
+        "ca": "Ordre: Caça sense treva"
+      }
     },
     {
       "id": "doa_ipod",
@@ -1549,7 +1849,12 @@
       "sound": true,
       "language": "en",
       "published": "2006-01-07",
-      "tmdbId": 18995
+      "tmdbId": 18995,
+      "titles": {
+        "es": "Con las horas contadas",
+        "en": "D.O.A.",
+        "ca": "Amb les hores comptades"
+      }
     },
     {
       "id": "7.3-too-late-for-tears-1949",
@@ -1572,7 +1877,12 @@
       "sound": true,
       "language": "en",
       "published": "2022-04-16",
-      "tmdbId": 27036
+      "tmdbId": 27036,
+      "titles": {
+        "es": "Demasiado tarde para lágrimas",
+        "en": "Too Late for Tears",
+        "ca": "Massa tard per les llàgrimes"
+      }
     },
     {
       "id": "Quicksand_clear",
@@ -1594,7 +1904,11 @@
       "sound": true,
       "language": "en",
       "published": "2008-04-04",
-      "tmdbId": 23342
+      "tmdbId": 23342,
+      "titles": {
+        "es": "Peligros de juventud",
+        "en": "Quicksand"
+      }
     },
     {
       "id": "kansascityconfidencial",
@@ -1617,7 +1931,11 @@
       "sound": true,
       "language": "en",
       "published": "2007-06-12",
-      "tmdbId": 21296
+      "tmdbId": 21296,
+      "titles": {
+        "es": "El cuarto hombre",
+        "en": "Kansas City Confidential"
+      }
     },
     {
       "id": "BeatTheDevil1953",
@@ -1640,7 +1958,11 @@
       "sound": true,
       "language": "en",
       "published": "2010-06-26",
-      "tmdbId": 22733
+      "tmdbId": 22733,
+      "titles": {
+        "es": "La burla del diablo",
+        "en": "Beat the Devil"
+      }
     },
     {
       "id": "robot-monster-1953",
@@ -1662,7 +1984,11 @@
       "sound": true,
       "language": "en",
       "published": "2021-04-12",
-      "tmdbId": 43353
+      "tmdbId": 43353,
+      "titles": {
+        "es": "Robot Monster",
+        "en": "Robot Monster"
+      }
     },
     {
       "id": "Hitch_Hiker",
@@ -1685,7 +2011,12 @@
       "sound": true,
       "language": "en",
       "published": "2008-04-11",
-      "tmdbId": 41462
+      "tmdbId": 41462,
+      "titles": {
+        "es": "El autoestopista",
+        "en": "The Hitch-Hiker",
+        "ca": "L'autoestopista"
+      }
     },
     {
       "id": "suddenly",
@@ -1708,7 +2039,12 @@
       "sound": true,
       "language": "en",
       "published": "2004-10-25",
-      "tmdbId": 18398
+      "tmdbId": 18398,
+      "titles": {
+        "es": "De repente",
+        "en": "Suddenly",
+        "ca": "Suddenly"
+      }
     },
     {
       "id": "last_time_i_saw_paris",
@@ -1731,7 +2067,12 @@
       "sound": true,
       "language": "en",
       "published": "2005-01-08",
-      "tmdbId": 57575
+      "tmdbId": 57575,
+      "titles": {
+        "es": "La última vez que vi París",
+        "en": "The Last Time I Saw Paris",
+        "ca": "L’última vegada que vaig veure París"
+      }
     },
     {
       "id": "The_Big_Combo_1955",
@@ -1753,7 +2094,12 @@
       "sound": true,
       "language": "en",
       "published": "2013-07-02",
-      "tmdbId": 22342
+      "tmdbId": 22342,
+      "titles": {
+        "es": "Agente especial",
+        "en": "The Big Combo",
+        "ca": "Agent especial"
+      }
     },
     {
       "id": "plan-9-from-outer-space",
@@ -1776,7 +2122,12 @@
       "sound": true,
       "language": "en",
       "published": "2021-05-05",
-      "tmdbId": 10513
+      "tmdbId": 10513,
+      "titles": {
+        "es": "Plan 9 del espacio exterior",
+        "en": "Plan 9 from Outer Space",
+        "ca": "Pla 9 des de l’espai"
+      }
     },
     {
       "id": "ABucketOfBlood1959",
@@ -1799,7 +2150,12 @@
       "sound": true,
       "language": "en",
       "published": "2009-10-26",
-      "tmdbId": 22642
+      "tmdbId": 22642,
+      "titles": {
+        "es": "Un cubo de sangre",
+        "en": "A Bucket of Blood",
+        "ca": "Una galleda de sang"
+      }
     },
     {
       "id": "HouseOnHauntedHill1959",
@@ -1821,7 +2177,12 @@
       "sound": true,
       "language": "en",
       "published": "2010-10-30",
-      "tmdbId": 15856
+      "tmdbId": 15856,
+      "titles": {
+        "es": "La mansión de los horrores",
+        "en": "House on Haunted Hill",
+        "ca": "La mansió de les tenebres"
+      }
     },
     {
       "id": "teenagers_from_outerspace",
@@ -1843,7 +2204,11 @@
       "sound": true,
       "language": "en",
       "published": "2007-06-22",
-      "tmdbId": 35139
+      "tmdbId": 35139,
+      "titles": {
+        "es": "Adolescentes del espacio exterior",
+        "en": "Teenagers from Outer Space"
+      }
     },
     {
       "id": "The_Killer_Shrews_1959",
@@ -1866,7 +2231,11 @@
       "sound": true,
       "language": "en",
       "published": "2010-01-26",
-      "tmdbId": 43109
+      "tmdbId": 43109,
+      "titles": {
+        "es": "Musarañas asesinas",
+        "en": "The Killer Shrews"
+      }
     },
     {
       "id": "TheLittleShopOfHorrors1960",
@@ -1889,7 +2258,12 @@
       "sound": true,
       "language": "en",
       "published": "2011-03-04",
-      "tmdbId": 24452
+      "tmdbId": 24452,
+      "titles": {
+        "es": "La pequeña tienda de los horrores",
+        "en": "The Little Shop of Horrors",
+        "ca": "La botiga dels horrors"
+      }
     },
     {
       "id": "carnival_of_souls",
@@ -1911,7 +2285,11 @@
       "sound": true,
       "language": "en",
       "published": "2006-02-20",
-      "tmdbId": 16093
+      "tmdbId": 16093,
+      "titles": {
+        "es": "El carnaval de las almas",
+        "en": "Carnival of Souls"
+      }
     },
     {
       "id": "brain_that_wouldnt_die",
@@ -1934,7 +2312,11 @@
       "sound": true,
       "language": "en",
       "published": "2004-07-12",
-      "tmdbId": 33468
+      "tmdbId": 33468,
+      "titles": {
+        "es": "El cerebro que no quería morir",
+        "en": "The Brain That Wouldn't Die"
+      }
     },
     {
       "id": "charade-1963-cary-grant-audrey-hepburn-comedy-mystery-romance-thriller-full-movie",
@@ -1958,7 +2340,12 @@
       "sound": true,
       "language": "en",
       "published": "2026-02-22",
-      "tmdbId": 4808
+      "tmdbId": 4808,
+      "titles": {
+        "es": "Charada",
+        "en": "Charade",
+        "ca": "Xarada"
+      }
     },
     {
       "id": "Dementia13withSpanishSubtitles",
@@ -1982,7 +2369,11 @@
       "language": "en",
       "subtitles": "es",
       "published": "2010-03-17",
-      "tmdbId": 28503
+      "tmdbId": 28503,
+      "titles": {
+        "es": "Demencia 13",
+        "en": "Dementia 13"
+      }
     },
     {
       "id": "mclintok_widescreen",
@@ -2005,7 +2396,11 @@
       "sound": true,
       "language": "en",
       "published": "2007-01-25",
-      "tmdbId": 15263
+      "tmdbId": 15263,
+      "titles": {
+        "es": "El gran McLintock",
+        "en": "McLintock!"
+      }
     },
     {
       "id": "TheTerror1963",
@@ -2027,7 +2422,12 @@
       "sound": true,
       "language": "en",
       "published": "2015-01-06",
-      "tmdbId": 31655
+      "tmdbId": 31655,
+      "titles": {
+        "es": "El terror",
+        "en": "The Terror",
+        "ca": "El terror"
+      }
     },
     {
       "id": "TheLastManOnEarth_72",
@@ -2051,7 +2451,11 @@
       "sound": true,
       "language": "en",
       "published": "2012-12-08",
-      "tmdbId": 21159
+      "tmdbId": 21159,
+      "titles": {
+        "es": "El último hombre sobre la Tierra",
+        "en": "The Last Man on Earth"
+      }
     },
     {
       "id": "ManosTheHandsofFate",
@@ -2074,7 +2478,10 @@
       "sound": true,
       "language": "en",
       "published": "2011-04-06",
-      "tmdbId": 22293
+      "tmdbId": 22293,
+      "titles": {
+        "en": "Manos: The Hands of Fate"
+      }
     },
     {
       "id": "NightOfTheLivingDeadwithSpanishSubtitles_595",
@@ -2099,7 +2506,13 @@
       "subtitles": "es",
       "essential": true,
       "published": "2011-01-07",
-      "tmdbId": 10331
+      "tmdbId": 10331,
+      "titles": {
+        "es": "La noche de los muertos vivientes",
+        "en": "Night of the Living Dead",
+        "eu": "Hildako Bizidunen Gaua",
+        "ca": "La nit dels morts vivents"
+      }
     },
     {
       "id": "StarWreckInThePirkining",
@@ -2122,7 +2535,10 @@
       ],
       "sound": true,
       "published": "2008-06-21",
-      "tmdbId": 15493
+      "tmdbId": 15493,
+      "titles": {
+        "es": "Star Wreck: In the Pirkinning"
+      }
     },
     {
       "id": "ElephantsDream",
@@ -2146,7 +2562,10 @@
       "sound": true,
       "language": "en",
       "published": "2008-07-04",
-      "tmdbId": 9761
+      "tmdbId": 9761,
+      "titles": {
+        "en": "Elephants Dream"
+      }
     },
     {
       "id": "BigBuckBunny_124",
@@ -2169,7 +2588,11 @@
       ],
       "sound": true,
       "published": "2011-07-01",
-      "tmdbId": 10378
+      "tmdbId": 10378,
+      "titles": {
+        "es": "Big Buck Bunny",
+        "en": "Big Buck Bunny"
+      }
     },
     {
       "id": "RipARemixManifestoes",
@@ -2192,7 +2615,10 @@
       "sound": true,
       "language": "en",
       "published": "2009-12-02",
-      "tmdbId": 23996
+      "tmdbId": 23996,
+      "titles": {
+        "en": "RiP!: A Remix Manifesto"
+      }
     },
     {
       "id": "sita-sings-the-blues",
@@ -2214,7 +2640,10 @@
       "sound": true,
       "language": "en",
       "published": "2021-02-27",
-      "tmdbId": 20529
+      "tmdbId": 20529,
+      "titles": {
+        "en": "Sita Sings the Blues"
+      }
     },
     {
       "id": "Sintel",
@@ -2238,7 +2667,10 @@
       "sound": true,
       "language": "en",
       "published": "2010-10-01",
-      "tmdbId": 45745
+      "tmdbId": 45745,
+      "titles": {
+        "en": "Sintel"
+      }
     },
     {
       "id": "CM19042011",
@@ -2261,7 +2693,8 @@
       "sound": true,
       "language": "es",
       "published": "2011-04-20",
-      "tmdbId": 74174
+      "tmdbId": 74174,
+      "titles": {}
     },
     {
       "id": "Decay2012-TheLhcZombieFilmfullFilm",
@@ -2285,7 +2718,10 @@
       "sound": true,
       "language": "en",
       "published": "2012-12-08",
-      "tmdbId": 148644
+      "tmdbId": 148644,
+      "titles": {
+        "en": "Decay"
+      }
     },
     {
       "id": "Tears-of-Steel",
@@ -2308,7 +2744,10 @@
       "sound": true,
       "language": "en",
       "published": "2012-09-28",
-      "tmdbId": 133701
+      "tmdbId": 133701,
+      "titles": {
+        "en": "Tears of Steel"
+      }
     },
     {
       "id": "Caminandes1LlamaDrama",
@@ -2332,7 +2771,10 @@
       "sound": true,
       "published": "2016-03-18",
       "tmdbId": 253777,
-      "image": "ia"
+      "image": "ia",
+      "titles": {
+        "en": "Caminandes 1: Llama Drama"
+      }
     },
     {
       "id": "tpb-afk",
@@ -2354,7 +2796,8 @@
       ],
       "sound": true,
       "published": "2020-03-25",
-      "tmdbId": 50275
+      "tmdbId": 50275,
+      "titles": {}
     },
     {
       "id": "TheInternetsOwnBoyTheStoryOfAaronSwartz",
@@ -2377,7 +2820,11 @@
       "sound": true,
       "language": "en",
       "published": "2014-06-28",
-      "tmdbId": 250658
+      "tmdbId": 250658,
+      "titles": {
+        "es": "La historia de Aaron Swartz. El chico de Internet",
+        "en": "The Internet's Own Boy: The Story of Aaron Swartz"
+      }
     },
     {
       "id": "cosmos-laundromat",
@@ -2401,7 +2848,10 @@
       "sound": true,
       "language": "en",
       "published": "2026-05-27",
-      "tmdbId": 358332
+      "tmdbId": 358332,
+      "titles": {
+        "en": "Cosmos Laundromat"
+      }
     },
     {
       "id": "CaminandesLlamigos",
@@ -2424,7 +2874,8 @@
       ],
       "sound": true,
       "published": "2017-03-05",
-      "tmdbId": 406956
+      "tmdbId": 406956,
+      "titles": {}
     },
     {
       "id": "agent327operationbarbershop",
@@ -2448,7 +2899,10 @@
       ],
       "sound": true,
       "published": "2020-12-23",
-      "tmdbId": 457784
+      "tmdbId": 457784,
+      "titles": {
+        "en": "Agent 327: Operation Barbershop"
+      }
     },
     {
       "id": "hero_20260106",
@@ -2471,7 +2925,10 @@
       ],
       "sound": true,
       "published": "2026-01-06",
-      "tmdbId": 615324
+      "tmdbId": 615324,
+      "titles": {
+        "en": "Hero"
+      }
     },
     {
       "id": "springopenmovie",
@@ -2494,7 +2951,10 @@
       ],
       "sound": true,
       "published": "2021-01-03",
-      "tmdbId": 593048
+      "tmdbId": 593048,
+      "titles": {
+        "en": "Spring"
+      }
     },
     {
       "id": "coffee-run",
@@ -2517,7 +2977,10 @@
       ],
       "sound": true,
       "published": "2026-01-22",
-      "tmdbId": 717986
+      "tmdbId": 717986,
+      "titles": {
+        "en": "Coffee Run"
+      }
     },
     {
       "id": "sprite-fright",
@@ -2542,7 +3005,10 @@
       "sound": true,
       "language": "en",
       "published": "2021-11-06",
-      "tmdbId": 891761
+      "tmdbId": 891761,
+      "titles": {
+        "en": "Sprite Fright"
+      }
     },
     {
       "id": "charge-blender-open-movie-1608p",
@@ -2565,7 +3031,10 @@
       ],
       "sound": true,
       "published": "2022-12-16",
-      "tmdbId": 1062079
+      "tmdbId": 1062079,
+      "titles": {
+        "en": "Charge"
+      }
     },
     {
       "id": "wing_it",
@@ -2588,7 +3057,10 @@
       ],
       "sound": true,
       "published": "2026-01-06",
-      "tmdbId": 1177628
+      "tmdbId": 1177628,
+      "titles": {
+        "ca": "Endavant!"
+      }
     }
   ]
 }

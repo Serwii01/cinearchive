@@ -5,7 +5,7 @@ import { INSTAGRAM_URL } from '../../data/social';
 import TmdbSearch from '../../components/TmdbSearch.astro';
 import IssueCard from '../../components/IssueCard.astro';
 import { showcaseIssues, coverUrl } from '../../lib/periodicals';
-import { pdFilms, pdThumbUrl } from '../../lib/pdfilms';
+import { pdFilms, pdThumbUrl, pdTitle } from '../../lib/pdfilms';
 import { books, bookCoverUrl } from '../../lib/library';
 import { collections, collectionTitle, collectionBlurb } from '../../lib/collections';
 import CollectionMosaic from '../../components/CollectionMosaic.astro';
@@ -287,7 +287,7 @@ const homeJsonLd = [
               <img src={pdThumbUrl(f.id)} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
             </div>
             <div class="p-3">
-              <h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{f.title}</h3>
+              <h3 class="font-display text-headline-md leading-tight text-ink transition-colors group-hover:text-muted">{pdTitle(f, lang)}</h3>
               <p class="mt-1 font-mono text-meta-data text-muted">{f.director} · {f.year}</p>
             </div>
           </a>

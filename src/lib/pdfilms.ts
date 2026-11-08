@@ -66,11 +66,30 @@ export interface PdFilm {
   image?: 'ia';
   /** Ficha en TMDB (la apunta scripts/resolve-tmdb-ids.mjs --cine). */
   tmdbId?: number;
+  /**
+   * Título en cada idioma, de TMDB (scripts/fetch-pd-titles.mjs) y revisado a
+   * mano. Falta donde TMDB no lo tiene o el que traía era peor: ver pdTitle.
+   */
+  titles?: Partial<Record<'es' | 'en' | 'gl' | 'eu' | 'ca', string>>;
 }
 
 export const pdFilms = data.items as PdFilm[];
 
 export const pdFilmById = (id: string): PdFilm | undefined => pdFilms.find((f) => f.id === id);
+
+/**
+ * Título para enseñar en un idioma. En gallego, euskera y catalán, si TMDB no
+ * lo tiene, el castellano: es el título con el que se estrenó aquí y el que se
+ * busca. Si tampoco, el de siempre (`title`).
+ */
+export function pdTitle(f: PdFilm, lang: string): string {
+  const t = f.titles ?? {};
+  return t[lang as keyof typeof t] ?? (lang === 'gl' || lang === 'eu' || lang === 'ca' ? t.es : undefined) ?? f.title;
+}
+
+/** Todos los títulos y el director, para que el buscador encuentre «Potemkin» en cualquier idioma. */
+export const pdSearchText = (f: PdFilm): string =>
+  [...new Set([f.title, f.original_title, ...Object.values(f.titles ?? {})])].join(' ') + ` ${f.director}`;
 
 const porTmdb = new Map(pdFilms.filter((f) => f.tmdbId).map((f) => [f.tmdbId!, f]));
 /** La de Cine abierto que corresponde a una ficha de TMDB, si se puede ver entera aquí. */
@@ -166,11 +185,12 @@ export function pdIsoDuration(min: number): string {
  * como vídeo en los resultados, y es lo que más gente nueva puede traer a la
  * sección con más tráfico de la web.
  */
-export function pdVideoLd(film: PdFilm, opts: { pageUrl: string; thumbUrl: string; description: string; inLanguage?: string }): object {
+export function pdVideoLd(film: PdFilm, opts: { pageUrl: string; thumbUrl: string; description: string; inLanguage?: string; title?: string }): object {
+  const nombre = opts.title ?? film.title;
   const directores = film.director.split(',').map((name) => ({ '@type': 'Person', name: name.trim() }));
   const video: Record<string, unknown> = {
     '@type': 'VideoObject',
-    name: film.title,
+    name: nombre,
     description: opts.description,
     thumbnailUrl: [opts.thumbUrl],
     duration: pdIsoDuration(film.runtime),
@@ -184,8 +204,8 @@ export function pdVideoLd(film: PdFilm, opts: { pageUrl: string; thumbUrl: strin
   return {
     '@context': 'https://schema.org',
     '@type': 'Movie',
-    name: film.title,
-    ...(film.original_title && film.original_title !== film.title ? { alternateName: film.original_title } : {}),
+    name: nombre,
+    ...(film.original_title && film.original_title !== nombre ? { alternateName: film.original_title } : {}),
     description: opts.description,
     image: opts.thumbUrl,
     url: opts.pageUrl,

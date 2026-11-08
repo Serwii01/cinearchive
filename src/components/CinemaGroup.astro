@@ -8,7 +8,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CinemaCard from './CinemaCard.astro';
 import CinemaGroupNav from './CinemaGroupNav.astro';
-import { pdKindLabelKey, pdThumbUrl, type PdFilm, type PdKind } from '../lib/pdfilms';
+import { pdKindLabelKey, pdThumbUrl, pdTitle, type PdFilm, type PdKind } from '../lib/pdfilms';
 import { breadcrumbLd, itemListLd } from '../lib/seo';
 import { useTranslations, localizePath, type Lang } from '../i18n/ui';
 
@@ -30,14 +30,14 @@ const titulo = t('cinema.groupTitle').replace('{label}', label);
 const intro = t('cinema.groupIntro').replace('{n}', String(films.length));
 
 // Las más antiguas primero, como el listado general.
-const lista = films.slice().sort((a, b) => a.year - b.year || a.title.localeCompare(b.title));
+const lista = films.slice().sort((a, b) => a.year - b.year || pdTitle(a, lang).localeCompare(pdTitle(b, lang), lang));
 
 // Unos títulos en la descripción: así cada página tiene la suya, y no veinte iguales.
 const descripcion = `${intro} ${lista
   .filter((f) => f.essential)
   .concat(lista.filter((f) => !f.essential))
   .slice(0, 4)
-  .map((f) => f.title)
+  .map((f) => pdTitle(f, lang))
   .join(', ')}…`;
 
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
@@ -47,7 +47,7 @@ const jsonLd = [
     { name: t('cinema.title'), url: abs('cinema') },
     { name: label, url: pageUrl },
   ]),
-  itemListLd({ name: titulo, items: lista.map((f) => ({ name: f.title, url: abs(`cinema/${f.id}`) })) }),
+  itemListLd({ name: titulo, items: lista.map((f) => ({ name: pdTitle(f, lang), url: abs(`cinema/${f.id}`) })) }),
 ];
 ---
 
