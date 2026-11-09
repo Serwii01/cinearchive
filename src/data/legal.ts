@@ -100,6 +100,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Usamos una única cookie técnica de sesión, imprescindible para mantener tu inicio de sesión. No usamos cookies de publicidad ni de analítica.',
           'Tu preferencia de tema (claro/oscuro) se guarda localmente en tu navegador (localStorage), no en una cookie.',
+          'El progreso y las rachas de los Juegos también se guardan solo en tu navegador: no llegan a nuestro servidor ni van unidos a tu cuenta.',
         ],
       },
       {
@@ -182,6 +183,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'We use a single technical session cookie, essential to keep you signed in. We use no advertising or analytics cookies.',
           'Your theme preference (light/dark) is stored locally in your browser (localStorage), not in a cookie.',
+          'Your progress and streaks in Games are also stored only in your browser: they never reach our server and are not linked to your account.',
         ],
       },
       {
@@ -264,6 +266,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Usamos unha única cookie técnica de sesión, imprescindible para manter o teu inicio de sesión. Non usamos cookies de publicidade nin de analítica.',
           'A túa preferencia de tema (claro/escuro) gárdase localmente no teu navegador (localStorage), non nunha cookie.',
+          'O progreso e as rachas dos Xogos tamén se gardan só no teu navegador: non chegan ao noso servidor nin van unidos á túa conta.',
         ],
       },
       {
@@ -346,6 +349,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Saioko cookie tekniko bakarra erabiltzen dugu, zure saioa mantentzeko ezinbestekoa. Ez dugu publizitate- edo analitika-cookierik erabiltzen.',
           'Zure gaiaren hobespena (argia/iluna) zure nabigatzailean gordetzen da lokalean (localStorage), ez cookie batean.',
+          'Jokoetako aurrerapena eta boladak ere zure nabigatzailean bakarrik gordetzen dira: ez dira gure zerbitzarira iristen eta ez daude zure kontuari lotuta.',
         ],
       },
       {
@@ -428,6 +432,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Fem servir una única galeta tècnica de sessió, imprescindible per mantenir el teu inici de sessió. No fem servir galetes de publicitat ni d’analítica.',
           'La teva preferència de tema (clar/fosc) es desa localment al teu navegador (localStorage), no en una galeta.',
+          'El progrés i les ratxes dels Jocs també es desen només al teu navegador: no arriben al nostre servidor ni van lligats al teu compte.',
         ],
       },
       {

@@ -1,0 +1,451 @@
+{
+ "note": "Generado por scripts/build-game-frames.mjs y revisado a mano el 9-11-2026 (fuera rótulos, créditos y logotipos). Los archivos tienen nombres al azar: con el de la película, la solución se leía en la URL de la imagen.",
+ "frames": {
+  "1926-faust": [
+   "99b44b10c9abe78d.webp"
+  ],
+  "1930-earth": [
+   "3b359d4e4b7e5759.webp",
+   "345679dceb94fa0f.webp"
+  ],
+  "20000LeaguesUndertheSea": [
+   "fa61b3933f27f887.webp",
+   "bc30243e2b6601fd.webp"
+  ],
+  "7.3-too-late-for-tears-1949": [
+   "9915ae0eee2b0c76.webp",
+   "6c27b8736883222b.webp"
+  ],
+  "A_propos_de_Nice": [
+   "25ac00f4f7cf6534.webp",
+   "8100975d27e41b15.webp"
+  ],
+  "ABucketOfBlood1959": [
+   "76159d92ab035a2c.webp",
+   "56e12596364df8c0.webp"
+  ],
+  "agent327operationbarbershop": [
+   "dbc028677670d39a.webp",
+   "f8d6cf3ffbc5e1cd.webp"
+  ],
+  "all-quiet-on-the-western-front-1930_202407": [
+   "73f949069a23689d.webp",
+   "db179252552142b8.webp"
+  ],
+  "angel_and_the_badman": [
+   "e5dd0331ee11e7cf.webp",
+   "80c5f923763dca2c.webp"
+  ],
+  "animal-crackers_1930": [
+   "a1e2d712493f3d8d.webp",
+   "88e4110a9c0b0b2e.webp"
+  ],
+  "BalletMcanique": [
+   "d9cf3d1b2336544a.webp",
+   "eb83b3abd8652689.webp"
+  ],
+  "BattleshipPotemkin": [
+   "75d0737720b4a757.webp",
+   "6e4c39786510cd84.webp"
+  ],
+  "BeatTheDevil1953": [
+   "3bc966e7d3accc48.webp",
+   "a07c8122a2cbcba5.webp"
+  ],
+  "berlin-symphony-of-a-metropolis-1927-by-walter-ruttmann": [
+   "188b540683ef787a.webp",
+   "e31b671ab5813b7a.webp"
+  ],
+  "BigBuckBunny_124": [
+   "092733f58298cb3c.webp",
+   "c05ae5eb3f31bc88.webp"
+  ],
+  "BillSpragueCollection-THELASTLAUGH-F.W.MURNAU-1924PUBLICDOMAIN": [
+   "2b20f3a6e0035d0b.webp",
+   "31eca4066e0a6e38.webp"
+  ],
+  "brain_that_wouldnt_die": [
+   "463a9cb6727272a2.webp",
+   "eb5ce57c3085a78f.webp"
+  ],
+  "BrokenBlossoms": [
+   "587a1c541e4875ba.webp"
+  ],
+  "Brzdac1921": [
+   "8f629e553aa817cb.webp",
+   "1dabb8f7ef97a4af.webp"
+  ],
+  "Caminandes1LlamaDrama": [
+   "db3db5869e34edc3.webp"
+  ],
+  "CaminandesLlamigos": [
+   "8e1b4f42fe94c2dd.webp",
+   "d1539b3121960477.webp"
+  ],
+  "carnival_of_souls": [
+   "19d82aef99b073ff.webp",
+   "011d09530f02d172.webp"
+  ],
+  "CC_1917_06_17_TheImmigrant": [
+   "139d48b33f0c99d2.webp",
+   "f629879635d81742.webp"
+  ],
+  "charade-1963-cary-grant-audrey-hepburn-comedy-mystery-romance-thriller-full-movie": [
+   "c11451a8b9d8ce48.webp",
+   "1eaf5be221fa6510.webp"
+  ],
+  "charge-blender-open-movie-1608p": [
+   "ff79f08caf9d7345.webp"
+  ],
+  "ChelovekskinoapparatomManWithAMovieCamera": [
+   "2f6eb1da2b4ab057.webp",
+   "9fdd782192d19d19.webp"
+  ],
+  "CM19042011": [
+   "26b1545f82c5a70a.webp"
+  ],
+  "coffee-run": [
+   "7742db1146457de8.webp",
+   "ad379af613005497.webp"
+  ],
+  "CollegeDays": [
+   "cf94a4b1a4829e43.webp",
+   "2e1093ca4b6dc6e9.webp"
+  ],
+  "cosmos-laundromat": [
+   "5edfeab4cdf81aec.webp",
+   "66027d9dca07774f.webp"
+  ],
+  "DasKabinettdesDoktorCaligariTheCabinetofDrCaligari": [
+   "b7631afc2ef94cce.webp",
+   "102bdea498a5dfbb.webp"
+  ],
+  "Decay2012-TheLhcZombieFilmfullFilm": [
+   "7653aae258eb4799.webp",
+   "b03536bba8df97fc.webp"
+  ],
+  "Dementia13withSpanishSubtitles": [
+   "1e5a44e31f366637.webp",
+   "6425e3a1f6500050.webp"
+  ],
+  "Detour": [
+   "6cddaefea161d42b.webp",
+   "f273da3f4ba88633.webp"
+  ],
+  "doa_ipod": [
+   "0a14087811ffa66c.webp",
+   "bc0e0f2dfcd061cd.webp"
+  ],
+  "DrJekyllandMrHyde": [
+   "eeb567c6c698a3ab.webp",
+   "0c2b7bafd08f29dc.webp"
+  ],
+  "ElephantsDream": [
+   "af549bcec352da52.webp",
+   "6af25f3cdfdadcc9.webp"
+  ],
+  "ElHotelElectrico": [
+   "1483ed0a19fd669f.webp",
+   "e8c720c2486e9fee.webp"
+  ],
+  "falling_leaves_1912": [
+   "fd3f0902967247a7.webp",
+   "a26dd5d3702c936f.webp"
+  ],
+  "Gertie": [
+   "7d6d153fb2066fec.webp",
+   "2418f7c03aa8388f.webp"
+  ],
+  "gullivers_travels1939": [
+   "ab8276c5d25ef651.webp",
+   "f2219daec9a31728.webp"
+  ],
+  "Haxan_tinted_and_subtitled": [
+   "fef6d393bc65e62d.webp"
+  ],
+  "He_Walked_by_Night_1948": [
+   "425abd14be082a50.webp",
+   "470a9f4d1c35b584.webp"
+  ],
+  "hero_20260106": [
+   "0b13565156e8c2be.webp"
+  ],
+  "his_girl_friday": [
+   "98d585b0f558ac56.webp",
+   "4d8ae8524db4fff1.webp"
+  ],
+  "Hitch_Hiker": [
+   "837612a796374234.webp",
+   "f8618ddad85fcbdc.webp"
+  ],
+  "HouseOnHauntedHill1959": [
+   "e102349b0ba8ef43.webp",
+   "5aad423ac1c9922d.webp"
+  ],
+  "Intolerance1916": [
+   "6457074e69908d3a.webp",
+   "876d6fce6f9c46c5.webp"
+  ],
+  "kansascityconfidencial": [
+   "23e63aad1fee6b95.webp",
+   "6501cf797b4a0806.webp"
+  ],
+  "la-coquille-et-le-clergyman-1928": [
+   "f6f7f22b81f3726b.webp",
+   "bf19bb6457c17eb1.webp"
+  ],
+  "last_time_i_saw_paris": [
+   "ffe8c49d967bed60.webp",
+   "aa65bd1df0467513.webp"
+  ],
+  "le-voyage-dans-la-lune-1902": [
+   "1130896abd0f89d4.webp",
+   "00a8f78d21e18976.webp"
+  ],
+  "ManosTheHandsofFate": [
+   "b9b2c30d703dc78f.webp",
+   "4141d1395cf5c4c1.webp"
+  ],
+  "markofzorro-1920": [
+   "6f8ca80daef90bf4.webp",
+   "665bfb3346eb6b6e.webp"
+  ],
+  "mclintok_widescreen": [
+   "d84cc79d4e6f2819.webp",
+   "9d5708c2ab6a476f.webp"
+  ],
+  "meet_john_doe": [
+   "14b14d04454ffe61.webp",
+   "d5ac20144448b0b2.webp"
+  ],
+  "Metropolis1927EnglishVersion": [
+   "f2450178aa0d954c.webp",
+   "c65408ec2fa082e3.webp"
+  ],
+  "morocco-30-1538596735589": [
+   "7ab6e5023b28b226.webp",
+   "b099d1390f3cb5cd.webp"
+  ],
+  "MyManGodfrey1936": [
+   "f684289e18791a75.webp",
+   "f039ff6f1e6c57cc.webp"
+  ],
+  "nanookOfTheNorth1922": [
+   "de47330a504a9797.webp",
+   "6931953eaa136355.webp"
+  ],
+  "NightOfTheLivingDeadwithSpanishSubtitles_595": [
+   "75c1839bc7a0ed5b.webp",
+   "65d856d2635a75c0.webp"
+  ],
+  "Nosferatu_most_complete_version_93_mins.": [
+   "b1eacad00364e0d0.webp"
+  ],
+  "NothingSacred": [
+   "0fae241fdc3f4707.webp",
+   "ac6836f9287fb5a6.webp"
+  ],
+  "OneWeek": [
+   "48e3d6bc7c64beb6.webp",
+   "ca8ba72d06b4266c.webp"
+  ],
+  "OurHospitality_29": [
+   "ec654ed687a0823b.webp",
+   "6852b7ae72baf7e0.webp"
+  ],
+  "pandoras-box-1929-by-georg-wilhelm-pabst": [
+   "ed062525c58b1307.webp",
+   "39eaf93747833988.webp"
+  ],
+  "plan-9-from-outer-space": [
+   "b1108a31052541f3.webp",
+   "ac6cdf3b89077343.webp"
+  ],
+  "Quicksand_clear": [
+   "ad7b790830c8fa4e.webp",
+   "aab8e7aa269bc0e7.webp"
+  ],
+  "reefer_madness1938": [
+   "91eb31062b44c695.webp",
+   "6e2f38460e152784.webp"
+  ],
+  "Regen": [
+   "42254d0ed657d42c.webp",
+   "63ede06844c364a7.webp"
+  ],
+  "RipARemixManifestoes": [
+   "5ac603d87abf611b.webp"
+  ],
+  "robot-monster-1953": [
+   "9b9c33200fe62764.webp",
+   "3f4502ffe93ab944.webp"
+  ],
+  "ScarletStreet": [
+   "ccb42d7f144b3b9c.webp",
+   "e5a41ae6e8034c0c.webp"
+  ],
+  "sherlock-jr-buster-keaton-1924": [
+   "f919dfb1e4c90d21.webp",
+   "6152672cde05cfbe.webp"
+  ],
+  "silent-safety-last": [
+   "dd743491437d2442.webp",
+   "ed1ca03ab842e782.webp"
+  ],
+  "Sintel": [
+   "3f4941b5ed149ae7.webp",
+   "7fbe1439a46c7129.webp"
+  ],
+  "sita-sings-the-blues": [
+   "be9074d6019e73fb.webp",
+   "a78d8ceb79ba920d.webp"
+  ],
+  "springopenmovie": [
+   "86dda38dced26f0e.webp",
+   "d61376bef2202a25.webp"
+  ],
+  "sprite-fright": [
+   "e5c69d5817aa513c.webp",
+   "51fe418fbb865ff3.webp"
+  ],
+  "StarWreckInThePirkining": [
+   "25848d16a2569388.webp",
+   "d96b98868c19d043.webp"
+  ],
+  "steamboat-willie_1928": [
+   "24ac7debbc844d18.webp",
+   "e811d142827c8d89.webp"
+  ],
+  "SteamboatBillJr": [
+   "bda36eee888d5059.webp",
+   "ef0272e31658326d.webp"
+  ],
+  "strike-eisenstein-1925-english-intertitles-hd-quality": [
+   "536533d653d12afd.webp",
+   "8c5ec0f5fa0b3b94.webp"
+  ],
+  "suddenly": [
+   "061a8b5a8905b649.webp",
+   "2de7107e7b891e25.webp"
+  ],
+  "sunrise-a-song-of-two-humans-f.-w.-murnau-1927": [
+   "ccae943cd36f3c7c.webp",
+   "4a2981c1f847f2b9.webp"
+  ],
+  "superman_the_mechanical_monsters": [
+   "7f1c4acd7447fc72.webp",
+   "743c0f0335f3a7bd.webp"
+  ],
+  "Tears-of-Steel": [
+   "aa9de373d680df90.webp",
+   "d5d9aabefd76c8f1.webp"
+  ],
+  "teenagers_from_outerspace": [
+   "afe3e0917774534a.webp",
+   "7784c9d32cad2603.webp"
+  ],
+  "The_Big_Combo_1955": [
+   "3fd77de3f6d7cad1.webp",
+   "50f075493049b782.webp"
+  ],
+  "The_Hunchback_of_Notre_Dame": [
+   "d398cc4e95d1978d.webp",
+   "64e5d74adf4dcef8.webp"
+  ],
+  "The_Impossible_Voyage": [
+   "71b52b33ac680216.webp",
+   "a8ae4aae2e672572.webp"
+  ],
+  "The_Killer_Shrews_1959": [
+   "9bf313efd4db66b8.webp",
+   "f07212e05727f52b.webp"
+  ],
+  "the-adventures-of-prince-achmed-1926-by-carl-koch": [
+   "dbeb25ae0ad3b352.webp",
+   "4afc89f757720752.webp"
+  ],
+  "the-gold-rush-film-1925": [
+   "65a353c188f33af7.webp",
+   "6750f24cef54c092.webp"
+  ],
+  "the-golem-how-he-came-into-the-world-full-movie-restored-720p-hd": [
+   "8ca3ecdad39a8ee2.webp"
+  ],
+  "the-lodger-a-story-of-the-london-fog-1927-by-alfred-hitchcock": [
+   "26ab162245e77433.webp",
+   "2576048694a85469.webp"
+  ],
+  "the-man-who-laughs-1928-1080p-blu-ray-x-265-ghost": [
+   "dd628dea355a9a3d.webp",
+   "cf08284f942f21a3.webp"
+  ],
+  "the-passion-of-joan-of-arc": [
+   "d0bb183eedd5a33e.webp",
+   "3757f8ffdde3312b.webp"
+  ],
+  "the-stranger-1946_202404": [
+   "a1bdf57c73007cda.webp",
+   "caada225cb27534e.webp"
+  ],
+  "theblueangel1930": [
+   "05a6e49f77c11148.webp",
+   "4694d43530132c65.webp"
+  ],
+  "TheFallOfTheHouseOfUsher1928": [
+   "a8a68229238d3da5.webp",
+   "e2c57fd6ebddaabd.webp"
+  ],
+  "TheGeneral_201312": [
+   "002907afdac3fa32.webp",
+   "a260a8ed1d7deadf.webp"
+  ],
+  "TheGreatTrainRobbery1903": [
+   "95b97a3f1bff3229.webp",
+   "dc62853931eb4f3e.webp"
+  ],
+  "TheInternetsOwnBoyTheStoryOfAaronSwartz": [
+   "2f3a782c9db0f7e2.webp",
+   "6c52d3619070960b.webp"
+  ],
+  "TheLastManOnEarth_72": [
+   "bdd3b55cecdc7c58.webp",
+   "84f3c0aacf3e9526.webp"
+  ],
+  "TheLittleShopOfHorrors1960": [
+   "88525d6ec769f931.webp",
+   "6fae8b03e1642dc7.webp"
+  ],
+  "TheLostWorld1925": [
+   "060cfc32a76c4885.webp",
+   "c8d86b5b61f03d40.webp"
+  ],
+  "ThePhantomoftheOpera": [
+   "e66e2a5a36412ef2.webp",
+   "9d63c1e172a333a2.webp"
+  ],
+  "TheTerror1963": [
+   "26894aa8b1ce8e91.webp",
+   "44a5189de42f1cc0.webp"
+  ],
+  "TheThiefOfBagdad1924": [
+   "0b5bf04a17d609e7.webp",
+   "596e920789eee143.webp"
+  ],
+  "tpb-afk": [
+   "c7ee0acffc7fa15b.webp",
+   "f38ae0672342ab4f.webp"
+  ],
+  "UnChienAndalou1929_201807": [
+   "874356216fe10a14.webp",
+   "2e8ba5aa809e2d00.webp"
+  ],
+  "white_zombie": [
+   "2b905a82b71d2da6.webp",
+   "61f8f474b5c4abbf.webp"
+  ],
+  "wing_it": [
+   "e500259bc3df1993.webp",
+   "1ae7b55ddeead427.webp"
+  ]
+ }
+}

@@ -1,0 +1,15 @@
+---
+export const prerender = true;
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Fotograma from '../../../../components/games/Fotograma.astro';
+import { useTranslations, langStaticPaths, normalizeLang } from '../../../../i18n/ui';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={[t('games.fotograma'), t('games.endlessTab'), t('games.title')].join(' · ')} description={t('games.fotogramaDesc')}>
+  <Fotograma lang={lang} mode="actual" endless />
+</BaseLayout>

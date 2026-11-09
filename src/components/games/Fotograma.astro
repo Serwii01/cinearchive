@@ -1,0 +1,453 @@
+---
+/**
+ * Fotograma: adivinar la película por un detalle de la imagen. La página es
+ * estática; el reto llega de /api/games/fotograma y la solución solo al
+ * acertar o al gastar los seis intentos.
+ *
+ * Dos ritmos: el reto del día (igual para todos; el progreso se recuerda hasta
+ * el día siguiente) y el ilimitado (uno al azar tras otro, con su propia
+ * racha). Estadísticas y progreso, solo en el navegador.
+ */
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { MAX_ATTEMPTS } from '../../lib/games';
+
+interface Props {
+  lang: Lang;
+  mode: 'actual' | 'clasicos';
+  endless?: boolean;
+}
+
+const { lang, mode, endless = false } = Astro.props;
+const t = useTranslations(lang);
+const keys = [
+  'games.attempt', 'games.locked', 'games.won', 'games.lost', 'games.answerIs', 'games.viewFilm', 'games.watchFree',
+  'games.share', 'games.copied', 'games.noMatches', 'games.error', 'games.unavailable', 'games.wrongGuess', 'games.skipped', 'games.alreadyTried',
+  'games.shareFoto', 'games.shareFotoEndless', 'games.modeClasicos', 'games.silent', 'games.sound', 'games.number', 'games.loading',
+  'games.hint.year', 'games.hint.genre', 'games.hint.director', 'games.hint.cast', 'games.hint.country', 'games.hint.sound', 'games.hint.initial',
+] as const;
+const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
+const base = mode === 'clasicos' ? 'games/fotograma/clasicos' : 'games/fotograma';
+const modos = [
+  { id: 'actual', label: t('games.modeActual'), href: localizePath(lang, `games/fotograma${endless ? '/ilimitado' : ''}`) },
+  { id: 'clasicos', label: t('games.modeClasicos'), href: localizePath(lang, `games/fotograma/clasicos${endless ? '/ilimitado' : ''}`) },
+];
+const ritmos = [
+  { id: false, label: t('games.dailyTab'), href: localizePath(lang, base) },
+  { id: true, label: t('games.endlessTab'), href: localizePath(lang, `${base}/ilimitado`) },
+];
+const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i > 0 && 'border-l border-ink', activo ? 'bg-ink text-white' : 'hover:bg-film-white hover:text-ink'];
+---
+
+<section class="frame py-10" data-fotograma data-mode={mode} data-endless={endless ? '1' : undefined} data-lang={lang} data-i18n={JSON.stringify(i18n)}>
+  <a href={localizePath(lang, 'games')} class="label no-underline hover:text-ink">← {t('games.allGames')}</a>
+
+  <header class="mt-6 flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-5">
+    <div>
+      <span class="label">{endless ? t('games.endlessTab') : t('games.daily')}{!endless && <> · <span data-num>—</span></>}</span>
+      <h1 class="mt-2 text-display-mobile md:text-display-lg">{t('games.fotograma')}</h1>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <nav class="flex border border-ink" aria-label={t('games.modeLabel')}>
+        {modos.map((m, i) => (
+          <a href={m.href} aria-current={m.id === mode ? 'page' : undefined} class:list={tab(m.id === mode, i)}>{m.label}</a>
+        ))}
+      </nav>
+      <nav class="flex border border-ink" aria-label={t('games.paceLabel')}>
+        {ritmos.map((r, i) => (
+          <a href={r.href} aria-current={r.id === endless ? 'page' : undefined} class:list={tab(r.id === endless, i)}>{r.label}</a>
+        ))}
+      </nav>
+    </div>
+  </header>
+  <p class="mt-4 max-w-2xl text-body-md text-charcoal">
+    {mode === 'clasicos' ? t('games.clasicosDesc') : t('games.fotogramaDesc')}
+    {endless && ` ${t('games.endlessDesc')}`}
+  </p>
+
+  <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+    <div class="lg:col-span-8">
+      <figure class="border border-ink bg-charcoal">
+        <div class="relative aspect-video overflow-hidden">
+          <img data-img alt="" class="absolute inset-0 h-full w-full object-cover opacity-0 transition-[transform,opacity] duration-500 ease-out motion-reduce:transition-none" />
+          <p data-status class="absolute inset-0 flex items-center justify-center p-6 text-center font-mono text-meta-data text-white">{t('games.loading')}</p>
+        </div>
+        <figcaption class="flex items-center justify-between gap-3 border-t border-ink bg-surface px-3 py-2">
+          <span data-boxes class="font-mono text-body-lg tracking-[0.3em] text-ink" aria-hidden="true"></span>
+          <span data-attempt class="font-mono text-meta-data text-muted"></span>
+        </figcaption>
+      </figure>
+
+      <form data-form class="mt-4 flex flex-wrap items-start gap-2" autocomplete="off" hidden>
+        <div class="relative min-w-0 flex-1 basis-64">
+          <label for={`foto-q-${mode}`} class="sr-only">{t('games.guessLabel')}</label>
+          <input
+            id={`foto-q-${mode}`}
+            data-q
+            type="text"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls={`foto-list-${mode}`}
+            placeholder={t('games.guessPlaceholder')}
+            enterkeyhint="go"
+            class="w-full border border-ink bg-white px-3 py-3 font-body text-body-md text-ink placeholder:text-muted focus:bg-film-white"
+          />
+          <ul id={`foto-list-${mode}`} data-list role="listbox" aria-label={t('games.guessLabel')} class="absolute left-0 right-0 top-full z-20 max-h-72 overflow-y-auto border border-t-0 border-ink bg-surface" hidden></ul>
+        </div>
+        <button type="submit" class="btn btn-primary">{t('games.guess')}</button>
+        <button type="button" data-skip class="btn btn-secondary">{t('games.skip')}</button>
+      </form>
+      <p data-msg class="mt-2 min-h-[1.5rem] font-mono text-meta-data text-muted" role="status" aria-live="polite"></p>
+      <ol data-guesses class="mt-2 flex flex-col gap-1"></ol>
+
+      <section data-result class="mt-6 border border-ink bg-surface" hidden aria-live="polite">
+        <div class="flex flex-col gap-4 p-5 sm:flex-row">
+          <img data-r-poster alt="" width="120" height="180" class="w-28 shrink-0 self-start border border-ink bg-charcoal object-cover" />
+          <div class="min-w-0">
+            <p data-r-head class="label"></p>
+            <p class="mt-1 font-mono text-meta-data text-muted">{t('games.answerIs')}</p>
+            <p class="font-display text-headline-lg leading-tight text-ink"><span data-r-title></span> <span data-r-year class="text-muted"></span></p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              {endless && <button type="button" data-next class="btn btn-primary">{t('games.nextFilm')} →</button>}
+              <a data-r-link class="btn btn-secondary no-underline"></a>
+              <button type="button" data-share class:list={['btn', endless ? 'btn-secondary' : 'btn-primary']}>{t('games.share')}</button>
+            </div>
+            {!endless && (
+              <p class="mt-3 font-mono text-meta-data text-muted">
+                {t('games.tomorrow')} <a href={localizePath(lang, `${base}/ilimitado`)} class="text-ink">{t('games.tryEndless')} →</a>
+              </p>
+            )}
+          </div>
+        </div>
+        <div class="border-t border-ink p-5">
+          <h2 class="label">{t('games.stats')}{endless && ` · ${t('games.endlessTab')}`}</h2>
+          <dl class="mt-3 grid grid-cols-4 gap-2 text-center">
+            <div><dt class="font-mono text-meta-data text-muted">{t('games.played')}</dt><dd data-s-played class="font-display text-headline-lg text-ink">0</dd></div>
+            <div><dt class="font-mono text-meta-data text-muted">{t('games.winPct')}</dt><dd data-s-pct class="font-display text-headline-lg text-ink">0 %</dd></div>
+            <div><dt class="font-mono text-meta-data text-muted">{t('games.streak')}</dt><dd data-s-streak class="font-display text-headline-lg text-ink">0</dd></div>
+            <div><dt class="font-mono text-meta-data text-muted">{t('games.maxStreak')}</dt><dd data-s-best class="font-display text-headline-lg text-ink">0</dd></div>
+          </dl>
+        </div>
+      </section>
+    </div>
+
+    <aside class="lg:col-span-4">
+      <h2 class="border-b border-ink pb-2 label">{t('games.hints')}</h2>
+      <ol data-hints class="mt-2 flex flex-col">
+        {Array.from({ length: MAX_ATTEMPTS - 1 }, () => (
+          <li class="flex items-baseline justify-between gap-3 border-b border-ink/30 py-3">
+            <span class="font-mono text-meta-data text-muted" data-h-label>—</span>
+            <span class="text-right text-body-md text-muted" data-h-value>{t('games.locked')}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="mt-6 font-mono text-meta-data text-muted">{mode === 'clasicos' ? t('games.creditClasicos') : t('games.credit')}</p>
+    </aside>
+  </div>
+</section>
+
+<script>
+  import { matchTitles, attemptsBoxes, MAX_ATTEMPTS, ZOOM_LEVELS, type TitleEntry } from '../../lib/games';
+
+  type Hint = { k: string; v: string };
+  type Puzzle = { mode: string; day?: number; seed?: number; image: string; focus: { x: number; y: number }; hints: Hint[] };
+  type Answer = { title: string; year: number; poster: string | null; href: string; watchFree: boolean };
+  type Guess = { id: string | number; title: string } | null;
+  type State = { guesses: Guess[]; solved: boolean; done: boolean; answer?: Answer };
+  type Stats = { played: number; wins: number; streak: number; best: number; last: number };
+
+  const lee = <T,>(k: string, def: T): T => {
+    try {
+      return (JSON.parse(localStorage.getItem(k) ?? 'null') as T) ?? def;
+    } catch {
+      return def;
+    }
+  };
+  const guarda = (k: string, v: unknown) => {
+    try {
+      localStorage.setItem(k, JSON.stringify(v));
+    } catch {
+      /* modo privado: se juega igual, sin recordar */
+    }
+  };
+  const vacio = (): State => ({ guesses: [], solved: false, done: false });
+  const STATS0: Stats = { played: 0, wins: 0, streak: 0, best: 0, last: 0 };
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-fotograma]')) {
+    const mode = root.dataset.mode!;
+    const endless = root.dataset.endless === '1';
+    const lang = root.dataset.lang!;
+    const T = JSON.parse(root.dataset.i18n!) as Record<string, string>;
+    const $ = <E extends Element = HTMLElement>(s: string) => root.querySelector<E>(s)!;
+    const img = $<HTMLImageElement>('[data-img]');
+    const status = $('[data-status]');
+    const form = $<HTMLFormElement>('[data-form]');
+    const q = $<HTMLInputElement>('[data-q]');
+    const list = $<HTMLUListElement>('[data-list]');
+    const msg = $('[data-msg]');
+    const statsKey = `cine:games:stats:foto:${mode}${endless ? ':ilimitado' : ''}`;
+    let puzzle: Puzzle;
+    let state: State = vacio();
+    let stateKey = '';
+    let titles: TitleEntry[] | null = null;
+    let opciones: TitleEntry[] = [];
+    let activa = -1;
+    let ocupado = false;
+
+    const fallos = () => state.guesses.length;
+    const ref = () => (puzzle.seed ? { seed: puzzle.seed } : { day: puzzle.day });
+    const persiste = () => {
+      // El diario se recuerda hasta mañana; el ilimitado, solo mientras dura la partida.
+      if (!endless) guarda(stateKey, state);
+    };
+
+    function pinta() {
+      const z = state.done ? 1 : ZOOM_LEVELS[Math.min(fallos(), ZOOM_LEVELS.length - 1)];
+      img.style.transformOrigin = `${puzzle.focus.x}% ${puzzle.focus.y}%`;
+      img.style.transform = `scale(${z})`;
+      $('[data-boxes]').textContent = attemptsBoxes(fallos(), state.solved);
+      $('[data-attempt]').textContent = state.done ? '' : T['games.attempt'].replace('{n}', String(fallos() + 1)).replace('{total}', String(MAX_ATTEMPTS));
+      // Pistas: una por cada fallo; todas al terminar.
+      const visibles = state.done ? puzzle.hints.length : fallos();
+      root.querySelectorAll('[data-hints] li').forEach((li, i) => {
+        const h = puzzle.hints[i];
+        const abierta = i < visibles && h;
+        li.querySelector('[data-h-label]')!.textContent = abierta ? T[`games.hint.${h.k}`] : '—';
+        const v = li.querySelector<HTMLElement>('[data-h-value]')!;
+        v.textContent = abierta ? (h.k === 'sound' ? T[h.v === 'silent' ? 'games.silent' : 'games.sound'] : h.v) : T['games.locked'];
+        v.classList.toggle('text-ink', !!abierta);
+        v.classList.toggle('text-muted', !abierta);
+      });
+      $('[data-guesses]').replaceChildren(
+        ...state.guesses.map((g) => {
+          const li = document.createElement('li');
+          li.className = 'font-mono text-meta-data text-muted';
+          const s = document.createElement('s');
+          s.textContent = g ? g.title : T['games.skipped'];
+          li.append('■ ', s);
+          return li;
+        }),
+      );
+      form.hidden = state.done;
+      $('[data-result]').hidden = !(state.done && state.answer);
+      if (state.done && state.answer) resultado();
+    }
+
+    function pintaStats() {
+      const s = lee<Stats>(statsKey, STATS0);
+      $('[data-s-played]').textContent = String(s.played);
+      $('[data-s-pct]').textContent = `${s.played ? Math.round((s.wins / s.played) * 100) : 0} %`;
+      $('[data-s-streak]').textContent = String(s.streak);
+      $('[data-s-best]').textContent = String(s.best);
+    }
+
+    function resultado() {
+      const a = state.answer!;
+      $('[data-r-head]').textContent = state.solved ? T['games.won'] : T['games.lost'];
+      const p = $<HTMLImageElement>('[data-r-poster]');
+      if (a.poster) p.src = a.poster;
+      p.hidden = !a.poster;
+      $('[data-r-title]').textContent = a.title;
+      $('[data-r-year]').textContent = `(${a.year})`;
+      const link = $<HTMLAnchorElement>('[data-r-link]');
+      link.href = a.href;
+      link.textContent = a.watchFree ? `▶︎ ${T['games.watchFree']}` : `${T['games.viewFilm']} →`;
+      pintaStats();
+    }
+
+    function cuentaPartida() {
+      const s = { ...STATS0, ...lee<Stats>(statsKey, STATS0) };
+      // En el diario, una partida por día; en el ilimitado, todas cuentan.
+      if (!endless && s.last === puzzle.day) return;
+      s.played++;
+      if (state.solved) {
+        s.wins++;
+        s.streak = endless || s.last === (puzzle.day ?? 0) - 1 ? s.streak + 1 : 1;
+        s.best = Math.max(s.best, s.streak);
+      } else s.streak = 0;
+      if (!endless) s.last = puzzle.day!;
+      guarda(statsKey, s);
+    }
+
+    async function post(body: object) {
+      const r = await fetch('/api/games/fotograma', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode, lang, ...ref(), ...body }) });
+      if (!r.ok) throw new Error(String(r.status));
+      return r.json();
+    }
+
+    async function intenta(g: TitleEntry | null) {
+      if (ocupado || state.done) return;
+      if (g && state.guesses.some((x) => x && x.id === g.id)) {
+        msg.textContent = T['games.alreadyTried'];
+        return;
+      }
+      ocupado = true;
+      try {
+        if (g) {
+          const r = await post({ guess: g.id });
+          if (r.correct) {
+            state = { ...state, solved: true, done: true, answer: r.answer };
+          } else {
+            state.guesses.push({ id: g.id, title: g.title });
+            msg.textContent = T['games.wrongGuess'].replace('{title}', g.title);
+          }
+        } else {
+          state.guesses.push(null);
+          msg.textContent = T['games.skipped'];
+        }
+        if (!state.solved && state.guesses.length >= MAX_ATTEMPTS) {
+          const r = await post({ reveal: true });
+          state = { ...state, done: true, answer: r.answer };
+        }
+        if (state.done) {
+          msg.textContent = '';
+          cuentaPartida();
+        }
+        persiste();
+        q.value = '';
+        cierraLista();
+        pinta();
+        if (state.done) $('[data-result]').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      } catch {
+        msg.textContent = T['games.error'];
+      } finally {
+        ocupado = false;
+      }
+    }
+
+    // --- Buscador del juego (combobox accesible) ---
+    async function cargaTitulos() {
+      if (titles) return;
+      try {
+        const r = await fetch(`/api/games/titles?mode=${mode}&lang=${lang}`);
+        const rows = (await r.json()) as [string | number, string, string, number][];
+        titles = rows.map(([id, title, original, year]) => ({ id, title, original: original || undefined, year }));
+      } catch {
+        msg.textContent = T['games.error'];
+      }
+    }
+    function cierraLista() {
+      list.hidden = true;
+      q.setAttribute('aria-expanded', 'false');
+      q.removeAttribute('aria-activedescendant');
+      opciones = [];
+      activa = -1;
+    }
+    function pintaLista() {
+      list.replaceChildren(
+        ...opciones.map((o, i) => {
+          const li = document.createElement('li');
+          li.id = `${list.id}-${i}`;
+          li.setAttribute('role', 'option');
+          li.setAttribute('aria-selected', String(i === activa));
+          li.className = `cursor-pointer border-b border-ink/20 px-3 py-2 text-body-md ${i === activa ? 'bg-ink text-white' : 'text-ink hover:bg-film-white'}`;
+          li.textContent = `${o.title} (${o.year})`;
+          // pointerdown y no click: el click llega después del blur del campo, que
+          // cerraba la lista antes de que el toque llegase a la opción (móviles).
+          li.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            void intenta(o);
+          });
+          return li;
+        }),
+      );
+      if (!opciones.length && q.value.trim().length >= 2) {
+        const li = document.createElement('li');
+        li.className = 'px-3 py-2 font-mono text-meta-data text-muted';
+        li.textContent = T['games.noMatches'];
+        list.append(li);
+      }
+      const abierta = q.value.trim().length >= 2;
+      list.hidden = !abierta;
+      q.setAttribute('aria-expanded', String(abierta));
+      if (activa >= 0) {
+        q.setAttribute('aria-activedescendant', `${list.id}-${activa}`);
+        list.children[activa]?.scrollIntoView({ block: 'nearest' });
+      } else q.removeAttribute('aria-activedescendant');
+    }
+    q.addEventListener('focus', () => void cargaTitulos());
+    q.addEventListener('input', async () => {
+      await cargaTitulos();
+      opciones = matchTitles(q.value, titles ?? []);
+      activa = opciones.length ? 0 : -1;
+      pintaLista();
+    });
+    q.addEventListener('keydown', (e) => {
+      if (list.hidden) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activa = Math.min(opciones.length - 1, activa + 1);
+        pintaLista();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activa = Math.max(0, activa - 1);
+        pintaLista();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        cierraLista();
+      }
+    });
+    q.addEventListener('blur', () => setTimeout(() => (list.hidden = true), 150));
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const o = opciones[activa] ?? null;
+      if (o) void intenta(o);
+    });
+    $('[data-skip]').addEventListener('click', () => void intenta(null));
+
+    // --- Compartir ---
+    $('[data-share]').addEventListener('click', async () => {
+      const score = state.solved ? `${fallos() + 1}/${MAX_ATTEMPTS}` : `X/${MAX_ATTEMPTS}`;
+      const plantilla = endless ? T['games.shareFotoEndless'] : T['games.shareFoto'];
+      const cab = plantilla
+        .replace('{n}', String(puzzle.day ?? ''))
+        .replace('{mode}', mode === 'clasicos' ? ` (${T['games.modeClasicos']})` : '')
+        .replace('{score}', score);
+      const texto = `${cab}\n${attemptsBoxes(fallos(), state.solved)}\n${location.origin}${location.pathname}`;
+      try {
+        if (navigator.share) await navigator.share({ text: texto });
+        else {
+          await navigator.clipboard.writeText(texto);
+          msg.textContent = T['games.copied'];
+        }
+      } catch {
+        /* cancelado */
+      }
+    });
+
+    // --- Cargar un reto (al entrar y, en el ilimitado, con «Otra película») ---
+    async function carga() {
+      img.classList.add('opacity-0');
+      status.hidden = false;
+      status.textContent = T['games.loading'];
+      msg.textContent = '';
+      $('[data-result]').hidden = true;
+      try {
+        const r = await fetch(`/api/games/fotograma?mode=${mode}&lang=${lang}${endless ? '&endless=1' : ''}`, endless ? { cache: 'no-store' } : {});
+        if (r.status === 503) throw new Error('unavailable');
+        if (!r.ok) throw new Error();
+        puzzle = (await r.json()) as Puzzle;
+        if (endless) state = vacio();
+        else {
+          stateKey = `cine:games:foto:${mode}:${puzzle.day}`;
+          state = { ...vacio(), ...lee<State>(stateKey, vacio()) };
+          root.querySelector('[data-num]')!.textContent = T['games.number'].replace('{n}', String(puzzle.day));
+        }
+        img.onload = () => {
+          img.classList.remove('opacity-0');
+          status.hidden = true;
+        };
+        img.onerror = () => (status.textContent = T['games.error']);
+        img.src = puzzle.image;
+        pinta();
+      } catch (e) {
+        status.textContent = (e as Error).message === 'unavailable' ? T['games.unavailable'] : T['games.error'];
+      }
+    }
+    root.querySelector('[data-next]')?.addEventListener('click', async () => {
+      await carga();
+      q.focus();
+    });
+    void carga();
+  }
+</script>

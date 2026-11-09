@@ -3,14 +3,17 @@
     "version": "1.20",
     "date": "2026-11-07",
     "title": {
-      "es": "Más cine abierto y una web más rápida y segura",
-      "en": "More open cinema and a faster, safer site",
-      "gl": "Máis cine aberto e unha web máis rápida e segura",
-      "eu": "Zinema ireki gehiago eta webgune azkarrago eta seguruagoa",
-      "ca": "Més cinema obert i un web més ràpid i segur"
+      "es": "Juegos de cine, reseñas de la comunidad y más cine abierto",
+      "en": "Film games, community reviews and more open cinema",
+      "gl": "Xogos de cine, recensións da comunidade e máis cine aberto",
+      "eu": "Zinema-jokoak, komunitatearen kritikak eta zinema ireki gehiago",
+      "ca": "Jocs de cinema, ressenyes de la comunitat i més cinema obert"
     },
     "changes": {
       "es": [
+        "Nueva sección de Juegos: Fotograma (adivina la película por un detalle de su imagen, también con clásicos de Cine abierto), Cronología (ordena cinco películas por año) y ¿Cuál tiene mejor nota? Un reto nuevo cada día, gratis y sin cuenta.",
+        "Las fichas enseñan las reseñas de la comunidad y quién de la gente que sigues ha visto la película. Puedes dar «me gusta» a reseñas y listas, y quien las escribió recibe un aviso.",
+        "El buscador separa películas, personas, artículos y usuarios en pestañas, y encuentra también directores y actores.",
         "Cine abierto crece hasta las 114 películas: 41 más, todas completas, gratis y legales.",
         "En Cine abierto puedes filtrar por tipo, muda o sonora, duración, década y país, o buscar por título o director. Los filtros se quedan en el enlace, así que puedes compartir «terror mudo» tal cual.",
         "Páginas propias para cada tipo y cada década: terror, cine mudo, cortos, los años 20…",
@@ -26,6 +29,9 @@
         "En el Archivo, las portadas de la Biblioteca vuelven a verse con su marco."
       ],
       "en": [
+        "New Games section: Frame (guess the film from a detail of one of its images, also with Open Cinema classics), Timeline (put five films in order by year) and Which one rates higher? A new challenge every day, free and with no account.",
+        "Film pages show community reviews and which of the people you follow have seen the film. You can like reviews and lists, and their authors get a notification.",
+        "Search splits films, people, articles and users into tabs, and also finds directors and actors.",
         "Open Cinema grows to 114 films: 41 more, all in full, free and legal.",
         "In Open Cinema you can filter by type, silent or sound, length, decade and country, or search by title or director. Filters stay in the link, so you can share “silent horror” as it is.",
         "Pages of their own for each type and each decade: horror, silent films, shorts, the 1920s…",
@@ -41,6 +47,9 @@
         "In the Archive, Library covers have their frame back."
       ],
       "gl": [
+        "Nova sección de Xogos: Fotograma (adiviña a película por un detalle da súa imaxe, tamén con clásicos de Cine aberto), Cronoloxía (ordena cinco películas por ano) e Cal ten mellor nota? Un reto novo cada día, de balde e sen conta.",
+        "As fichas amosan as recensións da comunidade e quen da xente que segues viu a película. Podes dar «gústame» a recensións e listas, e quen as escribiu recibe un aviso.",
+        "O buscador separa películas, persoas, artigos e usuarios en lapelas, e atopa tamén directores e actores.",
         "Cine aberto medra ata as 114 películas: 41 máis, todas completas, de balde e legais.",
         "En Cine aberto podes filtrar por tipo, muda ou sonora, duración, década e país, ou buscar por título ou director. Os filtros quedan na ligazón, así que podes compartir «terror mudo» tal cal.",
         "Páxinas propias para cada tipo e cada década: terror, cine mudo, curtas, os anos 20…",
@@ -56,6 +65,9 @@
         "No Arquivo, as portadas da Biblioteca volven verse co seu marco."
       ],
       "eu": [
+        "Jokoen atal berria: Fotograma (asmatu filma bere irudi bateko xehetasun batetik, Zinema irekiko klasikoekin ere), Kronologia (ordenatu bost filma urteka) eta Zeinek du nota hobea? Erronka berri bat egunero, doan eta konturik gabe.",
+        "Fitxetan komunitatearen kritikak eta jarraitzen duzun jendetik nork ikusi duen filma agertzen dira. Kritikei eta zerrendei «atsegin dut» eman diezaiekezu, eta egileak abisu bat jasotzen du.",
+        "Bilatzaileak filmak, pertsonak, artikuluak eta erabiltzaileak fitxatan bereizten ditu, eta zuzendariak eta aktoreak ere aurkitzen ditu.",
         "Zinema irekiak 114 film ditu orain: 41 gehiago, denak osorik, doan eta legez.",
         "Zinema irekian motaren, mutua ala soinuduna izatearen, iraupenaren, hamarkadaren eta herrialdearen arabera iragaz dezakezu, edo izenburuaren edo zuzendariaren arabera bilatu. Iragazkiak estekan geratzen dira, beraz «beldurrezko zinema mutua» dagoen bezala parteka dezakezu.",
         "Mota eta hamarkada bakoitzak bere orria du: beldurra, zinema mutua, film laburrak, 20ko hamarkada…",
@@ -71,6 +83,9 @@
         "Artxiboan, Liburutegiko azalek berriro dute beren markoa."
       ],
       "ca": [
+        "Nova secció de Jocs: Fotograma (endevina la pel·lícula per un detall de la seva imatge, també amb clàssics de Cinema obert), Cronologia (ordena cinc pel·lícules per any) i Quina té millor nota? Un repte nou cada dia, gratis i sense compte.",
+        "Les fitxes mostren les ressenyes de la comunitat i qui de la gent que segueixes ha vist la pel·lícula. Pots fer «m’agrada» a ressenyes i llistes, i qui les va escriure rep un avís.",
+        "El cercador separa pel·lícules, persones, articles i usuaris en pestanyes, i troba també directors i actors.",
         "Cinema obert creix fins a les 114 pel·lícules: 41 més, totes completes, gratis i legals.",
         "A Cinema obert pots filtrar per tipus, muda o sonora, durada, dècada i país, o cercar per títol o director. Els filtres es queden a l’enllaç, així que pots compartir «terror mut» tal qual.",
         "Pàgines pròpies per a cada tipus i cada dècada: terror, cinema mut, curts, els anys 20…",

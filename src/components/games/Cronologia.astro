@@ -1,0 +1,342 @@
+---
+/**
+ * Cronología: ordenar cinco películas de la más antigua a la más reciente, en
+ * tres intentos. Los años no llegan al navegador hasta acertar o agotar los
+ * intentos (/api/games/cronologia). Se ordena arrastrando (ratón o dedo, con
+ * eventos de puntero: el arrastre nativo de HTML no funciona en el móvil) o
+ * con los botones de subir y bajar, que también sirven con teclado.
+ *
+ * Reto del día (igual para todos, se recuerda hasta mañana) o ilimitado
+ * (cinco al azar tras otras cinco, con su propia racha).
+ */
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  endless?: boolean;
+}
+
+const { lang, endless = false } = Astro.props;
+const t = useTranslations(lang);
+const keys = [
+  'games.moveUp', 'games.moveDown', 'games.triesLeft', 'games.chronoWon', 'games.chronoLost', 'games.correctPos', 'games.wrongPos',
+  'games.share', 'games.copied', 'games.error', 'games.shareChrono', 'games.shareChronoEndless', 'games.number', 'games.loading',
+] as const;
+const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
+const ritmos = [
+  { id: false, label: t('games.dailyTab'), href: localizePath(lang, 'games/cronologia') },
+  { id: true, label: t('games.endlessTab'), href: localizePath(lang, 'games/cronologia/ilimitado') },
+];
+---
+
+<section class="frame py-10" data-crono data-endless={endless ? '1' : undefined} data-lang={lang} data-i18n={JSON.stringify(i18n)}>
+  <a href={localizePath(lang, 'games')} class="label no-underline hover:text-ink">← {t('games.allGames')}</a>
+  <header class="mt-6 flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-5">
+    <div>
+      <span class="label">{endless ? t('games.endlessTab') : t('games.daily')}{!endless && <> · <span data-num>—</span></>}</span>
+      <h1 class="mt-2 text-display-mobile md:text-display-lg">{t('games.cronologia')}</h1>
+    </div>
+    <nav class="flex border border-ink" aria-label={t('games.paceLabel')}>
+      {ritmos.map((r, i) => (
+        <a
+          href={r.href}
+          aria-current={r.id === endless ? 'page' : undefined}
+          class:list={['label px-4 py-2 no-underline', i > 0 && 'border-l border-ink', r.id === endless ? 'bg-ink text-white' : 'hover:bg-film-white hover:text-ink']}
+        >
+          {r.label}
+        </a>
+      ))}
+    </nav>
+  </header>
+  <p class="mt-4 max-w-2xl text-body-md text-charcoal">{t('games.cronologiaDesc')} {t('games.chronoHelp')}{endless && ` ${t('games.endlessDesc')}`}</p>
+
+  <div class="mt-6 max-w-2xl">
+    <p class="label flex items-center gap-2"><span aria-hidden="true">↑&#xFE0E;</span> {t('games.oldest')}</p>
+    <ol data-cards class="mt-2 flex select-none flex-col gap-2" aria-label={t('games.cronologia')}>
+      <li class="border border-ink bg-surface p-4 font-mono text-meta-data text-muted" data-status>{t('games.loading')}</li>
+    </ol>
+    <p class="label mt-2 flex items-center gap-2"><span aria-hidden="true">↓&#xFE0E;</span> {t('games.newest')}</p>
+
+    <div class="mt-5 flex flex-wrap items-center gap-3" data-controls hidden>
+      <button type="button" data-check class="btn btn-primary">{t('games.check')}</button>
+      <span data-left class="font-mono text-meta-data text-muted"></span>
+    </div>
+    <p data-msg class="mt-2 min-h-[1.5rem] font-mono text-meta-data text-muted" role="status" aria-live="polite"></p>
+
+    <section data-result class="mt-4 border border-ink bg-surface p-5" hidden aria-live="polite">
+      <p data-r-head class="font-display text-headline-lg text-ink"></p>
+      <pre data-r-grid class="mt-2 font-mono text-body-lg leading-snug tracking-[0.3em] text-ink"></pre>
+      {endless && (
+        <p class="mt-2 font-mono text-meta-data text-muted">{t('games.streak')}: <span data-streak>0</span> · {t('games.maxStreak')}: <span data-best>0</span></p>
+      )}
+      <div class="mt-4 flex flex-wrap gap-2">
+        {endless && <button type="button" data-next class="btn btn-primary">{t('games.nextSet')} →</button>}
+        <button type="button" data-share class:list={['btn', endless ? 'btn-secondary' : 'btn-primary']}>{t('games.share')}</button>
+      </div>
+      {!endless && (
+        <p class="mt-3 font-mono text-meta-data text-muted">
+          {t('games.tomorrow')} <a href={localizePath(lang, 'games/cronologia/ilimitado')} class="text-ink">{t('games.tryEndless')} →</a>
+        </p>
+      )}
+    </section>
+    <p class="mt-6 font-mono text-meta-data text-muted">{t('games.credit')}</p>
+  </div>
+</section>
+
+<script>
+  import { CHRONO_ATTEMPTS } from '../../lib/games';
+
+  type Card = { key: number; title: string; poster: string; director: string | null };
+  type State = { order: number[]; attempts: boolean[][]; solved: boolean; done: boolean; years?: number[] };
+
+  const lee = <T,>(k: string, def: T): T => {
+    try {
+      return (JSON.parse(localStorage.getItem(k) ?? 'null') as T) ?? def;
+    } catch {
+      return def;
+    }
+  };
+  const guarda = (k: string, v: unknown) => {
+    try {
+      localStorage.setItem(k, JSON.stringify(v));
+    } catch {
+      /* sin almacenamiento: se juega igual */
+    }
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-crono]');
+  if (root) {
+    const lang = root.dataset.lang!;
+    const endless = root.dataset.endless === '1';
+    const T = JSON.parse(root.dataset.i18n!) as Record<string, string>;
+    const $ = <E extends Element = HTMLElement>(s: string) => root.querySelector<E>(s)!;
+    const ol = $<HTMLOListElement>('[data-cards]');
+    const msg = $('[data-msg]');
+    const check = $<HTMLButtonElement>('[data-check]');
+    const RACHA = 'cine:games:crono:ilimitado';
+    let ref: { day: number } | { seed: number } = { day: 0 };
+    let cards: Card[] = [];
+    let state: State = { order: [], attempts: [], solved: false, done: false };
+    let stateKey = '';
+    let ocupado = false;
+
+    const porKey = (k: number) => cards.find((c) => c.key === k)!;
+    const ultimas = () => state.attempts[state.attempts.length - 1];
+    const persiste = () => {
+      if (!endless) guarda(stateKey, state);
+    };
+
+    function boton(texto: string, label: string, accion: () => void, deshabilitado: boolean) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = texto;
+      b.setAttribute('aria-label', label);
+      b.disabled = deshabilitado;
+      b.className = 'flex h-11 w-11 shrink-0 items-center justify-center border border-ink font-mono text-ink hover:bg-ink hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-ink';
+      b.addEventListener('click', accion);
+      return b;
+    }
+
+    function mueve(desde: number, hasta: number, foco?: 'up' | 'down') {
+      if (hasta < 0 || hasta >= state.order.length) return;
+      const [k] = state.order.splice(desde, 1);
+      state.order.splice(hasta, 0, k);
+      persiste();
+      pinta();
+      // El foco sigue a la película que se ha movido (si ya no puede ir más
+      // allá, al otro botón), para poder seguir moviéndola con el teclado.
+      const li = ol.children[hasta];
+      const b = li?.querySelector<HTMLButtonElement>(`[data-${foco}]:not(:disabled)`) ?? li?.querySelector<HTMLButtonElement>('button:not(:disabled)');
+      b?.focus();
+    }
+
+    function pinta() {
+      const marcas = state.done || !ultimas() ? null : ultimas();
+      ol.replaceChildren(
+        ...state.order.map((k, i) => {
+          const c = porKey(k);
+          const li = document.createElement('li');
+          li.dataset.key = String(k);
+          const bien = marcas?.[i];
+          li.className = `flex items-center gap-2 border bg-surface p-2 sm:gap-3 ${state.done ? 'border-ink' : marcas ? (bien ? 'border-ochre-dim' : 'border-error') : 'border-ink'}`;
+          const asa = document.createElement('div');
+          asa.className = `flex min-w-0 flex-1 items-center gap-3 ${state.done ? '' : 'cursor-grab touch-none'}`;
+          const num = document.createElement('span');
+          num.className = 'w-5 shrink-0 text-center font-mono text-meta-data text-muted';
+          num.textContent = String(i + 1);
+          const img = document.createElement('img');
+          img.src = c.poster;
+          img.alt = '';
+          img.width = 48;
+          img.height = 72;
+          img.className = 'h-[72px] w-12 shrink-0 border border-ink bg-charcoal object-cover';
+          img.draggable = false;
+          const txt = document.createElement('div');
+          txt.className = 'min-w-0';
+          const tt = document.createElement('p');
+          tt.className = 'font-display text-body-lg leading-tight text-ink';
+          tt.textContent = c.title;
+          const sub = document.createElement('p');
+          sub.className = 'font-mono text-meta-data text-muted';
+          sub.textContent = state.done && state.years ? `${state.years[k]}${c.director ? ` · ${c.director}` : ''}` : (c.director ?? '');
+          txt.append(tt, sub);
+          asa.append(num, img, txt);
+          li.append(asa);
+          if (marcas) {
+            const m = document.createElement('span');
+            m.className = `shrink-0 font-mono text-meta-data ${bien ? 'text-ochre-dim' : 'text-error'}`;
+            m.textContent = bien ? '●' : '■';
+            m.setAttribute('aria-label', bien ? T['games.correctPos'] : T['games.wrongPos']);
+            m.title = m.getAttribute('aria-label')!;
+            li.append(m);
+          }
+          if (!state.done) {
+            const up = boton('↑︎', T['games.moveUp'].replace('{title}', c.title), () => mueve(i, i - 1, 'up'), i === 0);
+            up.dataset.up = '';
+            const down = boton('↓︎', T['games.moveDown'].replace('{title}', c.title), () => mueve(i, i + 1, 'down'), i === state.order.length - 1);
+            down.dataset.down = '';
+            li.append(up, down);
+            arrastrable(asa, li);
+          }
+          return li;
+        }),
+      );
+      $('[data-controls]').hidden = state.done;
+      $('[data-left]').textContent = T['games.triesLeft'].replace('{n}', String(CHRONO_ATTEMPTS - state.attempts.length));
+      $('[data-result]').hidden = !state.done;
+      if (state.done) resultado();
+    }
+
+    /**
+     * Arrastre con eventos de puntero: vale para ratón y para el dedo. Se
+     * escucha en la ventana y no solo en la tarjeta, para no perder el arrastre
+     * si el puntero se sale de ella (o si el navegador no deja capturarlo).
+     */
+    function arrastrable(asa: HTMLElement, li: HTMLLIElement) {
+      asa.addEventListener('pointerdown', (e) => {
+        if (state.done || e.button > 0) return;
+        e.preventDefault();
+        li.classList.add('shadow-[4px_4px_0_0_var(--c-ink)]', 'relative', 'z-10');
+        // Se cambia con la vecina mientras el puntero haya pasado su mitad: con
+        // un arrastre rápido llegan pocos eventos y hay que saltar varias.
+        const mover = (ev: PointerEvent) => {
+          for (let pasos = 0; pasos < 5; pasos++) {
+            const antes = li.previousElementSibling as HTMLElement | null;
+            const despues = li.nextElementSibling as HTMLElement | null;
+            const ra = antes?.getBoundingClientRect();
+            const rd = despues?.getBoundingClientRect();
+            if (antes && ra && ev.clientY < ra.top + ra.height / 2) ol.insertBefore(li, antes);
+            else if (despues && rd && ev.clientY > rd.top + rd.height / 2) ol.insertBefore(despues, li);
+            else break;
+          }
+        };
+        const soltar = () => {
+          window.removeEventListener('pointermove', mover);
+          window.removeEventListener('pointerup', soltar);
+          window.removeEventListener('pointercancel', soltar);
+          li.classList.remove('shadow-[4px_4px_0_0_var(--c-ink)]', 'relative', 'z-10');
+          state.order = ([...ol.children] as HTMLElement[]).map((h) => Number(h.dataset.key));
+          persiste();
+          pinta();
+        };
+        window.addEventListener('pointermove', mover);
+        window.addEventListener('pointerup', soltar);
+        window.addEventListener('pointercancel', soltar);
+      });
+    }
+
+    function resultado() {
+      $('[data-r-head]').textContent = state.solved ? T['games.chronoWon'] : T['games.chronoLost'];
+      $('[data-r-grid]').textContent = state.attempts.map((a) => a.map((b) => (b ? '●' : '■')).join('')).join('\n');
+      if (endless) {
+        const r = lee(RACHA, { streak: 0, best: 0 });
+        $('[data-streak]').textContent = String(r.streak);
+        $('[data-best]').textContent = String(r.best);
+      }
+    }
+
+    check.addEventListener('click', async () => {
+      // Un doble clic gastaba dos intentos con el mismo orden.
+      if (ocupado || state.done) return;
+      ocupado = true;
+      check.disabled = true;
+      const final = state.attempts.length === CHRONO_ATTEMPTS - 1;
+      try {
+        const r = await fetch('/api/games/cronologia', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ ...ref, order: state.order, final }),
+        });
+        if (!r.ok) throw new Error();
+        const d = (await r.json()) as { marks: boolean[]; solved: boolean; years?: number[] };
+        state.attempts.push(d.marks);
+        if (d.solved || final) {
+          state.solved = d.solved;
+          state.done = true;
+          state.years = d.years;
+          // Al terminar se enseña el orden correcto, con los años.
+          if (d.years) state.order = [...state.order].sort((a, b) => d.years![a] - d.years![b]);
+          if (endless) {
+            const rr = lee(RACHA, { streak: 0, best: 0 });
+            rr.streak = d.solved ? rr.streak + 1 : 0;
+            rr.best = Math.max(rr.best, rr.streak);
+            guarda(RACHA, rr);
+          }
+        }
+        msg.textContent = '';
+        persiste();
+        pinta();
+      } catch {
+        msg.textContent = T['games.error'];
+      } finally {
+        ocupado = false;
+        check.disabled = false;
+      }
+    });
+
+    $('[data-share]').addEventListener('click', async () => {
+      const score = state.solved ? `${state.attempts.length}/${CHRONO_ATTEMPTS}` : `X/${CHRONO_ATTEMPTS}`;
+      const plantilla = endless ? T['games.shareChronoEndless'] : T['games.shareChrono'];
+      const cab = plantilla.replace('{n}', 'day' in ref ? String(ref.day) : '').replace('{score}', score);
+      const texto = `${cab}\n${$('[data-r-grid]').textContent}\n${location.origin}${location.pathname}`;
+      try {
+        if (navigator.share) await navigator.share({ text: texto });
+        else {
+          await navigator.clipboard.writeText(texto);
+          msg.textContent = T['games.copied'];
+        }
+      } catch {
+        /* cancelado */
+      }
+    });
+
+    async function carga() {
+      msg.textContent = '';
+      try {
+        const r = await fetch(`/api/games/cronologia?lang=${lang}${endless ? '&endless=1' : ''}`, endless ? { cache: 'no-store' } : {});
+        if (!r.ok) throw new Error();
+        const d = (await r.json()) as { day?: number; seed?: number; cards: Card[] };
+        cards = d.cards;
+        const inicial: State = { order: cards.map((c) => c.key), attempts: [], solved: false, done: false };
+        if (d.seed) {
+          ref = { seed: d.seed };
+          state = inicial;
+        } else {
+          ref = { day: d.day! };
+          stateKey = `cine:games:crono:${d.day}`;
+          state = { ...inicial, ...lee<State>(stateKey, inicial) };
+          root!.querySelector('[data-num]')!.textContent = T['games.number'].replace('{n}', String(d.day));
+        }
+        pinta();
+      } catch {
+        ol.replaceChildren();
+        msg.textContent = T['games.error'];
+      }
+    }
+    root.querySelector('[data-next]')?.addEventListener('click', async () => {
+      await carga();
+      ol.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus();
+    });
+    void carga();
+  }
+</script>

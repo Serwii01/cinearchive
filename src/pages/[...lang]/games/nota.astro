@@ -1,0 +1,15 @@
+---
+export const prerender = true;
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Nota from '../../../components/games/Nota.astro';
+import { useTranslations, langStaticPaths, normalizeLang } from '../../../i18n/ui';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={`${t('games.nota')} · ${t('games.title')}`} description={t('games.notaDesc')}>
+  <Nota lang={lang} />
+</BaseLayout>

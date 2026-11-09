@@ -1,0 +1,199 @@
+---
+/**
+ * ¿Cuál tiene mejor nota?: dos películas, se elige la de mejor nota media en
+ * TMDB. Si se acierta, la ganadora se queda (ya con su nota a la vista) y llega
+ * otra; al primer fallo se acaba. Sin fin y sin reto diario: cada partida sale
+ * al azar. Las notas solo llegan del servidor después de elegir.
+ */
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const keys = ['games.pick', 'games.correct', 'games.incorrect', 'games.share', 'games.copied', 'games.error', 'games.shareNota'] as const;
+const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
+---
+
+<section class="frame py-10" data-nota data-lang={lang} data-i18n={JSON.stringify(i18n)}>
+  <a href={localizePath(lang, 'games')} class="label no-underline hover:text-ink">← {t('games.allGames')}</a>
+  <header class="mt-6 flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-5">
+    <div>
+      <span class="label">{t('games.endless')}</span>
+      <h1 class="mt-2 text-display-mobile md:text-display-lg">{t('games.nota')}</h1>
+    </div>
+    <dl class="flex gap-6 text-right">
+      <div><dt class="label">{t('games.streak')}</dt><dd data-score class="font-display text-display-mobile leading-none text-ink">0</dd></div>
+      <div><dt class="label">{t('games.best')}</dt><dd data-best class="font-display text-display-mobile leading-none text-muted">0</dd></div>
+    </dl>
+  </header>
+  <p class="mt-4 max-w-2xl text-body-md text-charcoal">{t('games.notaDesc')}</p>
+
+  <div class="mt-6 grid max-w-2xl grid-cols-2 gap-3 sm:gap-6" data-pair>
+    {['a', 'b'].map((lado) => (
+      <button type="button" data-side={lado} disabled class="group flex flex-col border border-ink bg-surface text-left transition-colors enabled:hover:bg-film-white disabled:cursor-default">
+        <span class="relative block aspect-[2/3] w-full border-b border-ink bg-charcoal">
+          <img data-poster alt="" class="h-full w-full object-cover" />
+          <span data-rating class="absolute bottom-0 left-0 right-0 hidden bg-ink/85 py-3 text-center font-display text-display-mobile leading-none text-white"></span>
+        </span>
+        <span class="block p-3">
+          <span data-title class="block font-display text-body-lg leading-tight text-ink sm:text-headline-md"></span>
+          <span data-sub class="mt-1 block font-mono text-meta-data text-muted"></span>
+        </span>
+      </button>
+    ))}
+  </div>
+  <p data-msg class="mt-4 min-h-[1.5rem] font-mono text-meta-data text-muted" role="status" aria-live="polite">{t('games.loading')}</p>
+
+  <div data-over class="mt-2 flex flex-wrap gap-2" hidden>
+    <button type="button" data-again class="btn btn-primary">{t('games.again')}</button>
+    <button type="button" data-share class="btn btn-secondary">{t('games.share')}</button>
+  </div>
+  <p class="mt-6 font-mono text-meta-data text-muted">{t('games.ratingNote')} {t('games.credit')}</p>
+</section>
+
+<script>
+  type Card = { id: number; title: string; year: number; poster: string; director: string | null };
+
+  const root = document.querySelector<HTMLElement>('[data-nota]');
+  if (root) {
+    const lang = root.dataset.lang!;
+    const T = JSON.parse(root.dataset.i18n!) as Record<string, string>;
+    const $ = <E extends Element = HTMLElement>(s: string) => root.querySelector<E>(s)!;
+    const lados = { a: $<HTMLButtonElement>('[data-side="a"]'), b: $<HTMLButtonElement>('[data-side="b"]') };
+    const msg = $('[data-msg]');
+    const BEST = 'cine:games:nota:best';
+    let par: { a: Card; b: Card };
+    /** Nota ya conocida (la de la campeona, tras acertar). */
+    const conocidas = new Map<number, number>();
+    let usadas: number[] = [];
+    let racha = 0;
+    let ocupado = false;
+
+    const best = () => {
+      try {
+        return Number(localStorage.getItem(BEST) ?? 0);
+      } catch {
+        return 0;
+      }
+    };
+    const pintaMarcador = () => {
+      $('[data-score]').textContent = String(racha);
+      $('[data-best]').textContent = String(Math.max(best(), racha));
+    };
+    const nota = (n: number) => n.toLocaleString(lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+    function pintaLado(el: HTMLButtonElement, c: Card) {
+      const img = el.querySelector<HTMLImageElement>('[data-poster]')!;
+      img.src = c.poster;
+      el.querySelector('[data-title]')!.textContent = c.title;
+      el.querySelector('[data-sub]')!.textContent = [c.year, c.director].filter(Boolean).join(' · ');
+      el.setAttribute('aria-label', T['games.pick'].replace('{title}', `${c.title} (${c.year})`));
+      const r = el.querySelector<HTMLElement>('[data-rating]')!;
+      const n = conocidas.get(c.id);
+      r.textContent = n != null ? nota(n) : '';
+      r.classList.toggle('hidden', n == null);
+      el.classList.remove('border-ochre-dim', 'border-error');
+      el.disabled = false;
+    }
+
+    function pinta() {
+      pintaLado(lados.a, par.a);
+      pintaLado(lados.b, par.b);
+      pintaMarcador();
+    }
+
+    async function nueva() {
+      racha = 0;
+      usadas = [];
+      conocidas.clear();
+      $('[data-over]').hidden = true;
+      msg.textContent = '';
+      try {
+        const r = await fetch(`/api/games/nota?lang=${lang}`);
+        if (!r.ok) throw new Error();
+        par = await r.json();
+        usadas.push(par.a.id, par.b.id);
+        pinta();
+      } catch {
+        msg.textContent = T['games.error'];
+      }
+    }
+
+    async function elige(lado: 'a' | 'b') {
+      if (ocupado) return;
+      ocupado = true;
+      lados.a.disabled = lados.b.disabled = true;
+      const pick = par[lado].id;
+      try {
+        const r = await fetch('/api/games/nota', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ a: par.a.id, b: par.b.id, pick, lang, used: usadas.slice(-400) }),
+        });
+        if (!r.ok) throw new Error();
+        const d = (await r.json()) as { correct: boolean; ratings: Record<string, number>; next: Card | null };
+        for (const [id, n] of Object.entries(d.ratings)) conocidas.set(Number(id), n);
+        // Se enseñan las dos notas y se marca la elegida.
+        for (const k of ['a', 'b'] as const) {
+          const rr = lados[k].querySelector<HTMLElement>('[data-rating]')!;
+          rr.textContent = nota(d.ratings[par[k].id]);
+          rr.classList.remove('hidden');
+        }
+        lados[lado].classList.add(d.correct ? 'border-ochre-dim' : 'border-error');
+        if (d.correct && d.next) {
+          racha++;
+          // La marca se guarda en cada acierto: si solo se guardaba al fallar,
+          // quien cerraba la página a mitad de una buena racha la perdía.
+          try {
+            if (racha > best()) localStorage.setItem(BEST, String(racha));
+          } catch {
+            /* sin almacenamiento */
+          }
+          msg.textContent = T['games.correct'];
+          pintaMarcador();
+          await new Promise((res) => setTimeout(res, 1100));
+          // La ganadora pasa a la izquierda y llega una rival nueva.
+          const ganadora = par[lado];
+          par = { a: ganadora, b: d.next };
+          usadas.push(d.next.id);
+          pinta();
+          msg.textContent = '';
+        } else {
+          msg.textContent = T['games.incorrect'];
+          try {
+            if (racha > best()) localStorage.setItem(BEST, String(racha));
+          } catch {
+            /* sin almacenamiento */
+          }
+          pintaMarcador();
+          $('[data-over]').hidden = false;
+        }
+      } catch {
+        msg.textContent = T['games.error'];
+        lados.a.disabled = lados.b.disabled = false;
+      } finally {
+        ocupado = false;
+      }
+    }
+
+    lados.a.addEventListener('click', () => void elige('a'));
+    lados.b.addEventListener('click', () => void elige('b'));
+    $('[data-again]').addEventListener('click', () => void nueva());
+    $('[data-share]').addEventListener('click', async () => {
+      const texto = `${T['games.shareNota'].replace('{n}', String(racha))}\n${location.origin}${location.pathname}`;
+      try {
+        if (navigator.share) await navigator.share({ text: texto });
+        else {
+          await navigator.clipboard.writeText(texto);
+          msg.textContent = T['games.copied'];
+        }
+      } catch {
+        /* cancelado */
+      }
+    });
+    void nueva();
+  }
+</script>

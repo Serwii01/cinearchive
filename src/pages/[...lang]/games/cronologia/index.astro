@@ -1,0 +1,15 @@
+---
+export const prerender = true;
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Cronologia from '../../../../components/games/Cronologia.astro';
+import { useTranslations, langStaticPaths, normalizeLang } from '../../../../i18n/ui';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={`${t('games.cronologia')} · ${t('games.title')}`} description={t('games.cronologiaDesc')}>
+  <Cronologia lang={lang} />
+</BaseLayout>

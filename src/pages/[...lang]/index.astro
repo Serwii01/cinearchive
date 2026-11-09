@@ -382,6 +382,21 @@ const homeJsonLd = [
     </div>
   </section>
 
+  {/* JUEGOS — el reto del día de Fotograma, como puerta a la sección. */}
+  <section class="frame pt-12">
+    <a
+      href={localizePath(lang, 'games/fotograma')}
+      class="group flex flex-col justify-between gap-6 border border-ink bg-ink p-6 text-white no-underline transition-colors hover:bg-charcoal md:flex-row md:items-center md:p-8"
+    >
+      <div class="max-w-2xl">
+        <span class="label text-white">{t('games.homeTitle')}</span>
+        <h2 class="mt-2 font-display text-headline-lg leading-tight text-white">{t('games.fotograma')}</h2>
+        <p class="mt-2 text-body-md opacity-80">{t('games.fotogramaDesc')}</p>
+      </div>
+      <span class="btn btn-primary shrink-0 self-start md:self-center">{t('games.play')} →</span>
+    </a>
+  </section>
+
   {/* ENCUENTRA TU CINE (salas reales · OpenStreetMap) */}
   <section class="frame py-12">
     <a
