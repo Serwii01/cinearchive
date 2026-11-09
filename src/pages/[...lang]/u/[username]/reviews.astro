@@ -66,7 +66,7 @@ const heading = `${t('profile.reviews')} · @${target.username}`;
                 <p class="font-mono text-meta-data text-muted">{[b?.director, b?.year].filter(Boolean).join(' · ')}</p>
                 {r.rating && <p class="mt-1 font-mono text-meta-data text-ink"><Stars rating={r.rating} lang={lang} /></p>}
                 {r.note && <p class="mt-1 line-clamp-4 text-body-md text-charcoal/80">{r.note}</p>}
-                <p class="mt-1 font-mono text-meta-data text-outline">{formatDate(r.reviewedAt ?? r.updatedAt, lang)}</p>
+                <p class="mt-1 font-mono text-meta-data text-muted">{formatDate(r.reviewedAt ?? r.updatedAt, lang)}</p>
               </div>
             </a>
           );

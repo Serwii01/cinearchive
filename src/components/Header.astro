@@ -158,10 +158,18 @@ const isActive = (href: string) => current === href.replace(/\/$/, '');
   const menu = document.getElementById('mobile-menu');
   const icon = btn?.querySelector('[data-icon]');
 
-  btn?.addEventListener('click', () => {
-    const isOpen = menu?.classList.toggle('hidden') === false;
-    btn.setAttribute('aria-expanded', String(isOpen));
-    if (icon) icon.textContent = isOpen ? '✕' : '☰︎';
+  const abre = (isOpen: boolean) => {
+    menu?.classList.toggle('hidden', !isOpen);
+    btn?.setAttribute('aria-expanded', String(isOpen));
+    if (icon) icon.textContent = isOpen ? '✕︎' : '☰︎';
+  };
+  btn?.addEventListener('click', () => abre(menu?.classList.contains('hidden') ?? false));
+  // Con el menú abierto, Esc lo cierra y devuelve el foco al botón: sin esto,
+  // con teclado no había forma de salir sin recorrer todos los enlaces.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !menu || menu.classList.contains('hidden')) return;
+    abre(false);
+    btn?.focus();
   });
 </script>
 

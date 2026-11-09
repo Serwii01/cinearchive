@@ -211,6 +211,19 @@
 
 @layer base {
   /*
+   * Foco visible al moverse con el teclado. El del navegador era un borde fino
+   * casi invisible, y sobre el ocre de «Mi cuenta» no se veía. Doble anillo:
+   * fuera, de tinta (se ve sobre el ocre y sobre el papel); dentro, ocre (se ve
+   * sobre fondos oscuros como el pie). Solo con teclado (:focus-visible), no
+   * al pulsar con el ratón o el dedo.
+   */
+  :focus-visible {
+    outline: 3px solid var(--c-ink);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--c-ochre);
+  }
+
+  /*
    * El atributo `hidden` tiene que ganar SIEMPRE. Las clases que fijan `display`
    * (.btn es inline-flex) pisan la regla del navegador para [hidden], así que
    * botones marcados como ocultos se veían igualmente: en "Encuentra tu cine"

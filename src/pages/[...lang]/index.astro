@@ -153,7 +153,7 @@ const homeJsonLd = [
         {
           film ? (
             <div class="flex min-h-0 flex-col border-t border-ink md:col-span-5 md:overflow-hidden md:border-t-0">
-              <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} class="block border-b border-ink md:min-h-0 md:flex-1 md:overflow-hidden">
+              <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} aria-label={film.title} class="block border-b border-ink md:min-h-0 md:flex-1 md:overflow-hidden">
                 {/* Es la imagen más grande de la primera pantalla: va con prioridad, y
                     el móvil se queda con la de 780 px en vez de bajar la de 1280. */}
                 {film.backdrop ? (

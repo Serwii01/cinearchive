@@ -12,6 +12,9 @@ const t = useTranslations(lang);
 // y, sin sesión, invita a entrar.
 const loggedIn = !!Astro.locals.user;
 const q = (Astro.url.searchParams.get('q') ?? '').trim();
+// Si se llega ya con una búsqueda, la caja de resultados sale visible desde el
+// servidor: mostrarla después desde el navegador empujaba el pie de golpe.
+const buscando = q.length >= 2;
 
 /*
  * Pestañas, una categoría cada vez. Antes salía todo seguido (el archivo, los
@@ -79,9 +82,11 @@ const tabClass =
       <button type="submit" class="btn btn-primary">{t('search.title')}</button>
     </form>
 
-    <p id="hint" class="mt-4 font-mono text-meta-data text-muted">{t('search.hint')}</p>
+    <p id="hint" class="mt-4 font-mono text-meta-data text-muted" hidden={buscando}>{t('search.hint')}</p>
 
-    <div id="results" class="mt-8 hidden">
+    {/* Alto mínimo mientras llegan los resultados: antes la lista crecía de golpe y
+        empujaba el pie hacia abajo (era el único salto medido en toda la web). */}
+    <div id="results" class:list={['mt-8 min-h-[75vh]', !buscando && 'hidden']}>
       <div role="tablist" aria-label={t('search.tabs')} class="grid grid-cols-2 border-l border-t border-ink sm:flex sm:border-b sm:border-r">
         {
           TABS.map((tab) => (
@@ -96,7 +101,7 @@ const tabClass =
               class={tabClass}
             >
               <span>{tab.label}</span>
-              <span data-count class="font-mono text-meta-data opacity-70" aria-live="polite">…</span>
+              <span data-count class="min-w-[3ch] text-right font-mono text-meta-data tabular-nums opacity-70" aria-live="polite">…</span>
             </button>
           ))
         }

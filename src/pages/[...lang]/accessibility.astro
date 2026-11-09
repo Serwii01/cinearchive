@@ -79,7 +79,7 @@ const warnIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
           considered.body.map((text, i) => (
             <li class="flex items-start gap-4 bg-surface p-5">
               <span
-                class="grid h-10 w-10 shrink-0 place-items-center border border-ink bg-background text-ochre"
+                class="grid h-10 w-10 shrink-0 place-items-center border border-ink bg-background text-ochre-dim"
                 set:html={featureIcons[i % featureIcons.length]}
                 aria-hidden="true"
               />
@@ -129,7 +129,7 @@ const warnIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         {
           limitations.body.map((text) => (
             <li class="flex items-start gap-3 bg-surface-dim p-5">
-              <span class="mt-0.5 shrink-0 text-ochre" set:html={warnIcon} aria-hidden="true" />
+              <span class="mt-0.5 shrink-0 text-ochre-dim" set:html={warnIcon} aria-hidden="true" />
               <p class="text-body-md leading-snug text-charcoal">{text}</p>
             </li>
           ))

@@ -84,8 +84,8 @@ const l = {
 </auth-nav>
 
 <script>
-  import { signOut } from '../lib/auth-client';
-
+  // El cliente de Better Auth pesa unos 29 kB y solo hace falta para cerrar
+  // sesión: se carga al pulsar el botón, no en cada página.
   const RECUERDO = 'cine:auth';
 
   /** Fija la variante en todas las cabeceras de la página y recuerda el resultado. */
@@ -107,6 +107,7 @@ const l = {
   class AuthNav extends HTMLElement {
     connectedCallback() {
       this.querySelector('[data-logout]')?.addEventListener('click', async () => {
+        const { signOut } = await import('../lib/auth-client');
         await signOut();
         fijar(false);
         try {
