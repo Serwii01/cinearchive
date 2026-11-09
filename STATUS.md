@@ -3,7 +3,7 @@
 > Lo mantiene Claude al terminar cada tarea, sin esperar a `/cerrar`. Es la memoria de trabajo: dónde se quedó y qué viene después.
 
 ## Estado actual
-En producción en cinearchive.es, al día con main (8495436 desplegado o por desplegar): Astro 7, despliegues sin compilar en el VPS (menos de 1 min), contador sin visitas de rastreadores, films_cache con tope (disco al 21 %), copias nocturnas, vigilancia por correo y menos CPU en Postgres. Contador en unas 1.574.000 el 7 nov.
+En producción en cinearchive.es, con main en 8ce9483 (desplegado o por desplegar): sección de Juegos (Fotograma, Cronología y ¿Cuál tiene mejor nota?, diario e ilimitado), reseñas de la comunidad y «me gusta» en las fichas, buscador por pestañas, primera crónica con fotos propias del Festival de Sevilla y la web más ligera y accesible. v1.20 del changelog ampliada con todo ello. Astro 7, despliegue desde GHCR sin compilar en el VPS, films_cache con tope, copias nocturnas y vigilancia por correo.
 
 ## Siguientes pasos
 - [ ] Sergio: dar de alta la web en Google Search Console y Bing Webmaster Tools (verificación por DNS) y enviar sitemap-index.xml. Con eso, ver qué búsquedas traen gente y escribir artículos para ellas.
@@ -13,13 +13,17 @@ En producción en cinearchive.es, al día con main (8495436 desplegado o por des
 - [ ] Copia de las copias fuera del VPS: el CRM 0.4.0 (cinearchiveCRM ff27fed) ya las baja desde la pestaña Servidor; probado. Queda decidir si se hace solo cada semana.
 - [ ] Tras desplegar lo del 8 nov (Wikidata al llegar, IP de Oracle fuera, films_cache): repetir «Rastreadores» y la consulta de films_cache por horas y comparar la carga con el 7 nov (1,5, CPU al 100 % a ráfagas).
 - [ ] Pendiente de decidir: Disallow en robots.txt para /gl/, /eu/ y /ca/ en film/ y person/ (más de la mitad del rastreo, pero Google dejaría de indexar las pocas fichas traducidas). Baidu se deja entrar (decisión de Sergio).
-- [ ] OMDb: los bots gastan la cuota diaria (1.000) en fichas sueltas. Valorar pedir las notas también al llegar, como Wikidata.
 - [ ] Umami a dieta: límite de memoria de su Node, como la app (hoy ~140 MB).
 - [ ] Revisar en Umami qué secciones se usan y dónde se va la gente antes de añadir nada nuevo.
 - [ ] Productora: que Piensa asocie productora.cinearchive.es al hosting WordPress con SSL (el HSTS de cinearchive.es exige HTTPS), subir el tema 1.3.0 y rellenar «Ese no era».
-- [x] Enviar los correos para el código de GTA VI (Xbox España: microsoft@comunicacionrrpp.es, CC xbox@comunicacionrrpp.es; Rockstar: pr@rockstargames.com, sin verificar).
 - [ ] Valorar crear una asociación cultural y pedir ISSN para optar a la subvención de revistas de cultura 2027 y a Claude for Nonprofits.
 - [ ] Si crece el tráfico: que Caddy sirva directamente lo prerenderizado y /_astro (sin pasar por Node), o Cloudflare delante.
+- [ ] Tras desplegar 44d6c9e y 8ce9483: probar en producción /games (Fotograma actuales y clásicos, Cronología y la nota, diario e ilimitado), el foco con tabulador en la portada, /search?q=kubrick sin saltos y que cerrar sesión siga funcionando.
+- [ ] Juegos, segunda fase: Reparto (adivinar la película por sus actores), estadísticas en la cuenta con insignias y clasificación entre la gente que sigues.
+- [ ] Festival de Sevilla (6-14 nov): más crónicas con fotos de Ana Gómez Collado (mismo formato: campo photos del artículo, fotos a 3600/1800/900 px) y el palmarés el 14 nov.
+- [ ] Valorar un generador para las crónicas con fotos: de zip + nombres por foto a fotos en tres tamaños y galería escrita en articles.ts.
+- [ ] Comprobar en producción con sesión real que la cabecera no salta y que llegan las notas de OMDb (el 8 nov la cuota estaba agotada).
+- [ ] Probar el correo por seguidor nuevo en producción (casilla en Preferencias y que otra cuenta te siga): en local no hay Resend.
 
 ## Última sesión
 
@@ -113,8 +117,14 @@ En producción en cinearchive.es, al día con main (8495436 desplegado o por des
 - Una nota sin texto no es una reseña: en el perfil sale como estrellas en los visionados, no como tarjeta.
 - «Volver» usa history.back() solo si el enlace apunta exactamente a la página anterior (mismo origen, ruta y consulta); si no, navega al href. Así no hay bucles y se conserva el scroll.
 - Todo ?next= pasa por safeNext(): solo rutas que empiezan por / en el propio sitio, sin // ni /\ ni /login.
+- Juegos con imágenes de TMDB (fondos sin texto) aunque sean de películas con derechos: Sergio asume el riesgo; crédito «Imágenes: TMDB» y retirada por contacto@cinearchive.es. Los clásicos usan fotogramas propios de Cine abierto (dominio público).
+- Juegos sin cuenta: progreso y rachas solo en localStorage; las soluciones nunca viajan al navegador antes de terminar. El ilimitado elige la película con un HMAC de la semilla y BETTER_AUTH_SECRET.
+- Los retos diarios salen de la bolsa src/data/games/pool.json: regenerarla cambia los retos de los días siguientes.
+- Nada de emojis en la web: iconos en SVG y ▶/↗/✕ con el selector de texto U+FE0E.
 
 ## Problemas conocidos
 - Margen de RAM y conexiones muy justo en el VPS: cualquier servicio nuevo tiene que caber en lo que queda.
 - Si no hay `RESEND_API_KEY`, la confirmación de correo se desactiva sola (se avisa en el log).
 - Toda la web (incluido lo estático) pasa por un único proceso de Node en el VPS.
+- El arrastre de Cronología solo se ha probado con eventos de puntero simulados (y con los botones de subir y bajar); falta probarlo con el dedo en un móvil real.
+- No se han visto los errores de producción: hay que mirarlos en el VPS (docker compose logs --since 168h app | grep -ci error).
