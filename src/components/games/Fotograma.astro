@@ -21,7 +21,7 @@ const { lang, mode, endless = false } = Astro.props;
 const t = useTranslations(lang);
 const keys = [
   'games.attempt', 'games.locked', 'games.won', 'games.lost', 'games.answerIs', 'games.viewFilm', 'games.watchFree',
-  'games.share', 'games.copied', 'games.noMatches', 'games.error', 'games.unavailable', 'games.wrongGuess', 'games.skipped', 'games.alreadyTried',
+  'games.share', 'games.copied', 'games.noMatches', 'games.error', 'games.unavailable', 'games.wrongGuess', 'games.sameSaga', 'games.sagaMark', 'games.skipped', 'games.alreadyTried',
   'games.shareFoto', 'games.shareFotoEndless', 'games.modeClasicos', 'games.silent', 'games.sound', 'games.number', 'games.loading',
   'games.hint.year', 'games.hint.genre', 'games.hint.director', 'games.hint.cast', 'games.hint.country', 'games.hint.sound', 'games.hint.initial',
 ] as const;
@@ -147,12 +147,13 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
 </section>
 
 <script>
-  import { matchTitles, attemptsBoxes, MAX_ATTEMPTS, ZOOM_LEVELS, type TitleEntry } from '../../lib/games';
+  import { matchTitles, attemptsBoxes, MAX_ATTEMPTS, ZOOM_LEVELS, SEEN_MAX, type TitleEntry } from '../../lib/games';
 
   type Hint = { k: string; v: string };
   type Puzzle = { mode: string; day?: number; seed?: number; image: string; focus: { x: number; y: number }; hints: Hint[] };
   type Answer = { title: string; year: number; poster: string | null; href: string; watchFree: boolean };
-  type Guess = { id: string | number; title: string } | null;
+  /** saga: era otra de la misma saga (se marca distinto en la lista). */
+  type Guess = { id: string | number; title: string; saga?: boolean } | null;
   type State = { guesses: Guess[]; solved: boolean; done: boolean; answer?: Answer };
   type Stats = { played: number; wins: number; streak: number; best: number; last: number };
 
@@ -186,6 +187,7 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
     const list = $<HTMLUListElement>('[data-list]');
     const msg = $('[data-msg]');
     const statsKey = `cine:games:stats:foto:${mode}${endless ? ':ilimitado' : ''}`;
+    const vistasKey = `cine:games:foto:vistas:${mode}`;
     let puzzle: Puzzle;
     let state: State = vacio();
     let stateKey = '';
@@ -224,7 +226,10 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
           li.className = 'font-mono text-meta-data text-muted';
           const s = document.createElement('s');
           s.textContent = g ? g.title : T['games.skipped'];
-          li.append('■ ', s);
+          if (g?.saga) {
+            li.className = 'font-mono text-meta-data text-ink';
+            li.append('◆︎ ', s, ` · ${T['games.sagaMark']}`);
+          } else li.append('■ ', s);
           return li;
         }),
       );
@@ -288,8 +293,8 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
           if (r.correct) {
             state = { ...state, solved: true, done: true, answer: r.answer };
           } else {
-            state.guesses.push({ id: g.id, title: g.title });
-            msg.textContent = T['games.wrongGuess'].replace('{title}', g.title);
+            state.guesses.push({ id: g.id, title: g.title, ...(r.saga ? { saga: true } : {}) });
+            msg.textContent = T[r.saga ? 'games.sameSaga' : 'games.wrongGuess'].replace('{title}', g.title);
           }
         } else {
           state.guesses.push(null);
@@ -307,7 +312,13 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
         q.value = '';
         cierraLista();
         pinta();
-        if (state.done) $('[data-result]').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        if (state.done) {
+          $('[data-result]').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          // El formulario desaparece con el foco dentro: sin esto, el teclado se
+          // quedaba en el principio de la página. «Otra película» (o compartir)
+          // queda listo para pulsar Intro.
+          (root.querySelector<HTMLElement>('[data-next]') ?? $('[data-share]')).focus({ preventScroll: true });
+        }
       } catch {
         msg.textContent = T['games.error'];
       } finally {
@@ -320,8 +331,8 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
       if (titles) return;
       try {
         const r = await fetch(`/api/games/titles?mode=${mode}&lang=${lang}`);
-        const rows = (await r.json()) as [string | number, string, string, number][];
-        titles = rows.map(([id, title, original, year]) => ({ id, title, original: original || undefined, year }));
+        const rows = (await r.json()) as [string | number, string, string, number, string[]?][];
+        titles = rows.map(([id, title, original, year, aka]) => ({ id, title, original: original || undefined, aka, year }));
       } catch {
         msg.textContent = T['games.error'];
       }
@@ -373,7 +384,16 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
       pintaLista();
     });
     q.addEventListener('keydown', (e) => {
-      if (list.hidden) return;
+      if (list.hidden) {
+        // Flecha abajo vuelve a abrir la lista si se había cerrado (Esc o al salir del campo).
+        if (e.key === 'ArrowDown' && q.value.trim().length >= 2 && titles) {
+          e.preventDefault();
+          opciones = matchTitles(q.value, titles);
+          activa = opciones.length ? 0 : -1;
+          pintaLista();
+        }
+        return;
+      }
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         activa = Math.min(opciones.length - 1, activa + 1);
@@ -388,10 +408,22 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
       }
     });
     q.addEventListener('blur', () => setTimeout(() => (list.hidden = true), 150));
-    form.addEventListener('submit', (e) => {
+    /**
+     * Intro (o «Adivinar») prueba la opción marcada. Antes no hacía nada si se
+     * pulsaba antes de que llegasen los títulos o con la lista cerrada (tras
+     * salir del campo): ahora busca en ese momento y prueba la primera.
+     */
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const o = opciones[activa] ?? null;
+      if (q.value.trim().length < 2) return;
+      if (list.hidden || activa < 0) {
+        await cargaTitulos();
+        opciones = matchTitles(q.value, titles ?? []);
+        activa = opciones.length ? 0 : -1;
+      }
+      const o = opciones[activa];
       if (o) void intenta(o);
+      else msg.textContent = T['games.noMatches'];
     });
     $('[data-skip]').addEventListener('click', () => void intenta(null));
 
@@ -423,11 +455,17 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
       msg.textContent = '';
       $('[data-result]').hidden = true;
       try {
-        const r = await fetch(`/api/games/fotograma?mode=${mode}&lang=${lang}${endless ? '&endless=1' : ''}`, endless ? { cache: 'no-store' } : {});
+        // Ilimitado: las semillas ya jugadas, para que el servidor no repita película.
+        const vistas = endless ? lee<number[]>(vistasKey, []) : [];
+        const extra = endless ? `&endless=1${vistas.length ? `&seen=${vistas.join(',')}` : ''}` : '';
+        const r = await fetch(`/api/games/fotograma?mode=${mode}&lang=${lang}${extra}`, endless ? { cache: 'no-store' } : {});
         if (r.status === 503) throw new Error('unavailable');
         if (!r.ok) throw new Error();
         puzzle = (await r.json()) as Puzzle;
-        if (endless) state = vacio();
+        if (endless) {
+          state = vacio();
+          if (puzzle.seed) guarda(vistasKey, [...vistas, puzzle.seed].slice(-SEEN_MAX));
+        }
         else {
           stateKey = `cine:games:foto:${mode}:${puzzle.day}`;
           state = { ...vacio(), ...lee<State>(stateKey, vacio()) };
@@ -440,13 +478,16 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
         img.onerror = () => (status.textContent = T['games.error']);
         img.src = puzzle.image;
         pinta();
+        // Con ratón y teclado, se puede escribir nada más entrar. En el móvil no:
+        // abriría el teclado encima de la imagen.
+        if (!state.done && matchMedia('(pointer: fine)').matches) q.focus({ preventScroll: true });
       } catch (e) {
         status.textContent = (e as Error).message === 'unavailable' ? T['games.unavailable'] : T['games.error'];
       }
     }
     root.querySelector('[data-next]')?.addEventListener('click', async () => {
       await carga();
-      q.focus();
+      q.focus({ preventScroll: true });
     });
     void carga();
   }

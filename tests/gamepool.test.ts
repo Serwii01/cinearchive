@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { POOL, RATED, poolTitle, fotoPuzzle, fotoCheck, fotoAnswer, titleIndex, chronoFilms, CLASICOS, paisEn } from '../src/lib/gamepool';
+import { POOL, RATED, poolTitle, fotoPuzzle, fotoCheck, fotoSameSaga, fotoAnswer, notaToken, notaVerify, freshFotoSeed, titleIndex, chronoFilms, CLASICOS, paisEn } from '../src/lib/gamepool';
 import { checkOrder } from '../src/lib/games';
 
 describe('bolsa de los juegos', () => {
@@ -99,5 +99,70 @@ describe('sin pistas escondidas en la imagen', () => {
       const p = fotoPuzzle('clasicos', { day }, 'es');
       expect(p.image, `día ${day}`).toMatch(/^\/games\/clasicos\/[0-9a-f]{16}\.webp$/);
     }
+  });
+});
+
+describe('Fotograma: misma saga', () => {
+  it('avisa si la película probada es de la saga de la solución, y solo entonces', () => {
+    const ref = { day: 10 };
+    const solucion = POOL.find((f) => fotoCheck('actual', ref, f.id))!;
+    const [hermana, otra] = POOL.filter((f) => f.id !== solucion.id);
+    const antes = [solucion.collection, hermana.collection, otra.collection];
+    try {
+      solucion.collection = hermana.collection = -1;
+      otra.collection = -2;
+      expect(fotoSameSaga('actual', ref, hermana.id)).toBe(true);
+      expect(fotoSameSaga('actual', ref, otra.id)).toBe(false);
+      expect(fotoSameSaga('actual', ref, 999_999_999)).toBe(false);
+      // En clásicos no hay sagas.
+      expect(fotoSameSaga('clasicos', ref, hermana.id)).toBe(false);
+      // Sin saga, nunca.
+      solucion.collection = null;
+      expect(fotoSameSaga('actual', ref, hermana.id)).toBe(false);
+    } finally {
+      [solucion.collection, hermana.collection, otra.collection] = antes;
+    }
+  });
+
+  it('el buscador encuentra la película por el título de otro idioma', () => {
+    const f = POOL.find((x) => x.titles.en && x.titles.es && x.titles.en !== x.titles.es && x.titles.en !== x.original)!;
+    const e = titleIndex('actual', 'es').find((t) => t.id === f.id)!;
+    expect(e.aka).toContain(f.titles.en);
+  });
+});
+
+describe('¿Cuál tiene mejor nota?: racha firmada', () => {
+  it('el vale auténtico da su racha', () => {
+    expect(notaVerify(notaToken(11, 12, 7), 11, 12)).toBe(7);
+  });
+
+  it('no vale para otra pareja, cambiado a mano ni caducado', () => {
+    const v = notaToken(11, 12, 7);
+    expect(notaVerify(v, 11, 13)).toBeNull();
+    expect(notaVerify(v.replace('.7.', '.300.'), 11, 12)).toBeNull();
+    expect(notaVerify('basura', 11, 12)).toBeNull();
+    const viejo = notaToken(11, 12, 7, Date.now() - 25 * 3600 * 1000);
+    expect(notaVerify(viejo, 11, 12)).toBeNull();
+  });
+});
+
+describe('Fotograma ilimitado: sin repetir', () => {
+  const pelicula = (mode: 'actual' | 'clasicos', seed: number) => fotoAnswer(mode, { seed }, 'es').title;
+
+  it('no vuelve a dar una película de las semillas ya jugadas', () => {
+    const vistas: number[] = [];
+    const titulos = new Set<string>();
+    for (let i = 0; i < 60; i++) {
+      const s = freshFotoSeed('clasicos', vistas);
+      const t = pelicula('clasicos', s);
+      expect(titulos.has(t), t).toBe(false);
+      titulos.add(t);
+      vistas.push(s);
+    }
+  });
+
+  it('cuando casi se han visto todas, sigue dando retos', () => {
+    const vistas = Array.from({ length: 2000 }, (_, i) => i + 1);
+    expect(() => freshFotoSeed('clasicos', vistas)).not.toThrow();
   });
 });

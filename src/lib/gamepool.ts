@@ -12,14 +12,15 @@
  * Si fuese un simple hash, quien leyera este código podría calcular la
  * solución a partir de la semilla y de la lista de títulos del buscador.
  */
-import { createHmac, randomInt } from 'node:crypto';
+import { createHmac, randomInt, timingSafeEqual } from 'node:crypto';
 import poolData from '../data/games/pool.json';
 import clasicosData from '../data/games/clasicos.json';
 import { GENRES } from '../data/genres';
 import { pdFilms, pdTitle, type PdFilm } from './pdfilms';
 import { filmSlug } from './slug';
 import { localizePath, type Lang } from '../i18n/ui';
-import { dailyIndex, focusPoint, hashString, permutation, pickChronology, CHRONO_SIZE, type TitleEntry } from './games';
+import { dailyIndex, focusPoint, hashString, normalize, permutation, pickChronology, CHRONO_SIZE, type TitleEntry } from './games';
+export { SEEN_MAX } from './games';
 
 export interface PoolFilm {
   id: number;
@@ -33,6 +34,8 @@ export interface PoolFilm {
   cast: string[];
   poster: string;
   backdrops: string[];
+  /** Saga de TMDB (belongs_to_collection), para avisar en Fotograma de que se va bien. */
+  collection?: number | null;
 }
 
 export const POOL = (poolData as { films: PoolFilm[] }).films;
@@ -104,15 +107,34 @@ export interface FotoPuzzle {
   hints: Hint[];
 }
 
+const fotoIndice = (mode: FotoMode, ref: Ref) =>
+  mode === 'clasicos' ? indice(ref, CLASICOS.length, 'fotograma-clasicos') : indice(ref, POOL.length, 'fotograma');
+
+/**
+ * Semilla nueva para el Fotograma ilimitado que no caiga en una película ya
+ * jugada. El navegador guarda las semillas de sus partidas (no sabe qué
+ * película es cada una) y el servidor, que sí lo sabe, descarta las que
+ * repetirían. Solo cuentan las más recientes, hasta el 80 % de las películas
+ * del modo: en clásicos (114) se agotarían enseguida y no quedaría ninguna.
+ */
+export function freshFotoSeed(mode: FotoMode, seen: number[]): number {
+  const n = mode === 'clasicos' ? CLASICOS.length : POOL.length;
+  const recientes = seen.slice(-Math.floor(n * 0.8));
+  const vistas = new Set(recientes.map((seed) => fotoIndice(mode, { seed })));
+  let seed = newSeed();
+  for (let intento = 0; intento < 60 && vistas.has(fotoIndice(mode, { seed })); intento++) seed = newSeed();
+  return seed;
+}
+
 /** Solución interna del reto: no sale al navegador hasta el final. */
 function fotoAnswerKey(mode: FotoMode, ref: Ref): { pool?: PoolFilm; pd?: PdFilm; image: string } {
   const k = clave(ref);
   if (mode === 'clasicos') {
-    const pd = CLASICOS[indice(ref, CLASICOS.length, 'fotograma-clasicos')];
+    const pd = CLASICOS[fotoIndice(mode, ref)];
     const lista = frames[pd.id];
     return { pd, image: `/games/clasicos/${lista[hashString(`img:${k}`) % lista.length]}` };
   }
-  const f = POOL[indice(ref, POOL.length, 'fotograma')];
+  const f = POOL[fotoIndice(mode, ref)];
   return { pool: f, image: backdrop(f.backdrops[hashString(`img:${k}`) % Math.min(2, f.backdrops.length)]) };
 }
 
@@ -173,6 +195,18 @@ export function fotoCheck(mode: FotoMode, ref: Ref, guess: string | number): boo
   return k.pd ? String(guess) === k.pd.id : Number(guess) === k.pool!.id;
 }
 
+/**
+ * ¿Ha fallado por poco, con otra película de la misma saga? («El imperio
+ * contraataca» cuando era «La guerra de las galaxias»). Solo en actuales: en
+ * Cine abierto no hay sagas.
+ */
+export function fotoSameSaga(mode: FotoMode, ref: Ref, guess: string | number): boolean {
+  const k = fotoAnswerKey(mode, ref);
+  if (!k.pool?.collection) return false;
+  const g = poolFilm(Number(guess));
+  return !!g && g.id !== k.pool.id && g.collection === k.pool.collection;
+}
+
 export interface FotoAnswer {
   title: string;
   year: number;
@@ -191,10 +225,35 @@ export function fotoAnswer(mode: FotoMode, ref: Ref, lang: Lang): FotoAnswer {
   return { title: poolTitle(f, lang), year: f.year, poster: poster(f.poster), href: localizePath(lang, `film/${filmSlug(f.id, poolTitle(f, lang))}`), watchFree: false };
 }
 
-/** Títulos para el buscador del juego (solo entre los posibles). */
+/** Los otros nombres de una película, sin repetir el que se enseña ni el original. */
+function otros(titulo: string, original: string | undefined, todos: (string | undefined)[]): string[] {
+  // Sin los que solo cambian en mayúsculas o tildes («American beauty»): el buscador los iguala.
+  const vistos = new Set([titulo, original ?? ''].map(normalize));
+  const out: string[] = [];
+  for (const t of todos) {
+    if (!t || vistos.has(normalize(t))) continue;
+    vistos.add(normalize(t));
+    out.push(t);
+  }
+  return out;
+}
+
+/**
+ * Títulos para el buscador del juego (solo entre los posibles). Con los de los
+ * otros idiomas: quien conoce la película como «American Psycho» la encuentra
+ * aunque la web la llame de otra manera, y al revés.
+ */
 export function titleIndex(mode: FotoMode, lang: Lang): TitleEntry[] {
-  if (mode === 'clasicos') return CLASICOS.map((f) => ({ id: f.id, title: pdTitle(f, lang), original: f.original_title, year: f.year }));
-  return POOL.map((f) => ({ id: f.id, title: poolTitle(f, lang), original: f.original, year: f.year }));
+  if (mode === 'clasicos') {
+    return CLASICOS.map((f) => {
+      const title = pdTitle(f, lang);
+      return { id: f.id, title, original: f.original_title, aka: otros(title, f.original_title, [f.title, ...Object.values(f.titles ?? {})]), year: f.year };
+    });
+  }
+  return POOL.map((f) => {
+    const title = poolTitle(f, lang);
+    return { id: f.id, title, original: f.original, aka: otros(title, f.original, Object.values(f.titles)), year: f.year };
+  });
 }
 
 /* ------------------------------------------------------------------ *
@@ -220,5 +279,38 @@ export const chronoCard = (f: PoolFilm, lang: Lang, i: number) => ({ key: i, tit
 
 /** Para este juego, solo las que tienen bastantes votos: su nota es estable. */
 export const RATED = POOL.filter((f) => f.votes >= 1000);
+
+/**
+ * Racha firmada de «¿Cuál tiene mejor nota?». Antes la racha la contaba el
+ * navegador y se la decía al servidor: se podía inventar, y también elegir
+ * qué pareja comprobar. Ahora cada pareja llega con un vale firmado (HMAC con
+ * el secreto del servidor) que dice qué dos películas son y cuántos aciertos
+ * lleva la partida; solo el servidor lo sube al acertar. Hace falta antes de
+ * cualquier clasificación entre jugadores.
+ *
+ * Formato: a.b.racha.emitido(base 36).firma. Caduca a las 24 horas.
+ */
+const VALE_TTL_MS = 24 * 60 * 60 * 1000;
+const firmaVale = (cuerpo: string) => secreto(`nota:${cuerpo}`).toString('base64url').slice(0, 22);
+
+export function notaToken(a: number, b: number, streak: number, now = Date.now()): string {
+  const cuerpo = `${a}.${b}.${streak}.${now.toString(36)}`;
+  return `${cuerpo}.${firmaVale(cuerpo)}`;
+}
+
+/** La racha del vale si es auténtico, de esa pareja y no ha caducado; si no, null. */
+export function notaVerify(token: string, a: number, b: number, now = Date.now()): number | null {
+  const partes = token.split('.');
+  if (partes.length !== 5) return null;
+  const [ta, tb, ts, tt, firma] = partes;
+  const cuerpo = `${ta}.${tb}.${ts}.${tt}`;
+  const esperada = firmaVale(cuerpo);
+  if (firma.length !== esperada.length || !timingSafeEqual(Buffer.from(firma), Buffer.from(esperada))) return null;
+  if (Number(ta) !== a || Number(tb) !== b) return null;
+  const emitido = parseInt(tt, 36);
+  if (!Number.isFinite(emitido) || now - emitido > VALE_TTL_MS || emitido - now > 60_000) return null;
+  const racha = Number(ts);
+  return Number.isInteger(racha) && racha >= 0 ? racha : null;
+}
 
 export const ratingCard = (f: PoolFilm, lang: Lang) => ({ id: f.id, title: poolTitle(f, lang), year: f.year, poster: poster(f.poster), director: f.director });

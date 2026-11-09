@@ -51,6 +51,8 @@ const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
     <button type="button" data-again class="btn btn-primary">{t('games.again')}</button>
     <button type="button" data-share class="btn btn-secondary">{t('games.share')}</button>
   </div>
+  <!-- Solo con ratón: en el móvil no hay flechas. -->
+  <p class="mt-2 hidden font-mono text-meta-data text-muted pointer-fine:block">{t('games.keysHint')}</p>
   <p class="mt-6 font-mono text-meta-data text-muted">{t('games.ratingNote')} {t('games.credit')}</p>
 </section>
 
@@ -70,6 +72,8 @@ const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
     const conocidas = new Map<number, number>();
     let usadas: number[] = [];
     let racha = 0;
+    /** Vale firmado de la pareja en juego (racha incluida), de /api/games/nota. */
+    let vale = '';
     let ocupado = false;
 
     const best = () => {
@@ -114,7 +118,9 @@ const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
       try {
         const r = await fetch(`/api/games/nota?lang=${lang}`);
         if (!r.ok) throw new Error();
-        par = await r.json();
+        const d = (await r.json()) as { a: Card; b: Card; token: string };
+        par = { a: d.a, b: d.b };
+        vale = d.token;
         usadas.push(par.a.id, par.b.id);
         pinta();
       } catch {
@@ -131,10 +137,10 @@ const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
         const r = await fetch('/api/games/nota', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ a: par.a.id, b: par.b.id, pick, lang, used: usadas.slice(-400) }),
+          body: JSON.stringify({ a: par.a.id, b: par.b.id, pick, lang, used: usadas.slice(-400), token: vale }),
         });
         if (!r.ok) throw new Error();
-        const d = (await r.json()) as { correct: boolean; ratings: Record<string, number>; next: Card | null };
+        const d = (await r.json()) as { correct: boolean; ratings: Record<string, number>; streak: number; next: Card | null; token?: string };
         for (const [id, n] of Object.entries(d.ratings)) conocidas.set(Number(id), n);
         // Se enseñan las dos notas y se marca la elegida.
         for (const k of ['a', 'b'] as const) {
@@ -144,7 +150,9 @@ const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
         }
         lados[lado].classList.add(d.correct ? 'border-ochre-dim' : 'border-error');
         if (d.correct && d.next) {
-          racha++;
+          // La racha la lleva el servidor en el vale firmado.
+          racha = d.streak;
+          vale = d.token ?? '';
           // La marca se guarda en cada acierto: si solo se guardaba al fallar,
           // quien cerraba la página a mitad de una buena racha la perdía.
           try {
@@ -170,6 +178,8 @@ const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
           }
           pintaMarcador();
           $('[data-over]').hidden = false;
+          // «Otra partida» listo para Intro (los botones de los carteles quedan desactivados).
+          $('[data-again]').focus({ preventScroll: true });
         }
       } catch {
         msg.textContent = T['games.error'];
@@ -181,6 +191,21 @@ const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
 
     lados.a.addEventListener('click', () => void elige('a'));
     lados.b.addEventListener('click', () => void elige('b'));
+    // Con teclado: ← la de la izquierda, → la de la derecha, sin tabular hasta
+    // los carteles. Al terminar, el foco va a «Otra partida» y basta con Intro.
+    document.addEventListener('keydown', (e) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      const t = e.target as HTMLElement | null;
+      if (t?.closest('input, textarea, select, [contenteditable="true"]')) return;
+      const terminada = !$('[data-over]').hidden;
+      if (!terminada && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+        const lado = e.key === 'ArrowLeft' ? 'a' : 'b';
+        if (lados[lado].disabled) return;
+        e.preventDefault();
+        lados[lado].focus({ preventScroll: true });
+        void elige(lado);
+      }
+    });
     $('[data-again]').addEventListener('click', () => void nueva());
     $('[data-share]').addEventListener('click', async () => {
       const texto = `${T['games.shareNota'].replace('{n}', String(racha))}\n${location.origin}${location.pathname}`;

@@ -12,6 +12,11 @@ export const MAX_ATTEMPTS = 6;
 export const ZOOM_LEVELS = [5, 3.4, 2.4, 1.7, 1.25, 1] as const;
 export const CHRONO_SIZE = 5;
 export const CHRONO_ATTEMPTS = 3;
+/**
+ * Fotograma ilimitado: cuántas semillas ya jugadas recuerda el navegador (y
+ * acepta el servidor) para no repetir película. ~2,5 kB en la URL.
+ */
+export const SEEN_MAX = 250;
 
 /** Fecha de hoy en Madrid (AAAA-MM-DD): los retos cambian a medianoche de aquí. */
 export function madridDate(now: Date = new Date()): string {
@@ -111,49 +116,160 @@ export function checkOrder(years: number[]): boolean[] {
   return years.map((y, i) => y === bien[i]);
 }
 
-/** Texto comparable: minúsculas, sin tildes ni signos. */
+/**
+ * Números romanos de las secuelas: «Rocky II» y «Rocky 2» se escriben de las dos
+ * maneras. Ni «i», «v» ni «x» sueltas, que son también palabras e iniciales
+ * («V de Vendetta», «X-Men»).
+ */
+const ROMANOS: Record<string, string> = { ii: '2', iii: '3', iv: '4', vi: '6', vii: '7', viii: '8', ix: '9' };
+
+/** Texto comparable: minúsculas, sin tildes ni signos, secuelas en cifras. */
 export function normalize(s: string): string {
   return s
     .normalize('NFD')
     .replace(/\p{Diacritic}/gu, '')
     .toLowerCase()
     .replace(/[^\p{L}\p{N}]+/gu, ' ')
-    .trim();
+    .trim()
+    .split(' ')
+    .map((w) => ROMANOS[w] ?? w)
+    .join(' ');
 }
 
 export interface TitleEntry {
   id: number | string;
   title: string;
   original?: string;
+  /** Otros nombres con los que se la conoce (el de otro idioma), solo para buscar. */
+  aka?: string[];
   year: number;
 }
 
-/**
- * Sugerencias del buscador del juego: primero las que empiezan por lo escrito,
- * luego las que lo contienen; vale el título traducido y el original.
- */
-export function matchTitles<T extends TitleEntry>(query: string, entries: T[], limit = 8): T[] {
-  const q = normalize(query);
-  if (q.length < 2) return [];
-  const empieza: T[] = [];
-  const contiene: T[] = [];
-  for (const e of entries) {
-    const t = normalize(e.title);
-    const o = e.original ? normalize(e.original) : '';
-    if (t.startsWith(q) || o.startsWith(q) || t.split(' ').some((w) => w.startsWith(q))) empieza.push(e);
-    else if (t.includes(q) || o.includes(q)) contiene.push(e);
+/** Distancia de edición (Levenshtein) con tope: más allá de `max` da max + 1. */
+export function editDistance(a: string, b: string, max = 2): number {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    let minFila = i;
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      minFila = Math.min(minFila, cur[j]);
+    }
+    if (minFila > max) return max + 1;
+    prev = cur;
   }
-  return [...empieza, ...contiene].slice(0, limit);
+  return prev[b.length];
+}
+
+/** Erratas que se perdonan en una palabra según lo larga que es. */
+const erratas = (n: number) => (n >= 5 ? 2 : n >= 3 ? 1 : 0);
+
+/**
+ * ¿Encaja la palabra escrita `q` con la del título `w`? Si es la última que se
+ * está escribiendo (`prefijo`), basta con que la de título empiece por ella,
+ * también con erratas (se compara con su principio, con una letra de más o de menos).
+ */
+function palabraEncaja(q: string, w: string, prefijo: boolean, conErratas: boolean): boolean {
+  if (prefijo ? w.startsWith(q) : w === q) return true;
+  const tope = conErratas ? erratas(q.length) : 0;
+  if (!tope) return false;
+  if (editDistance(q, w, tope) <= tope) return true;
+  if (!prefijo) return false;
+  for (let n = q.length - 1; n <= q.length + 1; n++) if (n < w.length && editDistance(q, w.slice(0, n), tope) <= tope) return true;
+  return false;
 }
 
 /**
- * Siguiente rival de «¿Cuál tiene mejor nota?»: una película de la bolsa que no
- * haya salido y cuya nota se distinga de la del campeón (sin empates).
+ * Puntuación de un nombre para lo escrito (0 = no encaja):
+ *  4  empieza por lo escrito          («star w» → Star Wars)
+ *  3  todas las palabras, en cualquier orden («wars star»)
+ *  2  lo escrito aparece dentro, también sin espacios («spiderman» → Spider-Man)
+ *  1  todas las palabras con alguna errata («pulp fixion», «amelei»)
  */
-export function pickChallenger<T extends { id: number; rating: number }>(pool: T[], champion: T, used: Set<number>, random: () => number = Math.random, minGap = 0.2): T {
-  const libres = pool.filter((f) => f.id !== champion.id && !used.has(f.id) && Math.abs(f.rating - champion.rating) >= minGap);
-  const lista = libres.length ? libres : pool.filter((f) => f.id !== champion.id && Math.abs(f.rating - champion.rating) >= minGap);
-  return lista[Math.floor(random() * lista.length)];
+function puntua(q: string, nombre: string): number {
+  if (nombre.startsWith(q)) return 4;
+  const qs = q.split(' ');
+  const ws = nombre.split(' ');
+  // Palabras de una o dos letras («el», «de», «la»): sobran si no están.
+  const todas = (conErratas: boolean) =>
+    qs.every((p, i) => ws.some((w) => palabraEncaja(p, w, i === qs.length - 1, conErratas)) || (p.length <= 2 && i < qs.length - 1));
+  if (todas(false)) return 3;
+  if (nombre.replace(/ /g, '').includes(q.replace(/ /g, ''))) return 2;
+  if (todas(true)) return 1;
+  return 0;
+}
+
+/**
+ * Nombres ya normalizados de cada película, calculados una vez: se busca en cada
+ * tecla entre 1.600 películas, y normalizar en cada búsqueda la hacía cinco
+ * veces más lenta (unos 50 ms, que en un móvil se notan).
+ */
+const normalizados = new WeakMap<TitleEntry, string[]>();
+function nombres(e: TitleEntry): string[] {
+  let n = normalizados.get(e);
+  if (!n) {
+    n = [...new Set([e.title, e.original, ...(e.aka ?? [])].filter((x): x is string => !!x).map(normalize))];
+    normalizados.set(e, n);
+  }
+  return n;
+}
+
+/**
+ * Sugerencias del buscador del juego. Vale el título en el idioma de la web, el
+ * original y los otros conocidos («American Psycho» o «Psicópata americano»);
+ * perdona el orden de las palabras, los espacios («spiderman»), los números
+ * romanos y alguna errata. Primero lo que mejor encaja; a igualdad, lo más corto.
+ */
+export function matchTitles<T extends TitleEntry>(query: string, entries: T[], limit = 8): T[] {
+  const q = normalize(query);
+  if (q.replace(/ /g, '').length < 2) return [];
+  const puntuadas: { e: T; p: number; len: number }[] = [];
+  for (const e of entries) {
+    let p = 0;
+    for (const n of nombres(e)) {
+      p = Math.max(p, puntua(q, n));
+      if (p === 4) break;
+    }
+    if (p) puntuadas.push({ e, p, len: e.title.length });
+  }
+  return puntuadas
+    .sort((a, b) => b.p - a.p || a.len - b.len)
+    .slice(0, limit)
+    .map((x) => x.e);
+}
+
+/**
+ * Siguiente rival de «¿Cuál tiene mejor nota?».
+ *
+ * Antes salía cualquiera de la bolsa: con una campeona de 8,3 casi todas las
+ * rivales tenían menos nota y bastaba con elegir siempre la de la izquierda
+ * (alguien hizo así una racha de 300). Ahora:
+ *  - la mitad de las veces la rival tiene más nota y la otra mitad menos, si
+ *    las hay (a 8,7 quedan pocas por encima, pero salen igual de a menudo);
+ *  - su nota está cerca de la de la campeona, y más cerca cuanto más larga es
+ *    la racha (de 1,5 puntos de margen al empezar a 0,4 a partir de 11 aciertos);
+ *  - nunca empata (al menos `minGap` de diferencia) ni repite película.
+ */
+export function pickChallenger<T extends { id: number; rating: number }>(
+  pool: T[],
+  champion: T,
+  used: Set<number>,
+  random: () => number = Math.random,
+  streak = 0,
+  minGap = 0.2,
+): T {
+  const margen = Math.max(0.4, 1.5 - 0.1 * streak);
+  const r = champion.rating;
+  const candidatas = (libres: boolean) => pool.filter((f) => f.id !== champion.id && (!libres || !used.has(f.id)) && Math.abs(f.rating - r) >= minGap - 1e-9);
+  let lista = candidatas(true);
+  if (!lista.length) lista = candidatas(false);
+  const cerca = lista.filter((f) => Math.abs(f.rating - r) <= margen + 1e-9);
+  const base = cerca.length ? cerca : lista;
+  const arriba = base.filter((f) => f.rating > r);
+  const abajo = base.filter((f) => f.rating < r);
+  const lado = !arriba.length ? abajo : !abajo.length ? arriba : random() < 0.5 ? arriba : abajo;
+  return lado[Math.floor(random() * lado.length)];
 }
 
 /**

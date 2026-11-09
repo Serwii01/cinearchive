@@ -11,6 +11,7 @@ import {
   checkOrder,
   normalize,
   matchTitles,
+  editDistance,
   pickChallenger,
   attemptsBoxes,
 } from '../src/lib/games';
@@ -98,6 +99,55 @@ describe('buscador del juego', () => {
   it('con menos de dos letras no sugiere nada', () => {
     expect(matchTitles('e', entries)).toEqual([]);
   });
+
+  const mas = [
+    ...entries,
+    { id: 4, title: 'Psicópata americano', original: 'American Psycho', aka: ['Psicópata Americano'], year: 2000 },
+    { id: 5, title: 'Spider-Man', original: 'Spider-Man', year: 2002 },
+    { id: 6, title: 'Rocky II', original: 'Rocky II', year: 1979 },
+    { id: 7, title: 'Pulp Fiction', original: 'Pulp Fiction', year: 1994 },
+    { id: 8, title: 'El señor de los anillos: la comunidad del anillo', original: 'The Lord of the Rings: The Fellowship of the Ring', aka: ['The Fellowship of the Ring'], year: 2001 },
+  ];
+  const ids = (q: string) => matchTitles(q, mas).map((e) => e.id);
+
+  it('perdona el orden de las palabras y las que faltan', () => {
+    expect(ids('wars star')).toContain(3);
+    expect(ids('señor anillos')).toContain(8);
+    expect(ids('comunidad anillo')).toContain(8);
+  });
+
+  it('vale cualquier nombre conocido de la película', () => {
+    expect(ids('american psy')).toEqual([4]);
+    expect(ids('psicopata')).toEqual([4]);
+    expect(ids('fellowship')).toEqual([8]);
+  });
+
+  it('perdona espacios, guiones y números romanos', () => {
+    expect(ids('spiderman')).toEqual([5]);
+    expect(ids('spider man')).toEqual([5]);
+    expect(ids('rocky 2')).toEqual([6]);
+  });
+
+  it('perdona alguna errata', () => {
+    expect(ids('pulp fixion')[0]).toBe(7);
+    expect(ids('amelei')[0]).toBe(2);
+    expect(ids('psicopta americano')[0]).toBe(4);
+  });
+
+  it('lo que empieza por lo escrito va antes que lo aproximado', () => {
+    const lista = [
+      { id: 1, title: 'Alien', year: 1979 },
+      { id: 2, title: 'Aliens: el regreso', year: 1986 },
+      { id: 3, title: 'Alita', year: 2019 },
+    ];
+    expect(matchTitles('alien', lista).map((e) => e.id).slice(0, 2)).toEqual([1, 2]);
+  });
+
+  it('distancia de edición con tope', () => {
+    expect(editDistance('fixion', 'fiction')).toBe(2);
+    expect(editDistance('casa', 'casa')).toBe(0);
+    expect(editDistance('a', 'abcdef', 2)).toBe(3);
+  });
 });
 
 describe('¿Cuál tiene mejor nota?', () => {
@@ -112,6 +162,35 @@ describe('¿Cuál tiene mejor nota?', () => {
     const r = pickChallenger(pool, pool[0], new Set([3]), () => 0);
     expect(r.id).toBe(4);
     for (let i = 0; i < 20; i++) expect(Math.abs(pickChallenger(pool, pool[0], new Set()).rating - 7)).toBeGreaterThanOrEqual(0.2);
+  });
+
+  // Bolsa de 3,0 a 9,0 de décima en décima.
+  const bolsa = Array.from({ length: 61 }, (_, i) => ({ id: i + 1, rating: Math.round((3 + i / 10) * 10) / 10 }));
+  const campeona = bolsa.find((f) => f.rating === 8.3)!;
+  const azar = (semilla: number) => {
+    let s = semilla;
+    return () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  };
+
+  it('con una campeona alta, la mitad de las rivales tienen más nota', () => {
+    const r = azar(7);
+    let arriba = 0;
+    for (let i = 0; i < 400; i++) if (pickChallenger(bolsa, campeona, new Set(), r).rating > 8.3) arriba++;
+    expect(arriba).toBeGreaterThan(150);
+    expect(arriba).toBeLessThan(250);
+  });
+
+  it('las notas se parecen más cuanto más larga es la racha', () => {
+    const r = azar(11);
+    for (let i = 0; i < 200; i++) {
+      expect(Math.abs(pickChallenger(bolsa, campeona, new Set(), r, 0).rating - 8.3)).toBeLessThanOrEqual(1.5 + 1e-9);
+      expect(Math.abs(pickChallenger(bolsa, campeona, new Set(), r, 20).rating - 8.3)).toBeLessThanOrEqual(0.4 + 1e-9);
+    }
+  });
+
+  it('si no queda nadie cerca, sale alguien igualmente', () => {
+    const sola = [{ id: 1, rating: 9 }, { id: 2, rating: 3 }];
+    expect(pickChallenger(sola, sola[0], new Set(), () => 0.3, 50).id).toBe(2);
   });
 });
 

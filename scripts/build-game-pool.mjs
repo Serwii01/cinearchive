@@ -3,6 +3,7 @@
  * que cada juego necesita para no tener que preguntar nada a TMDB al jugar.
  *
  *   node --env-file=.env scripts/build-game-pool.mjs
+ *   node --env-file=.env scripts/build-game-pool.mjs --refrescar   (solo títulos y sagas, mismas películas)
  *
  * POR QUÉ UNA BOLSA FIJA. Los retos diarios tienen que ser iguales para todo el
  * mundo y de películas que la gente conoce: elegirlos al azar de TMDB daría
@@ -15,21 +16,28 @@
  * «null» en TMDB): un fondo con el título escrito regalaría la respuesta.
  *
  * QUÉ SE GUARDA de cada una: títulos en los cinco idiomas (para el buscador del
- * juego y la solución), año, nota y votos, géneros, director, dos actores
+ * juego y la solución), saga, año, nota y votos, géneros, director, dos actores
  * principales (las pistas), cartel y hasta cuatro fondos.
  *
  * OJO: el orden de los retos sale de esta lista (src/lib/games.ts). Si se
  * regenera y cambia, cambian también los retos de los días que vienen; los
  * pasados no importan, porque solo se juega el de hoy.
  */
-import { writeFile, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, 'src', 'data', 'games', 'pool.json');
-const KEY = process.env.TMDB_API_KEY;
-const LANGS = ['es', 'en', 'gl', 'eu', 'ca'];
+/**
+ * --salida <ruta>: dónde escribir (por defecto, encima de la bolsa). En el VPS
+ * se escribe fuera del repositorio para no dejarle cambios: el siguiente
+ * git pull fallaría (scripts/vps/refrescar-juegos.sh).
+ */
+const iSalida = process.argv.indexOf('--salida');
+const destino = iSalida > 0 && process.argv[iSalida + 1] ? process.argv[iSalida + 1] : out;
+// Sin comillas: docker run --env-file (scripts/vps/refrescar-juegos.sh) las deja puestas.
+const KEY = process.env.TMDB_API_KEY?.trim().replace(/^(["'])(.*)\1$/, '$2');
 const GLOBALES = 1400;
 const ESPANOLAS = 200;
 
@@ -63,11 +71,40 @@ async function descubrir(filtro, cuantas) {
   return ids.slice(0, cuantas);
 }
 
-/** Título en un idioma: primero la variante de España, después cualquiera. */
-function tituloEn(translations, lang) {
-  const de = translations.filter((t) => t.iso_639_1 === lang && t.data?.title?.trim());
-  const t = de.find((x) => x.iso_3166_1 === 'ES') ?? de[0];
-  return t?.data.title.trim();
+const NO_LATINO = /[^\p{Script=Latin}\p{N}\p{P}\p{S}\s]/u;
+
+/**
+ * Títulos en los cinco idiomas, con la misma regla que src/lib/titles.ts (la de
+ * las fichas; aquí repetida porque un .mjs no puede importar el .ts):
+ *
+ *   es  España → México → otro → inglés → original
+ *   en  EE. UU. → Reino Unido → otro → original
+ *   gl, eu, ca  el suyo (solo si existe)
+ *
+ * Si la traducción de España existe pero sin título, es que allí se estrenó
+ * con el original: «American Psycho», «Spider-Man». Antes se saltaba a la de
+ * México («Psicópata americano», «El hombre araña»).
+ */
+function titulos(m) {
+  const tr = m.translations?.translations ?? [];
+  const original = m.original_title || m.title;
+  const busca = (lang, regiones, vacioEsOriginal = false) => {
+    const de = tr.filter((t) => t.iso_639_1 === lang);
+    const primera = de.find((t) => t.iso_3166_1 === regiones[0]);
+    if (vacioEsOriginal && primera && !primera.data?.title?.trim() && original && !NO_LATINO.test(original)) return original;
+    for (const t of [...regiones.map((r) => de.find((x) => x.iso_3166_1 === r)), ...de]) {
+      const v = t?.data?.title?.trim();
+      if (v) return v;
+    }
+    return m.original_language === lang ? original : undefined;
+  };
+  const en = busca('en', ['US', 'GB'], true) ?? original;
+  const res = { es: busca('es', ['ES', 'MX'], true) ?? en, en };
+  for (const l of ['gl', 'eu', 'ca']) {
+    const t = busca(l, ['ES']);
+    if (t) res[l] = t;
+  }
+  return res;
 }
 
 async function ficha(id) {
@@ -78,18 +115,11 @@ async function ficha(id) {
     .slice(0, 4)
     .map((b) => b.file_path);
   if (fondos.length < 2 || !m.release_date || !m.poster_path) return null;
-  const tr = m.translations?.translations ?? [];
-  const titles = {};
-  for (const l of LANGS) {
-    const t = tituloEn(tr, l) ?? (l === 'es' ? m.title : undefined);
-    if (t) titles[l] = t;
-  }
-  // En inglés, si no hay traducción es que el original ya es inglés.
-  if (!titles.en && m.original_language === 'en') titles.en = m.original_title;
   const dir = (m.credits?.crew ?? []).find((c) => c.job === 'Director');
   return {
     id: m.id,
-    titles,
+    titles: titulos(m),
+    collection: m.belongs_to_collection?.id ?? null,
     original: m.original_title,
     year: Number(m.release_date.slice(0, 4)),
     rating: Math.round(m.vote_average * 10) / 10,
@@ -102,7 +132,44 @@ async function ficha(id) {
   };
 }
 
+/**
+ * --refrescar: vuelve a pedir títulos y saga de las películas que YA están en
+ * la bolsa, sin añadir ni quitar ninguna ni tocar fondos, notas ni orden. Así
+ * se corrigen datos sin cambiar los retos de los días que vienen (ni el de hoy).
+ */
+async function refrescar() {
+  const actual = JSON.parse(await readFile(out, 'utf8'));
+  let i = 0;
+  let cambiados = 0;
+  const trabajar = async () => {
+    while (i < actual.films.length) {
+      const f = actual.films[i++];
+      try {
+        const m = await tmdb(`/movie/${f.id}?language=es-ES&append_to_response=translations`);
+        const titles = titulos(m);
+        const collection = m.belongs_to_collection?.id ?? null;
+        if (JSON.stringify(titles) !== JSON.stringify(f.titles)) {
+          if (titles.es !== f.titles.es) console.log(`  ${f.id}: «${f.titles.es}» → «${titles.es}»`);
+          cambiados++;
+        }
+        f.titles = titles;
+        f.collection = collection;
+      } catch (e) {
+        console.warn(`  ${f.id}: ${e.message} (se queda como estaba)`);
+      }
+      if (i % 200 === 0) console.log(`  ${i}/${actual.films.length}`);
+    }
+  };
+  await Promise.all(Array.from({ length: 6 }, trabajar));
+  // Mismas claves en el mismo orden en todas: el diff queda limpio.
+  actual.films = actual.films.map(({ id, titles, collection, ...resto }) => ({ id, titles, collection, ...resto }));
+  await writeFile(destino, JSON.stringify(actual) + '\n');
+  const sagas = actual.films.filter((f) => f.collection).length;
+  console.log(`${cambiados} con títulos distintos; ${sagas} de ${actual.films.length} son de una saga. Escrito en ${destino}`);
+}
+
 async function main() {
+  if (process.argv.includes('--refrescar')) return refrescar();
   console.log('Buscando las más votadas…');
   const globales = await descubrir('&vote_count.gte=1500', GLOBALES);
   const espanolas = await descubrir('&with_original_language=es&with_origin_country=ES&vote_count.gte=150', ESPANOLAS);
@@ -128,12 +195,12 @@ async function main() {
   // Orden estable (por id) para que el orden de los retos no dependa de qué
   // petición terminó antes.
   films.sort((a, b) => a.id - b.id);
-  await mkdir(dirname(out), { recursive: true });
+  await mkdir(dirname(destino), { recursive: true });
   await writeFile(
-    out,
+    destino,
     JSON.stringify({ note: 'Generado por scripts/build-game-pool.mjs. No editar a mano.', generated: new Date().toISOString().slice(0, 10), films }) + '\n',
   );
-  console.log(`${films.length} películas en ${out}`);
+  console.log(`${films.length} películas en ${destino}`);
 }
 
 main();
