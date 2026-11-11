@@ -12,6 +12,9 @@
     "changes": {
       "es": [
         "Nueva sección de Juegos: Fotograma (adivina la película por un detalle de su imagen, también con clásicos de Cine abierto), Cronología (ordena cinco películas por año) y ¿Cuál tiene mejor nota? Un reto nuevo cada día, gratis y sin cuenta.",
+        "Dos juegos nuevos: Reparto (adivina la película por sus actores, del sexto al protagonista) y ¿En qué año? (di cuándo se estrenaron cinco películas). Los dos con reto del día e ilimitado.",
+        "Las fichas de películas y personas cargan antes en gallego, euskera y catalán, y el servidor trabaja mucho menos cuando los buscadores las recorren.",
+        "Ocho colecciones nuevas: el Nuevo Hollywood, el nuevo cine alemán, el cine latinoamericano, la mirada iraní, el western, Hitchcock, la edad de oro del musical y el terror clásico. Ya son 20.",
         "Las fichas enseñan las reseñas de la comunidad y quién de la gente que sigues ha visto la película. Puedes dar «me gusta» a reseñas y listas, y quien las escribió recibe un aviso.",
         "El buscador separa películas, personas, artículos y usuarios en pestañas, y encuentra también directores y actores.",
         "Cine abierto crece hasta las 114 películas: 41 más, todas completas, gratis y legales.",
@@ -30,6 +33,9 @@
       ],
       "en": [
         "New Games section: Frame (guess the film from a detail of one of its images, also with Open Cinema classics), Timeline (put five films in order by year) and Which one rates higher? A new challenge every day, free and with no account.",
+        "Two new games: Cast (guess the film from its actors, from the sixth name to the lead) and What year? (say when five films came out). Both with a daily challenge and unlimited play.",
+        "Film and people pages load faster in Galician, Basque and Catalan, and the server works much less when search engines crawl them.",
+        "Eight new collections: New Hollywood, New German Cinema, Latin American cinema, the Iranian gaze, the Western, Hitchcock, the golden age of the musical and classic horror. That makes 20.",
         "Film pages show community reviews and which of the people you follow have seen the film. You can like reviews and lists, and their authors get a notification.",
         "Search splits films, people, articles and users into tabs, and also finds directors and actors.",
         "Open Cinema grows to 114 films: 41 more, all in full, free and legal.",
@@ -48,6 +54,9 @@
       ],
       "gl": [
         "Nova sección de Xogos: Fotograma (adiviña a película por un detalle da súa imaxe, tamén con clásicos de Cine aberto), Cronoloxía (ordena cinco películas por ano) e Cal ten mellor nota? Un reto novo cada día, de balde e sen conta.",
+        "Dous xogos novos: Reparto (adiviña a película polos seus actores, do sexto ao protagonista) e En que ano? (di cando se estrearon cinco películas). Os dous con reto do día e ilimitado.",
+        "As fichas de películas e persoas cargan antes en galego, éuscaro e catalán, e o servidor traballa moito menos cando os buscadores as percorren.",
+        "Oito coleccións novas: o Novo Hollywood, o novo cine alemán, o cine latinoamericano, a mirada iraniana, o western, Hitchcock, a idade de ouro do musical e o terror clásico. Xa son 20.",
         "As fichas amosan as recensións da comunidade e quen da xente que segues viu a película. Podes dar «gústame» a recensións e listas, e quen as escribiu recibe un aviso.",
         "O buscador separa películas, persoas, artigos e usuarios en lapelas, e atopa tamén directores e actores.",
         "Cine aberto medra ata as 114 películas: 41 máis, todas completas, de balde e legais.",
@@ -66,6 +75,9 @@
       ],
       "eu": [
         "Jokoen atal berria: Fotograma (asmatu filma bere irudi bateko xehetasun batetik, Zinema irekiko klasikoekin ere), Kronologia (ordenatu bost filma urteka) eta Zeinek du nota hobea? Erronka berri bat egunero, doan eta konturik gabe.",
+        "Bi joko berri: Aktoreak (asmatu filma bere aktoreen bidez, seigarrenetik protagonistara) eta Zein urtetan? (esan noiz estreinatu ziren bost filma). Biak eguneko erronkarekin eta mugagabeak.",
+        "Filmen eta pertsonen fitxak azkarrago kargatzen dira galegoz, euskaraz eta katalanez, eta zerbitzariak askoz gutxiago lan egiten du bilatzaileek arakatzen dituztenean.",
+        "Zortzi bilduma berri: Hollywood Berria, Alemaniako zinema berria, Latinoamerikako zinema, irandar begirada, westerna, Hitchcock, musikalaren urrezko aroa eta beldurrezko zinema klasikoa. Dagoeneko 20 dira.",
         "Fitxetan komunitatearen kritikak eta jarraitzen duzun jendetik nork ikusi duen filma agertzen dira. Kritikei eta zerrendei «atsegin dut» eman diezaiekezu, eta egileak abisu bat jasotzen du.",
         "Bilatzaileak filmak, pertsonak, artikuluak eta erabiltzaileak fitxatan bereizten ditu, eta zuzendariak eta aktoreak ere aurkitzen ditu.",
         "Zinema irekiak 114 film ditu orain: 41 gehiago, denak osorik, doan eta legez.",
@@ -84,6 +96,9 @@
       ],
       "ca": [
         "Nova secció de Jocs: Fotograma (endevina la pel·lícula per un detall de la seva imatge, també amb clàssics de Cinema obert), Cronologia (ordena cinc pel·lícules per any) i Quina té millor nota? Un repte nou cada dia, gratis i sense compte.",
+        "Dos jocs nous: Repartiment (endevina la pel·lícula pels seus actors, del sisè al protagonista) i En quin any? (digues quan es van estrenar cinc pel·lícules). Tots dos amb repte del dia i il·limitat.",
+        "Les fitxes de pel·lícules i persones carreguen abans en gallec, basc i català, i el servidor treballa molt menys quan els cercadors les recorren.",
+        "Vuit col·leccions noves: el Nou Hollywood, el nou cinema alemany, el cinema llatinoamericà, la mirada iraniana, el western, Hitchcock, l'edat d'or del musical i el terror clàssic. Ja en són 20.",
         "Les fitxes mostren les ressenyes de la comunitat i qui de la gent que segueixes ha vist la pel·lícula. Pots fer «m’agrada» a ressenyes i llistes, i qui les va escriure rep un avís.",
         "El cercador separa pel·lícules, persones, articles i usuaris en pestanyes, i troba també directors i actors.",
         "Cinema obert creix fins a les 114 pel·lícules: 41 més, totes completes, gratis i legals.",

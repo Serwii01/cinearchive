@@ -1,0 +1,15 @@
+---
+export const prerender = true;
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Anyo from '../../../../components/games/Anyo.astro';
+import { useTranslations, langStaticPaths, normalizeLang } from '../../../../i18n/ui';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={[t('games.anyo'), t('games.endlessTab'), t('games.title')].join(' · ')} description={t('games.anyoDesc')}>
+  <Anyo lang={lang} endless />
+</BaseLayout>

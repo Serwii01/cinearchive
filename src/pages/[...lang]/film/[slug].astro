@@ -35,6 +35,7 @@ import {
   type WatchType,
 } from '../../../lib/tmdb';
 import { genreName } from '../../../data/genres';
+import { formatUsd } from '../../../lib/format';
 import { WATCH_REGIONS, countryName } from '../../../data/countries';
 import { db } from '../../../db/client';
 import { userFilms } from '../../../db/schema';
@@ -169,14 +170,7 @@ const regions = WATCH_REGIONS.map((code) => ({ code, name: countryName(code, lan
 
 
 // Datos curiosos: finanzas (TMDB), taquilla y premios (OMDb), productoras.
-const fmtMoney = (n?: number) =>
-  n && n > 0
-    ? new Intl.NumberFormat(locales[lang], {
-        style: 'currency',
-        currency: 'USD',
-        maximumFractionDigits: 0,
-      }).format(n)
-    : null;
+const fmtMoney = (n?: number) => formatUsd(n, locales[lang]);
 const cleanOmdb = (v?: string) => (v && v !== 'N/A' ? v : null);
 // En gallego, euskera y catalán, una ficha sin sinopsis traducida es la del
 // castellano con otra etiqueta: se sirve igual a quien entra, pero no se

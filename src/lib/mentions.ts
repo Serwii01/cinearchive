@@ -12,7 +12,7 @@ import { localizePath, type Lang } from '../i18n/ui';
  * séptimo sello» por una búsqueda no se enteraba de que hay una colección
  * entera sobre Bergman. Esto es el enlace de vuelta.
  *
- * Es una pasada sobre tres listas cortas (12 colecciones, 2 dosieres, 15
+ * Es una pasada sobre tres listas cortas (20 colecciones, 2 dosieres, 15
  * artículos): no hace falta índice ni caché.
  */
 export type MentionKind = 'collection' | 'dossier' | 'article';

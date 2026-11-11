@@ -2,13 +2,15 @@
  * Capa de acceso a personas (SOLO SERVIDOR): envuelve getPerson de TMDB con una
  * caché en memoria por (idioma, id), igual que recs.ts/stats.ts. No expone claves.
  */
-import { getPerson, posterUrl, type TmdbPerson, type TmdbPersonCredit } from './tmdb';
+import { getPerson, posterUrl, toTmdbLang, type TmdbPerson, type TmdbPersonCredit } from './tmdb';
 import { registerCache } from './cache-registry';
 import { latinNames } from './personnames';
 
 const TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 días
 const MAX = 500;
 const cache = new Map<string, { at: number; data: TmdbPerson }>();
+/** Peticiones en marcha: dos visitas a la vez a la misma persona hacen una sola a TMDB. */
+const enCurso = new Map<string, Promise<TmdbPerson>>();
 
 registerCache({
   id: 'people',
@@ -20,10 +22,22 @@ registerCache({
 });
 
 export async function getPersonCached(id: number, locale: string): Promise<TmdbPerson> {
-  const key = `${locale}:${id}`;
+  // La clave es el idioma que se pide a TMDB, no el de la web: castellano,
+  // gallego, euskera y catalán piden lo mismo (es-ES), y con la clave por idioma
+  // de la web un rastreador que abría a alguien en los cinco idiomas provocaba
+  // cinco peticiones idénticas, con toda su filmografía (cientos de créditos).
+  const key = `${toTmdbLang(locale)}:${id}`;
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < TTL_MS) return hit.data;
+  let pendiente = enCurso.get(key);
+  if (!pendiente) {
+    pendiente = cargaPersona(id, locale, key).finally(() => enCurso.delete(key));
+    enCurso.set(key, pendiente);
+  }
+  return pendiente;
+}
 
+async function cargaPersona(id: number, locale: string, key: string): Promise<TmdbPerson> {
   const data = await getPerson(id, locale);
   // «芥川龍之介» → Ryunosuke Akutagawa, con el original debajo del título.
   const latin = (await latinNames([data], 1)).get(id);

@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 
 vi.mock('../src/db/client', () => ({ db: {} }));
-const { hayQueGuardar, wikidataAlDia } = await import('../src/lib/films');
+const { hayQueGuardar, wikidataAlDia, sirveLaCache } = await import('../src/lib/films');
+const { slimMovie, nativeTranslations, localizeMovie } = await import('../src/lib/tmdb');
 
 const HORA = 60 * 60 * 1000;
 const DIA = 24 * HORA;
@@ -57,6 +58,48 @@ describe('localizaciones de Wikidata', () => {
     const ruta = readFileSync('src/pages/api/films/[id]/notes.astro', 'utf8');
     expect(ruta).toContain('getOmdbFresh(');
     expect(ruta).toContain('rateLimit(');
+  });
+});
+
+describe('films_cache: cuándo se pinta la ficha sin pedirla a TMDB', () => {
+  const titles = { es: 'El chico', en: 'The Kid' };
+  const tr = [{ iso_639_1: 'gl', iso_3166_1: 'ES', data: { title: 'O rapaz', overview: 'Sinopse en galego.' } }];
+  const fila = (lang: 'es-ES' | 'en-US' | undefined, edad: number, conTr = true) => ({
+    fetchedAt: hace(edad),
+    titles,
+    tmdb: { id: 1, title: 'El chico', overview: 'Sinopsis.', ...(lang ? { _lang: lang } : {}), ...(conTr ? { _tr: tr } : {}) },
+  });
+
+  it('la de castellano sirve al castellano, gallego, euskera y catalán; no al inglés', () => {
+    for (const l of ['es', 'gl', 'eu', 'ca']) expect(sirveLaCache(fila('es-ES', HORA), l, ahora)).toBe(true);
+    expect(sirveLaCache(fila('es-ES', HORA), 'en', ahora)).toBe(false);
+    expect(sirveLaCache(fila('en-US', HORA), 'en', ahora)).toBe(true);
+    expect(sirveLaCache(fila('en-US', HORA), 'gl', ahora)).toBe(false);
+  });
+
+  it('no sirve si tiene más de un día, si es de antes (sin idioma o sin traducciones) o sin títulos', () => {
+    expect(sirveLaCache(fila('es-ES', DIA + HORA), 'es', ahora)).toBe(false);
+    expect(sirveLaCache(fila(undefined, HORA), 'es', ahora)).toBe(false);
+    expect(sirveLaCache(fila('es-ES', HORA, false), 'gl', ahora)).toBe(false);
+    expect(sirveLaCache({ ...fila('es-ES', HORA), titles: null }, 'es', ahora)).toBe(false);
+  });
+
+  it('lo guardado lleva idioma y traducciones, y en gallego sale traducido', () => {
+    const guardada = slimMovie({
+      id: 1, title: 'El chico', original_title: 'The Kid', overview: 'Sinopsis.', runtime: 68,
+      _lang: 'es-ES', _tr: nativeTranslations([...tr, { iso_639_1: 'fr', iso_3166_1: 'FR', data: { title: 'Le Gosse' } }]),
+    } as never);
+    expect(guardada._lang).toBe('es-ES');
+    expect(guardada._tr?.map((t) => t.iso_639_1)).toEqual(['gl']);
+    const gl = localizeMovie(guardada, guardada._tr ?? [], 'gl');
+    expect(gl.title).toBe('O rapaz');
+    expect(gl.overview).toBe('Sinopse en galego.');
+    expect(gl.translated).toBe(true);
+  });
+
+  it('la caché de personas comparte la entrada entre los idiomas que piden lo mismo a TMDB', () => {
+    const src = readFileSync('src/lib/people.ts', 'utf8');
+    expect(src).toContain("const key = `${toTmdbLang(locale)}:${id}`");
   });
 });
 

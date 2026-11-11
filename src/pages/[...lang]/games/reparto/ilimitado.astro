@@ -1,0 +1,15 @@
+---
+export const prerender = true;
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Reparto from '../../../../components/games/Reparto.astro';
+import { useTranslations, langStaticPaths, normalizeLang } from '../../../../i18n/ui';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={[t('games.reparto'), t('games.endlessTab'), t('games.title')].join(' · ')} description={t('games.repartoDesc')}>
+  <Reparto lang={lang} endless />
+</BaseLayout>

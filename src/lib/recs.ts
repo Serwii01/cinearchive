@@ -380,7 +380,7 @@ async function computeRecommendations(userId: string, locale: string): Promise<R
   })();
 
   // 3bis) Las colecciones de la casa. Si lo que te gustó está en una de las
-  //       doce colecciones, el resto de esa colección es la mejor
+  //       veinte colecciones, el resto de esa colección es la mejor
   //       recomendación que puede dar esta web: la eligió una persona, no un
   //       algoritmo de TMDB, y además lleva a una página nuestra. Se piden
   //       pocas y con tope, que cada una cuesta una ficha.

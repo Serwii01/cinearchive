@@ -19,7 +19,7 @@ import { GENRES } from '../data/genres';
 import { pdFilms, pdTitle, type PdFilm } from './pdfilms';
 import { filmSlug } from './slug';
 import { localizePath, type Lang } from '../i18n/ui';
-import { dailyIndex, focusPoint, hashString, normalize, permutation, pickChronology, CHRONO_SIZE, type TitleEntry } from './games';
+import { dailyIndex, focusPoint, hashString, normalize, permutation, pickChronology, CHRONO_SIZE, ANYO_SIZE, MAX_ATTEMPTS, type TitleEntry } from './games';
 export { SEEN_MAX } from './games';
 
 export interface PoolFilm {
@@ -32,6 +32,8 @@ export interface PoolFilm {
   genres: number[];
   director: string | null;
   cast: string[];
+  /** Los seis primeros del reparto, el protagonista primero (juego Reparto). */
+  reparto?: string[];
   poster: string;
   backdrops: string[];
   /** Saga de TMDB (belongs_to_collection), para avisar en Fotograma de que se va bien. */
@@ -202,9 +204,7 @@ export function fotoCheck(mode: FotoMode, ref: Ref, guess: string | number): boo
  */
 export function fotoSameSaga(mode: FotoMode, ref: Ref, guess: string | number): boolean {
   const k = fotoAnswerKey(mode, ref);
-  if (!k.pool?.collection) return false;
-  const g = poolFilm(Number(guess));
-  return !!g && g.id !== k.pool.id && g.collection === k.pool.collection;
+  return !!k.pool && mismaSaga(k.pool, guess);
 }
 
 export interface FotoAnswer {
@@ -221,8 +221,19 @@ export function fotoAnswer(mode: FotoMode, ref: Ref, lang: Lang): FotoAnswer {
   if (k.pd) {
     return { title: pdTitle(k.pd, lang), year: k.pd.year, poster: `/cinema/${k.pd.id}.webp`, href: localizePath(lang, `cinema/${k.pd.id}`), watchFree: true };
   }
-  const f = k.pool!;
+  return poolAnswer(k.pool!, lang);
+}
+
+/** La solución de un reto con una película de la bolsa: título, año, cartel y enlace a su ficha. */
+export function poolAnswer(f: PoolFilm, lang: Lang): FotoAnswer {
   return { title: poolTitle(f, lang), year: f.year, poster: poster(f.poster), href: localizePath(lang, `film/${filmSlug(f.id, poolTitle(f, lang))}`), watchFree: false };
+}
+
+/** ¿Es `guess` otra película de la misma saga que `f`? */
+function mismaSaga(f: PoolFilm, guess: string | number): boolean {
+  if (!f.collection) return false;
+  const g = poolFilm(Number(guess));
+  return !!g && g.id !== f.id && g.collection === f.collection;
 }
 
 /** Los otros nombres de una película, sin repetir el que se enseña ni el original. */
@@ -314,3 +325,57 @@ export function notaVerify(token: string, a: number, b: number, now = Date.now()
 }
 
 export const ratingCard = (f: PoolFilm, lang: Lang) => ({ id: f.id, title: poolTitle(f, lang), year: f.year, poster: poster(f.poster), director: f.director });
+
+/* ------------------------------------------------------------------ *
+ * Reparto
+ * ------------------------------------------------------------------ */
+
+/** Nombres en alfabeto latino: «松田洋治» no es una pista que se pueda leer. */
+const LATINO = /^[\p{Script=Latin}\p{N}\s.'’\-()&,]+$/u;
+/**
+ * Películas de Reparto: con seis actores con nombre legible, y sin animación
+ * ni documentales (voces y gente haciendo de sí misma no son un reparto que
+ * se pueda reconocer).
+ */
+export const REPARTO: PoolFilm[] = POOL.filter(
+  (f) => (f.reparto?.length ?? 0) >= MAX_ATTEMPTS && f.reparto!.every((n) => LATINO.test(n)) && !f.genres.includes(16) && !f.genres.includes(99),
+);
+const repartoIndice = (ref: Ref) => indice(ref, REPARTO.length, 'reparto');
+const repartoFilm = (ref: Ref) => REPARTO[repartoIndice(ref)];
+
+export interface RepartoPuzzle {
+  day?: number;
+  seed?: number;
+  /** Del sexto del reparto al protagonista: uno a la vista y otro más por cada fallo. */
+  cast: string[];
+}
+
+export function repartoPuzzle(ref: Ref): RepartoPuzzle {
+  return { ...ref, cast: repartoFilm(ref).reparto!.slice(0, MAX_ATTEMPTS).reverse() };
+}
+export const repartoCheck = (ref: Ref, guess: number): boolean => repartoFilm(ref).id === guess;
+export const repartoSameSaga = (ref: Ref, guess: number): boolean => mismaSaga(repartoFilm(ref), guess);
+export const repartoAnswer = (ref: Ref, lang: Lang): FotoAnswer => poolAnswer(repartoFilm(ref), lang);
+
+/** Semilla nueva de Reparto ilimitado que no repita una película ya jugada (como freshFotoSeed). */
+export function freshRepartoSeed(seen: number[]): number {
+  const vistas = new Set(seen.slice(-Math.floor(REPARTO.length * 0.8)).map((seed) => repartoIndice({ seed })));
+  let seed = newSeed();
+  for (let intento = 0; intento < 60 && vistas.has(repartoIndice({ seed })); intento++) seed = newSeed();
+  return seed;
+}
+
+/* ------------------------------------------------------------------ *
+ * ¿En qué año?
+ * ------------------------------------------------------------------ */
+
+/**
+ * Las cinco de «¿En qué año?», de años distintos. La sal es otra que la de
+ * Cronología: si no, el mismo día saldrían las mismas cinco películas.
+ */
+export function anyoFilms(ref: Ref): PoolFilm[] {
+  return pickChronology(POOL, `anyo:${'day' in ref ? ref.day : clave(ref)}`, ANYO_SIZE, 1);
+}
+/** Lo que ve el jugador: sin el año. */
+// El director solo si se puede leer: «吴宇森» no ayuda a nadie a situar la película.
+export const anyoCard = (f: PoolFilm, lang: Lang, i: number) => ({ key: i, title: poolTitle(f, lang), poster: poster(f.poster), director: f.director && LATINO.test(f.director) ? f.director : null });

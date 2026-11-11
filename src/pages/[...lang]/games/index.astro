@@ -29,6 +29,20 @@ const juegos = [
     href: localizePath(lang, 'games/cronologia'),
     modos: [{ label: t('games.endlessTab'), href: localizePath(lang, 'games/cronologia/ilimitado') }],
   },
+  {
+    kicker: t('games.daily'),
+    title: t('games.reparto'),
+    desc: t('games.repartoDesc'),
+    href: localizePath(lang, 'games/reparto'),
+    modos: [{ label: t('games.endlessTab'), href: localizePath(lang, 'games/reparto/ilimitado') }],
+  },
+  {
+    kicker: t('games.daily'),
+    title: t('games.anyo'),
+    desc: t('games.anyoDesc'),
+    href: localizePath(lang, 'games/anyo'),
+    modos: [{ label: t('games.endlessTab'), href: localizePath(lang, 'games/anyo/ilimitado') }],
+  },
   { kicker: t('games.endlessTab'), title: t('games.nota'), desc: t('games.notaDesc'), href: localizePath(lang, 'games/nota'), modos: [] },
 ];
 ---
@@ -41,7 +55,7 @@ const juegos = [
       <p class="mt-5 max-w-2xl text-body-lg text-charcoal">{t('games.intro')} {t('games.endlessDesc')}</p>
     </header>
 
-    <ul class="mt-10 grid ruled grid-cols-1 border border-ink md:grid-cols-3">
+    <ul class="mt-10 grid ruled grid-cols-1 border border-ink md:grid-cols-2 lg:grid-cols-3">
       {juegos.map((j) => (
         <li class="flex flex-col bg-surface">
           <a href={j.href} class="group flex flex-1 flex-col gap-3 p-6 no-underline transition-colors hover:bg-ink hover:text-white">

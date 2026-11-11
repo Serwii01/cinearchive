@@ -8,7 +8,12 @@ import { db } from '../db/client';
 import { filmsCache } from '../db/schema';
 import {
   getMovie,
+  getMovieBase,
   getTranslations,
+  nativeLang,
+  nativeTranslations,
+  localizeMovie,
+  toTmdbLang,
   director,
   posterUrl, posterSrcset,
   extractWatchProviders,
@@ -71,15 +76,59 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
     .where(eq(filmsCache.tmdbId, tmdbId))
     .limit(1);
 
+  const native = nativeLang(locale);
+
+  // Lo que no depende de dónde salga la ficha (caché o TMDB).
+  const resto = (tmdb: TmdbMovie, providers: Record<string, WatchAvailability>, titles: Titles | null): FilmDetail => {
+    // OMDb (notas de IMDb, RT y Metacritic, premios y taquilla) tampoco se pide
+    // aquí, por lo mismo que Wikidata: da 1.000 consultas al día y los robots las
+    // gastaban abriendo fichas sueltas. Se lee lo guardado y, si falta o caducó,
+    // lo pide el navegador (getOmdbFresh, por /api/films/[id]/notes).
+    const omdb = (cached?.omdb as OmdbData | null) ?? null;
+    // Wikidata (localizaciones) ya NO se pide aquí: lo pide el navegador cuando el
+    // visitante llega a esa parte de la ficha (getFilmLocationsFresh, por
+    // /api/films/[id]/locations). Los rastreadores abrían unas 200.000 fichas al
+    // día y cada una era una consulta al servicio público de Wikidata; como no
+    // ejecutan JavaScript, así dejan de provocarlas. Aquí solo se lee lo guardado.
+    const guardado = (cached?.wikidata as FilmLocations | null) ?? null;
+    // Lo guardado antes de que hubiera coordenadas es solo una lista de nombres:
+    // no sirve para el mapa, y cuenta como pendiente.
+    const locations = esFormatoActual(guardado) ? guardado : null;
+    const imdb = tmdb.imdb_id;
+    const locationsPending = !!imdb && !wikidataAlDia(locations, cached?.wikidataFetchedAt ?? null);
+    // Sin omdb_fetched_at (filas de antes del 8-11-2026) cuenta como caducada: su
+    // fetchedAt se renueva solo y no dice cuándo se pidieron las notas.
+    const omdbPending = !!imdb && !omdbAlDia(omdb, cached?.omdbFetchedAt ?? null);
+    return { tmdb, omdb, omdbPending, providers, locations, locationsPending, titles };
+  };
+
+  // Ficha guardada hace menos de un día y en el idioma base que toca: se pinta
+  // de ahí, sin TMDB. Los rastreadores abren cada película en los cinco idiomas
+  // y cada vez se pedía a TMDB la ficha entera (~100 kB de JSON que leer, más
+  // las traducciones y los nombres latinos): la mayor parte de la CPU de las
+  // fichas se iba en eso. Castellano, gallego, euskera y catalán comparten la
+  // ficha en castellano; el inglés tiene la suya.
+  if (cached && sirveLaCache(cached, locale)) {
+    const base = cached.tmdb as TmdbMovie;
+    const tmdb = native ? localizeMovie(base, base._tr ?? [], native) : base;
+    return resto(tmdb, (cached.providers as Record<string, WatchAvailability> | null) ?? {}, cached.titles as Titles | null);
+  }
+
   // TMDB es generoso: pedimos fresco (texto en el idioma correcto) y, si falla,
   // caemos a la cache para no romper la página.
+  // Las traducciones van a la vez que la ficha: de ellas salen los títulos en
+  // los cinco idiomas y lo que se guarda para gallego, euskera y catalán.
+  const pideTraducciones = getTranslations(tmdbId).catch(() => null);
   let tmdb: TmdbMovie | undefined;
+  let fallo = false;
   try {
-    tmdb = await getMovie(tmdbId, locale);
+    tmdb = await getMovieBase(tmdbId, locale);
   } catch {
+    fallo = true;
     tmdb = cached?.tmdb as TmdbMovie | undefined;
   }
   if (!tmdb) throw new Error(`No se pudo obtener la película ${tmdbId}.`);
+  const translations = await pideTraducciones;
 
   // Dónde ver: viene incrustado en la respuesta de TMDB que acabamos de pedir,
   // así que siempre está fresco y no gasta ninguna cuota. extractWatchProviders
@@ -92,42 +141,26 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
     providers = cached.providers as Record<string, WatchAvailability>;
   }
 
-  // OMDb (notas de IMDb, RT y Metacritic, premios y taquilla) tampoco se pide
-  // aquí, por lo mismo que Wikidata: da 1.000 consultas al día y los robots las
-  // gastaban abriendo fichas sueltas. Se lee lo guardado y, si falta o caducó,
-  // lo pide el navegador (getOmdbFresh, por /api/films/[id]/notes).
-  const omdb = (cached?.omdb as OmdbData | null) ?? null;
+  const tituloGuardado = (cached?.titles as Titles | null) ?? null;
+  // Sin TMDB (falló) se sirve lo guardado tal cual, traducido si se puede.
+  if (fallo) return resto(native ? localizeMovie(tmdb, translations ?? tmdb._tr ?? [], native) : tmdb, providers, tituloGuardado);
 
-  // Wikidata (localizaciones) ya NO se pide aquí: lo pide el navegador cuando el
-  // visitante llega a esa parte de la ficha (getFilmLocationsFresh, por
-  // /api/films/[id]/locations). Los rastreadores abrían unas 200.000 fichas al
-  // día y cada una era una consulta al servicio público de Wikidata; como no
-  // ejecutan JavaScript, así dejan de provocarlas. Aquí solo se lee lo guardado.
-  const guardado = (cached?.wikidata as FilmLocations | null) ?? null;
-  // Lo guardado antes de que hubiera coordenadas es solo una lista de nombres:
-  // no sirve para el mapa, y cuenta como pendiente.
-  const locations = esFormatoActual(guardado) ? guardado : null;
-  const imdb = tmdb.imdb_id;
-  const locationsPending = !!imdb && !wikidataAlDia(locations, cached?.wikidataFetchedAt ?? null);
-  // Sin omdb_fetched_at (filas de antes del 8-11-2026) cuenta como caducada: su
-  // fetchedAt se renueva solo y no dice cuándo se pidieron las notas.
-  const omdbPending = !!imdb && !omdbAlDia(omdb, cached?.omdbFetchedAt ?? null);
+  // El reparto y la dirección en alfabeto latino («中井朝一» → Asakazu Nakai),
+  // que se guarda así en la caché, de donde leen las listas.
+  const latin = await latinizeMovie(tmdb);
+  // Si fallan las traducciones: mejor sin títulos nuevos que sin ficha.
+  const titles = translations ? titlesFrom(latin, translations) : tituloGuardado;
 
-  // Las dos cosas que faltan solo dependen de la ficha de TMDB, así que van a
-  // la vez: el reparto y la dirección en alfabeto latino («中井朝一» → Asakazu
-  // Nakai), que se guarda así en la caché, de donde leen las listas, y los títulos.
-  const [latin, titulosNuevos] = await Promise.all([latinizeMovie(tmdb), titlesOf(tmdb)]);
-  tmdb = latin;
-
-  // A la caché va la ficha PODADA (solo lo que la web lee: ver slimMovie); la
-  // página recibe la completa que acabamos de pedir. Si TMDB falla y se sirve
-  // desde caché, la podada tiene todo lo que la ficha necesita.
-  const guardar = slimMovie(tmdb);
-  const titles = titulosNuevos ?? (cached?.titles as Titles | null) ?? null;
-  // Se reescribe la fila solo si hace falta: si no estaba, si hay notas nuevas,
-  // si cambian los títulos o si tiene más de un día (para que «dónde ver» y la
-  // ficha guardada no se queden viejos). Antes se reescribía en cada carga.
-  if (hayQueGuardar(cached, { omdbNueva: false, titles })) {
+  // A la caché va la ficha PODADA (solo lo que la web lee: ver slimMovie), sin
+  // traducir, con su idioma y las traducciones; la página recibe la completa.
+  const guardar = slimMovie({ ...latin, _lang: toTmdbLang(locale), ...(translations ? { _tr: nativeTranslations(translations) } : {}) });
+  // Se reescribe la fila solo si hace falta: si no estaba, si cambian los
+  // títulos, si tiene más de un día (para que «dónde ver» y la ficha guardada
+  // no se queden viejos) o si le faltan el idioma y las traducciones. Si estaba
+  // en inglés, la de castellano la sustituye: sirve a cuatro idiomas.
+  const previa = cached?.tmdb as TmdbMovie | undefined;
+  const mejora = !!translations && (!previa?._lang || !previa._tr || (previa._lang !== guardar._lang && guardar._lang === 'es-ES'));
+  if (mejora || hayQueGuardar(cached, { omdbNueva: false, titles })) {
     await db
       .insert(filmsCache)
       .values({ tmdbId, tmdb: guardar, providers, titles, fetchedAt: new Date() })
@@ -139,7 +172,22 @@ async function loadFilm(tmdbId: number, locale: string): Promise<FilmDetail> {
       });
   }
 
-  return { tmdb, omdb, omdbPending, providers, locations, locationsPending, titles };
+  return resto(native ? localizeMovie(latin, translations ?? [], native) : latin, providers, titles);
+}
+
+/**
+ * ¿Se puede pintar la ficha desde films_cache sin pedirla a TMDB? Si se guardó
+ * hace menos de un día, en el idioma base de `locale`, con sus títulos y con
+ * las traducciones (que hacen falta en gallego, euskera y catalán). Pura.
+ */
+export function sirveLaCache(
+  cached: { fetchedAt: Date | string; titles?: unknown; tmdb: unknown },
+  locale: string,
+  ahora = Date.now(),
+): boolean {
+  const t = cached.tmdb as TmdbMovie | null;
+  if (!t || !cached.titles || t._lang !== toTmdbLang(locale) || !Array.isArray(t._tr)) return false;
+  return ahora - new Date(cached.fetchedAt).getTime() < REESCRIBIR_MS;
 }
 
 /** Más de esto sin reescribir, y la fila se renueva aunque no cambie nada. */

@@ -147,7 +147,8 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
 </section>
 
 <script>
-  import { matchTitles, attemptsBoxes, MAX_ATTEMPTS, ZOOM_LEVELS, SEEN_MAX, type TitleEntry } from '../../lib/games';
+  import { attemptsBoxes, MAX_ATTEMPTS, ZOOM_LEVELS, SEEN_MAX, type TitleEntry } from '../../lib/games';
+  import { guessBox } from '../../lib/ui/guessbox';
 
   type Hint = { k: string; v: string };
   type Puzzle = { mode: string; day?: number; seed?: number; image: string; focus: { x: number; y: number }; hints: Hint[] };
@@ -191,9 +192,6 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
     let puzzle: Puzzle;
     let state: State = vacio();
     let stateKey = '';
-    let titles: TitleEntry[] | null = null;
-    let opciones: TitleEntry[] = [];
-    let activa = -1;
     let ocupado = false;
 
     const fallos = () => state.guesses.length;
@@ -309,8 +307,7 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
           cuentaPartida();
         }
         persiste();
-        q.value = '';
-        cierraLista();
+        caja.clear();
         pinta();
         if (state.done) {
           $('[data-result]').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -326,105 +323,8 @@ const tab = (activo: boolean, i: number) => ['label px-4 py-2 no-underline', i >
       }
     }
 
-    // --- Buscador del juego (combobox accesible) ---
-    async function cargaTitulos() {
-      if (titles) return;
-      try {
-        const r = await fetch(`/api/games/titles?mode=${mode}&lang=${lang}`);
-        const rows = (await r.json()) as [string | number, string, string, number, string[]?][];
-        titles = rows.map(([id, title, original, year, aka]) => ({ id, title, original: original || undefined, aka, year }));
-      } catch {
-        msg.textContent = T['games.error'];
-      }
-    }
-    function cierraLista() {
-      list.hidden = true;
-      q.setAttribute('aria-expanded', 'false');
-      q.removeAttribute('aria-activedescendant');
-      opciones = [];
-      activa = -1;
-    }
-    function pintaLista() {
-      list.replaceChildren(
-        ...opciones.map((o, i) => {
-          const li = document.createElement('li');
-          li.id = `${list.id}-${i}`;
-          li.setAttribute('role', 'option');
-          li.setAttribute('aria-selected', String(i === activa));
-          li.className = `cursor-pointer border-b border-ink/20 px-3 py-2 text-body-md ${i === activa ? 'bg-ink text-white' : 'text-ink hover:bg-film-white'}`;
-          li.textContent = `${o.title} (${o.year})`;
-          // pointerdown y no click: el click llega después del blur del campo, que
-          // cerraba la lista antes de que el toque llegase a la opción (móviles).
-          li.addEventListener('pointerdown', (e) => {
-            e.preventDefault();
-            void intenta(o);
-          });
-          return li;
-        }),
-      );
-      if (!opciones.length && q.value.trim().length >= 2) {
-        const li = document.createElement('li');
-        li.className = 'px-3 py-2 font-mono text-meta-data text-muted';
-        li.textContent = T['games.noMatches'];
-        list.append(li);
-      }
-      const abierta = q.value.trim().length >= 2;
-      list.hidden = !abierta;
-      q.setAttribute('aria-expanded', String(abierta));
-      if (activa >= 0) {
-        q.setAttribute('aria-activedescendant', `${list.id}-${activa}`);
-        list.children[activa]?.scrollIntoView({ block: 'nearest' });
-      } else q.removeAttribute('aria-activedescendant');
-    }
-    q.addEventListener('focus', () => void cargaTitulos());
-    q.addEventListener('input', async () => {
-      await cargaTitulos();
-      opciones = matchTitles(q.value, titles ?? []);
-      activa = opciones.length ? 0 : -1;
-      pintaLista();
-    });
-    q.addEventListener('keydown', (e) => {
-      if (list.hidden) {
-        // Flecha abajo vuelve a abrir la lista si se había cerrado (Esc o al salir del campo).
-        if (e.key === 'ArrowDown' && q.value.trim().length >= 2 && titles) {
-          e.preventDefault();
-          opciones = matchTitles(q.value, titles);
-          activa = opciones.length ? 0 : -1;
-          pintaLista();
-        }
-        return;
-      }
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        activa = Math.min(opciones.length - 1, activa + 1);
-        pintaLista();
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        activa = Math.max(0, activa - 1);
-        pintaLista();
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        cierraLista();
-      }
-    });
-    q.addEventListener('blur', () => setTimeout(() => (list.hidden = true), 150));
-    /**
-     * Intro (o «Adivinar») prueba la opción marcada. Antes no hacía nada si se
-     * pulsaba antes de que llegasen los títulos o con la lista cerrada (tras
-     * salir del campo): ahora busca en ese momento y prueba la primera.
-     */
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (q.value.trim().length < 2) return;
-      if (list.hidden || activa < 0) {
-        await cargaTitulos();
-        opciones = matchTitles(q.value, titles ?? []);
-        activa = opciones.length ? 0 : -1;
-      }
-      const o = opciones[activa];
-      if (o) void intenta(o);
-      else msg.textContent = T['games.noMatches'];
-    });
+    // --- Buscador del juego (combobox accesible, compartido con Reparto) ---
+    const caja = guessBox({ form, q, list, msg, mode, lang, T, onPick: (o) => void intenta(o) });
     $('[data-skip]').addEventListener('click', () => void intenta(null));
 
     // --- Compartir ---

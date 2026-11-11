@@ -7,7 +7,8 @@
 #
 # Mismas películas, mismo orden, mismos fondos y notas: los retos de hoy y de
 # los días siguientes no cambian. Solo títulos (los de España, no los de
-# México) y la saga de cada película (el aviso «es de la misma saga»).
+# México), la saga de cada película (el aviso «es de la misma saga») y los
+# seis primeros del reparto (el juego Reparto).
 #
 # No toca el repositorio del VPS (un cambio sin commit haría fallar el
 # siguiente git pull): deja el resultado en /tmp/pool.json. Después, desde el

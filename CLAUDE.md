@@ -21,7 +21,7 @@ filmoteca sobre TMDB, palmarés, cuentas de usuario y recomendaciones. Producci�
 - `src/i18n/ui.ts`: diccionario de la interfaz en los 5 idiomas.
 - `src/middleware.ts`: carga la sesión y protege las rutas privadas.
 - `scripts/`: generadores que se ejecutan a mano, no en runtime (`fetch-*`, `build-*`, `migrate.mjs`).
-- Juegos (`/games`): páginas estáticas que piden el reto a `/api/games/*`; lógica en `src/lib/games.ts` y `src/lib/gamepool.ts`. Datos en `src/data/games/`: `pool.json` (de `scripts/build-game-pool.mjs`; regenerarlo cambia los retos de los días siguientes; con `--refrescar` solo se ponen al día títulos y sagas, sin cambiar retos, y `scripts/vps/refrescar-juegos.sh` lo hace en el VPS con su .env) y `clasicos.json` (de `scripts/build-game-frames.mjs`, revisar la hoja de contactos; los fotogramas llevan nombres al azar para no delatar la solución).
+- Juegos (`/games`): páginas estáticas que piden el reto a `/api/games/*`; lógica en `src/lib/games.ts` y `src/lib/gamepool.ts`. Datos en `src/data/games/`: `pool.json` (de `scripts/build-game-pool.mjs`; regenerarlo cambia los retos de los días siguientes; con `--refrescar` solo se ponen al día títulos, sagas y reparto, sin cambiar retos, y `scripts/vps/refrescar-juegos.sh` lo hace en el VPS con su .env) y `clasicos.json` (de `scripts/build-game-frames.mjs`, revisar la hoja de contactos; los fotogramas llevan nombres al azar para no delatar la solución).
 - `integrations/sw-version.mjs`: en cada build calcula la versión de caché del service worker (PWA) a partir del contenido.
 
 ## Comandos

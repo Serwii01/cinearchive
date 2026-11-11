@@ -1,5 +1,5 @@
 {
-  "note": "Dosieres: colecciones temáticas curadas que enlazan a fichas. tmdbIds tomados del catálogo verificado de films.json.",
+  "note": "Colecciones temáticas curadas que enlazan a fichas. Los tmdbIds pueden ser de cualquier película de TMDB (las fichas se piden y se cachean), comprobados uno a uno con su director y su año.",
   "items": [
     {
       "slug": "cine-japones",
@@ -326,6 +326,239 @@
         "/uu6RaEAfkIQaolf20axWaRU4h3w.jpg",
         "/xTPa9c7Bgdq1BlZee24QeIx0jyR.jpg",
         "/2WvrGAnKtHrb20nHLd38RyhIj0Q.jpg"
+      ]
+    },
+    {
+      "slug": "nuevo-hollywood",
+      "title_es": "El Nuevo Hollywood",
+      "title_en": "New Hollywood",
+      "blurb_es": "Cuando los estudios perdieron el rumbo y una generación de cineastas tomó el mando: violencia, desencanto y la América que no salía en los carteles.",
+      "blurb_en": "When the studios lost their way and a generation of filmmakers took over: violence, disillusion and the America that never made the posters.",
+      "tmdbIds": [
+        475,
+        26617,
+        238,
+        3133,
+        592,
+        829,
+        3121,
+        103
+      ],
+      "title_gl": "O Novo Hollywood",
+      "title_eu": "Hollywood Berria",
+      "title_ca": "El Nou Hollywood",
+      "blurb_gl": "Cando os estudos perderon o rumbo e unha xeración de cineastas tomou o mando: violencia, desencanto e a América que non saía nos carteis.",
+      "blurb_eu": "Estudioek norabidea galdu eta zinegile belaunaldi batek agintea hartu zuenean: indarkeria, desengainua eta karteletan agertzen ez zen Amerika.",
+      "blurb_ca": "Quan els estudis van perdre el rumb i una generació de cineastes va prendre el comandament: violència, desencís i l'Amèrica que no sortia als cartells.",
+      "posters": [
+        "/jtDgrTlHkGlO3ZRWQfzErafv8ei.jpg",
+        "/gsEPayncbQETdSG3DPHivtATNhg.jpg",
+        "/5HlLUsmsv60cZVTzVns9ICZD6zU.jpg",
+        "/kzsNBEiSN9tciZCTNMeS91s2Gdv.jpg"
+      ]
+    },
+    {
+      "slug": "nuevo-cine-aleman",
+      "title_es": "Nuevo cine alemán",
+      "title_en": "New German Cinema",
+      "blurb_es": "Fassbinder, Herzog y Wenders: los hijos de la posguerra que rehicieron el cine de un país sin padres ni tradición en la que mirarse.",
+      "blurb_en": "Fassbinder, Herzog and Wenders: the children of the postwar years who rebuilt a country's cinema with no fathers and no tradition to look back on.",
+      "tmdbIds": [
+        2000,
+        216,
+        10834,
+        661,
+        659,
+        9343,
+        655,
+        144
+      ],
+      "title_gl": "Novo cine alemán",
+      "title_eu": "Alemaniako zinema berria",
+      "title_ca": "Nou cinema alemany",
+      "blurb_gl": "Fassbinder, Herzog e Wenders: os fillos da posguerra que refixeron o cine dun país sen pais nin tradición na que mirarse.",
+      "blurb_eu": "Fassbinder, Herzog eta Wenders: gerraosteko seme-alabak, aitarik eta begiratzeko tradiziorik gabeko herrialde baten zinema berreraiki zutenak.",
+      "blurb_ca": "Fassbinder, Herzog i Wenders: els fills de la postguerra que van refer el cinema d'un país sense pares ni tradició on emmirallar-se.",
+      "posters": [
+        "/nNGXrwLQDHxaZM6heLIHZOM3Gfl.jpg",
+        "/wXmccDfWRyCyV9vdQlJgzQnIIdu.jpg",
+        "/nRZh7SoQdqIVGCJC8BcotcrlLnc.jpg",
+        "/8Os98kJkiK4S7InGbXohih2qm2p.jpg"
+      ]
+    },
+    {
+      "slug": "cine-latinoamericano",
+      "title_es": "Cine latinoamericano",
+      "title_en": "Latin American Cinema",
+      "blurb_es": "De la época de oro mexicana al Cinema Novo y al cine de Cuba y Argentina: un continente que filmó su hambre, su fe y su revolución.",
+      "blurb_en": "From Mexico's golden age to Cinema Novo and the films of Cuba and Argentina: a continent that filmed its hunger, its faith and its revolution.",
+      "tmdbIds": [
+        60225,
+        800,
+        122019,
+        836,
+        67612,
+        67062,
+        47576,
+        89681
+      ],
+      "title_gl": "Cine latinoamericano",
+      "title_eu": "Latinoamerikako zinema",
+      "title_ca": "Cinema llatinoamericà",
+      "blurb_gl": "Da época de ouro mexicana ao Cinema Novo e ao cine de Cuba e Arxentina: un continente que filmou a súa fame, a súa fe e a súa revolución.",
+      "blurb_eu": "Mexikoko urrezko arotik Cinema Novora eta Kubako eta Argentinako zinemara: bere gosea, fedea eta iraultza filmatu zituen kontinente bat.",
+      "blurb_ca": "De l'època d'or mexicana al Cinema Novo i al cinema de Cuba i l'Argentina: un continent que va filmar la seva fam, la seva fe i la seva revolució.",
+      "posters": [
+        "/bFrIT24b6ObZJPryprSQXIegcRS.jpg",
+        "/4LJqMc5nM48O18iNSrbSbMCKQu7.jpg",
+        "/4tQz97U3qeoabGTtVoKPwuEMVV1.jpg",
+        "/Ag7TYDyQ1IoHzaegGr0cooiy8Xu.jpg"
+      ]
+    },
+    {
+      "slug": "cine-irani",
+      "title_es": "La mirada iraní",
+      "title_en": "The Iranian Gaze",
+      "blurb_es": "Niños, carreteras y preguntas sin respuesta: el cine que hizo de la censura una forma de pudor y de la sencillez un arte mayor.",
+      "blurb_en": "Children, roads and unanswered questions: the cinema that turned censorship into reticence and simplicity into high art.",
+      "tmdbIds": [
+        44065,
+        49964,
+        30017,
+        46785,
+        43771,
+        30020,
+        21334,
+        60243
+      ],
+      "title_gl": "A mirada iraniana",
+      "title_eu": "Irandar begirada",
+      "title_ca": "La mirada iraniana",
+      "blurb_gl": "Nenos, estradas e preguntas sen resposta: o cine que fixo da censura unha forma de pudor e da sinxeleza unha arte maior.",
+      "blurb_eu": "Haurrak, errepideak eta erantzunik gabeko galderak: zentsura lotsa bihurtu eta xumetasuna arte handi egin zuen zinema.",
+      "blurb_ca": "Infants, carreteres i preguntes sense resposta: el cinema que va fer de la censura una forma de pudor i de la senzillesa un art major.",
+      "posters": [
+        "/eFIpxjYOMLoN5BBjy4McT7rBKmr.jpg",
+        "/yFdk2YnzSfYtcGimT95Bhm0CN1n.jpg",
+        "/a1qwDiH7bzFEWPiKuQJ0YqDbu3c.jpg",
+        "/4Glw8ZsSREDOUIHZY1qKR69OQkf.jpg"
+      ]
+    },
+    {
+      "slug": "western",
+      "title_es": "El western, de Ford a Peckinpah",
+      "title_en": "The Western, from Ford to Peckinpah",
+      "blurb_es": "La frontera como mito fundacional y su derrumbe: de la diligencia de John Ford al ajuste de cuentas de Leone y Peckinpah.",
+      "blurb_en": "The frontier as founding myth, and its collapse: from John Ford's stagecoach to the reckonings of Leone and Peckinpah.",
+      "tmdbIds": [
+        995,
+        3088,
+        288,
+        26596,
+        3114,
+        301,
+        429,
+        335,
+        576
+      ],
+      "title_gl": "O western, de Ford a Peckinpah",
+      "title_eu": "Westerna, Fordetik Peckinpahra",
+      "title_ca": "El western, de Ford a Peckinpah",
+      "blurb_gl": "A fronteira como mito fundacional e o seu derrubamento: da dilixencia de John Ford ao axuste de contas de Leone e Peckinpah.",
+      "blurb_eu": "Muga sorrera-mito gisa, eta haren erorketa: John Forden diligentziatik Leone eta Peckinpahren kontu-garbiketara.",
+      "blurb_ca": "La frontera com a mite fundacional i el seu esfondrament: de la diligència de John Ford a l'ajustament de comptes de Leone i Peckinpah.",
+      "posters": [
+        "/wHXgVEfvkExGzm5qNFcYKTTSY0W.jpg",
+        "/br9dcOFBM9hSZYZ4NPgooPMYfQy.jpg",
+        "/9wGUWTtUfCvW5qVv8kHkPZBikKd.jpg",
+        "/aImQC5wowLPOwutdsbN99ItaNCU.jpg"
+      ]
+    },
+    {
+      "slug": "hitchcock",
+      "title_es": "El suspense según Hitchcock",
+      "title_en": "Suspense According to Hitchcock",
+      "blurb_es": "El hombre que convirtió al espectador en cómplice: culpa, deseo y miedo, medidos plano a plano.",
+      "blurb_en": "The man who made the audience his accomplice: guilt, desire and fear, measured shot by shot.",
+      "tmdbIds": [
+        260,
+        223,
+        303,
+        567,
+        426,
+        213,
+        539,
+        571
+      ],
+      "title_gl": "O suspense segundo Hitchcock",
+      "title_eu": "Suspensea Hitchcocken arabera",
+      "title_ca": "El suspens segons Hitchcock",
+      "blurb_gl": "O home que converteu o espectador en cómplice: culpa, desexo e medo, medidos plano a plano.",
+      "blurb_eu": "Ikuslea konplize bihurtu zuen gizona: errua, desira eta beldurra, planoz plano neurtuak.",
+      "blurb_ca": "L'home que va convertir l'espectador en còmplice: culpa, desig i por, mesurats pla a pla.",
+      "posters": [
+        "/o4X8ie4fWFDrt4L3JO8QbqPmvjG.jpg",
+        "/mJV2zrflpTaAcFgfgQc2VJboZ0Y.jpg",
+        "/gHI8XPXkMspTIly1TcHAEHQo63A.jpg",
+        "/fH1MipE8PXGg0rlI5cUdzxKnyA2.jpg"
+      ]
+    },
+    {
+      "slug": "musical-clasico",
+      "title_es": "La edad de oro del musical",
+      "title_en": "The Golden Age of the Musical",
+      "blurb_es": "De Astaire a Gene Kelly y de Minnelli a Demy: cuando el cine cantaba y bailaba para decir lo que no cabía en palabras.",
+      "blurb_en": "From Astaire to Gene Kelly, from Minnelli to Demy: when cinema sang and danced to say what words couldn't hold.",
+      "tmdbIds": [
+        3080,
+        630,
+        909,
+        2769,
+        872,
+        29376,
+        1725,
+        5967
+      ],
+      "title_gl": "A idade de ouro do musical",
+      "title_eu": "Musikalaren urrezko aroa",
+      "title_ca": "L'edat d'or del musical",
+      "blurb_gl": "De Astaire a Gene Kelly e de Minnelli a Demy: cando o cine cantaba e bailaba para dicir o que non cabía en palabras.",
+      "blurb_eu": "Astairetik Gene Kellyra eta Minnellitik Demyra: zinemak hitzetan sartzen ez zena esateko kantatzen eta dantzatzen zuenean.",
+      "blurb_ca": "D'Astaire a Gene Kelly i de Minnelli a Demy: quan el cinema cantava i ballava per dir el que no cabia en paraules.",
+      "posters": [
+        "/ljT8X75UuihrQJgxDRvQ5fRejz4.jpg",
+        "/ymUY2iIm8IuSYuIX1SsABgPyB48.jpg",
+        "/4sF93iwhPTJ7KiiQMm6L1KxzOQX.jpg",
+        "/32WWix2u7MSTm0WjC608ArsPBP8.jpg"
+      ]
+    },
+    {
+      "slug": "terror-clasico",
+      "title_es": "Terror clásico",
+      "title_en": "Classic Horror",
+      "blurb_es": "Los monstruos de Universal, las sombras de Val Lewton y la sangre en color de la Hammer, hasta que Romero dejó el miedo a la intemperie.",
+      "blurb_en": "Universal's monsters, Val Lewton's shadows and Hammer's Technicolor blood, until Romero left fear out in the open.",
+      "tmdbIds": [
+        138,
+        3035,
+        229,
+        25508,
+        27130,
+        11868,
+        16372,
+        10331
+      ],
+      "title_gl": "Terror clásico",
+      "title_eu": "Beldurrezko zinema klasikoa",
+      "title_ca": "Terror clàssic",
+      "blurb_gl": "Os monstros da Universal, as sombras de Val Lewton e o sangue en cor da Hammer, ata que Romero deixou o medo á intemperie.",
+      "blurb_eu": "Universalen munstroak, Val Lewtonen itzalak eta Hammerren koloretako odola, Romerok beldurra aterpe gabe utzi zuen arte.",
+      "blurb_ca": "Els monstres de la Universal, les ombres de Val Lewton i la sang en color de la Hammer, fins que Romero va deixar la por a la intempèrie.",
+      "posters": [
+        "/zf7eGmr4l9whGIKzEpLvaoNtn9I.jpg",
+        "/t0r1I6Qv2KCAcZHuygCQyQpUuTX.jpg",
+        "/7FZPVHG3Llotb1rUzHWouSzevYV.jpg",
+        "/cTCZwzbLnrkap7uG3gsZmOc7mNl.jpg"
       ]
     }
   ]

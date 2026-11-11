@@ -94,6 +94,14 @@ export interface TmdbMovie {
    * idioma; false si se ha quedado la del castellano por falta de traducción.
    */
   translated?: boolean;
+  /**
+   * Solo en films_cache: el idioma en que se pidió la ficha guardada y las
+   * traducciones al gallego, euskera y catalán (título, sinopsis y lema). Con
+   * las dos cosas, la ficha en castellano y en esos tres idiomas se pinta desde
+   * la caché sin volver a pedir a TMDB (ver films.ts, sirveLaCache).
+   */
+  _lang?: TmdbLang;
+  _tr?: TmdbTranslation[];
   release_date?: string;
   /** La saga a la que pertenece («Transformers», «El Padrino»), si TMDB la tiene. */
   belongs_to_collection?: { id: number; name: string; poster_path: string | null } | null;
@@ -120,13 +128,32 @@ export interface TmdbMovie {
   'watch/providers'?: { results: Record<string, TmdbRegionProviders> };
 }
 
-export async function getMovie(id: number, locale: string) {
-  const base = tmdbFetch<TmdbMovie>(`/movie/${id}`, {
+/**
+ * La ficha completa en el idioma base del que sale `locale` (inglés o
+ * castellano; gallego, euskera y catalán salen del castellano), sin traducir.
+ */
+export function getMovieBase(id: number, locale: string) {
+  return tmdbFetch<TmdbMovie>(`/movie/${id}`, {
     language: toTmdbLang(locale),
     // 'watch/providers' viene EN ESTA MISMA petición (append_to_response): el
     // "dónde ver" no cuesta ni una llamada extra ni tiene cuota propia.
     append_to_response: 'credits,keywords,recommendations,similar,videos,watch/providers',
   });
+}
+
+/** Traducciones al gallego, euskera y catalán, lo justo para localizeMovie: se guardan en films_cache. */
+export function nativeTranslations(translations: TmdbTranslation[]): TmdbTranslation[] {
+  return translations
+    .filter((t) => t.iso_639_1 === 'gl' || t.iso_639_1 === 'eu' || t.iso_639_1 === 'ca')
+    .map((t) => ({
+      iso_639_1: t.iso_639_1,
+      iso_3166_1: t.iso_3166_1,
+      data: { title: t.data?.title || undefined, overview: t.data?.overview || undefined, tagline: t.data?.tagline || undefined },
+    }));
+}
+
+export async function getMovie(id: number, locale: string) {
+  const base = getMovieBase(id, locale);
   const lang = nativeLang(locale);
   if (!lang) return base;
   // Gallego, euskera y catalán: la ficha completa se pide en castellano (es la
@@ -273,6 +300,8 @@ export function slimMovie(m: TmdbMovie): TmdbMovie {
   };
   // Opcionales: solo se escriben si vienen, para no rellenar la caché de nulos.
   if (m.tagline) out.tagline = m.tagline;
+  if (m._lang) out._lang = m._lang;
+  if (m._tr) out._tr = m._tr;
   if (m.budget) out.budget = m.budget;
   if (m.revenue) out.revenue = m.revenue;
   if (m.original_language) out.original_language = m.original_language;

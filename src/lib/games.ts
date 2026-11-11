@@ -280,3 +280,18 @@ export function attemptsBoxes(misses: number, solved: boolean, total = MAX_ATTEM
   const usadas = misses + (solved ? 1 : 0);
   return '■'.repeat(misses) + (solved ? '●' : '') + '·'.repeat(Math.max(0, total - usadas));
 }
+
+/* ------------------------------------------------------------------ *
+ * ¿En qué año?
+ * ------------------------------------------------------------------ */
+
+/** Películas por partida de «¿En qué año?». */
+export const ANYO_SIZE = 5;
+/** Puntos por película: 10 si se clava el año, uno menos por cada año de diferencia. */
+export const ANYO_MAX_POINTS = 10;
+export function yearPoints(guess: number, year: number): number {
+  return Math.max(0, ANYO_MAX_POINTS - Math.abs(guess - year));
+}
+/** Años que se pueden escribir: ni antes del cine ni en el futuro lejano. */
+export const ANYO_MIN = 1880;
+export const ANYO_MAX = 2100;

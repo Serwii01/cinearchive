@@ -1,0 +1,290 @@
+---
+/**
+ * ¿En qué año?: cinco películas y hay que decir el año de estreno de cada una.
+ * Diez puntos si se clava, uno menos por cada año de diferencia (máximo 50).
+ * Se responden de una en una y el servidor (/api/games/anyo) dice el año de
+ * verdad al momento: así se aprende algo antes de la siguiente.
+ *
+ * Reto del día (se recuerda hasta mañana) o ilimitado (otras cinco al terminar).
+ */
+import { useTranslations, localizePath, type Lang } from '../../i18n/ui';
+import { ANYO_SIZE, ANYO_MAX_POINTS, ANYO_MIN, ANYO_MAX } from '../../lib/games';
+
+interface Props {
+  lang: Lang;
+  endless?: boolean;
+}
+
+const { lang, endless = false } = Astro.props;
+const t = useTranslations(lang);
+const keys = [
+  'games.exact', 'games.tooEarly', 'games.tooLate', 'games.pointsN', 'games.total', 'games.share', 'games.copied', 'games.error',
+  'games.shareAnyo', 'games.shareAnyoEndless', 'games.number', 'games.loading', 'games.hint.director', 'games.yearLabel', 'games.badYear',
+] as const;
+const i18n = Object.fromEntries(keys.map((k) => [k, t(k)]));
+const ritmos = [
+  { id: false, label: t('games.dailyTab'), href: localizePath(lang, 'games/anyo') },
+  { id: true, label: t('games.endlessTab'), href: localizePath(lang, 'games/anyo/ilimitado') },
+];
+---
+
+<section
+  class="frame py-10"
+  data-anyo
+  data-endless={endless ? '1' : undefined}
+  data-lang={lang}
+  data-i18n={JSON.stringify(i18n)}
+  data-size={ANYO_SIZE}
+  data-max={ANYO_MAX_POINTS}
+  data-min-year={ANYO_MIN}
+  data-max-year={ANYO_MAX}
+>
+  <a href={localizePath(lang, 'games')} class="label no-underline hover:text-ink">← {t('games.allGames')}</a>
+  <header class="mt-6 flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-5">
+    <div>
+      <span class="label">{endless ? t('games.endlessTab') : t('games.daily')}{!endless && <> · <span data-num>—</span></>}</span>
+      <h1 class="mt-2 text-display-mobile md:text-display-lg">{t('games.anyo')}</h1>
+    </div>
+    <nav class="flex border border-ink" aria-label={t('games.paceLabel')}>
+      {ritmos.map((r, i) => (
+        <a
+          href={r.href}
+          aria-current={r.id === endless ? 'page' : undefined}
+          class:list={['label px-4 py-2 no-underline', i > 0 && 'border-l border-ink', r.id === endless ? 'bg-ink text-white' : 'hover:bg-film-white hover:text-ink']}
+        >
+          {r.label}
+        </a>
+      ))}
+    </nav>
+  </header>
+  <p class="mt-4 max-w-2xl text-body-md text-charcoal">{t('games.anyoDesc')} {t('games.anyoHelp')}{endless && ` ${t('games.endlessDesc')}`}</p>
+
+  <div class="mt-6 max-w-2xl">
+    <ol data-cards class="flex flex-col gap-2" aria-label={t('games.anyo')}>
+      <li class="border border-ink bg-surface p-4 font-mono text-meta-data text-muted">{t('games.loading')}</li>
+    </ol>
+    <p data-msg class="mt-2 min-h-[1.5rem] font-mono text-meta-data text-muted" role="status" aria-live="polite"></p>
+
+    <section data-result class="mt-4 border border-ink bg-surface" hidden aria-live="polite">
+      <div class="p-5">
+        <p data-r-total class="font-display text-headline-lg leading-tight text-ink"></p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          {endless && <button type="button" data-next class="btn btn-primary">{t('games.nextSet')} →</button>}
+          <button type="button" data-share class:list={['btn', endless ? 'btn-secondary' : 'btn-primary']}>{t('games.share')}</button>
+        </div>
+        {!endless && (
+          <p class="mt-3 font-mono text-meta-data text-muted">
+            {t('games.tomorrow')} <a href={localizePath(lang, 'games/anyo/ilimitado')} class="text-ink">{t('games.tryEndless')} →</a>
+          </p>
+        )}
+      </div>
+      <div class="border-t border-ink p-5">
+        <h2 class="label">{t('games.stats')}{endless && ` · ${t('games.endlessTab')}`}</h2>
+        <dl class="mt-3 grid grid-cols-3 gap-2 text-center">
+          <div><dt class="font-mono text-meta-data text-muted">{t('games.played')}</dt><dd data-s-played class="font-display text-headline-lg text-ink">0</dd></div>
+          <div><dt class="font-mono text-meta-data text-muted">{t('games.average')}</dt><dd data-s-avg class="font-display text-headline-lg text-ink">0</dd></div>
+          <div><dt class="font-mono text-meta-data text-muted">{t('games.best')}</dt><dd data-s-best class="font-display text-headline-lg text-ink">0</dd></div>
+        </dl>
+      </div>
+    </section>
+    <p class="mt-6 font-mono text-meta-data text-muted">{t('games.credit')}</p>
+  </div>
+</section>
+
+<script>
+  type Card = { key: number; title: string; poster: string; director: string | null };
+  type Respuesta = { guess: number; year: number; points: number };
+  type State = { answers: (Respuesta | null)[] };
+  type Stats = { played: number; total: number; best: number; last: number };
+
+  const lee = <T,>(k: string, def: T): T => {
+    try {
+      return (JSON.parse(localStorage.getItem(k) ?? 'null') as T) ?? def;
+    } catch {
+      return def;
+    }
+  };
+  const guarda = (k: string, v: unknown) => {
+    try {
+      localStorage.setItem(k, JSON.stringify(v));
+    } catch {
+      /* modo privado */
+    }
+  };
+  const STATS0: Stats = { played: 0, total: 0, best: 0, last: 0 };
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-anyo]')) {
+    const endless = root.dataset.endless === '1';
+    const lang = root.dataset.lang!;
+    const T = JSON.parse(root.dataset.i18n!) as Record<string, string>;
+    const SIZE = Number(root.dataset.size);
+    const MAX = Number(root.dataset.max);
+    const MIN_Y = Number(root.dataset.minYear);
+    const MAX_Y = Number(root.dataset.maxYear);
+    const $ = <E extends Element = HTMLElement>(s: string) => root.querySelector<E>(s)!;
+    const msg = $('[data-msg]');
+    const statsKey = `cine:games:stats:anyo${endless ? ':ilimitado' : ''}`;
+    let set: { day?: number; seed?: number; cards: Card[] } | null = null;
+    let state: State = { answers: [] };
+    let stateKey = '';
+    let ocupado = false;
+
+    const hechas = () => state.answers.filter(Boolean) as Respuesta[];
+    const total = () => hechas().reduce((a, r) => a + r.points, 0);
+    const terminado = () => hechas().length === SIZE;
+    const ref = () => (set!.seed ? { seed: set!.seed } : { day: set!.day });
+
+    function veredicto(r: Respuesta): string {
+      const base = r.guess === r.year ? T['games.exact'] : T[r.guess < r.year ? 'games.tooEarly' : 'games.tooLate'].replace('{year}', String(r.year));
+      return `${base} · ${T['games.pointsN'].replace('{n}', String(r.points))}`;
+    }
+
+    function pinta() {
+      if (!set) return;
+      const actual = state.answers.findIndex((a) => !a);
+      $('[data-cards]').replaceChildren(
+        ...set.cards.map((c, i) => {
+          const r = state.answers[i];
+          const li = document.createElement('li');
+          li.className = `flex gap-4 border border-ink p-3 ${i === actual ? 'bg-film-white' : 'bg-surface'}`;
+          const img = document.createElement('img');
+          img.src = c.poster;
+          img.alt = '';
+          img.width = 64;
+          img.height = 96;
+          img.loading = 'lazy';
+          img.className = 'w-16 shrink-0 self-start border border-ink bg-charcoal object-cover';
+          const cuerpo = document.createElement('div');
+          cuerpo.className = 'min-w-0 flex-1';
+          const titulo = document.createElement('p');
+          titulo.className = 'font-display text-headline-md leading-tight text-ink';
+          titulo.textContent = c.title;
+          cuerpo.append(titulo);
+          if (c.director) {
+            const d = document.createElement('p');
+            d.className = 'font-mono text-meta-data text-muted';
+            d.textContent = `${T['games.hint.director']}: ${c.director}`;
+            cuerpo.append(d);
+          }
+          if (r) {
+            const v = document.createElement('p');
+            v.className = 'mt-2 font-mono text-meta-data text-ink';
+            v.textContent = `${r.guess} → ${veredicto(r)}`;
+            cuerpo.append(v);
+          } else if (i === actual) {
+            const f = document.createElement('form');
+            f.className = 'mt-3 flex flex-wrap items-center gap-2';
+            const id = `anyo-${i}`;
+            const label = document.createElement('label');
+            label.htmlFor = id;
+            label.className = 'sr-only';
+            label.textContent = `${T['games.yearLabel']}: ${c.title}`;
+            const input = document.createElement('input');
+            input.id = id;
+            input.type = 'number';
+            input.inputMode = 'numeric';
+            input.min = String(MIN_Y);
+            input.max = String(MAX_Y);
+            input.placeholder = T['games.yearLabel'];
+            input.enterKeyHint = 'go';
+            input.className = 'w-32 border border-ink bg-white px-3 py-2 font-mono text-body-md text-ink';
+            const b = document.createElement('button');
+            b.type = 'submit';
+            b.className = 'btn btn-primary';
+            b.textContent = '→';
+            b.setAttribute('aria-label', T['games.yearLabel']);
+            f.append(label, input, b);
+            f.addEventListener('submit', (e) => {
+              e.preventDefault();
+              void responde(i, Number(input.value));
+            });
+            cuerpo.append(f);
+          }
+          li.append(img, cuerpo);
+          return li;
+        }),
+      );
+      const fin = terminado();
+      $('[data-result]').hidden = !fin;
+      if (fin) {
+        $('[data-r-total]').textContent = T['games.total'].replace('{n}', String(total())).replace('{max}', String(SIZE * MAX));
+        const s = lee<Stats>(statsKey, STATS0);
+        $('[data-s-played]').textContent = String(s.played);
+        $('[data-s-avg]').textContent = s.played ? (s.total / s.played).toFixed(1).replace('.', lang === 'en' ? '.' : ',') : '0';
+        $('[data-s-best]').textContent = String(s.best);
+      }
+    }
+
+    function cuentaPartida() {
+      const s = { ...STATS0, ...lee<Stats>(statsKey, STATS0) };
+      if (!endless && s.last === set!.day) return;
+      s.played++;
+      s.total += total();
+      s.best = Math.max(s.best, total());
+      if (!endless) s.last = set!.day!;
+      guarda(statsKey, s);
+    }
+
+    async function responde(i: number, guess: number) {
+      if (ocupado || !set || state.answers[i]) return;
+      if (!Number.isInteger(guess) || guess < MIN_Y || guess > MAX_Y) {
+        msg.textContent = T['games.badYear'];
+        return;
+      }
+      ocupado = true;
+      try {
+        const r = await fetch('/api/games/anyo', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...ref(), key: set.cards[i].key, year: guess }) });
+        if (!r.ok) throw new Error();
+        const d = (await r.json()) as { year: number; points: number };
+        state.answers[i] = { guess, year: d.year, points: d.points };
+        msg.textContent = veredicto(state.answers[i]!);
+        if (terminado()) cuentaPartida();
+        if (!endless) guarda(stateKey, state);
+        pinta();
+        if (terminado()) (root.querySelector<HTMLElement>('[data-next]') ?? $('[data-share]')).focus({ preventScroll: true });
+        else root.querySelector<HTMLInputElement>('[data-cards] input')?.focus({ preventScroll: true });
+      } catch {
+        msg.textContent = T['games.error'];
+      } finally {
+        ocupado = false;
+      }
+    }
+
+    $('[data-share]').addEventListener('click', async () => {
+      const cab = T[endless ? 'games.shareAnyoEndless' : 'games.shareAnyo'].replace('{n}', String(set?.day ?? '')).replace('{score}', `${total()}/${SIZE * MAX}`);
+      const texto = `${cab}\n${hechas().map((r) => r.points).join(' · ')}\n${location.origin}${location.pathname}`;
+      try {
+        if (navigator.share) await navigator.share({ text: texto });
+        else {
+          await navigator.clipboard.writeText(texto);
+          msg.textContent = T['games.copied'];
+        }
+      } catch {
+        /* cancelado */
+      }
+    });
+
+    async function carga() {
+      msg.textContent = '';
+      $('[data-result]').hidden = true;
+      try {
+        const r = await fetch(`/api/games/anyo?lang=${lang}${endless ? '&endless=1' : ''}`, endless ? { cache: 'no-store' } : {});
+        if (!r.ok) throw new Error();
+        set = await r.json();
+        state = { answers: Array.from({ length: SIZE }, () => null) };
+        if (!endless) {
+          stateKey = `cine:games:anyo:${set!.day}`;
+          const previo = lee<State | null>(stateKey, null);
+          if (previo?.answers?.length === SIZE) state = previo;
+          root.querySelector('[data-num]')!.textContent = T['games.number'].replace('{n}', String(set!.day));
+        }
+        pinta();
+        if (matchMedia('(pointer: fine)').matches) root.querySelector<HTMLInputElement>('[data-cards] input')?.focus({ preventScroll: true });
+      } catch {
+        msg.textContent = T['games.error'];
+      }
+    }
+    root.querySelector('[data-next]')?.addEventListener('click', () => void carga());
+    void carga();
+  }
+</script>

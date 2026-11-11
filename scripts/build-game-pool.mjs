@@ -3,7 +3,7 @@
  * que cada juego necesita para no tener que preguntar nada a TMDB al jugar.
  *
  *   node --env-file=.env scripts/build-game-pool.mjs
- *   node --env-file=.env scripts/build-game-pool.mjs --refrescar   (solo títulos y sagas, mismas películas)
+ *   node --env-file=.env scripts/build-game-pool.mjs --refrescar   (títulos, sagas y reparto, mismas películas)
  *
  * POR QUÉ UNA BOLSA FIJA. Los retos diarios tienen que ser iguales para todo el
  * mundo y de películas que la gente conoce: elegirlos al azar de TMDB daría
@@ -107,6 +107,13 @@ function titulos(m) {
   return res;
 }
 
+/**
+ * Los seis primeros del reparto, en el orden de TMDB (el protagonista primero),
+ * para el juego Reparto, que los descubre del sexto al primero.
+ */
+const REPARTO = 6;
+const reparto = (m) => (m.credits?.cast ?? []).slice(0, REPARTO).map((c) => c.name);
+
 async function ficha(id) {
   const m = await tmdb(`/movie/${id}?language=es-ES&append_to_response=images,credits,translations&include_image_language=null`);
   const fondos = (m.images?.backdrops ?? [])
@@ -127,13 +134,14 @@ async function ficha(id) {
     genres: (m.genres ?? []).map((g) => g.id).slice(0, 3),
     director: dir?.name ?? null,
     cast: (m.credits?.cast ?? []).slice(0, 2).map((c) => c.name),
+    reparto: reparto(m),
     poster: m.poster_path,
     backdrops: fondos,
   };
 }
 
 /**
- * --refrescar: vuelve a pedir títulos y saga de las películas que YA están en
+ * --refrescar: vuelve a pedir títulos, saga y reparto de las películas que YA están en
  * la bolsa, sin añadir ni quitar ninguna ni tocar fondos, notas ni orden. Así
  * se corrigen datos sin cambiar los retos de los días que vienen (ni el de hoy).
  */
@@ -145,7 +153,7 @@ async function refrescar() {
     while (i < actual.films.length) {
       const f = actual.films[i++];
       try {
-        const m = await tmdb(`/movie/${f.id}?language=es-ES&append_to_response=translations`);
+        const m = await tmdb(`/movie/${f.id}?language=es-ES&append_to_response=translations,credits`);
         const titles = titulos(m);
         const collection = m.belongs_to_collection?.id ?? null;
         if (JSON.stringify(titles) !== JSON.stringify(f.titles)) {
@@ -154,6 +162,7 @@ async function refrescar() {
         }
         f.titles = titles;
         f.collection = collection;
+        f.reparto = reparto(m);
       } catch (e) {
         console.warn(`  ${f.id}: ${e.message} (se queda como estaba)`);
       }

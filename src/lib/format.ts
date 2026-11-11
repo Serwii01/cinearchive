@@ -66,10 +66,31 @@ export function pct(parte: number | null | undefined, total: number | null | und
   return Math.min(100, Math.max(0, Math.round((parte / total) * 100)));
 }
 
+/**
+ * Formateadores reutilizados. Crear un Intl.NumberFormat cuesta mucho más que
+ * usarlo (carga los datos del idioma): en el perfil de CPU de las fichas,
+ * el de la taquilla, creado tres veces por ficha, salía entre lo que más gastaba.
+ */
+const formateadores = new Map<string, Intl.NumberFormat>();
+export function numberFormat(locale: string, opciones?: Intl.NumberFormatOptions): Intl.NumberFormat {
+  const clave = opciones ? `${locale}|${JSON.stringify(opciones)}` : locale;
+  let nf = formateadores.get(clave);
+  if (!nf) {
+    nf = new Intl.NumberFormat(locale, opciones);
+    formateadores.set(clave, nf);
+  }
+  return nf;
+}
+
+/** Dólares sin decimales («$ 245.000.000»); null si no hay cifra. */
+export function formatUsd(n: number | null | undefined, locale: string): string | null {
+  return n && n > 0 ? numberFormat(locale, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n) : null;
+}
+
 /** Entero con separador de miles. */
 export function formatNum(n: number | null | undefined, locale = 'es-ES'): string {
   if (n == null || !Number.isFinite(n)) return SIN_DATO;
-  return new Intl.NumberFormat(locale).format(n);
+  return numberFormat(locale).format(n);
 }
 
 /** Latencia: "312 ms" hasta el segundo, "1,4 s" a partir de ahí. */
