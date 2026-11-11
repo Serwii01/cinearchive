@@ -6,8 +6,7 @@
 En producción en cinearchive.es (el 9 nov, arreglos de los juegos y bolsa con títulos de España y sagas): sección de Juegos (Fotograma, Cronología y ¿Cuál tiene mejor nota?, diario e ilimitado), reseñas de la comunidad y «me gusta» en las fichas, buscador por pestañas, primera crónica con fotos propias del Festival de Sevilla y la web más ligera y accesible. v1.20 del changelog ampliada con todo ello. Astro 7, despliegue desde GHCR sin compilar en el VPS, films_cache con tope, copias nocturnas y vigilancia por correo.
 
 ## Siguientes pasos
-- [ ] Juegos: probar en producción el aviso de «misma saga» (p. ej. en Fotograma ilimitado, probar otra de Harry Potter o Star Wars) y que salgan los títulos de España.
-- [ ] Sergio: dar de alta la web en Google Search Console y Bing Webmaster Tools (verificación por DNS) y enviar sitemap-index.xml. Con eso, ver qué búsquedas traen gente y escribir artículos para ellas.
+- [ ] Sergio: dar de alta la web en Google Search Console (verificación con el archivo public/googlea443dd55fa015b63.html, que no se debe borrar) y en Bing Webmaster Tools (se puede importar desde Search Console), y enviar sitemap-index.xml. Con eso, ver qué búsquedas traen gente y escribir artículos para ellas.
 - [ ] Difundir la web: lista de sitios en el vault (SEO y difusión).
 - [ ] (Aparcado) Más cine con permiso: la NFB de Canadá deja incrustar (nfb.ca/film/<slug>/embed/player/, oEmbed con datos). Probado el 8 nov desde España: 44 de 50 se ven (todas las clásicas de McLaren, Óscar…). Sus condiciones piden uso no comercial y enlace a la NFB; antes, pedirles permiso por escrito. El reproductor carga Google Tag Manager: cargarlo solo al pulsar, frame-src en la CSP y mención en privacidad.
 - [ ] Comparar el contador con Umami para saber desde cuándo había visitas falsas (Sergio pasa los números).
