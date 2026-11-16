@@ -274,6 +274,13 @@ export const userPreferences = pgTable('user_preferences', {
   alertsEmail: boolean('alerts_email').notNull().default(false),
   /** Correo cuando alguien empieza a seguirte o te pide seguirte. Apagado por defecto. */
   followEmail: boolean('follow_email').notNull().default(false),
+  /**
+   * Novedades de Cine Archive por correo (lib/newsletter.ts). Encendido por
+   * defecto para las cuentas que ya existían (16-11-2026, decisión de Sergio:
+   * clientes con servicio parecido, art. 21.2 LSSI), con baja en un clic en
+   * cada correo y aquí. Quien no tiene fila de preferencias cuenta como sí.
+   */
+  newsEmail: boolean('news_email').notNull().default(true),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
@@ -499,4 +506,97 @@ export const userBadges = pgTable(
   (t) => ({
     pk: primaryKey({ columns: [t.userId, t.badgeId] }),
   }),
+);
+
+/* ------------------------------------------------------------------ *
+ * Foro: hilos de conversación y cineclub (16-11-2026)
+ * ------------------------------------------------------------------ */
+
+/**
+ * Un hilo del foro. `category` es una de FORUM_CATEGORIES (lib/forum.ts).
+ * `lastPostAt` y `replies` se mantienen al responder: la portada del foro los
+ * ordena y cuenta sin recorrer las respuestas. Borrar es ocultar (`hidden`):
+ * lo hace el autor o un administrador, y así no se rompen los enlaces.
+ */
+export const forumThreads = pgTable(
+  'forum_threads',
+  {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    category: text('category').notNull(),
+    title: text('title').notNull(),
+    body: text('body').notNull(),
+    /** Película de la que se habla (opcional): enlaza el hilo con su ficha. */
+    tmdbId: integer('tmdb_id'),
+    replies: integer('replies').notNull().default(0),
+    hidden: boolean('hidden').notNull().default(false),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    lastPostAt: timestamp('last_post_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    // La portada del foro: lo último con movimiento, por categoría o todo.
+    lastIdx: index('forum_threads_last_idx').on(t.lastPostAt),
+    catIdx: index('forum_threads_cat_idx').on(t.category, t.lastPostAt),
+  }),
+);
+
+/** Respuestas de un hilo, en orden. */
+export const forumPosts = pgTable(
+  'forum_posts',
+  {
+    id: serial('id').primaryKey(),
+    threadId: integer('thread_id')
+      .notNull()
+      .references(() => forumThreads.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    body: text('body').notNull(),
+    hidden: boolean('hidden').notNull().default(false),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    threadIdx: index('forum_posts_thread_idx').on(t.threadId, t.id),
+  }),
+);
+
+/**
+ * Mensajes del chat de una sesión del cineclub. `session` es la clave de la
+ * sesión (lib/cineclub.ts: día y película), no una fila: las sesiones salen de
+ * un calendario, no de la base de datos.
+ */
+export const cineclubMessages = pgTable(
+  'cineclub_messages',
+  {
+    id: serial('id').primaryKey(),
+    session: text('session').notNull(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    body: text('body').notNull(),
+    hidden: boolean('hidden').notNull().default(false),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    // El chat pide «lo de esta sesión desde el último id que tengo».
+    sessionIdx: index('cineclub_messages_session_idx').on(t.session, t.id),
+  }),
+);
+
+/**
+ * Qué número del boletín le ha llegado a quién. Sirve para no mandar dos veces
+ * el mismo si el envío se corta y se vuelve a lanzar (lib/newsletter.ts).
+ */
+export const newsletterSends = pgTable(
+  'newsletter_sends',
+  {
+    issue: text('issue').notNull(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    sentAt: timestamp('sent_at').notNull().defaultNow(),
+  },
+  (t) => ({ pk: primaryKey({ columns: [t.issue, t.userId] }) }),
 );

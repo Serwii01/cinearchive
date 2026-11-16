@@ -16,6 +16,7 @@ import { translateAwards } from '../../../lib/omdb';
 import { movieLd, breadcrumbLd } from '../../../lib/seo';
 import { pdFilmByTmdbId, pdThumbUrl } from '../../../lib/pdfilms';
 import { filmSlug, parseFilmId } from '../../../lib/slug';
+import { savedTitles, filmPathFor } from '../../../lib/filmlinks';
 import { mentionsOf } from '../../../lib/mentions';
 import {
   director,
@@ -164,6 +165,10 @@ for (const s of [...(tmdb.recommendations?.results ?? []), ...(tmdb.similar?.res
     similar.push(s);
   }
 }
+// Los enlaces a la saga y a las similares, con la URL definitiva de cada ficha
+// (el título de TMDB no siempre es el del slug, y cada diferencia era un 301).
+const titulosEnlaces = await savedTitles([...similar.map((s) => s.id), ...(saga?.parts ?? []).map((p) => p.id)]);
+const enlace = (id: number, titulo: string) => localizePath(lang, filmPathFor(id, lang, titulosEnlaces, titulo));
 
 // Regiones para el selector de "dónde ver".
 const regions = WATCH_REGIONS.map((code) => ({ code, name: countryName(code, lang) }));
@@ -516,7 +521,7 @@ const crumbsJsonLd = breadcrumbLd([
                 return (
                   <li class:list={['bg-surface', actual && 'outline outline-2 -outline-offset-2 outline-ochre']}>
                     <a
-                      href={localizePath(lang, `film/${filmSlug(p.id, p.title)}`)}
+                      href={enlace(p.id, p.title)}
                       aria-current={actual ? 'page' : undefined}
                       class="block no-underline hover:bg-film-white"
                       title={p.title}
@@ -572,7 +577,7 @@ const crumbsJsonLd = breadcrumbLd([
         <h2 class="border-b border-ink pb-3 text-headline-lg text-ink">{t('film.similar')}</h2>
         <div class="mt-6 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">
           {similar.map((s) => (
-            <a href={localizePath(lang, `film/${filmSlug(s.id, s.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+            <a href={enlace(s.id, s.title)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
               <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
                 <img
                   src={posterUrl(s.poster_path, 'w342')}

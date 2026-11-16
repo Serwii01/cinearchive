@@ -1,0 +1,46 @@
+---
+/**
+ * Las próximas sesiones del cineclub, en tarjetas: la portada del foro y la de
+ * la web usan esta misma pieza. La primera, si está en marcha, se marca.
+ */
+import { pdTitle, pdThumbUrl } from '../../lib/pdfilms';
+import { sessionState, type CineclubSession } from '../../lib/cineclub';
+import { useTranslations, localizePath, locales, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  sessions: CineclubSession[];
+  now: number;
+}
+
+const { lang, sessions, now } = Astro.props;
+const t = useTranslations(lang);
+// Tantas columnas como sesiones (hasta cuatro): en portada son dos y no deben
+// quedar casillas vacías. Clases enteras para que Tailwind las genere.
+const columnas = ['', '', 'sm:grid-cols-2', 'sm:grid-cols-3', 'sm:grid-cols-2 lg:grid-cols-4'][Math.min(sessions.length, 4)];
+// Siempre en hora de Madrid, que es la de la sesión, y diciéndolo.
+const cuando = new Intl.DateTimeFormat(locales[lang], { timeZone: 'Europe/Madrid', weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+const etiqueta = (s: CineclubSession) => {
+  const e = sessionState(s, now);
+  return e === 'playing' ? t('forum.nowPlaying') : e === 'open' ? t('forum.roomOpen') : e === 'after' ? t('forum.afterTalk') : null;
+};
+---
+
+<ul class:list={['grid ruled grid-cols-1 border border-ink', columnas]}>
+  {sessions.map((s, i) => {
+    const vivo = etiqueta(s);
+    return (
+      <li class:list={['bg-surface', i === 0 && vivo && 'bg-film-white']}>
+        <a href={localizePath(lang, `foro/cineclub/${s.key}`)} class="group flex h-full gap-3 p-3 no-underline hover:bg-film-white">
+          <img src={pdThumbUrl(s.film.id)} alt="" width="96" height="72" loading="lazy" class="h-[72px] w-24 shrink-0 border border-ink bg-charcoal object-cover" />
+          <div class="min-w-0">
+            {vivo ? <p class="label text-error">● {vivo}</p> : <p class="label first-letter:uppercase">{cuando.format(new Date(s.startsAt))}</p>}
+            <p class="mt-1 font-display text-body-lg leading-tight text-ink group-hover:underline">{pdTitle(s.film, lang)}</p>
+            <p class="font-mono text-meta-data text-muted">{s.film.director} · {s.film.year} · {s.film.runtime} min</p>
+          </div>
+        </a>
+      </li>
+    );
+  })}
+</ul>
+<p class="mt-2 font-mono text-meta-data text-muted">{t('forum.madridTime')}</p>

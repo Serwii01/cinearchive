@@ -124,6 +124,42 @@ export async function ensureFirstViewing(userId: string, tmdbId: number, watched
   if (!any) await addViewing(userId, tmdbId, watchedOn);
 }
 
+/**
+ * La nota que se acaba de dar va al visionado más reciente de esa película: el
+ * diario enseña la nota de cada visionado, y sin esto el que se apuntaba al
+ * puntuar se quedaba sin estrellas. Si se ha vuelto a ver («Vista otra vez»),
+ * el más reciente es ese, y la nota nueva es la de ese revisionado; la de la
+ * primera vez se queda como estaba.
+ */
+export async function rateLatestViewing(userId: string, tmdbId: number, rating: number | null): Promise<void> {
+  const [ultimo] = await db
+    .select({ id: userViewings.id })
+    .from(userViewings)
+    .where(and(eq(userViewings.userId, userId), eq(userViewings.tmdbId, tmdbId)))
+    .orderBy(desc(userViewings.watchedOn), desc(userViewings.id))
+    .limit(1);
+  if (!ultimo) return;
+  await db.update(userViewings).set({ rating }).where(eq(userViewings.id, ultimo.id));
+  invalidateViewer(userId);
+}
+
+/**
+ * Cambiar «Cuándo la vi» cuando la película tiene UN solo visionado, apuntado
+ * desde la web: es ese mismo día el que se corrige (se puntuó hoy y se vio el
+ * sábado). Con más de uno no se toca nada, porque no se sabe cuál es, ni con
+ * uno importado de Letterboxd, que trae su fecha de verdad.
+ */
+export async function moveOnlyViewing(userId: string, tmdbId: number, watchedOn: string): Promise<void> {
+  const vs = await db
+    .select({ id: userViewings.id, source: userViewings.source, watchedOn: userViewings.watchedOn })
+    .from(userViewings)
+    .where(and(eq(userViewings.userId, userId), eq(userViewings.tmdbId, tmdbId)))
+    .limit(2);
+  if (vs.length !== 1 || vs[0].source !== 'manual' || vs[0].watchedOn === watchedOn) return;
+  await db.update(userViewings).set({ watchedOn }).where(eq(userViewings.id, vs[0].id));
+  invalidateViewer(userId);
+}
+
 /** Borra un visionado del usuario. Devuelve false si no era suyo o no existía. */
 export async function deleteViewing(userId: string, id: number): Promise<boolean> {
   const del = await db

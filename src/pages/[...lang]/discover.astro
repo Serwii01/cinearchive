@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { savedTitles, filmPathFor } from '../../lib/filmlinks';
 import { normalizeLang, useTranslations, localizePath, contentLang } from '../../i18n/ui';
 import { filmSlug } from '../../lib/slug';
 import {
@@ -116,6 +117,7 @@ try {
 } catch {
   /* deja resultados vacíos */
 }
+const titulosEnlaces = await savedTitles(results.results.map((r) => r.id));
 
 /* ------------------------------------------------------------------ *
  * Estado de los filtros.
@@ -530,7 +532,7 @@ for (let p = Math.max(1, page - 2); p <= Math.min(results.totalPages, page + 2);
     ) : (
       <div class="mt-4 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">
         {results.results.map((r) => (
-          <a href={localizePath(lang, `film/${filmSlug(r.id, r.title)}`)} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
+          <a href={localizePath(lang, filmPathFor(r.id, lang, titulosEnlaces, r.title))} class="group flex flex-col bg-surface no-underline hover:bg-film-white">
             <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
               {/* alt vacío: el título ya va en el texto de al lado; con alt, el lector de pantalla lo repetiría. */}
               {r.poster_path ? (

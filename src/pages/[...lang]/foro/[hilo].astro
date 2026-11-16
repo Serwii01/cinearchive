@@ -1,0 +1,170 @@
+---
+/**
+ * Un hilo del foro con sus respuestas. Se indexa (es conversación propia, lo
+ * que Google no encuentra en otra parte); la URL lleva el título como las
+ * fichas, y si llega con otro se redirige al bueno.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Avatar from '../../../components/Avatar.astro';
+import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../../i18n/ui';
+import { getThread, BODY_MAX } from '../../../lib/forum';
+import { threadPath, parseThreadId } from '../../../lib/forumpaths';
+import { getMyProfile } from '../../../lib/social';
+import { isAdmin } from '../../../lib/admin';
+import { breadcrumbLd } from '../../../lib/seo';
+
+export const prerender = false;
+
+const lang: Lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const viewer = Astro.locals.user;
+
+const id = parseThreadId(Astro.params.hilo ?? '');
+const hilo = id ? await getThread(id).catch(() => null) : null;
+if (!hilo) {
+  Astro.locals.notFound = true;
+  return Astro.rewrite('/404');
+}
+const canonica = threadPath(hilo.id, hilo.title);
+if (`foro/${Astro.params.hilo}` !== canonica) return Astro.redirect(localizePath(lang, canonica), 301);
+
+const conPerfil = viewer ? !!(await getMyProfile(viewer.id)) : false;
+const admin = isAdmin(viewer);
+const puedeOcultar = (userId: string) => !!viewer && (viewer.id === userId || admin);
+const base = localizePath(lang, 'foro');
+const catLabel = t(`forum.cat.${hilo.category}` as never);
+const url = new URL(localizePath(lang, canonica), Astro.site).href;
+const descripcion = hilo.body.replace(/\s+/g, ' ').slice(0, 155);
+// Datos estructurados de conversación (DiscussionForumPosting): Google los usa
+// para entender que es un foro y no contenido copiado.
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'DiscussionForumPosting',
+  headline: hilo.title,
+  text: hilo.body,
+  url,
+  datePublished: hilo.createdAt.toISOString(),
+  author: { '@type': 'Person', name: hilo.author.name, url: new URL(localizePath(lang, `u/${hilo.author.username}`), Astro.site).href },
+  interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/CommentAction', userInteractionCount: hilo.replies },
+  comment: hilo.posts.slice(0, 50).map((p) => ({
+    '@type': 'Comment',
+    text: p.body,
+    datePublished: p.createdAt.toISOString(),
+    author: { '@type': 'Person', name: p.author.name },
+  })),
+};
+---
+
+<BaseLayout
+  title={`${hilo.title} · ${t('forum.title')}`}
+  description={descripcion}
+  ogType="article"
+  jsonLd={[ld, breadcrumbLd([{ name: t('forum.title'), url: new URL(base, Astro.site).href }, { name: hilo.title, url }])]}
+>
+  <section class="frame py-12">
+    <a href={`${base}?cat=${hilo.category}`} class="label no-underline hover:text-ink">← {t('forum.title')} · {catLabel}</a>
+
+    <article class="mt-6 border border-ink bg-surface" data-item={`hilo:${hilo.id}`}>
+      <header class="border-b border-ink p-5">
+        <h1 class="text-headline-lg text-ink md:text-display-mobile">{hilo.title}</h1>
+        <div class="mt-3 flex flex-wrap items-center gap-2 font-mono text-meta-data text-muted">
+          <a href={localizePath(lang, `u/${hilo.author.username}`)} class="flex items-center gap-2 no-underline hover:text-ink">
+            <Avatar userId={hilo.author.userId} name={hilo.author.name} hasAvatar={hilo.author.hasAvatar} size={28} />@{hilo.author.username}
+          </a>
+          <span>· <time datetime={hilo.createdAt.toISOString()}>{formatDate(hilo.createdAt, lang)}</time></span>
+          {puedeOcultar(hilo.author.userId) && <button type="button" data-hide={`/api/forum/threads/${hilo.id}`} data-back={base} class="label ml-auto text-error hover:underline">{t('forum.hide')}</button>}
+        </div>
+      </header>
+      <p class="whitespace-pre-line p-5 text-body-lg text-charcoal">{hilo.body}</p>
+    </article>
+
+    <h2 class="mt-10 border-b border-ink pb-2 text-headline-md text-ink">{t('forum.replies')} <span class="label">· {hilo.posts.length}</span></h2>
+    {hilo.posts.length === 0 ? (
+      <p class="mt-4 font-mono text-body-md text-muted">{t('forum.noReplies')}</p>
+    ) : (
+      <ol class="mt-4 flex flex-col gap-3">
+        {hilo.posts.map((p) => (
+          <li id={`r${p.id}`} class="scroll-mt-24 border border-ink bg-surface">
+            <div class="flex flex-wrap items-center gap-2 border-b border-ink/40 px-4 py-2 font-mono text-meta-data text-muted">
+              <a href={localizePath(lang, `u/${p.author.username}`)} class="flex items-center gap-2 no-underline hover:text-ink">
+                <Avatar userId={p.author.userId} name={p.author.name} hasAvatar={p.author.hasAvatar} size={24} />@{p.author.username}
+              </a>
+              <span>· <a href={`#r${p.id}`} class="no-underline hover:text-ink"><time datetime={p.createdAt.toISOString()}>{formatDate(p.createdAt, lang)}</time></a></span>
+              {puedeOcultar(p.author.userId) && <button type="button" data-hide={`/api/forum/posts/${p.id}`} class="label ml-auto text-error hover:underline">{t('forum.hide')}</button>}
+            </div>
+            <p class="whitespace-pre-line px-4 py-3 text-body-md text-charcoal">{p.body}</p>
+          </li>
+        ))}
+      </ol>
+    )}
+
+    <section class="mt-8 border border-ink bg-film-white p-5">
+      {!viewer ? (
+        <p class="text-body-md text-charcoal">
+          {t('forum.loginToWrite')} <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(localizePath(lang, canonica))}`} class="text-ink">{t('forum.login')} →</a>
+        </p>
+      ) : !conPerfil ? (
+        <p class="text-body-md text-charcoal">
+          {t('forum.needProfile')} <a href={localizePath(lang, 'account')} class="text-ink">{t('forum.createProfile')} →</a>
+        </p>
+      ) : (
+        <form data-reply={hilo.id} class="flex flex-col gap-3" data-error={t('diary.error')} data-limit={t('forum.rateLimited')}>
+          <label class="flex flex-col gap-1">
+            <span class="label">{t('forum.reply')}</span>
+            <textarea name="body" required rows="4" maxlength={BODY_MAX} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md"></textarea>
+          </label>
+          <p class="font-mono text-meta-data text-muted">{t('forum.publicNote')}</p>
+          <div class="flex items-center gap-3">
+            <button type="submit" class="btn btn-primary">{t('forum.publish')}</button>
+            <p data-msg role="status" class="font-mono text-meta-data text-error"></p>
+          </div>
+        </form>
+      )}
+    </section>
+  </section>
+
+  <script>
+    const form = document.querySelector<HTMLFormElement>('[data-reply]');
+    if (form) {
+      const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const boton = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+        boton.disabled = true;
+        msg.textContent = '';
+        try {
+          const res = await fetch(`/api/forum/threads/${form.dataset.reply}/posts`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ body: new FormData(form).get('body') }),
+          });
+          if (res.ok) {
+            const { id } = await res.json();
+            // Se recarga en la respuesta nueva: así sale con su fecha y su sitio.
+            window.location.hash = `r${id}`;
+            window.location.reload();
+            return;
+          }
+          msg.textContent = res.status === 429 ? form.dataset.limit! : form.dataset.error!;
+        } catch {
+          msg.textContent = form.dataset.error!;
+        }
+        boton.disabled = false;
+      });
+    }
+    // Ocultar (autor o administrador): sin confirm() del navegador, con un segundo clic.
+    for (const b of document.querySelectorAll<HTMLButtonElement>('[data-hide]')) {
+      b.addEventListener('click', async () => {
+        if (!b.dataset.armed) {
+          b.dataset.armed = '1';
+          b.textContent = `${b.textContent} ?`;
+          return;
+        }
+        const res = await fetch(b.dataset.hide!, { method: 'DELETE' });
+        if (!res.ok) return;
+        if (b.dataset.back) window.location.href = b.dataset.back;
+        else b.closest('li')?.remove();
+      });
+    }
+  </script>
+</BaseLayout>

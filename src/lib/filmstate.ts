@@ -14,6 +14,8 @@ export interface Marcas {
   favorite?: boolean;
   /** null = quitar la puntuación; undefined = no se toca. */
   rating?: number | null;
+  /** El texto de la reseña; undefined = no se toca. */
+  note?: string | null;
 }
 
 /**
@@ -21,6 +23,9 @@ export interface Marcas {
  *
  *   favorita  ⇒ vista        no se puede tener de favorita algo que no has visto
  *   puntuada  ⇒ vista        puntuar es haberla visto
+ *   reseñada  ⇒ vista        escribir una reseña, también (antes la ficha
+ *                            mandaba «pendiente» y la reseña quedaba en la lista
+ *                            de pendientes y fuera del diario)
  *   pendiente ⇒ no favorita  la misma regla, leída al revés
  *
  * La vuelta NO se cumple a propósito: marcarla como vista no la hace favorita,
@@ -37,8 +42,9 @@ export interface Marcas {
 export function aplicarReglas(m: Marcas): Marcas {
   let { status, favorite } = m;
   const puntuada = m.rating !== undefined && m.rating !== null;
+  const reseñada = typeof m.note === 'string' && m.note.trim().length > 0;
 
-  if (status === undefined && (favorite === true || puntuada)) status = 'seen';
+  if (status === undefined && (favorite === true || puntuada || reseñada)) status = 'seen';
   if (status === 'want') favorite = false;
 
   return { ...m, status, favorite };

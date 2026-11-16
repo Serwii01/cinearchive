@@ -13,6 +13,10 @@ export interface EmailMessage {
   subject: string;
   html: string;
   text: string;
+  /** Cabeceras extra (List-Unsubscribe del boletín). */
+  headers?: Record<string, string>;
+  /** Adónde van las respuestas (el boletín invita a contestar). */
+  replyTo?: string;
 }
 
 /**
@@ -42,7 +46,15 @@ export async function sendEmail(msg: EmailMessage): Promise<boolean> {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ from, to: msg.to, subject: msg.subject, html: msg.html, text: msg.text }),
+      body: JSON.stringify({
+        from,
+        to: msg.to,
+        subject: msg.subject,
+        html: msg.html,
+        text: msg.text,
+        ...(msg.headers ? { headers: msg.headers } : {}),
+        ...(msg.replyTo ? { reply_to: msg.replyTo } : {}),
+      }),
     });
     if (!res.ok) {
       const body = await res.text().catch(() => '');

@@ -33,6 +33,15 @@ const UPDATED: Record<Lang, string> = {
 };
 
 /** Fecha de los textos legales (privacidad y términos). */
+/** Última revisión de la política de privacidad (foro y cineclub). */
+const DATE_PRIVACY: Record<Lang, string> = {
+  es: '16 de noviembre de 2026',
+  en: 'November 16, 2026',
+  gl: '16 de novembro de 2026',
+  eu: '2026ko azaroaren 16a',
+  ca: '16 de novembre de 2026',
+};
+
 const DATE_LEGAL: Record<Lang, string> = {
   es: '30 de junio de 2026',
   en: 'June 30, 2026',
@@ -54,7 +63,7 @@ export const privacy: Record<Lang, LegalDoc> = {
   es: {
     title: 'Política de Privacidad',
     updated: UPDATED.es,
-    date: DATE_LEGAL.es,
+    date: DATE_PRIVACY.es,
     intro:
       'Esta política explica qué datos personales tratamos en Cine Archive, con qué fin y qué derechos tienes. Cine Archive es un proyecto editorial independiente, sin publicidad ni rastreadores.',
     sections: [
@@ -69,6 +78,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Datos de cuenta: tu nombre, tu correo electrónico y una versión cifrada (hash) de tu contraseña. Nunca almacenamos la contraseña en claro.',
           'Datos de uso del servicio: tu lista de películas (guardadas, vistas, favoritas), tus valoraciones y notas, y tus preferencias (géneros y directores favoritos, idioma y tema claro/oscuro).',
+          'Lo que escribes en el foro y en el chat del cineclub, con tu @usuario. Es público: cualquiera puede leerlo, aunque tu perfil sea privado. Puedes ocultar tus mensajes cuando quieras, y se incluyen en la exportación de tu cuenta.',
           'Datos técnicos mínimos: una cookie de sesión para mantenerte identificado y registros temporales en memoria para limitar el abuso (rate limiting) por dirección IP.',
         ],
       },
@@ -91,6 +101,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'La información de las películas procede de The Movie Database (TMDB) y OMDb; la disponibilidad en plataformas la aporta TMDB a partir de datos de JustWatch. Estas consultas se hacen desde nuestro servidor: no enviamos tus datos personales a esos servicios, solo identificadores o términos de búsqueda de películas.',
           'La hemeroteca incrusta el visor de Internet Archive (archive.org). Al abrir un número, tu navegador se conecta a archive.org, que aplica su propia política de privacidad.',
+          'El cineclub reproduce la película desde Internet Archive (archive.org): mientras la ves, tu navegador descarga el vídeo de sus servidores.',
           'Si inicias sesión con Google o GitHub, esos proveedores nos facilitan los datos básicos de tu perfil (nombre y correo) según su propia política.',
           'Para enviar correos transaccionales (como el de restablecer la contraseña) usamos Resend como proveedor de envío; solo trata tu dirección de correo y el contenido del mensaje, en nuestro nombre.',
         ],
@@ -137,7 +148,7 @@ export const privacy: Record<Lang, LegalDoc> = {
   en: {
     title: 'Privacy Policy',
     updated: UPDATED.en,
-    date: DATE_LEGAL.en,
+    date: DATE_PRIVACY.en,
     intro:
       'This policy explains what personal data we process at Cine Archive, why, and what rights you have. Cine Archive is an independent editorial project with no advertising and no trackers.',
     sections: [
@@ -152,6 +163,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Account data: your name, your email and a hashed version of your password. We never store your password in plain text.',
           'Service data: your film list (saved, seen, favourite), your ratings and notes, and your preferences (favourite genres and directors, language and light/dark theme).',
+          'What you write in the forum and in the film club chat, with your @username. It is public: anyone can read it, even if your profile is private. You can hide your messages at any time, and they are included in your account export.',
           'Minimal technical data: a session cookie to keep you signed in, and temporary in-memory records to rate-limit abuse by IP address.',
         ],
       },
@@ -174,6 +186,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Film information comes from The Movie Database (TMDB) and OMDb; streaming availability is supplied by TMDB from JustWatch data. These queries run from our server: we do not send your personal data to them, only film identifiers or search terms.',
           'The periodicals section embeds the Internet Archive viewer (archive.org). When you open an issue, your browser connects to archive.org, which applies its own privacy policy.',
+          'The film club plays the film from the Internet Archive (archive.org): while you watch, your browser downloads the video from its servers.',
           'If you sign in with Google or GitHub, those providers share basic profile data (name and email) with us under their own policies.',
           'To send transactional emails (such as the password reset) we use Resend as our delivery provider; it processes only your email address and the message content, on our behalf.',
         ],
@@ -220,7 +233,7 @@ export const privacy: Record<Lang, LegalDoc> = {
   gl: {
     title: 'Política de Privacidade',
     updated: UPDATED.gl,
-    date: DATE_LEGAL.gl,
+    date: DATE_PRIVACY.gl,
     intro:
       'Esta política explica que datos persoais tratamos en Cine Archive, con que fin e que dereitos tes. Cine Archive é un proxecto editorial independente, sen publicidade nin rastrexadores.',
     sections: [
@@ -235,6 +248,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Datos de conta: o teu nome, o teu correo electrónico e unha versión cifrada (hash) do teu contrasinal. Nunca almacenamos o contrasinal en claro.',
           'Datos de uso do servizo: a túa lista de películas (gardadas, vistas, favoritas), as túas valoracións e notas, e as túas preferencias (xéneros e directores favoritos, idioma e tema claro/escuro).',
+          'O que escribes no foro e no chat do cineclube, co teu @usuario. É público: calquera pode lelo, aínda que o teu perfil sexa privado. Podes agochar as túas mensaxes cando queiras, e inclúense na exportación da túa conta.',
           'Datos técnicos mínimos: unha cookie de sesión para manterte identificado e rexistros temporais en memoria para limitar o abuso (rate limiting) por enderezo IP.',
         ],
       },
@@ -257,6 +271,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'A información das películas procede de The Movie Database (TMDB) e OMDb; a dispoñibilidade en plataformas achégaa TMDB a partir de datos de JustWatch. Estas consultas fanse desde o noso servidor: non enviamos os teus datos persoais a eses servizos, só identificadores ou termos de busca de películas.',
           'A hemeroteca incrusta o visor de Internet Archive (archive.org). Ao abrir un número, o teu navegador conéctase a archive.org, que aplica a súa propia política de privacidade.',
+          'O cineclube reproduce a película desde Internet Archive (archive.org): mentres a ves, o teu navegador descarga o vídeo dos seus servidores.',
           'Se inicias sesión con Google ou GitHub, eses provedores facilítannos os datos básicos do teu perfil (nome e correo) segundo a súa propia política.',
           'Para enviar correos transaccionais (como o de restablecer o contrasinal) usamos Resend como provedor de envío; só trata o teu enderezo de correo e o contido da mensaxe, no noso nome.',
         ],
@@ -303,7 +318,7 @@ export const privacy: Record<Lang, LegalDoc> = {
   eu: {
     title: 'Pribatutasun Politika',
     updated: UPDATED.eu,
-    date: DATE_LEGAL.eu,
+    date: DATE_PRIVACY.eu,
     intro:
       'Politika honek azaltzen du zein datu pertsonal tratatzen ditugun Cine Archive-n, zertarako eta zein eskubide dituzun. Cine Archive proiektu editorial independentea da, publizitaterik eta jarraipen-tresnarik gabea.',
     sections: [
@@ -318,6 +333,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Kontuaren datuak: zure izena, zure helbide elektronikoa eta pasahitzaren bertsio zifratua (hash-a). Ez dugu inoiz pasahitza testu argian gordetzen.',
           'Zerbitzuaren erabilera-datuak: zure filmen zerrenda (gordeak, ikusiak, gogokoak), zure balorazioak eta oharrak, eta zure hobespenak (gogoko generoak eta zuzendariak, hizkuntza eta gai argia/iluna).',
+          'Foroan eta zineklubaren txatean idazten duzuna, zure @erabiltzailearekin. Publikoa da: edonork irakur dezake, zure profila pribatua izan arren. Zure mezuak nahi duzunean ezkuta ditzakezu, eta zure kontuaren esportazioan sartzen dira.',
           'Gutxieneko datu teknikoak: saioari eusteko cookie bat eta memorian aldi baterako erregistroak, IP helbidearen bidez gehiegikeria mugatzeko (rate limiting).',
         ],
       },
@@ -340,6 +356,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Filmen informazioa The Movie Database (TMDB) eta OMDb-tik dator; plataformetako eskuragarritasuna TMDBk ematen du, JustWatch-en datuetatik. Kontsulta horiek gure zerbitzaritik egiten dira: ez dizkiegu zure datu pertsonalak bidaltzen, filmen identifikatzaileak edo bilaketa-terminoak baizik.',
           'Hemerotekak Internet Archive-ren (archive.org) ikustailea txertatzen du. Ale bat irekitzean, zure nabigatzailea archive.org-era konektatzen da, eta hark bere pribatutasun-politika aplikatzen du.',
+          'Zineklubak Internet Archive-tik (archive.org) erreproduzitzen du filma: ikusten duzun bitartean, zure nabigatzaileak haren zerbitzarietatik deskargatzen du bideoa.',
           'Google edo GitHub-ekin saioa hasten baduzu, hornitzaile horiek zure profileko oinarrizko datuak (izena eta korreoa) ematen dizkigute beren politikaren arabera.',
           'Posta transakzionalak bidaltzeko (pasahitza berrezartzekoa, adibidez) Resend erabiltzen dugu bidalketa-hornitzaile gisa; zure posta-helbidea eta mezuaren edukia soilik tratatzen ditu, gure izenean.',
         ],
@@ -386,7 +403,7 @@ export const privacy: Record<Lang, LegalDoc> = {
   ca: {
     title: 'Política de Privadesa',
     updated: UPDATED.ca,
-    date: DATE_LEGAL.ca,
+    date: DATE_PRIVACY.ca,
     intro:
       'Aquesta política explica quines dades personals tractem a Cine Archive, amb quina finalitat i quins drets tens. Cine Archive és un projecte editorial independent, sense publicitat ni rastrejadors.',
     sections: [
@@ -401,6 +418,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'Dades de compte: el teu nom, el teu correu electrònic i una versió xifrada (hash) de la teva contrasenya. Mai no emmagatzemem la contrasenya en clar.',
           "Dades d'ús del servei: la teva llista de pel·lícules (desades, vistes, preferides), les teves valoracions i notes, i les teves preferències (gèneres i directors preferits, idioma i tema clar/fosc).",
+          "El que escrius al fòrum i al xat del cineclub, amb el teu @usuari. És públic: qualsevol ho pot llegir, encara que el teu perfil sigui privat. Pots amagar els teus missatges quan vulguis, i s'inclouen a l'exportació del teu compte.",
           "Dades tècniques mínimes: una galeta de sessió per mantenir-te identificat i registres temporals en memòria per limitar l'abús (rate limiting) per adreça IP.",
         ],
       },
@@ -423,6 +441,7 @@ export const privacy: Record<Lang, LegalDoc> = {
         body: [
           'La informació de les pel·lícules prové de The Movie Database (TMDB) i OMDb; la disponibilitat a plataformes la proporciona TMDB a partir de dades de JustWatch. Aquestes consultes es fan des del nostre servidor: no enviem les teves dades personals a aquests serveis, només identificadors o termes de cerca de pel·lícules.',
           "L'hemeroteca incrusta el visor d'Internet Archive (archive.org). En obrir un número, el teu navegador es connecta a archive.org, que aplica la seva pròpia política de privadesa.",
+          "El cineclub reprodueix la pel·lícula des d'Internet Archive (archive.org): mentre la mires, el teu navegador descarrega el vídeo dels seus servidors.",
           'Si inicies sessió amb Google o GitHub, aquests proveïdors ens faciliten les dades bàsiques del teu perfil (nom i correu) segons la seva pròpia política.',
           "Per enviar correus transaccionals (com el de restablir la contrasenya) fem servir Resend com a proveïdor d'enviament; només tracta la teva adreça de correu i el contingut del missatge, en nom nostre.",
         ],

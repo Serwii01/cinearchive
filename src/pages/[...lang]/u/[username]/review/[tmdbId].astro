@@ -175,11 +175,12 @@ const ld = target.isPrivate
             />
 
             <label class="label mt-4 block" for="edit-note">{t('controls.note')}</label>
-            <textarea id="edit-note" rows="4" class="w-full border border-ink bg-white px-2 py-1 font-body text-body-md focus:bg-film-white focus:outline-none">{row.note}</textarea>
+            <textarea id="edit-note" rows="4" maxlength="2000" class="w-full border border-ink bg-white px-2 py-1 font-body text-body-md focus:bg-film-white focus:outline-none">{row.note}</textarea>
             <div class="mt-3 flex items-center gap-2">
               <button type="button" id="edit-save" class="btn btn-primary">{t('controls.save')}</button>
               <button type="button" id="edit-cancel" class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-white">{t('profile.cancel')}</button>
             </div>
+            <p id="edit-msg" role="status" class="mt-2 font-mono text-meta-data text-error empty:hidden" data-error={t('diary.error')}></p>
           </div>
         )}
 
@@ -307,21 +308,31 @@ const ld = target.isPrivate
         }
       };
 
+      // Si no se guarda, se dice: antes el botón volvía a estar activo y nada más.
+      const msgEl = byId('edit-msg');
+      const fallo = () => { if (msgEl) msgEl.textContent = msgEl.dataset.error ?? ''; };
       saveBtn?.addEventListener('click', async () => {
         const note = noteEl.value.trim();
         saveBtn.disabled = true;
+        if (msgEl) msgEl.textContent = '';
         try {
           // Reseña vacía (sin nota ni valoración) = eliminarla y volver al perfil.
           if (rating === 0 && !note) {
             const res = await post(tmdbId, null, null);
             if (res.ok) { window.location.href = redirect; return; }
+            fallo();
             saveBtn.disabled = false;
             return;
           }
           const res = await post(tmdbId, rating || null, note || null, dateEl?.value || undefined);
-          if (res.ok) { updateView(rating, note, dateEl?.value || ''); close(); }
+          // Sin fecha, el servidor la sella con la de hoy: se pinta esa.
+          const n = new Date();
+          const hoy = new Date(n.getTime() - n.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+          if (res.ok) { updateView(rating, note, dateEl?.value || hoy); close(); }
+          else fallo();
           saveBtn.disabled = false;
         } catch {
+          fallo();
           saveBtn.disabled = false;
         }
       });

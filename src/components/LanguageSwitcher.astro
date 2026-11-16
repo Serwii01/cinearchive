@@ -28,7 +28,10 @@ const langs = Object.keys(languages) as Lang[];
 // no existe.
 const actual = stripLangPrefix(pedida.pathname);
 const seccion = /^\/offline\/?$/.test(actual) ? '' : actual;
-const pathFor = (target: Lang) => localizePath(target, seccion);
+// Las fichas de película no son simétricas (el slug lleva el título de cada
+// idioma): su ruta en cada idioma la dice la propia página (BaseLayout).
+const alternas = Astro.locals.alternatePaths;
+const pathFor = (target: Lang) => localizePath(target, alternas?.[target] ?? seccion);
 ---
 
 <details data-lang-menu class="relative">

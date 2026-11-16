@@ -1,0 +1,41 @@
+---
+/**
+ * Baja de las novedades por correo, desde el enlace del boletín. Se pide un
+ * clic más (un formulario, no la baja al abrir): los filtros del correo abren
+ * los enlaces para revisarlos y darían de baja a cualquiera.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { normalizeLang, useTranslations, localizePath, type Lang } from '../../../i18n/ui';
+import { verifyUnsubscribe } from '../../../lib/newsletter';
+
+export const prerender = false;
+
+const lang: Lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const u = Astro.url.searchParams.get('u') ?? '';
+const tk = Astro.url.searchParams.get('t') ?? '';
+const hecho = Astro.url.searchParams.has('hecho');
+const valido = !!u && !!tk && verifyUnsubscribe(u, tk);
+const aqui = `${localizePath(lang, 'newsletter/baja')}?${new URLSearchParams({ u, t: tk })}`;
+---
+
+<BaseLayout title={t('news.unsubTitle')} description={t('news.unsubTitle')} noindex>
+  <section class="frame max-w-2xl py-16">
+    <span class="label">{t('news.label')}</span>
+    <h1 class="mt-3 text-display-mobile">{t('news.unsubTitle')}</h1>
+    {hecho ? (
+      <p class="mt-6 text-body-lg text-charcoal">{t('news.unsubDone')}</p>
+    ) : !valido ? (
+      <p class="mt-6 text-body-lg text-charcoal">{t('news.unsubBad')} <a href={localizePath(lang, 'account')} class="text-ink">{t('news.toAccount')} →</a></p>
+    ) : (
+      <form method="post" action="/api/news/unsubscribe" class="mt-6">
+        <p class="text-body-lg text-charcoal">{t('news.unsubAsk')}</p>
+        <input type="hidden" name="u" value={u} />
+        <input type="hidden" name="t" value={tk} />
+        <input type="hidden" name="volver" value={aqui} />
+        <button type="submit" class="btn btn-primary mt-6">{t('news.unsubButton')}</button>
+      </form>
+    )}
+    <p class="mt-8 font-mono text-meta-data text-muted">{t('news.unsubNote')}</p>
+  </section>
+</BaseLayout>

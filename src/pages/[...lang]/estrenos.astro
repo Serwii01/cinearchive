@@ -8,11 +8,12 @@
  * busca: «estrenos cine esta semana». Igual que /cines.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { savedTitles, filmPathFor } from '../../lib/filmlinks';
 import { normalizeLang, useTranslations, localizePath, locales } from '../../i18n/ui';
 import { filmSlug } from '../../lib/slug';
 import { fillers } from '../../lib/grid';
 import { genreName } from '../../data/genres';
-import { getCartelera, type ReleaseFilm, type Cartelera } from '../../lib/releases';
+import { getCartelera, type ReleaseFilm, type Cartelera, carteleraDelDia, diaValido, PRIMER_DIA, type CarteleraDelDia } from '../../lib/releases';
 import { itemListLd, breadcrumbLd } from '../../lib/seo';
 
 export const prerender = false;
@@ -43,7 +44,25 @@ const sections: { id: string; title: string; sub: string; films: ReleaseFilm[] }
 
 // Clases enteras para que Tailwind las genere.
 const navCols = ['', '', 'sm:grid-cols-2', 'sm:grid-cols-3', 'sm:grid-cols-4'][sections.length];
-const filmHref = (f: ReleaseFilm) => localizePath(lang, `film/${filmSlug(f.id, f.title)}`);
+
+// «¿Qué echaban en los cines el día que…?» (?dia=AAAA-MM-DD): lo estrenado en
+// España en las cuatro semanas anteriores (ver lib/releases.ts). La URL se
+// puede compartir tal cual.
+const hoyIso = new Date().toISOString().slice(0, 10);
+const dia = diaValido(Astro.url.searchParams.get('dia'), hoyIso);
+let delDia: CarteleraDelDia | null = null;
+if (dia) {
+  try {
+    delDia = await carteleraDelDia(dia, lang);
+  } catch {
+    delDia = null;
+  }
+}
+const diaPedidoMal = Astro.url.searchParams.has('dia') && !dia;
+
+// Con la URL definitiva de cada ficha (sin título, el enlace era el id pelado y redirigía).
+const titulosEnlaces = await savedTitles([...sections.flatMap((s) => s.films.map((f) => f.id)), ...(delDia?.films ?? []).map((f) => f.id)]);
+const filmHref = (f: ReleaseFilm) => localizePath(lang, filmPathFor(f.id, lang, titulosEnlaces, f.title));
 const pageUrl = new URL(localizePath(lang, 'estrenos'), Astro.site).href;
 const jsonLd = [
   ...(cartelera && cartelera.thisWeek.length + cartelera.nextWeek.length > 0
@@ -67,7 +86,11 @@ const jsonLd = [
       <span class="label">{t('releases.label')}</span>
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('releases.title')}</h1>
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('releases.intro')}</p>
-      <a href={localizePath(lang, 'cines')} class="btn btn-primary mt-6 no-underline">{t('releases.findCinema')} →</a>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <a href={localizePath(lang, 'cines')} class="btn btn-primary no-underline">{t('releases.findCinema')} →</a>
+        {/* La máquina del tiempo está al final de una página larga: se llega desde aquí. */}
+        <a href="#el-dia" class="btn btn-secondary no-underline">{t('releases.dayTitle')} ↓&#xFE0E;</a>
+      </div>
       {sections.length > 1 && (
         // Rejilla y no fila flexible: al partirse en dos líneas, la fila
         // dejaba un hueco negro al final. De dos en dos en móvil (con 3
@@ -126,6 +149,52 @@ const jsonLd = [
         );
       })
     )}
+
+    <section id="el-dia" class="mt-16 scroll-mt-24 border-t-2 border-ink pt-8">
+      <span class="label">{t('releases.dayLabel')}</span>
+      <h2 class="mt-2 text-headline-lg text-ink md:text-display-mobile">{t('releases.dayTitle')}</h2>
+      <p class="mt-3 max-w-2xl text-body-md text-charcoal">{t('releases.dayIntro')}</p>
+      <form method="get" action={`${localizePath(lang, 'estrenos')}#el-dia`} class="mt-5 flex flex-wrap items-end gap-3">
+        <label class="flex flex-col gap-1">
+          <span class="label">{t('releases.dayField')}</span>
+          <input type="date" name="dia" required min={PRIMER_DIA} max={hoyIso} value={dia ?? ''} class="border border-ink bg-white px-3 py-2 font-mono text-body-md text-ink" />
+        </label>
+        <button type="submit" class="btn btn-primary">{t('releases.dayGo')}</button>
+      </form>
+      {diaPedidoMal && <p class="mt-3 font-mono text-meta-data text-error">{t('releases.dayBad')}</p>}
+      {dia && !delDia && <p class="mt-6 font-mono text-body-md text-muted">{t('releases.unavailable')}</p>}
+      {delDia && (
+        <div class="mt-8">
+          <p class="font-mono text-meta-data text-muted first-letter:uppercase">
+            {(delDia.ambito === 'es' ? t('releases.dayEs') : t('releases.dayWorld')).replace('{date}', longDate(delDia.dia))}
+          </p>
+          {delDia.films.length === 0 ? (
+            <p class="mt-4 font-mono text-body-md text-muted">{t('releases.dayNone')}</p>
+          ) : (
+            <ul class="mt-4 grid ruled grid-cols-2 border border-ink sm:grid-cols-3 lg:grid-cols-6">
+              {delDia.films.map((f) => (
+                <li class="bg-surface">
+                  <a href={filmHref(f)} class="group flex h-full flex-col no-underline hover:bg-film-white">
+                    <div class="aspect-[2/3] w-full border-b border-ink bg-charcoal">
+                      <img src={f.poster} srcset={f.posterSrcset ?? undefined} sizes="(min-width: 1024px) 16vw, (min-width: 640px) 33vw, 50vw" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                    </div>
+                    <div class="flex flex-1 flex-col p-2">
+                      <p class="font-display text-body-md leading-tight text-ink group-hover:underline">{f.title}</p>
+                      <p class="mt-1 font-mono text-meta-data text-muted"><time datetime={f.date}>{f.date.slice(0, 4)}</time></p>
+                    </div>
+                  </a>
+                </li>
+              ))}
+              {fillers(delDia.films.length, { base: 2, sm: 3, lg: 6 }).map((cls) => <li class={`bg-surface ${cls}`} aria-hidden="true"></li>)}
+            </ul>
+          )}
+          <div class="mt-6 flex flex-wrap items-center gap-3 border border-ink bg-film-white p-4">
+            <p class="text-body-md text-charcoal">{t('releases.dayToday')}</p>
+            <a href={localizePath(lang, 'cines')} class="btn btn-secondary ml-auto no-underline">{t('releases.findCinema')} →</a>
+          </div>
+        </div>
+      )}
+    </section>
 
     <p class="mt-10 font-mono text-meta-data text-muted">{t('releases.source')}</p>
   </section>

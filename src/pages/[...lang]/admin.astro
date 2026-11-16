@@ -359,6 +359,30 @@ const etiquetaSemana = (iso: string) =>
       <span id="email-test-out" class="font-mono text-meta-data text-muted" aria-live="polite"></span>
     </div>
 
+    {/* ================= BOLETÍN DE NOVEDADES ================= */}
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.newsTitle')}</h2>
+    <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.newsNote')}</p>
+    <div
+      id="news"
+      class="mt-4 border border-ink bg-surface p-4"
+      data-l-sent={t('admin.newsSent')}
+      data-l-pending={t('admin.newsPending')}
+      data-l-running={t('admin.newsRunning')}
+      data-l-done={t('admin.newsDone')}
+      data-l-confirm={t('admin.newsConfirm')}
+      data-l-fail={t('admin.emailTestFail')}
+      data-l-ok={t('admin.emailTestOk')}
+    >
+      <p class="font-display text-headline-md text-ink" data-news-subject>…</p>
+      <p class="mt-1 font-mono text-meta-data text-muted" data-news-state>…</p>
+      <div class="mt-4 flex flex-wrap items-center gap-3">
+        <a href="/api/admin/newsletter?preview=es" target="_blank" rel="noopener" class="label border border-ink px-3 py-2 no-underline transition-colors hover:bg-ink hover:text-background">{t('admin.newsPreview')} ↗&#xFE0E;</a>
+        <button type="button" data-news-test class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-background">{t('admin.newsTest')}</button>
+        <button type="button" data-news-send class="label border border-error px-3 py-2 text-error transition-colors hover:bg-error hover:text-white">{t('admin.newsSend')}</button>
+        <span data-news-out class="font-mono text-meta-data text-muted" aria-live="polite"></span>
+      </div>
+    </div>
+
     {/* ================= FUENTES EXTERNAS ================= */}
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.sources')}</h2>
     <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.sourcesNote')}</p>
@@ -814,6 +838,50 @@ const etiquetaSemana = (iso: string) =>
       btn.disabled = false;
     }
   });
+
+  // Boletín: estado, prueba al propio administrador y envío a todos (con
+  // segundo clic de confirmación). Mientras envía, se refresca cada 3 s.
+  const news = document.getElementById('news');
+  if (news) {
+    const N = news.dataset;
+    const q = <E extends HTMLElement>(s: string) => news.querySelector<E>(s)!;
+    const out = q('[data-news-out]');
+    let issue = '';
+    const pinta = async () => {
+      const r = await fetch('/api/admin/newsletter', { cache: 'no-store' }).catch(() => null);
+      if (!r?.ok) return;
+      const d = (await r.json()) as { issue: string; subject: string; pending: number; sent: number; job: { running: boolean; sent: number; failed: number; total: number } | null };
+      issue = d.issue;
+      q('[data-news-subject]').textContent = d.subject;
+      const j = d.job;
+      q('[data-news-state]').textContent = j?.running
+        ? `${N.lRunning} ${j.sent + j.failed} / ${j.total}`
+        : `${d.issue} · ${N.lSent} ${formatNum(d.sent, nf)} · ${N.lPending} ${formatNum(d.pending, nf)}${j ? ` · ${N.lDone} (${j.sent} / ${j.failed})` : ''}`;
+      q<HTMLButtonElement>('[data-news-send]').disabled = !!j?.running || d.pending === 0;
+      if (j?.running) setTimeout(pinta, 3000);
+    };
+    void pinta();
+    q('[data-news-test]').addEventListener('click', async () => {
+      out.textContent = L.working;
+      const r = await fetch('/api/admin/newsletter', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'test', lang: document.documentElement.lang }) }).catch(() => null);
+      const j = (await r?.json().catch(() => ({}))) as { ok?: boolean; to?: string };
+      out.textContent = r?.ok && j.ok ? `${N.lOk} → ${j.to ?? ''}` : N.lFail!;
+    });
+    const enviar = q<HTMLButtonElement>('[data-news-send]');
+    enviar.addEventListener('click', async () => {
+      // Primer clic: pide confirmación; el segundo envía. Nada de confirm().
+      if (!enviar.dataset.armed) {
+        enviar.dataset.armed = '1';
+        out.textContent = N.lConfirm!;
+        return;
+      }
+      delete enviar.dataset.armed;
+      out.textContent = L.working;
+      const r = await fetch('/api/admin/newsletter', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'send', confirm: issue }) }).catch(() => null);
+      out.textContent = r?.ok ? '' : N.lFail!;
+      void pinta();
+    });
+  }
 
   async function mantenimiento(body: object) {
     const res = await fetch('/api/admin/db', {

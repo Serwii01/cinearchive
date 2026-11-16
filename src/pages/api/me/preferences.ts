@@ -42,6 +42,8 @@ const patchSchema = z.object({
   theme: z.enum(['light', 'dark']).optional(),
   // Correo cuando alguien te sigue (ver lib/followmail.ts).
   followEmail: z.boolean().optional(),
+  // Novedades de Cine Archive por correo (ver lib/newsletter.ts).
+  newsEmail: z.boolean().optional(),
 });
 
 /** PATCH — actualizar preferencias. */
@@ -70,6 +72,7 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
       favoritePeople: favoritePeople ?? [],
       theme: data.theme ?? 'light',
       followEmail: data.followEmail ?? false,
+      newsEmail: data.newsEmail ?? true,
       updatedAt: new Date(),
     })
     .onConflictDoUpdate({
@@ -81,6 +84,7 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
         ...(favoritePeople !== undefined ? { favoritePeople } : {}),
         ...(data.theme !== undefined ? { theme: data.theme } : {}),
         ...(data.followEmail !== undefined ? { followEmail: data.followEmail } : {}),
+        ...(data.newsEmail !== undefined ? { newsEmail: data.newsEmail } : {}),
         updatedAt: new Date(),
       },
     });

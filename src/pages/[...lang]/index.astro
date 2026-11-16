@@ -1,6 +1,11 @@
 ---
 export const prerender = false; // la película del día se obtiene en cada visita (cacheada por día)
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CineclubSessions from '../../components/forum/CineclubSessions.astro';
+import { upcomingSessions } from '../../lib/cineclub';
+import { listThreads } from '../../lib/forum';
+import { threadPath } from '../../lib/forumpaths';
+import { savedTitles, filmPathFor } from '../../lib/filmlinks';
 import { INSTAGRAM_URL } from '../../data/social';
 import TmdbSearch from '../../components/TmdbSearch.astro';
 import IssueCard from '../../components/IssueCard.astro';
@@ -63,6 +68,13 @@ const bookPicks = sample(books, 4);
 const manifestoCopy = manifesto[lang];
 
 const film = await getFilmOfDay(lang);
+
+// Foro en portada: las dos próximas sesiones del cineclub y los tres hilos con
+// movimiento más reciente. Si la base de datos falla, sale solo el cineclub.
+const foroAhora = Date.now();
+const foroSesiones = upcomingSessions(foroAhora, 2);
+const foroHilos = await listThreads({ limit: 3 }).catch(() => []);
+const filmHref = film ? localizePath(lang, filmPathFor(film.tmdbId, lang, await savedTitles([film.tmdbId]), film.title)) : null;
 
 // Datos estructurados de la home: WebSite (con cuadro de búsqueda) + Organization.
 // El logo va en PNG: Google no garantiza leer el SVG del favicon como logo.
@@ -153,7 +165,7 @@ const homeJsonLd = [
         {
           film ? (
             <div class="flex min-h-0 flex-col border-t border-ink md:col-span-5 md:overflow-hidden md:border-t-0">
-              <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} aria-label={film.title} class="block border-b border-ink md:min-h-0 md:flex-1 md:overflow-hidden">
+              <a href={filmHref!} aria-label={film.title} class="block border-b border-ink md:min-h-0 md:flex-1 md:overflow-hidden">
                 {/* Es la imagen más grande de la primera pantalla: va con prioridad, y
                     el móvil se queda con la de 780 px en vez de bajar la de 1280. */}
                 {film.backdrop ? (
@@ -175,11 +187,11 @@ const homeJsonLd = [
               <div class="flex flex-col gap-2 p-6">
                 <span class="label">{t('home.filmOfDay')}</span>
                 <h1 class="font-display text-headline-lg leading-tight">
-                  <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} class="text-ink no-underline hover:text-muted">{film.title}</a>
+                  <a href={filmHref!} class="text-ink no-underline hover:text-muted">{film.title}</a>
                 </h1>
                 <p class="line-clamp-2 text-body-md text-charcoal">{film.overview}</p>
                 <div class="mt-2 flex flex-wrap items-center gap-4">
-                  <a href={localizePath(lang, `film/${filmSlug(film.tmdbId, film.title)}`)} class="btn btn-primary no-underline">{t('home.viewFilm')}</a>
+                  <a href={filmHref!} class="btn btn-primary no-underline">{t('home.viewFilm')}</a>
                   <span class="font-mono text-meta-data text-muted">
                     {[film.year, film.voteAverage ? `★ ${film.voteAverage.toFixed(1)}` : null].filter(Boolean).join(' · ')}
                   </span>
@@ -253,7 +265,7 @@ const homeJsonLd = [
   <section class="frame py-12">
     <div class="mb-6 flex items-end justify-between border-b border-ink pb-3">
       <h2 class="text-headline-lg text-ink">{t('nav.library')}</h2>
-      <a href={localizePath(lang, 'library')} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
+      <a href={`${localizePath(lang, 'archive')}#biblioteca`} class="label tap no-underline hover:text-ink">{t('home.seeAll')} →</a>
     </div>
     <div class="grid ruled grid-cols-2 border border-ink sm:grid-cols-4">
       {
@@ -395,6 +407,32 @@ const homeJsonLd = [
       </div>
       <span class="btn btn-primary shrink-0 self-start md:self-center">{t('games.play')} →</span>
     </a>
+  </section>
+
+  {/* FORO — el cineclub (próximas sesiones) y lo último que se habla. */}
+  <section class="frame pt-12" aria-labelledby="home-foro">
+    <div class="flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-3">
+      <div>
+        <span class="label">{t('forum.label')}</span>
+        <h2 id="home-foro" class="mt-1 font-display text-headline-lg leading-tight text-ink">{t('forum.homeTitle')}</h2>
+      </div>
+      <a href={localizePath(lang, 'foro')} class="label tap no-underline hover:text-ink">{t('forum.enterForum')} →</a>
+    </div>
+    <div class="mt-4">
+      <CineclubSessions lang={lang} sessions={foroSesiones} now={foroAhora} />
+    </div>
+    {foroHilos.length > 0 && (
+      <ul class="mt-4 border border-ink">
+        {foroHilos.map((h, i) => (
+          <li class:list={['bg-surface', i > 0 && 'border-t border-ink/40']}>
+            <a href={localizePath(lang, threadPath(h.id, h.title))} class="flex items-baseline justify-between gap-3 px-4 py-3 no-underline hover:bg-film-white">
+              <span class="font-display text-body-lg leading-tight text-ink">{h.title}</span>
+              <span class="shrink-0 font-mono text-meta-data text-muted">@{h.author.username} · {h.replies} {t('forum.replies')}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
   </section>
 
   {/* ENCUENTRA TU CINE (salas reales · OpenStreetMap) */}

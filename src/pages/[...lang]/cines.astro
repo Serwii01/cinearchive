@@ -41,7 +41,11 @@ const t = useTranslations(lang);
       <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('cines.title')}</h1>
       <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('cines.intro')}</p>
       {/* El mismo botón que lleva de Estrenos aquí, en sentido contrario. */}
-      <a href={localizePath(lang, 'estrenos')} class="btn btn-primary mt-6 no-underline">{t('cines.seeReleases')} →</a>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <a href={localizePath(lang, 'estrenos')} class="btn btn-primary no-underline">{t('cines.seeReleases')} →</a>
+        {/* Y hacia atrás en el tiempo: lo que echaban un día cualquiera (Estrenos, #el-dia). */}
+        <a href={`${localizePath(lang, 'estrenos')}#el-dia`} class="btn btn-secondary no-underline">{t('releases.dayTitle')} →</a>
+      </div>
     </header>
 
     {/* Buscador: por ciudad/CP (con autocompletado) o por geolocalización */}

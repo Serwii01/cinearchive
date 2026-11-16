@@ -696,6 +696,33 @@
       }
     },
     {
+      "id": "the-navigator-1924",
+      "title": "The Navigator",
+      "original_title": "The Navigator",
+      "director": "Donald Crisp, Buster Keaton",
+      "year": 1924,
+      "country": "EE. UU.",
+      "runtime": 60,
+      "lang": "en",
+      "blurb_es": "Dos ricos que no saben hacer nada, a la deriva en un transatlántico vacío: el mayor éxito de taquilla de Buster Keaton.",
+      "blurb_en": "Two rich people who can’t do a thing, adrift on an empty ocean liner: Buster Keaton’s biggest box-office hit.",
+      "blurb_gl": "Dous ricos que non saben facer nada, á deriva nun transatlántico baleiro: o maior éxito de billeteira de Buster Keaton.",
+      "blurb_eu": "Ezer egiten ez dakiten bi aberats, itsasontzi huts batean noraezean: Buster Keatonen leihatilako arrakastarik handiena.",
+      "blurb_ca": "Dos rics que no saben fer res, a la deriva en un transatlàntic buit: el gran èxit de taquilla de Buster Keaton.",
+      "tags": [
+        "comedy",
+        "adventure"
+      ],
+      "sound": false,
+      "language": "en",
+      "tmdbId": 32318,
+      "titles": {
+        "es": "El navegante",
+        "en": "The Navigator"
+      },
+      "published": "2020-06-16"
+    },
+    {
       "id": "BattleshipPotemkin",
       "title": "Battleship Potemkin",
       "original_title": "Bronenosets Potyomkin",
@@ -857,6 +884,33 @@
         "en": "The Phantom of the Opera",
         "ca": "El fantasma de l'Òpera"
       }
+    },
+    {
+      "id": "silent-seven-chances",
+      "title": "Seven Chances",
+      "original_title": "Seven Chances",
+      "director": "Buster Keaton",
+      "year": 1925,
+      "country": "EE. UU.",
+      "runtime": 57,
+      "lang": "en",
+      "blurb_es": "Keaton tiene hasta las siete de la tarde para casarse y heredar siete millones: la estampida de novias y la avalancha de rocas son de antología.",
+      "blurb_en": "Keaton has until seven in the evening to marry and inherit seven million: the stampede of brides and the rockslide are legendary.",
+      "blurb_gl": "Keaton ten ata as sete da tarde para casar e herdar sete millóns: a estampida de noivas e a avalancha de rochas son de antoloxía.",
+      "blurb_eu": "Keatonek arratsaldeko zazpiak arte du ezkontzeko eta zazpi milioi heredatzeko: emaztegaien izualdia eta harri-jausia antologiakoak dira.",
+      "blurb_ca": "Keaton té fins a les set de la tarda per casar-se i heretar set milions: l’estampida de núvies i l’allau de roques són d’antologia.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": false,
+      "language": "en",
+      "tmdbId": 32600,
+      "titles": {
+        "es": "Siete ocasiones",
+        "en": "Seven Chances",
+        "ca": "Set ocasions"
+      },
+      "published": "2020-12-02"
     },
     {
       "id": "1926-faust",
@@ -1052,6 +1106,34 @@
       }
     },
     {
+      "id": "the-jazz-singer_1927",
+      "title": "The Jazz Singer",
+      "original_title": "The Jazz Singer",
+      "director": "Alan Crosland",
+      "year": 1927,
+      "country": "EE. UU.",
+      "runtime": 96,
+      "lang": "en",
+      "blurb_es": "El primer largometraje con diálogo sincronizado: Al Jolson canta, suelta su «todavía no habéis oído nada» y el cine mudo empieza a acabarse.",
+      "blurb_en": "The first feature with synchronised dialogue: Al Jolson sings, says “you ain’t heard nothin’ yet” and silent cinema begins to end.",
+      "blurb_gl": "A primeira longa con diálogo sincronizado: Al Jolson canta, solta o seu «aínda non oístes nada» e o cine mudo comeza a acabarse.",
+      "blurb_eu": "Elkarrizketa sinkronizatua duen lehen film luzea: Al Jolsonek abesten du, «oraindik ez duzue ezer entzun» botatzen du eta zinema mutua amaitzen hasten da.",
+      "blurb_ca": "El primer llargmetratge amb diàleg sincronitzat: Al Jolson canta, deixa anar el seu «encara no heu sentit res» i el cinema mut comença a acabar-se.",
+      "tags": [
+        "drama"
+      ],
+      "sound": true,
+      "language": "en",
+      "tmdbId": 939,
+      "titles": {
+        "es": "El cantor de jazz",
+        "en": "The Jazz Singer",
+        "ca": "El cantor de jazz"
+      },
+      "published": "2022-12-21",
+      "image": "ia"
+    },
+    {
       "id": "SteamboatBillJr",
       "title": "Steamboat Bill, Jr.",
       "original_title": "Steamboat Bill, Jr.",
@@ -1209,6 +1291,139 @@
       }
     },
     {
+      "id": "speedy_1928",
+      "title": "Speedy",
+      "original_title": "Speedy",
+      "director": "Ted Wilde",
+      "year": 1928,
+      "country": "EE. UU.",
+      "runtime": 86,
+      "lang": "en",
+      "blurb_es": "La última muda de Harold Lloyd, rodada por las calles de Nueva York, con el último tranvía de caballos de la ciudad y un cameo de Babe Ruth.",
+      "blurb_en": "Harold Lloyd’s last silent film, shot on the streets of New York, with the city’s last horse-drawn streetcar and a cameo by Babe Ruth.",
+      "blurb_gl": "A última muda de Harold Lloyd, rodada polas rúas de Nova York, co último tranvía de cabalos da cidade e un cameo de Babe Ruth.",
+      "blurb_eu": "Harold Lloyden azken film mutua, New Yorkeko kaleetan filmatua, hiriko zaldi-tranbia zaharrenarekin eta Babe Ruthen agerraldi labur batekin.",
+      "blurb_ca": "L’última muda de Harold Lloyd, rodada pels carrers de Nova York, amb l’últim tramvia de cavalls de la ciutat i un cameo de Babe Ruth.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": false,
+      "language": "en",
+      "tmdbId": 22595,
+      "titles": {
+        "es": "Relámpago",
+        "en": "Speedy"
+      },
+      "published": "2023-12-28"
+    },
+    {
+      "id": "TheCameramanWBusterKeatonFULLHDVideoDailymotion",
+      "title": "The Cameraman",
+      "original_title": "The Cameraman",
+      "director": "Edward Sedgwick",
+      "year": 1928,
+      "country": "EE. UU.",
+      "runtime": 75,
+      "lang": "en",
+      "blurb_es": "Keaton se hace cámara de noticiarios para conquistar a una chica: su primera película en la MGM y la última en la que todavía mandaba él.",
+      "blurb_en": "Keaton becomes a newsreel cameraman to win a girl: his first film at MGM and the last in which he was still in charge.",
+      "blurb_gl": "Keaton faise cámara de noticiarios para conquistar unha rapaza: a súa primeira película na MGM e a última na que aínda mandaba el.",
+      "blurb_eu": "Keaton albistegietako kamera bihurtzen da neska bat konkistatzeko: MGMn egin zuen lehen filma eta oraindik berak agintzen zuen azkena.",
+      "blurb_ca": "Keaton es fa càmera de noticiaris per conquistar una noia: la seva primera pel·lícula a la MGM i l’última en què encara manava ell.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": false,
+      "language": "en",
+      "tmdbId": 31411,
+      "titles": {
+        "es": "El cameraman",
+        "en": "The Cameraman"
+      },
+      "published": "2016-04-10"
+    },
+    {
+      "id": "the-last-command",
+      "title": "The Last Command",
+      "original_title": "The Last Command",
+      "director": "Josef von Sternberg",
+      "year": 1928,
+      "country": "EE. UU.",
+      "runtime": 89,
+      "lang": "en",
+      "blurb_es": "Un general del zar acaba de extra en Hollywood a las órdenes del revolucionario al que conoció: Emil Jannings ganó con ella el primer Óscar al mejor actor.",
+      "blurb_en": "A tsarist general ends up a Hollywood extra directed by the revolutionary he once knew: Emil Jannings won the first Best Actor Oscar for it.",
+      "blurb_gl": "Un xeneral do tsar acaba de extra en Hollywood ás ordes do revolucionario ao que coñeceu: Emil Jannings gañou con ela o primeiro Óscar ao mellor actor.",
+      "blurb_eu": "Tsarraren jeneral bat Hollywoodeko figurante bihurtzen da, ezagutu zuen iraultzailearen aginduetara: Emil Janningsek aktore onenaren lehen Oscarra irabazi zuen honekin.",
+      "blurb_ca": "Un general del tsar acaba d’extra a Hollywood a les ordres del revolucionari que havia conegut: Emil Jannings hi va guanyar el primer Oscar al millor actor.",
+      "tags": [
+        "drama"
+      ],
+      "sound": false,
+      "language": "en",
+      "tmdbId": 52679,
+      "titles": {
+        "es": "La última orden",
+        "en": "The Last Command"
+      },
+      "published": "2021-08-13"
+    },
+    {
+      "id": "the-circus-charlie-chaplin",
+      "title": "The Circus",
+      "original_title": "The Circus",
+      "director": "Charles Chaplin",
+      "year": 1928,
+      "country": "EE. UU.",
+      "runtime": 72,
+      "lang": "en",
+      "blurb_es": "Charlot se mete en un circo huyendo de la policía y se convierte en la estrella sin saberlo; le valió a Chaplin un Óscar honorífico en la primera gala.",
+      "blurb_en": "The Tramp runs into a circus fleeing the police and becomes its star without knowing it; it earned Chaplin an honorary Oscar at the first ceremony.",
+      "blurb_gl": "Charlot métese nun circo fuxindo da policía e convértese na estrela sen sabelo; valeulle a Chaplin un Óscar honorífico na primeira gala.",
+      "blurb_eu": "Charlot zirku batean sartzen da poliziari ihesi eta izarra bihurtzen da konturatu gabe; Chaplini ohorezko Oscar bat eman zion lehen galan.",
+      "blurb_ca": "Charlot es fica en un circ fugint de la policia i se’n converteix en l’estrella sense saber-ho; li va valer a Chaplin un Oscar honorífic a la primera gala.",
+      "tags": [
+        "comedy"
+      ],
+      "sound": false,
+      "language": "en",
+      "essential": true,
+      "tmdbId": 28978,
+      "titles": {
+        "es": "El circo",
+        "en": "The Circus",
+        "ca": "El circ"
+      },
+      "published": "2026-01-11"
+    },
+    {
+      "id": "the-docks-of-new-york",
+      "title": "The Docks of New York",
+      "original_title": "The Docks of New York",
+      "director": "Josef von Sternberg",
+      "year": 1928,
+      "country": "EE. UU.",
+      "runtime": 76,
+      "lang": "en",
+      "blurb_es": "Un fogonero de permiso saca del agua a una mujer y se casa con ella esa misma noche: los muelles y la niebla de von Sternberg en su mejor momento.",
+      "blurb_en": "A stoker on shore leave pulls a woman out of the water and marries her that same night: von Sternberg’s docks and fog at their best.",
+      "blurb_gl": "Un fogueiro de permiso saca da auga a unha muller e casa con ela esa mesma noite: os peiraos e a néboa de von Sternberg no seu mellor momento.",
+      "blurb_eu": "Baimenean dagoen sutegizain batek emakume bat uretatik ateratzen du eta gau berean ezkontzen da harekin: von Sternbergen kaiak eta lainoa onenean.",
+      "blurb_ca": "Un fogoner de permís treu de l’aigua una dona i s’hi casa aquella mateixa nit: els molls i la boira de von Sternberg en el seu millor moment.",
+      "tags": [
+        "drama",
+        "romance"
+      ],
+      "sound": false,
+      "language": "en",
+      "tmdbId": 885,
+      "titles": {
+        "es": "Los muelles de Nueva York",
+        "en": "The Docks of New York"
+      },
+      "published": "2021-08-13"
+    },
+    {
       "id": "ChelovekskinoapparatomManWithAMovieCamera",
       "title": "Man with a Movie Camera",
       "original_title": "Человек с киноаппаратом",
@@ -1311,6 +1526,33 @@
         "en": "Un Chien Andalou",
         "ca": "Un chien andalou"
       }
+    },
+    {
+      "id": "the-cocoanuts_1929",
+      "title": "The Cocoanuts",
+      "original_title": "The Cocoanuts",
+      "director": "Robert Florey, Joseph Santley",
+      "year": 1929,
+      "country": "EE. UU.",
+      "runtime": 93,
+      "lang": "en",
+      "blurb_es": "La primera película de los hermanos Marx: un hotel en Florida, una subasta de terrenos y el número del «¿por qué un pato?».",
+      "blurb_en": "The Marx Brothers’ first film: a Florida hotel, a land auction and the “why a duck?” routine.",
+      "blurb_gl": "A primeira película dos irmáns Marx: un hotel en Florida, unha poxa de terreos e o número do «por que un pato?».",
+      "blurb_eu": "Marx anaien lehen filma: Floridako hotel bat, lur-enkante bat eta «zergatik ahate bat?» zenbakia.",
+      "blurb_ca": "La primera pel·lícula dels germans Marx: un hotel a Florida, una subhasta de terrenys i el número del «per què un ànec?».",
+      "tags": [
+        "comedy"
+      ],
+      "sound": true,
+      "language": "en",
+      "tmdbId": 20625,
+      "titles": {
+        "es": "Los cuatro cocos",
+        "en": "The Cocoanuts",
+        "ca": "Els quatre cocos"
+      },
+      "published": "2024-12-18"
     },
     {
       "id": "A_propos_de_Nice",
@@ -1471,6 +1713,34 @@
         "en": "The Blue Angel",
         "ca": "L'Àngel Blau"
       }
+    },
+    {
+      "id": "the-big-trail_1930",
+      "title": "The Big Trail",
+      "original_title": "The Big Trail",
+      "director": "Raoul Walsh",
+      "year": 1930,
+      "country": "EE. UU.",
+      "runtime": 117,
+      "lang": "en",
+      "blurb_es": "El primer papel protagonista de John Wayne, en un western de caravanas rodado en un formato panorámico que casi nadie pudo ver en su día.",
+      "blurb_en": "John Wayne’s first leading role, in a wagon-train western shot in a widescreen format almost nobody could see at the time.",
+      "blurb_gl": "O primeiro papel protagonista de John Wayne, nun western de caravanas rodado nun formato panorámico que case ninguén puido ver no seu día.",
+      "blurb_eu": "John Wayneren lehen protagonista-papera, garai hartan ia inork ikusi ezin izan zuen formatu panoramiko batean filmatutako karabana-western batean.",
+      "blurb_ca": "El primer paper protagonista de John Wayne, en un western de caravanes rodat en un format panoràmic que gairebé ningú va poder veure en el seu moment.",
+      "tags": [
+        "western",
+        "adventure"
+      ],
+      "sound": true,
+      "language": "en",
+      "tmdbId": 42640,
+      "titles": {
+        "es": "La gran jornada",
+        "en": "The Big Trail",
+        "ca": "La gran jornada"
+      },
+      "published": "2025-12-25"
     },
     {
       "id": "white_zombie",

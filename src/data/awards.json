@@ -12,583 +12,1262 @@
           "year": 2026,
           "title": "One Battle After Another",
           "director": "Paul Thomas Anderson",
-          "tmdbId": 1054867
+          "tmdbId": 1054867,
+          "titles": {
+            "es": "Una batalla tras otra",
+            "en": "One Battle After Another",
+            "gl": "Una batalla tras otra",
+            "eu": "Una batalla tras otra",
+            "ca": "Una batalla rere l'altra"
+          }
         },
         {
           "year": 2025,
           "title": "Anora",
           "director": "Sean Baker",
-          "tmdbId": 1064213
+          "tmdbId": 1064213,
+          "titles": {
+            "es": "Anora",
+            "en": "Anora",
+            "gl": "Anora",
+            "eu": "Anora",
+            "ca": "Anora"
+          }
         },
         {
           "year": 2024,
           "title": "Oppenheimer",
           "director": "Christopher Nolan",
-          "tmdbId": 872585
+          "tmdbId": 872585,
+          "titles": {
+            "es": "Oppenheimer",
+            "en": "Oppenheimer",
+            "gl": "Oppenheimer",
+            "eu": "Oppenheimer",
+            "ca": "Oppenheimer"
+          }
         },
         {
           "year": 2023,
           "title": "Everything Everywhere All at Once",
           "director": "Dan Kwan, Daniel Scheinert",
-          "tmdbId": 545611
+          "tmdbId": 545611,
+          "titles": {
+            "es": "Todo a la vez en todas partes",
+            "en": "Everything Everywhere All at Once",
+            "gl": "Todo a la vez en todas partes",
+            "eu": "Todo a la vez en todas partes",
+            "ca": "Tot alhora a tot arreu"
+          }
         },
         {
           "year": 2022,
           "title": "CODA",
           "director": "Siân Héder",
-          "tmdbId": 776503
+          "tmdbId": 776503,
+          "titles": {
+            "es": "CODA: Los sonidos del silencio",
+            "en": "CODA",
+            "gl": "CODA: Los sonidos del silencio",
+            "eu": "CODA: Los sonidos del silencio",
+            "ca": "CODA: Los sonidos del silencio"
+          }
         },
         {
           "year": 2021,
           "title": "Nomadland",
           "director": "Chloé Zhao",
-          "tmdbId": 581734
+          "tmdbId": 581734,
+          "titles": {
+            "es": "Nomadland",
+            "en": "Nomadland",
+            "gl": "Nomadland",
+            "eu": "Nomadland",
+            "ca": "Nomadland"
+          }
         },
         {
           "year": 2020,
           "title": "Parasite",
           "director": "Bong Joon-ho",
-          "tmdbId": 496243
+          "tmdbId": 496243,
+          "titles": {
+            "es": "Parásitos",
+            "en": "Parasite",
+            "gl": "Parásitos",
+            "eu": "Parásitos",
+            "ca": "Paràsits"
+          }
         },
         {
           "year": 2019,
           "title": "Green Book",
           "director": "Peter Farrelly",
-          "tmdbId": 490132
+          "tmdbId": 490132,
+          "titles": {
+            "es": "Green Book",
+            "en": "Green Book",
+            "gl": "Green Book",
+            "eu": "Green Book",
+            "ca": "Green book"
+          }
         },
         {
           "year": 2018,
           "title": "The Shape of Water",
           "director": "Guillermo del Toro",
-          "tmdbId": 399055
+          "tmdbId": 399055,
+          "titles": {
+            "es": "La forma del agua",
+            "en": "The Shape of Water",
+            "gl": "La forma del agua",
+            "eu": "La forma del agua",
+            "ca": "La forma de l'aigua"
+          }
         },
         {
           "year": 2017,
           "title": "Moonlight",
           "director": "Barry Jenkins",
-          "tmdbId": 376867
+          "tmdbId": 376867,
+          "titles": {
+            "es": "Moonlight",
+            "en": "Moonlight",
+            "gl": "Moonlight",
+            "eu": "Moonlight",
+            "ca": "Moonlight"
+          }
         },
         {
           "year": 2016,
           "title": "Spotlight",
           "director": "Tom McCarthy",
-          "tmdbId": 314365
+          "tmdbId": 314365,
+          "titles": {
+            "es": "Spotlight",
+            "en": "Spotlight",
+            "gl": "Spotlight",
+            "eu": "Spotlight",
+            "ca": "Spotlight"
+          }
         },
         {
           "year": 2015,
           "title": "Birdman",
           "director": "Alejandro González Iñárritu",
-          "tmdbId": 194662
+          "tmdbId": 194662,
+          "titles": {
+            "es": "Birdman o la inesperada virtud de la ignorancia",
+            "en": "Birdman or (The Unexpected Virtue of Ignorance)",
+            "gl": "Birdman o la inesperada virtud de la ignorancia",
+            "eu": "Birdman o la inesperada virtud de la ignorancia",
+            "ca": "Birdman o la inesperada virtud de la ignorancia"
+          }
         },
         {
           "year": 2014,
           "title": "12 Years a Slave",
           "director": "Steve McQueen",
-          "tmdbId": 76203
+          "tmdbId": 76203,
+          "titles": {
+            "es": "12 años de esclavitud",
+            "en": "12 Years a Slave",
+            "gl": "12 años de esclavitud",
+            "eu": "12 años de esclavitud",
+            "ca": "12 anys d’esclavitud"
+          }
         },
         {
           "year": 2013,
           "title": "Argo",
           "director": "Ben Affleck",
-          "tmdbId": 68734
+          "tmdbId": 68734,
+          "titles": {
+            "es": "Argo",
+            "en": "Argo",
+            "gl": "Argo",
+            "eu": "Argo",
+            "ca": "Argo"
+          }
         },
         {
           "year": 2012,
           "title": "The Artist",
           "director": "Michel Hazanavicius",
-          "tmdbId": 74643
+          "tmdbId": 74643,
+          "titles": {
+            "es": "The Artist",
+            "en": "The Artist",
+            "gl": "The Artist",
+            "eu": "The Artist",
+            "ca": "L'artista"
+          }
         },
         {
           "year": 2011,
           "title": "The King's Speech",
           "director": "Tom Hooper",
-          "tmdbId": 45269
+          "tmdbId": 45269,
+          "titles": {
+            "es": "El discurso del rey",
+            "en": "The King's Speech",
+            "gl": "El discurso del rey",
+            "eu": "El discurso del rey",
+            "ca": "El discurs del rei"
+          }
         },
         {
           "year": 2010,
           "title": "The Hurt Locker",
           "director": "Kathryn Bigelow",
-          "tmdbId": 12162
+          "tmdbId": 12162,
+          "titles": {
+            "es": "En tierra hostil",
+            "en": "The Hurt Locker",
+            "gl": "En tierra hostil",
+            "eu": "En tierra hostil",
+            "ca": "En terra hostil"
+          }
         },
         {
           "year": 2009,
           "title": "Slumdog Millionaire",
           "director": "Danny Boyle",
-          "tmdbId": 12405
+          "tmdbId": 12405,
+          "titles": {
+            "es": "Slumdog Millionaire",
+            "en": "Slumdog Millionaire",
+            "gl": "Slumdog Millionaire",
+            "eu": "Slumdog Millionaire",
+            "ca": "Slumdog millionaire"
+          }
         },
         {
           "year": 2008,
           "title": "No Country for Old Men",
           "director": "Joel Coen, Ethan Coen",
-          "tmdbId": 6977
+          "tmdbId": 6977,
+          "titles": {
+            "es": "No es país para viejos",
+            "en": "No Country for Old Men",
+            "gl": "No es país para viejos",
+            "eu": "No es país para viejos",
+            "ca": "No es país para viejos"
+          }
         },
         {
           "year": 2007,
           "title": "The Departed",
           "director": "Martin Scorsese",
-          "tmdbId": 1422
+          "tmdbId": 1422,
+          "titles": {
+            "es": "Infiltrados",
+            "en": "The Departed",
+            "gl": "Infiltrados",
+            "eu": "Infiltrados",
+            "ca": "Infiltrats"
+          }
         },
         {
           "year": 2006,
           "title": "Crash",
           "director": "Paul Haggis",
-          "tmdbId": 1640
+          "tmdbId": 1640,
+          "titles": {
+            "es": "Crash (Colisión)",
+            "en": "Crash",
+            "gl": "Crash (Colisión)",
+            "eu": "Crash",
+            "ca": "Crash (Colisión)"
+          }
         },
         {
           "year": 2005,
           "title": "Million Dollar Baby",
           "director": "Clint Eastwood",
-          "tmdbId": 70
+          "tmdbId": 70,
+          "titles": {
+            "es": "Million Dollar Baby",
+            "en": "Million Dollar Baby",
+            "gl": "Million Dollar Baby",
+            "eu": "Million Dollar Baby",
+            "ca": "Million dollar baby"
+          }
         },
         {
           "year": 2004,
           "title": "The Lord of the Rings: The Return of the King",
           "director": "Peter Jackson",
-          "tmdbId": 122
+          "tmdbId": 122,
+          "titles": {
+            "es": "El señor de los anillos: El retorno del rey",
+            "en": "The Lord of the Rings: The Return of the King",
+            "gl": "El señor de los anillos: El retorno del rey",
+            "eu": "El señor de los anillos: El retorno del rey",
+            "ca": "El Senyor dels Anells: El retorn del rei"
+          }
         },
         {
           "year": 2003,
           "title": "Chicago",
           "director": "Rob Marshall",
-          "tmdbId": 1574
+          "tmdbId": 1574,
+          "titles": {
+            "es": "Chicago",
+            "en": "Chicago",
+            "gl": "Chicago",
+            "eu": "Chicago",
+            "ca": "Chicago"
+          }
         },
         {
           "year": 2002,
           "title": "A Beautiful Mind",
           "director": "Ron Howard",
-          "tmdbId": 453
+          "tmdbId": 453,
+          "titles": {
+            "es": "Una mente maravillosa",
+            "en": "A Beautiful Mind",
+            "gl": "Una mente maravillosa",
+            "eu": "Una mente maravillosa",
+            "ca": "Una ment meravellosa"
+          }
         },
         {
           "year": 2001,
           "title": "Gladiator",
           "director": "Ridley Scott",
-          "tmdbId": 98
+          "tmdbId": 98,
+          "titles": {
+            "es": "Gladiator",
+            "en": "Gladiator",
+            "gl": "Gladiator",
+            "eu": "Gladiator",
+            "ca": "Gladiator"
+          }
         },
         {
           "year": 2000,
           "title": "American Beauty",
           "director": "Sam Mendes",
-          "tmdbId": 14
+          "tmdbId": 14,
+          "titles": {
+            "es": "American Beauty",
+            "en": "American Beauty",
+            "gl": "American Beauty",
+            "eu": "Amerikar Edertasuna",
+            "ca": "American beauty"
+          }
         },
         {
           "year": 1999,
           "title": "Shakespeare in Love",
           "director": "John Madden",
-          "tmdbId": 1934
+          "tmdbId": 1934,
+          "titles": {
+            "es": "Shakespeare enamorado",
+            "en": "Shakespeare in Love",
+            "gl": "Shakespeare enamorado",
+            "eu": "Shakespeare enamorado",
+            "ca": "Shakespeare in love"
+          }
         },
         {
           "year": 1998,
           "title": "Titanic",
           "director": "James Cameron",
-          "tmdbId": 597
+          "tmdbId": 597,
+          "titles": {
+            "es": "Titanic",
+            "en": "Titanic",
+            "gl": "Titanic",
+            "eu": "Titanic",
+            "ca": "Titanic"
+          }
         },
         {
           "year": 1997,
           "title": "The English Patient",
           "director": "Anthony Minghella",
-          "tmdbId": 409
+          "tmdbId": 409,
+          "titles": {
+            "es": "El paciente inglés",
+            "en": "The English Patient",
+            "gl": "El paciente inglés",
+            "eu": "El paciente inglés",
+            "ca": "El pacient anglès"
+          }
         },
         {
           "year": 1996,
           "title": "Braveheart",
           "director": "Mel Gibson",
-          "tmdbId": 197
+          "tmdbId": 197,
+          "titles": {
+            "es": "Braveheart",
+            "en": "Braveheart",
+            "gl": "Braveheart",
+            "eu": "Braveheart",
+            "ca": "Braveheart"
+          }
         },
         {
           "year": 1994,
           "title": "Schindler's List",
           "director": "Steven Spielberg",
-          "tmdbId": 424
+          "tmdbId": 424,
+          "titles": {
+            "es": "La lista de Schindler",
+            "en": "Schindler's List",
+            "gl": "La lista de Schindler",
+            "eu": "La lista de Schindler",
+            "ca": "La llista de Schindler"
+          }
         },
         {
           "year": 1993,
           "title": "Unforgiven",
           "director": "Clint Eastwood",
-          "tmdbId": 33
+          "tmdbId": 33,
+          "titles": {
+            "es": "Sin perdón",
+            "en": "Unforgiven",
+            "gl": "Sin perdón",
+            "eu": "Sin perdón",
+            "ca": "Sense perdó"
+          }
         },
         {
           "year": 1992,
           "title": "The Silence of the Lambs",
           "director": "Jonathan Demme",
-          "tmdbId": 274
+          "tmdbId": 274,
+          "titles": {
+            "es": "El silencio de los corderos",
+            "en": "The Silence of the Lambs",
+            "gl": "El silencio de los corderos",
+            "eu": "El silencio de los corderos",
+            "ca": "El silenci dels anyells"
+          }
         },
         {
           "year": 1991,
           "title": "Dances with Wolves",
           "director": "Kevin Costner",
-          "tmdbId": 581
+          "tmdbId": 581,
+          "titles": {
+            "es": "Bailando con lobos",
+            "en": "Dances with Wolves",
+            "gl": "Bailando con lobos",
+            "eu": "Otsoekin dantzan",
+            "ca": "Ballant amb llops"
+          }
         },
         {
           "year": 1990,
           "title": "Driving Miss Daisy",
           "director": "Bruce Beresford",
-          "tmdbId": 403
+          "tmdbId": 403,
+          "titles": {
+            "es": "Paseando a Miss Daisy",
+            "en": "Driving Miss Daisy",
+            "gl": "Paseando a Miss Daisy",
+            "eu": "Miss Daisyren Gidari",
+            "ca": "Tot passejant Miss Daisy"
+          }
         },
         {
           "year": 1989,
           "title": "Rain Man",
           "director": "Barry Levinson",
-          "tmdbId": 380
+          "tmdbId": 380,
+          "titles": {
+            "es": "Rain Man",
+            "en": "Rain Man",
+            "gl": "Rain Man",
+            "eu": "Rain Man",
+            "ca": "Rain man"
+          }
         },
         {
           "year": 1988,
           "title": "The Last Emperor",
           "director": "Bernardo Bertolucci",
-          "tmdbId": 746
+          "tmdbId": 746,
+          "titles": {
+            "es": "El último emperador",
+            "en": "The Last Emperor",
+            "gl": "El último emperador",
+            "eu": "El último emperador",
+            "ca": "L'últim emperador"
+          }
         },
         {
           "year": 1987,
           "title": "Platoon",
           "director": "Oliver Stone",
-          "tmdbId": 792
+          "tmdbId": 792,
+          "titles": {
+            "es": "Platoon",
+            "en": "Platoon",
+            "gl": "Platoon",
+            "eu": "Platoon",
+            "ca": "Platoon"
+          }
         },
         {
           "year": 1986,
           "title": "Out of Africa",
           "director": "Sydney Pollack",
-          "tmdbId": 606
+          "tmdbId": 606,
+          "titles": {
+            "es": "Memorias de África",
+            "en": "Out of Africa",
+            "gl": "Memorias de África",
+            "eu": "Memorias de África",
+            "ca": "Memòries d'Àfrica"
+          }
         },
         {
           "year": 1985,
           "title": "Amadeus",
           "director": "Miloš Forman",
-          "tmdbId": 279
+          "tmdbId": 279,
+          "titles": {
+            "es": "Amadeus",
+            "en": "Amadeus",
+            "gl": "Amadeus",
+            "eu": "Amadeus",
+            "ca": "Amadeus"
+          }
         },
         {
           "year": 1984,
           "title": "Terms of Endearment",
           "director": "James L. Brooks",
-          "tmdbId": 11050
+          "tmdbId": 11050,
+          "titles": {
+            "es": "La fuerza del cariño",
+            "en": "Terms of Endearment",
+            "gl": "La fuerza del cariño",
+            "eu": "La fuerza del cariño",
+            "ca": "La força de la tendresa"
+          }
         },
         {
           "year": 1983,
           "title": "Gandhi",
           "director": "Richard Attenborough",
-          "tmdbId": 783
+          "tmdbId": 783,
+          "titles": {
+            "es": "Gandhi",
+            "en": "Gandhi",
+            "gl": "Gandhi",
+            "eu": "Gandhi",
+            "ca": "Gandhi"
+          }
         },
         {
           "year": 1982,
           "title": "Chariots of Fire",
           "director": "Hugh Hudson",
-          "tmdbId": 9443
+          "tmdbId": 9443,
+          "titles": {
+            "es": "Carros de fuego",
+            "en": "Chariots of Fire",
+            "gl": "Carros de fuego",
+            "eu": "Carros de fuego",
+            "ca": "Carros de foc"
+          }
         },
         {
           "year": 1981,
           "title": "Ordinary People",
           "director": "Robert Redford",
-          "tmdbId": 16619
+          "tmdbId": 16619,
+          "titles": {
+            "es": "Gente corriente",
+            "en": "Ordinary People",
+            "gl": "Gente corriente",
+            "eu": "Gente corriente",
+            "ca": "Gent corrent"
+          }
         },
         {
           "year": 1980,
           "title": "Kramer vs. Kramer",
           "director": "Robert Benton",
-          "tmdbId": 12102
+          "tmdbId": 12102,
+          "titles": {
+            "es": "Kramer contra Kramer",
+            "en": "Kramer vs. Kramer",
+            "gl": "Kramer contra Kramer",
+            "eu": "Kramer contra Kramer",
+            "ca": "Kramer contra Kramer"
+          }
         },
         {
           "year": 1979,
           "title": "The Deer Hunter",
           "director": "Michael Cimino",
-          "tmdbId": 11778
+          "tmdbId": 11778,
+          "titles": {
+            "es": "El cazador",
+            "en": "The Deer Hunter",
+            "gl": "El cazador",
+            "eu": "El cazador",
+            "ca": "El caçador"
+          }
         },
         {
           "year": 1978,
           "title": "Annie Hall",
           "director": "Woody Allen",
-          "tmdbId": 703
+          "tmdbId": 703,
+          "titles": {
+            "es": "Annie Hall",
+            "en": "Annie Hall",
+            "gl": "Annie Hall",
+            "eu": "Annie Hall",
+            "ca": "Annie Hall"
+          }
         },
         {
           "year": 1977,
           "title": "Rocky",
           "director": "John G. Avildsen",
-          "tmdbId": 1366
+          "tmdbId": 1366,
+          "titles": {
+            "es": "Rocky",
+            "en": "Rocky",
+            "gl": "Rocky",
+            "eu": "Rocky",
+            "ca": "Rocky"
+          }
         },
         {
           "year": 1976,
           "title": "One Flew Over the Cuckoo's Nest",
           "director": "Miloš Forman",
-          "tmdbId": 510
+          "tmdbId": 510,
+          "titles": {
+            "es": "Alguien voló sobre el nido del cuco",
+            "en": "One Flew Over the Cuckoo's Nest",
+            "gl": "Alguien voló sobre el nido del cuco",
+            "eu": "Kuku Habiaren Gainean",
+            "ca": "Algú va volar sobre el niu del cucut"
+          }
         },
         {
           "year": 1975,
           "title": "The Godfather Part II",
           "director": "Francis Ford Coppola",
-          "tmdbId": 240
+          "tmdbId": 240,
+          "titles": {
+            "es": "El padrino II",
+            "en": "The Godfather Part II",
+            "gl": "El padrino II",
+            "eu": "Aitajauna 2",
+            "ca": "El padrí 2"
+          }
         },
         {
           "year": 1974,
           "title": "The Sting",
           "director": "George Roy Hill",
-          "tmdbId": 9277
+          "tmdbId": 9277,
+          "titles": {
+            "es": "El golpe",
+            "en": "The Sting",
+            "gl": "El golpe",
+            "eu": "El golpe",
+            "ca": "El cop"
+          }
         },
         {
           "year": 1973,
           "title": "The Godfather",
           "director": "Francis Ford Coppola",
-          "tmdbId": 238
+          "tmdbId": 238,
+          "titles": {
+            "es": "El padrino",
+            "en": "The Godfather",
+            "gl": "El padrino",
+            "eu": "Aitajauna",
+            "ca": "El padrí"
+          }
         },
         {
           "year": 1972,
           "title": "The French Connection",
           "director": "William Friedkin",
-          "tmdbId": 1051
+          "tmdbId": 1051,
+          "titles": {
+            "es": "French Connection. Contra el imperio de la droga",
+            "en": "The French Connection",
+            "gl": "French Connection. Contra el imperio de la droga",
+            "eu": "French Connection. Contra el imperio de la droga",
+            "ca": "The French Connection"
+          }
         },
         {
           "year": 1971,
           "title": "Patton",
           "director": "Franklin J. Schaffner",
-          "tmdbId": 11202
+          "tmdbId": 11202,
+          "titles": {
+            "es": "Patton",
+            "en": "Patton",
+            "gl": "Patton",
+            "eu": "Patton",
+            "ca": "Patton"
+          }
         },
         {
           "year": 1970,
           "title": "Midnight Cowboy",
           "director": "John Schlesinger",
-          "tmdbId": 3116
+          "tmdbId": 3116,
+          "titles": {
+            "es": "Cowboy de medianoche",
+            "en": "Midnight Cowboy",
+            "gl": "Cowboy de medianoche",
+            "eu": "Cowboy de medianoche",
+            "ca": "Cowboy de mitjanit"
+          }
         },
         {
           "year": 1969,
           "title": "Oliver!",
           "director": "Carol Reed",
-          "tmdbId": 17917
+          "tmdbId": 17917,
+          "titles": {
+            "es": "Oliver",
+            "en": "Oliver!",
+            "gl": "Oliver",
+            "eu": "Oliver",
+            "ca": "Oliver"
+          }
         },
         {
           "year": 1968,
           "title": "In the Heat of the Night",
           "director": "Norman Jewison",
-          "tmdbId": 10633
+          "tmdbId": 10633,
+          "titles": {
+            "es": "En el calor de la noche",
+            "en": "In the Heat of the Night",
+            "gl": "En el calor de la noche",
+            "eu": "Gaueko Berotasunean",
+            "ca": "En la calor de la nit"
+          }
         },
         {
           "year": 1967,
           "title": "A Man for All Seasons",
           "director": "Fred Zinnemann",
-          "tmdbId": 874
+          "tmdbId": 874,
+          "titles": {
+            "es": "Un hombre para la eternidad",
+            "en": "A Man for All Seasons",
+            "gl": "Un hombre para la eternidad",
+            "eu": "Un hombre para la eternidad",
+            "ca": "Un home per a l’eternitat"
+          }
         },
         {
           "year": 1966,
           "title": "The Sound of Music",
           "director": "Robert Wise",
-          "tmdbId": 15121
+          "tmdbId": 15121,
+          "titles": {
+            "es": "Sonrisas y lágrimas",
+            "en": "The Sound of Music",
+            "gl": "Sonrisas y lágrimas",
+            "eu": "Sonrisas y lágrimas",
+            "ca": "Somriures i llàgrimes"
+          }
         },
         {
           "year": 1965,
           "title": "My Fair Lady",
           "director": "George Cukor",
-          "tmdbId": 11113
+          "tmdbId": 11113,
+          "titles": {
+            "es": "My Fair Lady (Mi bella dama)",
+            "en": "My Fair Lady",
+            "gl": "My Fair Lady (Mi bella dama)",
+            "eu": "My Fair Lady (Mi bella dama)",
+            "ca": "My Fair Lady"
+          }
         },
         {
           "year": 1964,
           "title": "Tom Jones",
           "director": "Tony Richardson",
-          "tmdbId": 5769
+          "tmdbId": 5769,
+          "titles": {
+            "es": "Tom Jones",
+            "en": "Tom Jones",
+            "gl": "Tom Jones",
+            "eu": "Tom Jones",
+            "ca": "Tom Jones"
+          }
         },
         {
           "year": 1963,
           "title": "Lawrence of Arabia",
           "director": "David Lean",
-          "tmdbId": 947
+          "tmdbId": 947,
+          "titles": {
+            "es": "Lawrence de Arabia",
+            "en": "Lawrence of Arabia",
+            "gl": "Lawrence de Arabia",
+            "eu": "Lawrence Arabiakoa",
+            "ca": "Lawrence d'Aràbia"
+          }
         },
         {
           "year": 1962,
           "title": "West Side Story",
           "director": "Robert Wise, Jerome Robbins",
-          "tmdbId": 1725
+          "tmdbId": 1725,
+          "titles": {
+            "es": "West Side Story (Amor sin barreras)",
+            "en": "West Side Story",
+            "gl": "West Side Story (Amor sin barreras)",
+            "eu": "West Side Story (Amor sin barreras)",
+            "ca": "West Side Story"
+          }
         },
         {
           "year": 1961,
           "title": "The Apartment",
           "director": "Billy Wilder",
-          "tmdbId": 284
+          "tmdbId": 284,
+          "titles": {
+            "es": "El apartamento",
+            "en": "The Apartment",
+            "gl": "El apartamento",
+            "eu": "El apartamento",
+            "ca": "L'apartament"
+          }
         },
         {
           "year": 1960,
           "title": "Ben-Hur",
           "director": "William Wyler",
-          "tmdbId": 665
+          "tmdbId": 665,
+          "titles": {
+            "es": "Ben-Hur",
+            "en": "Ben-Hur",
+            "gl": "Ben-Hur",
+            "eu": "Ben-Hur",
+            "ca": "Ben Hur"
+          }
         },
         {
           "year": 1959,
           "title": "Gigi",
           "director": "Vincente Minnelli",
-          "tmdbId": 17281
+          "tmdbId": 17281,
+          "titles": {
+            "es": "Gigi",
+            "en": "Gigi",
+            "gl": "Gigi",
+            "eu": "Gigi",
+            "ca": "Gigi"
+          }
         },
         {
           "year": 1958,
           "title": "The Bridge on the River Kwai",
           "director": "David Lean",
-          "tmdbId": 826
+          "tmdbId": 826,
+          "titles": {
+            "es": "El puente sobre el río Kwai",
+            "en": "The Bridge on the River Kwai",
+            "gl": "El puente sobre el río Kwai",
+            "eu": "Kwai Ibaiko Zubia",
+            "ca": "El pont del riu Kwai"
+          }
         },
         {
           "year": 1957,
           "title": "Around the World in 80 Days",
           "director": "Michael Anderson",
-          "tmdbId": 2897
+          "tmdbId": 2897,
+          "titles": {
+            "es": "La vuelta al mundo en 80 días",
+            "en": "Around the World in 80 Days",
+            "gl": "La vuelta al mundo en 80 días",
+            "eu": "La vuelta al mundo en 80 días",
+            "ca": "La volta al món en vuitanta dies"
+          }
         },
         {
           "year": 1956,
           "title": "Marty",
           "director": "Delbert Mann",
-          "tmdbId": 15919
+          "tmdbId": 15919,
+          "titles": {
+            "es": "Marty",
+            "en": "Marty",
+            "gl": "Marty",
+            "eu": "Marty",
+            "ca": "Marty"
+          }
         },
         {
           "year": 1955,
           "title": "On the Waterfront",
           "director": "Elia Kazan",
-          "tmdbId": 654
+          "tmdbId": 654,
+          "titles": {
+            "es": "La ley del silencio",
+            "en": "On the Waterfront",
+            "gl": "La ley del silencio",
+            "eu": "La ley del silencio",
+            "ca": "La llei del silenci"
+          }
         },
         {
           "year": 1954,
           "title": "From Here to Eternity",
           "director": "Fred Zinnemann",
-          "tmdbId": 11426
+          "tmdbId": 11426,
+          "titles": {
+            "es": "De aquí a la eternidad",
+            "en": "From Here to Eternity",
+            "gl": "De aquí a la eternidad",
+            "eu": "De aquí a la eternidad",
+            "ca": "D’aquí a l’eternitat"
+          }
         },
         {
           "year": 1953,
           "title": "The Greatest Show on Earth",
           "director": "Cecil B. DeMille",
-          "tmdbId": 27191
+          "tmdbId": 27191,
+          "titles": {
+            "es": "El mayor espectáculo del mundo",
+            "en": "The Greatest Show on Earth",
+            "gl": "El mayor espectáculo del mundo",
+            "eu": "El mayor espectáculo del mundo",
+            "ca": "L’espectacle més gran del món"
+          }
         },
         {
           "year": 1952,
           "title": "An American in Paris",
           "director": "Vincente Minnelli",
-          "tmdbId": 2769
+          "tmdbId": 2769,
+          "titles": {
+            "es": "Un americano en París",
+            "en": "An American in Paris",
+            "gl": "Un americano en París",
+            "eu": "Un americano en París",
+            "ca": "Un americà a París"
+          }
         },
         {
           "year": 1951,
           "title": "All About Eve",
           "director": "Joseph L. Mankiewicz",
-          "tmdbId": 705
+          "tmdbId": 705,
+          "titles": {
+            "es": "Eva al desnudo",
+            "en": "All About Eve",
+            "gl": "Eva al desnudo",
+            "eu": "Eva al desnudo",
+            "ca": "Tot sobre Eva"
+          }
         },
         {
           "year": 1950,
           "title": "All the King's Men",
           "director": "Robert Rossen",
-          "tmdbId": 25430
+          "tmdbId": 25430,
+          "titles": {
+            "es": "El político",
+            "en": "All the King's Men",
+            "gl": "El político",
+            "eu": "El político",
+            "ca": "El político"
+          }
         },
         {
           "year": 1949,
           "title": "Hamlet",
           "director": "Laurence Olivier",
-          "tmdbId": 23383
+          "tmdbId": 23383,
+          "titles": {
+            "es": "Hamlet",
+            "en": "Hamlet",
+            "gl": "Hamlet",
+            "eu": "Hamlet",
+            "ca": "Hamlet"
+          }
         },
         {
           "year": 1948,
           "title": "Gentleman's Agreement",
           "director": "Elia Kazan",
-          "tmdbId": 33667
+          "tmdbId": 33667,
+          "titles": {
+            "es": "La barrera invisible",
+            "en": "Gentleman's Agreement",
+            "gl": "La barrera invisible",
+            "eu": "La barrera invisible",
+            "ca": "La barrera invisible"
+          }
         },
         {
           "year": 1947,
           "title": "The Best Years of Our Lives",
           "director": "William Wyler",
-          "tmdbId": 887
+          "tmdbId": 887,
+          "titles": {
+            "es": "Los mejores años de nuestra vida",
+            "en": "The Best Years of Our Lives",
+            "gl": "Los mejores años de nuestra vida",
+            "eu": "Los mejores años de nuestra vida",
+            "ca": "Els millors anys de la nostra vida"
+          }
         },
         {
           "year": 1946,
           "title": "The Lost Weekend",
           "director": "Billy Wilder",
-          "tmdbId": 28580
+          "tmdbId": 28580,
+          "titles": {
+            "es": "Días sin huella",
+            "en": "The Lost Weekend",
+            "gl": "Días sin huella",
+            "eu": "Días sin huella",
+            "ca": "Dies perduts"
+          }
         },
         {
           "year": 1945,
           "title": "Going My Way",
           "director": "Leo McCarey",
-          "tmdbId": 17661
+          "tmdbId": 17661,
+          "titles": {
+            "es": "Siguiendo mi camino",
+            "en": "Going My Way",
+            "gl": "Siguiendo mi camino",
+            "eu": "Siguiendo mi camino",
+            "ca": "Siguiendo mi camino"
+          }
         },
         {
           "year": 1944,
           "title": "Casablanca",
           "director": "Michael Curtiz",
-          "tmdbId": 289
+          "tmdbId": 289,
+          "titles": {
+            "es": "Casablanca",
+            "en": "Casablanca",
+            "gl": "Casablanca",
+            "eu": "Casablanca",
+            "ca": "Casablanca"
+          }
         },
         {
           "year": 1943,
           "title": "Mrs. Miniver",
           "director": "William Wyler",
-          "tmdbId": 27367
+          "tmdbId": 27367,
+          "titles": {
+            "es": "La señora Miniver",
+            "en": "Mrs. Miniver",
+            "gl": "La señora Miniver",
+            "eu": "La señora Miniver",
+            "ca": "La señora Miniver"
+          }
         },
         {
           "year": 1942,
           "title": "How Green Was My Valley",
           "director": "John Ford",
-          "tmdbId": 43266
+          "tmdbId": 43266,
+          "titles": {
+            "es": "¡Qué verde era mi valle!",
+            "en": "How Green Was My Valley",
+            "gl": "¡Qué verde era mi valle!",
+            "eu": "¡Qué verde era mi valle!",
+            "ca": "Que verda era la meva vall"
+          }
         },
         {
           "year": 1941,
           "title": "Rebecca",
           "director": "Alfred Hitchcock",
-          "tmdbId": 223
+          "tmdbId": 223,
+          "titles": {
+            "es": "Rebeca",
+            "en": "Rebecca",
+            "gl": "Rebeca",
+            "eu": "Rebeca",
+            "ca": "Rebeca"
+          }
         },
         {
           "year": 1940,
           "title": "Gone with the Wind",
           "director": "Victor Fleming",
-          "tmdbId": 770
+          "tmdbId": 770,
+          "titles": {
+            "es": "Lo que el viento se llevó",
+            "en": "Gone with the Wind",
+            "gl": "Lo que el viento se llevó",
+            "eu": "Lo que el viento se llevó",
+            "ca": "Allò que el vent s’endugué"
+          }
         },
         {
           "year": 1939,
           "title": "You Can't Take It With You",
           "director": "Frank Capra",
-          "tmdbId": 34106
+          "tmdbId": 34106,
+          "titles": {
+            "es": "Vive como quieras",
+            "en": "You Can't Take It with You",
+            "gl": "Vive como quieras",
+            "eu": "Vive como quieras",
+            "ca": "No us l’endureu pas"
+          }
         },
         {
           "year": 1938,
           "title": "The Life of Emile Zola",
           "director": "William Dieterle",
-          "tmdbId": 43278
+          "tmdbId": 43278,
+          "titles": {
+            "es": "La vida de Emile Zola",
+            "en": "The Life of Emile Zola",
+            "gl": "La vida de Emile Zola",
+            "eu": "La vida de Emile Zola",
+            "ca": "La vida de Emile Zola"
+          }
         },
         {
           "year": 1937,
           "title": "The Great Ziegfeld",
           "director": "Robert Z. Leonard",
-          "tmdbId": 43277
+          "tmdbId": 43277,
+          "titles": {
+            "es": "El gran Ziegfeld",
+            "en": "The Great Ziegfeld",
+            "gl": "El gran Ziegfeld",
+            "eu": "El gran Ziegfeld",
+            "ca": "El gran Ziegfeld"
+          }
         },
         {
           "year": 1936,
           "title": "Mutiny on the Bounty",
           "director": "Frank Lloyd",
-          "tmdbId": 12311
+          "tmdbId": 12311,
+          "titles": {
+            "es": "La tragedia de la Bounty",
+            "en": "Mutiny on the Bounty",
+            "gl": "La tragedia de la Bounty",
+            "eu": "La tragedia de la Bounty",
+            "ca": "Rebel·lió a bord"
+          }
         },
         {
           "year": 1935,
           "title": "It Happened One Night",
           "director": "Frank Capra",
-          "tmdbId": 3078
+          "tmdbId": 3078,
+          "titles": {
+            "es": "Sucedió una noche",
+            "en": "It Happened One Night",
+            "gl": "Sucedió una noche",
+            "eu": "Sucedió una noche",
+            "ca": "Va succeir una nit"
+          }
         },
         {
           "year": 1934,
           "title": "Cavalcade",
           "director": "Frank Lloyd",
-          "tmdbId": 56164
+          "tmdbId": 56164,
+          "titles": {
+            "es": "Cabalgata",
+            "en": "Cavalcade",
+            "gl": "Cabalgata",
+            "eu": "Cabalgata",
+            "ca": "Cabalgata"
+          }
         },
         {
           "year": 1932,
           "title": "Grand Hotel",
           "director": "Edmund Goulding",
-          "tmdbId": 33680
+          "tmdbId": 33680,
+          "titles": {
+            "es": "Gran Hotel",
+            "en": "Grand Hotel",
+            "gl": "Gran Hotel",
+            "eu": "Gran Hotel",
+            "ca": "Gran Hotel"
+          }
         },
         {
           "year": 1931,
           "title": "Cimarron",
           "director": "Wesley Ruggles",
-          "tmdbId": 42861
+          "tmdbId": 42861,
+          "titles": {
+            "es": "Cimarrón",
+            "en": "Cimarron",
+            "gl": "Cimarrón",
+            "eu": "Cimarrón",
+            "ca": "Cimarrón"
+          }
         },
         {
           "year": 1930,
           "title": "All Quiet on the Western Front",
           "director": "Lewis Milestone",
-          "tmdbId": 143
+          "tmdbId": 143,
+          "titles": {
+            "es": "Sin novedad en el frente",
+            "en": "All Quiet on the Western Front",
+            "gl": "Sin novedad en el frente",
+            "eu": "Sin novedad en el frente",
+            "ca": "Res de nou al front de l’oest"
+          }
         },
         {
           "year": 1930,
           "title": "The Broadway Melody",
           "director": "Harry Beaumont",
-          "tmdbId": 65203
+          "tmdbId": 65203,
+          "titles": {
+            "es": "La melodía de Broadway",
+            "en": "The Broadway Melody",
+            "gl": "La melodía de Broadway",
+            "eu": "La melodía de Broadway",
+            "ca": "La melodía de Broadway"
+          }
         },
         {
           "year": 1929,
           "title": "Wings",
           "director": "William A. Wellman",
-          "tmdbId": 28966
+          "tmdbId": 28966,
+          "titles": {
+            "es": "Alas",
+            "en": "Wings",
+            "gl": "Alas",
+            "eu": "Alas",
+            "ca": "Alas"
+          }
         }
       ],
       "name_gl": "Óscar á mellor película",
@@ -609,493 +1288,1067 @@
           "year": 2026,
           "title": "Fjord",
           "director": "Cristian Mungiu",
-          "tmdbId": 1401459
+          "tmdbId": 1401459,
+          "titles": {
+            "es": "Fiordo",
+            "en": "Fjord",
+            "gl": "Fiordo",
+            "eu": "Fiordo",
+            "ca": "Fiordo"
+          }
         },
         {
           "year": 2025,
           "title": "It Was Just an Accident",
           "director": "Jafar Panahi",
-          "tmdbId": 1456349
+          "tmdbId": 1456349,
+          "titles": {
+            "es": "Un simple accidente",
+            "en": "It Was Just an Accident",
+            "gl": "Un simple accidente",
+            "eu": "Un simple accidente",
+            "ca": "Un simple accident"
+          }
         },
         {
           "year": 2024,
           "title": "Anora",
           "director": "Sean Baker",
-          "tmdbId": 1064213
+          "tmdbId": 1064213,
+          "titles": {
+            "es": "Anora",
+            "en": "Anora",
+            "gl": "Anora",
+            "eu": "Anora",
+            "ca": "Anora"
+          }
         },
         {
           "year": 2023,
           "title": "Anatomy of a Fall",
           "director": "Justine Triet",
-          "tmdbId": 915935
+          "tmdbId": 915935,
+          "titles": {
+            "es": "Anatomía de una caída",
+            "en": "Anatomy of a Fall",
+            "gl": "Anatomía de una caída",
+            "eu": "Anatomía de una caída",
+            "ca": "Anatomia d’una caiguda"
+          }
         },
         {
           "year": 2022,
           "title": "Triangle of Sadness",
           "director": "Ruben Östlund",
-          "tmdbId": 497828
+          "tmdbId": 497828,
+          "titles": {
+            "es": "El triángulo de la tristeza",
+            "en": "Triangle of Sadness",
+            "gl": "El triángulo de la tristeza",
+            "eu": "El triángulo de la tristeza",
+            "ca": "El triangle de la tristesa"
+          }
         },
         {
           "year": 2021,
           "title": "Titane",
           "director": "Julia Ducournau",
-          "tmdbId": 630240
+          "tmdbId": 630240,
+          "titles": {
+            "es": "Titane",
+            "en": "Titane",
+            "gl": "Titane",
+            "eu": "Titane",
+            "ca": "Titane"
+          }
         },
         {
           "year": 2019,
           "title": "Parasite",
           "director": "Bong Joon-ho",
-          "tmdbId": 496243
+          "tmdbId": 496243,
+          "titles": {
+            "es": "Parásitos",
+            "en": "Parasite",
+            "gl": "Parásitos",
+            "eu": "Parásitos",
+            "ca": "Paràsits"
+          }
         },
         {
           "year": 2018,
           "title": "Shoplifters",
           "director": "Hirokazu Koreeda",
-          "tmdbId": 505192
+          "tmdbId": 505192,
+          "titles": {
+            "es": "Un asunto de familia",
+            "en": "Shoplifters",
+            "gl": "Un asunto de familia",
+            "eu": "Un asunto de familia",
+            "ca": "Un assumpte de família"
+          }
         },
         {
           "year": 2017,
           "title": "The Square",
           "director": "Ruben Östlund",
-          "tmdbId": 401246
+          "tmdbId": 401246,
+          "titles": {
+            "es": "The Square",
+            "en": "The Square",
+            "gl": "The Square",
+            "eu": "The Square",
+            "ca": "The Square"
+          }
         },
         {
           "year": 2016,
           "title": "I, Daniel Blake",
           "director": "Ken Loach",
-          "tmdbId": 374473
+          "tmdbId": 374473,
+          "titles": {
+            "es": "Yo, Daniel Blake",
+            "en": "I, Daniel Blake",
+            "gl": "Yo, Daniel Blake",
+            "eu": "Yo, Daniel Blake",
+            "ca": "Jo, Daniel Blake"
+          }
         },
         {
           "year": 2015,
           "title": "Dheepan",
           "director": "Jacques Audiard",
-          "tmdbId": 314402
+          "tmdbId": 314402,
+          "titles": {
+            "es": "Dheepan",
+            "en": "Dheepan",
+            "gl": "Dheepan",
+            "eu": "Dheepan",
+            "ca": "Dheepan"
+          }
         },
         {
           "year": 2014,
           "title": "Winter Sleep",
           "director": "Nuri Bilge Ceylan",
-          "tmdbId": 265169
+          "tmdbId": 265169,
+          "titles": {
+            "es": "Sueño de invierno",
+            "en": "Winter Sleep",
+            "gl": "Sueño de invierno",
+            "eu": "Sueño de invierno",
+            "ca": "Sueño de invierno"
+          }
         },
         {
           "year": 2013,
           "title": "Blue Is the Warmest Colour",
           "director": "Abdellatif Kechiche",
-          "tmdbId": 152584
+          "tmdbId": 152584,
+          "titles": {
+            "es": "La vida de Adèle",
+            "en": "Blue Is the Warmest Color",
+            "gl": "La vida de Adèle",
+            "eu": "La vida de Adèle",
+            "ca": "La vida d’Adèle"
+          }
         },
         {
           "year": 2012,
           "title": "Amour",
           "director": "Michael Haneke",
-          "tmdbId": 86837
+          "tmdbId": 86837,
+          "titles": {
+            "es": "Amor",
+            "en": "Amour",
+            "gl": "Amor",
+            "eu": "Amor",
+            "ca": "Amor"
+          }
         },
         {
           "year": 2011,
           "title": "The Tree of Life",
           "director": "Terrence Malick",
-          "tmdbId": 8967
+          "tmdbId": 8967,
+          "titles": {
+            "es": "El árbol de la vida",
+            "en": "The Tree of Life",
+            "gl": "El árbol de la vida",
+            "eu": "El árbol de la vida",
+            "ca": "L’arbre de la vida"
+          }
         },
         {
           "year": 2010,
           "title": "Uncle Boonmee Who Can Recall His Past Lives",
           "director": "Apichatpong Weerasethakul",
-          "tmdbId": 38368
+          "tmdbId": 38368,
+          "titles": {
+            "es": "Tío Boonmee recuerda sus vidas pasadas",
+            "en": "Uncle Boonmee Who Can Recall His Past Lives",
+            "gl": "Tío Boonmee recuerda sus vidas pasadas",
+            "eu": "Tío Boonmee recuerda sus vidas pasadas",
+            "ca": "L’oncle Boonmee recorda les seves vides anteriors"
+          }
         },
         {
           "year": 2009,
           "title": "The White Ribbon",
           "director": "Michael Haneke",
-          "tmdbId": 37903
+          "tmdbId": 37903,
+          "titles": {
+            "es": "La cinta blanca",
+            "en": "The White Ribbon",
+            "gl": "La cinta blanca",
+            "eu": "La cinta blanca",
+            "ca": "La cinta blanca"
+          }
         },
         {
           "year": 2008,
           "title": "The Class",
           "director": "Laurent Cantet",
-          "tmdbId": 8841
+          "tmdbId": 8841,
+          "titles": {
+            "es": "La clase",
+            "en": "The Class",
+            "gl": "La clase",
+            "eu": "La clase",
+            "ca": "La clase"
+          }
         },
         {
           "year": 2007,
           "title": "4 Months, 3 Weeks and 2 Days",
           "director": "Cristian Mungiu",
-          "tmdbId": 2009
+          "tmdbId": 2009,
+          "titles": {
+            "es": "4 meses, 3 semanas, 2 días",
+            "en": "4 Months, 3 Weeks and 2 Days",
+            "gl": "4 meses, 3 semanas, 2 días",
+            "eu": "4 meses, 3 semanas, 2 días",
+            "ca": "4 mesos, 3 setmanes i 2 dies"
+          }
         },
         {
           "year": 2006,
           "title": "The Wind That Shakes the Barley",
           "director": "Ken Loach",
-          "tmdbId": 1116
+          "tmdbId": 1116,
+          "titles": {
+            "es": "El viento que agita la cebada",
+            "en": "The Wind That Shakes the Barley",
+            "gl": "El viento que agita la cebada",
+            "eu": "El viento que agita la cebada",
+            "ca": "El viento que agita la cebada"
+          }
         },
         {
           "year": 2005,
           "title": "The Child",
           "director": "Jean-Pierre Dardenne, Luc Dardenne",
-          "tmdbId": 11490
+          "tmdbId": 11490,
+          "titles": {
+            "es": "El niño",
+            "en": "The Child",
+            "gl": "El niño",
+            "eu": "El niño",
+            "ca": "El niño"
+          }
         },
         {
           "year": 2004,
           "title": "Fahrenheit 9/11",
           "director": "Michael Moore",
-          "tmdbId": 1777
+          "tmdbId": 1777,
+          "titles": {
+            "es": "Fahrenheit 9/11",
+            "en": "Fahrenheit 9/11",
+            "gl": "Fahrenheit 9/11",
+            "eu": "Fahrenheit 9/11",
+            "ca": "Fahrenheit 9/11"
+          }
         },
         {
           "year": 2003,
           "title": "Elephant",
           "director": "Gus Van Sant",
-          "tmdbId": 1807
+          "tmdbId": 1807,
+          "titles": {
+            "es": "Elephant",
+            "en": "Elephant",
+            "gl": "Elephant",
+            "eu": "Elephant",
+            "ca": "Elephant"
+          }
         },
         {
           "year": 2002,
           "title": "The Pianist",
           "director": "Roman Polanski",
-          "tmdbId": 423
+          "tmdbId": 423,
+          "titles": {
+            "es": "El pianista",
+            "en": "The Pianist",
+            "gl": "El pianista",
+            "eu": "Pianojolea",
+            "ca": "El pianista"
+          }
         },
         {
           "year": 2001,
           "title": "The Son's Room",
           "director": "Nanni Moretti",
-          "tmdbId": 11447
+          "tmdbId": 11447,
+          "titles": {
+            "es": "La habitación del hijo",
+            "en": "The Son's Room",
+            "gl": "La habitación del hijo",
+            "eu": "La habitación del hijo",
+            "ca": "L’habitació del fill"
+          }
         },
         {
           "year": 2000,
           "title": "Dancer in the Dark",
           "director": "Lars von Trier",
-          "tmdbId": 16
+          "tmdbId": 16,
+          "titles": {
+            "es": "Bailar en la oscuridad",
+            "en": "Dancer in the Dark",
+            "gl": "Bailar en la oscuridad",
+            "eu": "Bailar en la oscuridad",
+            "ca": "Ballar en la foscor"
+          }
         },
         {
           "year": 1999,
           "title": "Rosetta",
           "director": "Jean-Pierre Dardenne, Luc Dardenne",
-          "tmdbId": 11489
+          "tmdbId": 11489,
+          "titles": {
+            "es": "Rosetta",
+            "en": "Rosetta",
+            "gl": "Rosetta",
+            "eu": "Rosetta",
+            "ca": "Rosetta"
+          }
         },
         {
           "year": 1998,
           "title": "Eternity and a Day",
           "director": "Thodoros Angelopoulos",
-          "tmdbId": 24858
+          "tmdbId": 24858,
+          "titles": {
+            "es": "La eternidad y un día",
+            "en": "Eternity and a Day",
+            "gl": "La eternidad y un día",
+            "eu": "La eternidad y un día",
+            "ca": "La eternidad y un día"
+          }
         },
         {
           "year": 1997,
           "title": "Taste of Cherry",
           "director": "Abbas Kiarostami",
-          "tmdbId": 30020
+          "tmdbId": 30020,
+          "titles": {
+            "es": "El sabor de las cerezas",
+            "en": "Taste of Cherry",
+            "gl": "El sabor de las cerezas",
+            "eu": "El sabor de las cerezas",
+            "ca": "El sabor de las cerezas"
+          }
         },
         {
           "year": 1997,
           "title": "The Eel",
           "director": "Shohei Imamura",
-          "tmdbId": 20506
+          "tmdbId": 20506,
+          "titles": {
+            "es": "La anguila",
+            "en": "The Eel",
+            "gl": "La anguila",
+            "eu": "La anguila",
+            "ca": "La anguila"
+          }
         },
         {
           "year": 1996,
           "title": "Secrets & Lies",
           "director": "Mike Leigh",
-          "tmdbId": 11159
+          "tmdbId": 11159,
+          "titles": {
+            "es": "Secretos y mentiras",
+            "en": "Secrets & Lies",
+            "gl": "Secretos y mentiras",
+            "eu": "Secretos y mentiras",
+            "ca": "Secrets i mentides"
+          }
         },
         {
           "year": 1995,
           "title": "Underground",
           "director": "Emir Kusturica",
-          "tmdbId": 11902
+          "tmdbId": 11902,
+          "titles": {
+            "es": "Underground",
+            "en": "Underground",
+            "gl": "Underground",
+            "eu": "Underground",
+            "ca": "Underground"
+          }
         },
         {
           "year": 1994,
           "title": "Pulp Fiction",
           "director": "Quentin Tarantino",
-          "tmdbId": 680
+          "tmdbId": 680,
+          "titles": {
+            "es": "Pulp Fiction",
+            "en": "Pulp Fiction",
+            "gl": "Pulp Fiction",
+            "eu": "Pulp Fiction",
+            "ca": "Pulp fiction"
+          }
         },
         {
           "year": 1993,
           "title": "Farewell My Concubine",
           "director": "Chen Kaige",
-          "tmdbId": 10997
+          "tmdbId": 10997,
+          "titles": {
+            "es": "Adiós a mi concubina",
+            "en": "Farewell My Concubine",
+            "gl": "Adiós a mi concubina",
+            "eu": "Adiós a mi concubina",
+            "ca": "Adéu a la meva concubina"
+          }
         },
         {
           "year": 1993,
           "title": "The Piano",
           "director": "Jane Campion",
-          "tmdbId": 713
+          "tmdbId": 713,
+          "titles": {
+            "es": "El piano",
+            "en": "The Piano",
+            "gl": "El piano",
+            "eu": "El piano",
+            "ca": "El piano"
+          }
         },
         {
           "year": 1992,
           "title": "The Best Intentions",
           "director": "Bille August",
-          "tmdbId": 41764
+          "tmdbId": 41764,
+          "titles": {
+            "es": "Las mejores intenciones",
+            "en": "The Best Intentions",
+            "gl": "Las mejores intenciones",
+            "eu": "Las mejores intenciones",
+            "ca": "Las mejores intenciones"
+          }
         },
         {
           "year": 1991,
           "title": "Barton Fink",
           "director": "Joel Coen, Ethan Coen",
-          "tmdbId": 290
+          "tmdbId": 290,
+          "titles": {
+            "es": "Barton Fink",
+            "en": "Barton Fink",
+            "gl": "Barton Fink",
+            "eu": "Barton Fink",
+            "ca": "Barton Fink"
+          }
         },
         {
           "year": 1990,
           "title": "Wild at Heart",
           "director": "David Lynch",
-          "tmdbId": 483
+          "tmdbId": 483,
+          "titles": {
+            "es": "Corazón salvaje",
+            "en": "Wild at Heart",
+            "gl": "Corazón salvaje",
+            "eu": "Corazón salvaje",
+            "ca": "Cor salvatge"
+          }
         },
         {
           "year": 1989,
           "title": "Sex, Lies, and Videotape",
           "director": "Steven Soderbergh",
-          "tmdbId": 1412
+          "tmdbId": 1412,
+          "titles": {
+            "es": "Sexo, mentiras y cintas de vídeo",
+            "en": "sex, lies, and videotape",
+            "gl": "Sexo, mentiras y cintas de vídeo",
+            "eu": "Sexo, mentiras y cintas de vídeo",
+            "ca": "Sexo, mentiras y cintas de vídeo"
+          }
         },
         {
           "year": 1988,
           "title": "Pelle the Conqueror",
           "director": "Bille August",
-          "tmdbId": 11174
+          "tmdbId": 11174,
+          "titles": {
+            "es": "Pelle el Conquistador",
+            "en": "Pelle the Conqueror",
+            "gl": "Pelle el Conquistador",
+            "eu": "Pelle el Conquistador",
+            "ca": "Pelle el Conquistador"
+          }
         },
         {
           "year": 1987,
           "title": "Under the Sun of Satan",
           "director": "Maurice Pialat",
-          "tmdbId": 31300
+          "tmdbId": 31300,
+          "titles": {
+            "es": "Bajo el sol de Satán",
+            "en": "Under the Sun of Satan",
+            "gl": "Bajo el sol de Satán",
+            "eu": "Bajo el sol de Satán",
+            "ca": "Sota el sol de Satanàs"
+          }
         },
         {
           "year": 1986,
           "title": "The Mission",
           "director": "Roland Joffé",
-          "tmdbId": 11416
+          "tmdbId": 11416,
+          "titles": {
+            "es": "La misión",
+            "en": "The Mission",
+            "gl": "La misión",
+            "eu": "La misión",
+            "ca": "La missió"
+          }
         },
         {
           "year": 1985,
           "title": "When Father Was Away on Business",
           "director": "Emir Kusturica",
-          "tmdbId": 21042
+          "tmdbId": 21042,
+          "titles": {
+            "es": "Papa está en viaje de negocios",
+            "en": "When Father Was Away on Business",
+            "gl": "Papa está en viaje de negocios",
+            "eu": "Papa está en viaje de negocios",
+            "ca": "Papa está en viaje de negocios"
+          }
         },
         {
           "year": 1984,
           "title": "Paris, Texas",
           "director": "Wim Wenders",
-          "tmdbId": 655
+          "tmdbId": 655,
+          "titles": {
+            "es": "París, Texas",
+            "en": "Paris, Texas",
+            "gl": "París, Texas",
+            "eu": "París, Texas",
+            "ca": "París, Texas"
+          }
         },
         {
           "year": 1983,
           "title": "The Ballad of Narayama",
           "director": "Shohei Imamura",
-          "tmdbId": 42113
+          "tmdbId": 42113,
+          "titles": {
+            "es": "La balada de Narayama",
+            "en": "The Ballad of Narayama",
+            "gl": "La balada de Narayama",
+            "eu": "La balada de Narayama",
+            "ca": "La balada de Narayama"
+          }
         },
         {
           "year": 1982,
           "title": "Missing",
           "director": "Costa-Gavras",
-          "tmdbId": 15600
+          "tmdbId": 15600,
+          "titles": {
+            "es": "Desaparecido",
+            "en": "Missing",
+            "gl": "Desaparecido",
+            "eu": "Desaparecido",
+            "ca": "Missing"
+          }
         },
         {
           "year": 1982,
           "title": "Yol",
           "director": "Yılmaz Güney, Şerif Gören",
-          "tmdbId": 52556
+          "tmdbId": 52556,
+          "titles": {
+            "es": "El camino",
+            "en": "The Road",
+            "gl": "El camino",
+            "eu": "El camino",
+            "ca": "El camino"
+          }
         },
         {
           "year": 1981,
           "title": "Man of Iron",
           "director": "Andrzej Wajda",
-          "tmdbId": 225
+          "tmdbId": 225,
+          "titles": {
+            "es": "El hombre de hierro",
+            "en": "Man of Iron",
+            "gl": "El hombre de hierro",
+            "eu": "El hombre de hierro",
+            "ca": "El hombre de hierro"
+          }
         },
         {
           "year": 1980,
           "title": "All That Jazz",
           "director": "Bob Fosse",
-          "tmdbId": 16858
+          "tmdbId": 16858,
+          "titles": {
+            "es": "All That Jazz (Empieza el espectáculo)",
+            "en": "All That Jazz",
+            "gl": "All That Jazz (Empieza el espectáculo)",
+            "eu": "All that Jazz",
+            "ca": "Comença l’espectacle"
+          }
         },
         {
           "year": 1980,
           "title": "Kagemusha",
           "director": "Akira Kurosawa",
-          "tmdbId": 11953
+          "tmdbId": 11953,
+          "titles": {
+            "es": "Kagemusha, la sombra del guerrero",
+            "en": "Kagemusha",
+            "gl": "Kagemusha, la sombra del guerrero",
+            "eu": "Kagemusha, la sombra del guerrero",
+            "ca": "Kagemusha"
+          }
         },
         {
           "year": 1979,
           "title": "Apocalypse Now",
           "director": "Francis Ford Coppola",
-          "tmdbId": 28
+          "tmdbId": 28,
+          "titles": {
+            "es": "Apocalypse Now",
+            "en": "Apocalypse Now",
+            "gl": "Apocalypse Now",
+            "eu": "Apocalypse Now",
+            "ca": "Apocalypse Now"
+          }
         },
         {
           "year": 1979,
           "title": "The Tin Drum",
           "director": "Volker Schlöndorff",
-          "tmdbId": 659
+          "tmdbId": 659,
+          "titles": {
+            "es": "El tambor de hojalata",
+            "en": "The Tin Drum",
+            "gl": "El tambor de hojalata",
+            "eu": "El tambor de hojalata",
+            "ca": "El timbal de llauna"
+          }
         },
         {
           "year": 1978,
           "title": "The Tree of Wooden Clogs",
           "director": "Ermanno Olmi",
-          "tmdbId": 31542
+          "tmdbId": 31542,
+          "titles": {
+            "es": "El árbol de los zuecos",
+            "en": "The Tree of Wooden Clogs",
+            "gl": "El árbol de los zuecos",
+            "eu": "El árbol de los zuecos",
+            "ca": "L’arbre dels esclops"
+          }
         },
         {
           "year": 1977,
           "title": "Padre Padrone",
           "director": "Paolo Taviani, Vittorio Taviani",
-          "tmdbId": 42225
+          "tmdbId": 42225,
+          "titles": {
+            "es": "Padre patrón",
+            "en": "Padre Padrone",
+            "gl": "Padre patrón",
+            "eu": "Padre patrón",
+            "ca": "Padre patrón"
+          }
         },
         {
           "year": 1976,
           "title": "Taxi Driver",
           "director": "Martin Scorsese",
-          "tmdbId": 103
+          "tmdbId": 103,
+          "titles": {
+            "es": "Taxi Driver",
+            "en": "Taxi Driver",
+            "gl": "Taxi Driver",
+            "eu": "Taxi Driver",
+            "ca": "Taxi driver"
+          }
         },
         {
           "year": 1975,
           "title": "Chronicle of the Years of Fire",
           "director": "Mohammed Lakhdar-Hamina",
-          "tmdbId": 52555
+          "tmdbId": 52555,
+          "titles": {
+            "es": "Crónica de los años de fuego",
+            "en": "Chronicle of the Years of Fire",
+            "gl": "Crónica de los años de fuego",
+            "eu": "Crónica de los años de fuego",
+            "ca": "Crónica de los años de fuego"
+          }
         },
         {
           "year": 1974,
           "title": "The Conversation",
           "director": "Francis Ford Coppola",
-          "tmdbId": 592
+          "tmdbId": 592,
+          "titles": {
+            "es": "La conversación",
+            "en": "The Conversation",
+            "gl": "La conversación",
+            "eu": "La conversación",
+            "ca": "La conversa"
+          }
         },
         {
           "year": 1973,
           "title": "The Hireling",
           "director": "Alan Bridges",
-          "tmdbId": 80382
+          "tmdbId": 80382,
+          "titles": {
+            "es": "El equívoco",
+            "en": "The Hireling",
+            "gl": "El equívoco",
+            "eu": "El equívoco",
+            "ca": "L’equívoc"
+          }
         },
         {
           "year": 1972,
           "title": "The Mattei Affair",
           "director": "Francesco Rosi",
-          "tmdbId": 62382
+          "tmdbId": 62382,
+          "titles": {
+            "es": "El caso Mattei",
+            "en": "The Mattei Affair",
+            "gl": "El caso Mattei",
+            "eu": "El caso Mattei",
+            "ca": "El caso Mattei"
+          }
         },
         {
           "year": 1972,
           "title": "The Working Class Goes to Heaven",
           "director": "Elio Petri",
-          "tmdbId": 56231
+          "tmdbId": 56231,
+          "titles": {
+            "es": "La clase obrera va al paraíso",
+            "en": "The Working Class Goes to Heaven",
+            "gl": "La clase obrera va al paraíso",
+            "eu": "La clase obrera va al paraíso",
+            "ca": "La classe obrera va al paradís"
+          }
         },
         {
           "year": 1971,
           "title": "The Go-Between",
           "director": "Joseph Losey",
-          "tmdbId": 36194
+          "tmdbId": 36194,
+          "titles": {
+            "es": "El mensajero",
+            "en": "The Go-Between",
+            "gl": "El mensajero",
+            "eu": "El mensajero",
+            "ca": "El missatger"
+          }
         },
         {
           "year": 1970,
           "title": "MASH",
           "director": "Robert Altman",
-          "tmdbId": 651
+          "tmdbId": 651,
+          "titles": {
+            "es": "M.A.S.H.",
+            "en": "M*A*S*H",
+            "gl": "M.A.S.H.",
+            "eu": "M.A.S.H.",
+            "ca": "M.A.S.H."
+          }
         },
         {
           "year": 1969,
           "title": "If....",
           "director": "Lindsay Anderson",
-          "tmdbId": 14794
+          "tmdbId": 14794,
+          "titles": {
+            "es": "If...",
+            "en": "if....",
+            "gl": "If...",
+            "eu": "If...",
+            "ca": "Si..."
+          }
         },
         {
           "year": 1967,
           "title": "Blowup",
           "director": "Michelangelo Antonioni",
-          "tmdbId": 1052
+          "tmdbId": 1052,
+          "titles": {
+            "es": "Blow-Up",
+            "en": "Blow-Up",
+            "gl": "Blow-Up",
+            "eu": "Blow-Up",
+            "ca": "Blow up"
+          }
         },
         {
           "year": 1966,
           "title": "A Man and a Woman",
           "director": "Claude Lelouch",
-          "tmdbId": 42726
+          "tmdbId": 42726,
+          "titles": {
+            "es": "Un hombre y una mujer",
+            "en": "A Man and a Woman",
+            "gl": "Un hombre y una mujer",
+            "eu": "Un hombre y una mujer",
+            "ca": "Un hombre y una mujer"
+          }
         },
         {
           "year": 1966,
           "title": "The Birds, the Bees and the Italians",
           "director": "Pietro Germi",
-          "tmdbId": 17974
+          "tmdbId": 17974,
+          "titles": {
+            "es": "Señoras y señores",
+            "en": "The Birds, the Bees and the Italians",
+            "gl": "Señoras y señores",
+            "eu": "Señoras y señores",
+            "ca": "Señoras y señores"
+          }
         },
         {
           "year": 1965,
           "title": "El knack... y cómo lograrlo",
           "director": "Richard Lester",
-          "tmdbId": 42744
+          "tmdbId": 42744,
+          "titles": {
+            "es": "El knack... y cómo conseguirlo",
+            "en": "The Knack... and How to Get It",
+            "gl": "El knack... y cómo conseguirlo",
+            "eu": "El knack... y cómo conseguirlo",
+            "ca": "El knack... i com aconseguir-lo"
+          }
         },
         {
           "year": 1964,
           "title": "The Umbrellas of Cherbourg",
           "director": "Jacques Demy",
-          "tmdbId": 5967
+          "tmdbId": 5967,
+          "titles": {
+            "es": "Los paraguas de Cherburgo",
+            "en": "The Umbrellas of Cherbourg",
+            "gl": "Los paraguas de Cherburgo",
+            "eu": "Los paraguas de Cherburgo",
+            "ca": "Els paraigües de Cherbourg"
+          }
         },
         {
           "year": 1963,
           "title": "The Leopard",
           "director": "Luchino Visconti",
-          "tmdbId": 1040
+          "tmdbId": 1040,
+          "titles": {
+            "es": "El gatopardo",
+            "en": "The Leopard",
+            "gl": "El gatopardo",
+            "eu": "El gatopardo",
+            "ca": "El Gattopardo"
+          }
         },
         {
           "year": 1962,
           "title": "O Pagador de Promessas",
           "director": "Anselmo Duarte",
-          "tmdbId": 59990
+          "tmdbId": 59990,
+          "titles": {
+            "es": "El pagador de promesas",
+            "en": "The Given Word",
+            "gl": "El pagador de promesas",
+            "eu": "El pagador de promesas",
+            "ca": "El pagador de promesas"
+          }
         },
         {
           "year": 1961,
           "title": "The Long Absence",
           "director": "Henri Colpi",
-          "tmdbId": 131836
+          "tmdbId": 131836,
+          "titles": {
+            "es": "Una larga ausencia",
+            "en": "The Long Absence",
+            "gl": "Una larga ausencia",
+            "eu": "Una larga ausencia",
+            "ca": "Una absència tan llarga"
+          }
         },
         {
           "year": 1961,
           "title": "Viridiana",
           "director": "Luis Buñuel",
-          "tmdbId": 4497
+          "tmdbId": 4497,
+          "titles": {
+            "es": "Viridiana",
+            "en": "Viridiana",
+            "gl": "Viridiana",
+            "eu": "Viridiana",
+            "ca": "Viridiana"
+          }
         },
         {
           "year": 1960,
           "title": "La Dolce Vita",
           "director": "Federico Fellini",
-          "tmdbId": 439
+          "tmdbId": 439,
+          "titles": {
+            "es": "La dolce vita",
+            "en": "La Dolce Vita",
+            "gl": "La dolce vita",
+            "eu": "La dolce vita",
+            "ca": "La dolce vita"
+          }
         },
         {
           "year": 1959,
           "title": "Black Orpheus",
           "director": "Marcel Camus",
-          "tmdbId": 40423
+          "tmdbId": 40423,
+          "titles": {
+            "es": "Orfeo negro",
+            "en": "Black Orpheus",
+            "gl": "Orfeo negro",
+            "eu": "Orfeo negro",
+            "ca": "Orfeu negre"
+          }
         },
         {
           "year": 1958,
           "title": "The Cranes Are Flying",
           "director": "Mikhail Kalatozov",
-          "tmdbId": 38360
+          "tmdbId": 38360,
+          "titles": {
+            "es": "Cuando pasan las cigüeñas",
+            "en": "The Cranes Are Flying",
+            "gl": "Cuando pasan las cigüeñas",
+            "eu": "Cuando pasan las cigüeñas",
+            "ca": "Cuando pasan las cigüeñas"
+          }
         },
         {
           "year": 1957,
           "title": "Friendly Persuasion",
           "director": "William Wyler",
-          "tmdbId": 43258
+          "tmdbId": 43258,
+          "titles": {
+            "es": "La gran prueba",
+            "en": "Friendly Persuasion",
+            "gl": "La gran prueba",
+            "eu": "La gran prueba",
+            "ca": "La gran prova"
+          }
         },
         {
           "year": 1956,
           "title": "The Silent World",
           "director": "Jacques-Yves Cousteau, Louis Malle",
-          "tmdbId": 60234
+          "tmdbId": 60234,
+          "titles": {
+            "es": "El mundo del silencio",
+            "en": "The Silent World",
+            "gl": "El mundo del silencio",
+            "eu": "El mundo del silencio",
+            "ca": "El mundo del silencio"
+          }
         },
         {
           "year": 1955,
           "title": "Marty",
           "director": "Delbert Mann",
-          "tmdbId": 15919
+          "tmdbId": 15919,
+          "titles": {
+            "es": "Marty",
+            "en": "Marty",
+            "gl": "Marty",
+            "eu": "Marty",
+            "ca": "Marty"
+          }
         },
         {
           "year": 1953,
           "title": "The Wages of Fear",
           "director": "Henri-Georges Clouzot",
-          "tmdbId": 204
+          "tmdbId": 204,
+          "titles": {
+            "es": "El salario del miedo",
+            "en": "The Wages of Fear",
+            "gl": "El salario del miedo",
+            "eu": "El salario del miedo",
+            "ca": "El salari de la por"
+          }
         },
         {
           "year": 1952,
           "title": "Othello",
           "director": "Orson Welles",
-          "tmdbId": 47697
+          "tmdbId": 47697,
+          "titles": {
+            "es": "Otelo",
+            "en": "Othello",
+            "gl": "Otelo",
+            "eu": "Otelo",
+            "ca": "Otelo"
+          }
         },
         {
           "year": 1952,
           "title": "Two Cents Worth of Hope",
           "director": "Renato Castellani",
-          "tmdbId": 117478
+          "tmdbId": 117478,
+          "titles": {
+            "es": "Dos centavos de esperanza",
+            "en": "Two Cents Worth of Hope",
+            "gl": "Dos centavos de esperanza",
+            "eu": "Dos centavos de esperanza",
+            "ca": "Dos centavos de esperanza"
+          }
         },
         {
           "year": 1951,
           "title": "Miss Julie",
           "director": "Alf Sjöberg",
-          "tmdbId": 18650
+          "tmdbId": 18650,
+          "titles": {
+            "es": "La señorita Julie",
+            "en": "Miss Julie",
+            "gl": "La señorita Julie",
+            "eu": "La señorita Julie",
+            "ca": "La señorita Julie"
+          }
         }
       ],
       "name_gl": "Palma de Ouro · Festival de Cannes",
@@ -1116,247 +2369,534 @@
           "year": 2026,
           "title": "Los domingos",
           "director": "Alauda Ruiz de Azúa",
-          "tmdbId": 1443576
+          "tmdbId": 1443576,
+          "titles": {
+            "es": "Los domingos",
+            "en": "Sundays",
+            "gl": "Los domingos",
+            "eu": "Los domingos",
+            "ca": "Los domingos"
+          }
         },
         {
           "year": 2025,
           "title": "El 47",
           "director": "Marcel Barrena",
-          "tmdbId": 1174481
+          "tmdbId": 1174481,
+          "titles": {
+            "es": "El 47",
+            "en": "The 47",
+            "gl": "El 47",
+            "eu": "El 47",
+            "ca": "El 47"
+          }
         },
         {
           "year": 2025,
           "title": "La infiltrada",
           "director": "Arantxa Echevarría",
-          "tmdbId": 1215185
+          "tmdbId": 1215185,
+          "titles": {
+            "es": "La infiltrada",
+            "en": "Undercover",
+            "gl": "La infiltrada",
+            "eu": "La infiltrada",
+            "ca": "La infiltrada"
+          }
         },
         {
           "year": 2024,
           "title": "La sociedad de la nieve",
           "director": "Juan Antonio Bayona",
-          "tmdbId": 906126
+          "tmdbId": 906126,
+          "titles": {
+            "es": "La sociedad de la nieve",
+            "en": "Society of the Snow",
+            "gl": "La sociedad de la nieve",
+            "eu": "La sociedad de la nieve",
+            "ca": "La societat de la neu"
+          }
         },
         {
           "year": 2023,
           "title": "As bestas",
           "director": "Rodrigo Sorogoyen",
-          "tmdbId": 848685
+          "tmdbId": 848685,
+          "titles": {
+            "es": "As bestas",
+            "en": "The Beasts",
+            "gl": "As bestas",
+            "eu": "As bestas",
+            "ca": "As bestas"
+          }
         },
         {
           "year": 2022,
           "title": "El buen patrón",
           "director": "Fernando León de Aranoa",
-          "tmdbId": 820722
+          "tmdbId": 820722,
+          "titles": {
+            "es": "El buen patrón",
+            "en": "The Good Boss",
+            "gl": "El buen patrón",
+            "eu": "El buen patrón",
+            "ca": "El bon patró"
+          }
         },
         {
           "year": 2021,
           "title": "Las niñas",
           "director": "Pilar Palomero",
-          "tmdbId": 619443
+          "tmdbId": 619443,
+          "titles": {
+            "es": "Las niñas",
+            "en": "Schoolgirls",
+            "gl": "Las niñas",
+            "eu": "Las niñas",
+            "ca": "Les nenes"
+          }
         },
         {
           "year": 2020,
           "title": "Dolor y gloria",
           "director": "Pedro Almodóvar",
-          "tmdbId": 519010
+          "tmdbId": 519010,
+          "titles": {
+            "es": "Dolor y gloria",
+            "en": "Pain and Glory",
+            "gl": "Dolor y gloria",
+            "eu": "Dolor y gloria",
+            "ca": "Dolor y gloria"
+          }
         },
         {
           "year": 2019,
           "title": "Campeones",
           "director": "Javier Fesser",
-          "tmdbId": 456929
+          "tmdbId": 456929,
+          "titles": {
+            "es": "Campeones",
+            "en": "Champions",
+            "gl": "Campeones",
+            "eu": "Campeones",
+            "ca": "Campeones"
+          }
         },
         {
           "year": 2018,
           "title": "La librería",
           "director": "Isabel Coixet",
-          "tmdbId": 444539
+          "tmdbId": 444539,
+          "titles": {
+            "es": "La librería",
+            "en": "The Bookshop",
+            "gl": "La librería",
+            "eu": "La librería",
+            "ca": "La llibreria"
+          }
         },
         {
           "year": 2017,
           "title": "Tarde para la ira",
           "director": "Raúl Arévalo",
-          "tmdbId": 411638
+          "tmdbId": 411638,
+          "titles": {
+            "es": "Tarde para la ira",
+            "en": "The Fury of a Patient Man",
+            "gl": "Tarde para la ira",
+            "eu": "Tarde para la ira",
+            "ca": "Tarde para la ira"
+          }
         },
         {
           "year": 2016,
           "title": "Truman",
           "director": "Cesc Gay",
-          "tmdbId": 341744
+          "tmdbId": 341744,
+          "titles": {
+            "es": "Truman",
+            "en": "Truman",
+            "gl": "Truman",
+            "eu": "Truman",
+            "ca": "Truman"
+          }
         },
         {
           "year": 2015,
           "title": "La isla mínima",
           "director": "Alberto Rodríguez",
-          "tmdbId": 236735
+          "tmdbId": 236735,
+          "titles": {
+            "es": "La isla mínima",
+            "en": "Marshland",
+            "gl": "La isla mínima",
+            "eu": "La isla mínima",
+            "ca": "L'illa mínima"
+          }
         },
         {
           "year": 2014,
           "title": "Vivir es fácil con los ojos cerrados",
           "director": "David Trueba",
-          "tmdbId": 209415
+          "tmdbId": 209415,
+          "titles": {
+            "es": "Vivir es fácil con los ojos cerrados",
+            "en": "Living Is Easy with Eyes Closed",
+            "gl": "Vivir es fácil con los ojos cerrados",
+            "eu": "Vivir es fácil con los ojos cerrados",
+            "ca": "Vivir es fácil con los ojos cerrados"
+          }
         },
         {
           "year": 2013,
           "title": "Blancanieves",
           "director": "Pablo Berger",
-          "tmdbId": 127864
+          "tmdbId": 127864,
+          "titles": {
+            "es": "Blancanieves",
+            "en": "Blancanieves",
+            "gl": "Blancanieves",
+            "eu": "Blancanieves",
+            "ca": "Blancaneu"
+          }
         },
         {
           "year": 2012,
           "title": "No habrá paz para los malvados",
           "director": "Enrique Urbizu",
-          "tmdbId": 76013
+          "tmdbId": 76013,
+          "titles": {
+            "es": "No habrá paz para los malvados",
+            "en": "No Rest for the Wicked",
+            "gl": "No habrá paz para los malvados",
+            "eu": "No habrá paz para los malvados",
+            "ca": "No habrá paz para los malvados"
+          }
         },
         {
           "year": 2011,
           "title": "Pan negro",
           "director": "Agustí Villaronga",
-          "tmdbId": 57521
+          "tmdbId": 57521,
+          "titles": {
+            "es": "Pan negro",
+            "en": "Black Bread",
+            "gl": "Pan negro",
+            "eu": "Pan negro",
+            "ca": "Pa negre"
+          }
         },
         {
           "year": 2010,
           "title": "Celda 211",
           "director": "Daniel Monzón",
-          "tmdbId": 33273
+          "tmdbId": 33273,
+          "titles": {
+            "es": "Celda 211",
+            "en": "Cell 211",
+            "gl": "Cela 211",
+            "eu": "Celda 211",
+            "ca": "Celda 211"
+          }
         },
         {
           "year": 2009,
           "title": "Camino",
           "director": "Javier Fesser",
-          "tmdbId": 17893
+          "tmdbId": 17893,
+          "titles": {
+            "es": "Camino",
+            "en": "Camino",
+            "gl": "Camino",
+            "eu": "Camino",
+            "ca": "Camino"
+          }
         },
         {
           "year": 2008,
           "title": "La soledad",
           "director": "Jaime Rosales",
-          "tmdbId": 797227
+          "tmdbId": 797227,
+          "titles": {
+            "es": "La Soledad",
+            "en": "La Soledad",
+            "gl": "La Soledad",
+            "eu": "La Soledad",
+            "ca": "La Soledad"
+          }
         },
         {
           "year": 2007,
           "title": "Volver",
           "director": "Pedro Almodóvar",
-          "tmdbId": 219
+          "tmdbId": 219,
+          "titles": {
+            "es": "Volver",
+            "en": "Volver",
+            "gl": "Volver",
+            "eu": "Volver",
+            "ca": "Volver"
+          }
         },
         {
           "year": 2006,
           "title": "La vida secreta de las palabras",
           "director": "Isabel Coixet",
-          "tmdbId": 148
+          "tmdbId": 148,
+          "titles": {
+            "es": "La vida secreta de las palabras",
+            "en": "The Secret Life of Words",
+            "gl": "La vida secreta de las palabras",
+            "eu": "La vida secreta de las palabras",
+            "ca": "La vida secreta de les paraules"
+          }
         },
         {
           "year": 2005,
           "title": "Mar adentro",
           "director": "Alejandro Amenábar",
-          "tmdbId": 1913
+          "tmdbId": 1913,
+          "titles": {
+            "es": "Mar adentro",
+            "en": "The Sea Inside",
+            "gl": "Mar adentro",
+            "eu": "Mar adentro",
+            "ca": "Mar adentro"
+          }
         },
         {
           "year": 2004,
           "title": "Te doy mis ojos",
           "director": "Icíar Bollaín",
-          "tmdbId": 1418
+          "tmdbId": 1418,
+          "titles": {
+            "es": "Te doy mis ojos",
+            "en": "Take My Eyes",
+            "gl": "Te doy mis ojos",
+            "eu": "Te doy mis ojos",
+            "ca": "Te doy mis ojos"
+          }
         },
         {
           "year": 2003,
           "title": "Los lunes al sol",
           "director": "Fernando León de Aranoa",
-          "tmdbId": 54580
+          "tmdbId": 54580,
+          "titles": {
+            "es": "Los lunes al sol",
+            "en": "Mondays in the Sun",
+            "gl": "Los lunes al sol",
+            "eu": "Los lunes al sol",
+            "ca": "Los lunes al sol"
+          }
         },
         {
           "year": 2002,
           "title": "Los otros",
           "director": "Alejandro Amenábar",
-          "tmdbId": 1933
+          "tmdbId": 1933,
+          "titles": {
+            "es": "Los otros",
+            "en": "The Others",
+            "gl": "Los otros",
+            "eu": "Los otros",
+            "ca": "Los otros"
+          }
         },
         {
           "year": 2001,
           "title": "El Bola",
           "director": "Achero Mañas",
-          "tmdbId": 33504
+          "tmdbId": 33504,
+          "titles": {
+            "es": "El Bola",
+            "en": "El Bola",
+            "gl": "El Bola",
+            "eu": "El Bola",
+            "ca": "El Bola"
+          }
         },
         {
           "year": 2000,
           "title": "Todo sobre mi madre",
           "director": "Pedro Almodóvar",
-          "tmdbId": 99
+          "tmdbId": 99,
+          "titles": {
+            "es": "Todo sobre mi madre",
+            "en": "All About My Mother",
+            "gl": "Todo sobre mi madre",
+            "eu": "Todo sobre mi madre",
+            "ca": "Todo sobre mi madre"
+          }
         },
         {
           "year": 1999,
           "title": "La niña de tus ojos",
           "director": "Fernando Trueba",
-          "tmdbId": 67297
+          "tmdbId": 67297,
+          "titles": {
+            "es": "La niña de tus ojos",
+            "en": "The Girl of Your Dreams",
+            "gl": "La niña de tus ojos",
+            "eu": "La niña de tus ojos",
+            "ca": "La niña de tus ojos"
+          }
         },
         {
           "year": 1998,
           "title": "La buena estrella",
           "director": "Ricardo Franco",
-          "tmdbId": 97295
+          "tmdbId": 97295,
+          "titles": {
+            "es": "La buena estrella",
+            "en": "Lucky Star",
+            "gl": "La buena estrella",
+            "eu": "La buena estrella",
+            "ca": "La buena estrella"
+          }
         },
         {
           "year": 1997,
           "title": "Tesis",
           "director": "Alejandro Amenábar",
-          "tmdbId": 9299
+          "tmdbId": 9299,
+          "titles": {
+            "es": "Tesis",
+            "en": "Thesis",
+            "gl": "Tesis",
+            "eu": "Tesis",
+            "ca": "Tesis"
+          }
         },
         {
           "year": 1996,
           "title": "Nadie hablará de nosotras cuando hayamos muerto",
           "director": "Agustín Díaz Yanes",
-          "tmdbId": 74840
+          "tmdbId": 74840,
+          "titles": {
+            "es": "Nadie hablará de nosotras cuando hayamos muerto",
+            "en": "Nobody Will Speak of Us When We're Dead",
+            "gl": "Nadie hablará de nosotras cuando hayamos muerto",
+            "eu": "Nadie hablará de nosotras cuando hayamos muerto",
+            "ca": "Nadie hablará de nosotras cuando hayamos muerto"
+          }
         },
         {
           "year": 1995,
           "title": "Días contados",
           "director": "Imanol Uribe",
-          "tmdbId": 114218
+          "tmdbId": 114218,
+          "titles": {
+            "es": "Días contados",
+            "en": "Running Out of Time",
+            "gl": "Días contados",
+            "eu": "Días contados",
+            "ca": "Días contados"
+          }
         },
         {
           "year": 1994,
           "title": "Todos a la cárcel",
           "director": "Luis García Berlanga",
-          "tmdbId": 99902
+          "tmdbId": 99902,
+          "titles": {
+            "es": "Todos a la cárcel",
+            "en": "Everyone Off to Jail",
+            "gl": "Todos a la cárcel",
+            "eu": "Todos a la cárcel",
+            "ca": "Todos a la cárcel"
+          }
         },
         {
           "year": 1993,
           "title": "Belle Époque",
           "director": "Fernando Trueba",
-          "tmdbId": 2470
+          "tmdbId": 2470,
+          "titles": {
+            "es": "Belle époque",
+            "en": "Belle Époque",
+            "gl": "Belle époque",
+            "eu": "Belle époque",
+            "ca": "Belle époque"
+          }
         },
         {
           "year": 1992,
           "title": "Amantes",
           "director": "Vicente Aranda",
-          "tmdbId": 41782
+          "tmdbId": 41782,
+          "titles": {
+            "es": "Amantes",
+            "en": "Lovers: A True Story",
+            "gl": "Amantes",
+            "eu": "Amantes",
+            "ca": "Amantes"
+          }
         },
         {
           "year": 1991,
           "title": "¡Ay, Carmela!",
           "director": "Carlos Saura",
-          "tmdbId": 41806
+          "tmdbId": 41806,
+          "titles": {
+            "es": "¡Ay, Carmela!",
+            "en": "Ay, Carmela!",
+            "gl": "¡Ay, Carmela!",
+            "eu": "¡Ay, Carmela!",
+            "ca": "¡Ay, Carmela!"
+          }
         },
         {
           "year": 1990,
           "title": "El sueño del mono loco",
           "director": "Fernando Trueba",
-          "tmdbId": 110928
+          "tmdbId": 110928,
+          "titles": {
+            "es": "El sueño del mono loco",
+            "en": "Twisted Obsession",
+            "gl": "El sueño del mono loco",
+            "eu": "El sueño del mono loco",
+            "ca": "El sueño del mono loco"
+          }
         },
         {
           "year": 1989,
           "title": "Mujeres al borde de un ataque de nervios",
           "director": "Pedro Almodóvar",
-          "tmdbId": 4203
+          "tmdbId": 4203,
+          "titles": {
+            "es": "Mujeres al borde de un ataque de nervios",
+            "en": "Women on the Verge of a Nervous Breakdown",
+            "gl": "Mujeres al borde de un ataque de nervios",
+            "eu": "Mujeres al borde de un ataque de nervios",
+            "ca": "Mujeres al borde de un ataque de nervios"
+          }
         },
         {
           "year": 1988,
           "title": "El bosque animado",
           "director": "José Luis Cuerda",
-          "tmdbId": 60311
+          "tmdbId": 60311,
+          "titles": {
+            "es": "El bosque animado",
+            "en": "The Enchanted Forest",
+            "gl": "El bosque animado",
+            "eu": "El bosque animado",
+            "ca": "El bosque animado"
+          }
         },
         {
           "year": 1987,
           "title": "El viaje a ninguna parte",
           "director": "Fernando Fernán Gómez",
-          "tmdbId": 156453
+          "tmdbId": 156453,
+          "titles": {
+            "es": "El viaje a ninguna parte",
+            "en": "Voyage to Nowhere",
+            "gl": "El viaje a ninguna parte",
+            "eu": "El viaje a ninguna parte",
+            "ca": "El viaje a ninguna parte"
+          }
         }
       ],
       "name_gl": "Goya á mellor película",

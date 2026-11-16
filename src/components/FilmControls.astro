@@ -38,6 +38,7 @@ const t = useTranslations(lang);
   data-l-note={t('controls.note')}
   data-l-watched={t('controls.watchedOn')}
   data-l-save={t('controls.save')}
+  data-l-error={t('diary.error')}
   data-l-saved={t('controls.saved')}
   data-l-remove={t('controls.remove')}
   data-login-url={localizePath(lang, 'login')}
@@ -63,7 +64,7 @@ const t = useTranslations(lang);
       const L = {
         want: d.lWant!, seen: d.lSeen!, fav: d.lFav!, rate: d.lRate!,
         note: d.lNote!, watched: d.lWatched!, save: d.lSave!,
-        saved: d.lSaved!, remove: d.lRemove!,
+        saved: d.lSaved!, remove: d.lRemove!, error: d.lError!,
       };
 
       // Tope del calendario: hoy en la hora LOCAL del usuario. Con toISOString
@@ -111,7 +112,7 @@ const t = useTranslations(lang);
           </div>
           <div class="p-3">
             <label class="label mb-1 block" for="fc-nota-${tmdbId}">${L.note}</label>
-            <textarea id="fc-nota-${tmdbId}" data-note rows="2" class="w-full border border-ink bg-white px-2 py-1 font-body text-body-md focus:bg-film-white focus:outline-none">${esc(note)}</textarea>
+            <textarea id="fc-nota-${tmdbId}" data-note rows="2" maxlength="2000" class="w-full border border-ink bg-white px-2 py-1 font-body text-body-md focus:bg-film-white focus:outline-none">${esc(note)}</textarea>
             <div class="mt-2 flex items-center justify-between">
               <button type="button" data-save class="btn btn-primary">${L.save}</button>
               ${status || favorite ? `<button type="button" data-remove class="label text-error hover:underline">${L.remove}</button>` : ''}
@@ -134,6 +135,12 @@ const t = useTranslations(lang);
         // Puntuar apunta el primer visionado en el servidor: se avisa para que
         // «Tus visionados» (ViewingsPanel) se repinte sin recargar la ficha.
         if (res.ok) document.dispatchEvent(new CustomEvent('film:saved', { detail: { tmdbId } }));
+        // Si no se guarda, se dice. Antes no pasaba nada en pantalla y quien
+        // había escrito una reseña la daba por guardada.
+        else {
+          const msg = this.querySelector('[data-msg]');
+          if (msg) msg.textContent = L.error;
+        }
         return res.ok;
       };
 
@@ -208,8 +215,11 @@ const t = useTranslations(lang);
         this.querySelector<HTMLButtonElement>('[data-save]')?.addEventListener('click', async () => {
           note = this.querySelector<HTMLTextAreaElement>('[data-note]')?.value ?? '';
           const fecha = leerFecha();
-          if (await post({ note, status: status || 'want', ...(fecha ? { reviewedAt: fecha } : {}) })) {
-            status = status || 'want';
+          // Sin estado no se manda ninguno: escribir una reseña ya la deja como
+          // vista en el servidor (filmstate.ts), y guardar sin texto no la mete
+          // en «Pendientes». Antes se mandaba «pendiente» por defecto.
+          if (await post({ note, ...(fecha ? { reviewedAt: fecha } : {}) })) {
+            if (!status && note.trim()) status = 'seen';
             if (fecha) reviewed = fecha;
             render();
             flash();

@@ -1,6 +1,7 @@
 ---
 export const prerender = false; // la cronología resuelve títulos vía getFilmsBrief
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { savedTitles, filmPathFor } from '../../../lib/filmlinks';
 import IssueCard from '../../../components/IssueCard.astro';
 import JournalCard from '../../../components/JournalCard.astro';
 import { periodicals, journals } from '../../../lib/periodicals';
@@ -24,6 +25,8 @@ const terms = sortedGlossary(lang);
 
 const allIds = [...new Set(timeline.flatMap((m) => m.keyFilms))];
 const briefs = await getFilmsBrief(allIds, lang);
+// El palmarés trae el título en inglés: con él, el enlace redirigía a la ficha en castellano.
+const titulosEnlaces = await savedTitles([...allIds, ...awards.flatMap((a) => a.winners.map((w) => w.tmdbId ?? 0))]);
 
 const sections: { id?: string; href?: string; label: string }[] = [
   { id: 'hemeroteca', label: t('archive.title') },
@@ -138,7 +141,7 @@ const sections: { id?: string; href?: string; label: string }[] = [
                   {m.keyFilms.map((id) => {
                     const f = briefs.get(id);
                     return f ? (
-                      <a href={localizePath(lang, `film/${filmSlug(id, f.title)}`)} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{f.title}{f.year && ` (${f.year})`}</a>
+                      <a href={localizePath(lang, filmPathFor(id, lang, titulosEnlaces, f.title))} class="label border border-ink px-3 py-1 no-underline transition-colors hover:bg-ink hover:text-white">{f.title}{f.year && ` (${f.year})`}</a>
                     ) : null;
                   })}
                 </div>
@@ -172,7 +175,7 @@ const sections: { id?: string; href?: string; label: string }[] = [
                       <td class="px-3 py-2 font-mono text-meta-data text-muted">{w.year}</td>
                       <td class="px-3 py-2">
                         {w.tmdbId ? (
-                          <a href={localizePath(lang, `film/${filmSlug(w.tmdbId, w.title)}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{w.title}</a>
+                          <a href={localizePath(lang, filmPathFor(w.tmdbId, lang, titulosEnlaces, w.titles?.[lang] ?? w.title))} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{w.title}</a>
                         ) : (<span class="font-display text-headline-md leading-tight text-ink">{w.title}</span>)}
                         {w.director && <span class="mt-0.5 block font-mono text-meta-data text-muted sm:hidden">{w.director}</span>}
                       </td>

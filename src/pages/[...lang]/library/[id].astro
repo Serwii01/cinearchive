@@ -43,7 +43,7 @@ const jsonLd = [
 
 <BaseLayout title={item.title} description={blurb} image={bookCoverUrl(item.id)} jsonLd={jsonLd}>
   <article class="frame py-12">
-    <a href={localizePath(lang, 'library')} class="label no-underline hover:text-ink">← {t('library.backToLibrary')}</a>
+    <a href={`${localizePath(lang, 'archive')}#biblioteca`} class="label no-underline hover:text-ink">← {t('library.backToLibrary')}</a>
 
     <header class="mt-6 border-b border-ink pb-6">
       <span class="label">{t('cinema.publicDomain')} · {item.year}</span>

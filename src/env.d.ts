@@ -16,5 +16,11 @@ declare namespace App {
     } | null;
     /** La página no encontró lo que se pedía: el middleware responde 404. */
     notFound?: boolean;
+    /**
+     * La ruta de esta misma página en cada idioma, cuando no es la misma con
+     * otro prefijo (las fichas de película llevan el título de cada idioma en
+     * el slug). La pone BaseLayout y la usa el selector de idioma.
+     */
+    alternatePaths?: Partial<Record<'es' | 'en' | 'gl' | 'eu' | 'ca', string>>;
   }
 }

@@ -6,6 +6,11 @@ export interface AwardWinner {
   title: string;
   director?: string;
   tmdbId?: number;
+  /**
+   * El título en los cinco idiomas, con la regla de la ficha
+   * (scripts/fetch-award-titles.mjs): el enlace sale ya con el slug definitivo.
+   */
+  titles?: Partial<Record<'es' | 'en' | 'gl' | 'eu' | 'ca', string>>;
 }
 
 export interface Award {

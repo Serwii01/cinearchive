@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { savedTitles, filmPathFor } from '../../lib/filmlinks';
 import { getCatalog, localTitle } from '../../lib/catalog';
 import { normalizeLang, useTranslations, localizePath, type Lang } from '../../i18n/ui';
 import { filmSlug } from '../../lib/slug';
@@ -18,6 +19,9 @@ const t = useTranslations(lang);
 const films = (await getCatalog())
   .map((f) => ({ ...f, shown: localTitle(f, lang), countryShown: countryLabel(f.country, lang) }))
   .sort((a, b) => a.year - b.year || a.shown.localeCompare(b.shown, lang));
+// El título del catálogo no siempre es el del slug de la ficha («Mulholland Drive:
+// Sueños, misterios y secretos»): con él, cada enlace era una redirección.
+const titulosEnlaces = await savedTitles(films.map((f) => f.tmdbId).filter((id): id is number => !!id));
 const intro = t('films.intro').replace('{count}', String(films.length));
 
 // Filmoteca hace de portadilla: desde aquí se entra a las cuatro secciones que
@@ -96,7 +100,7 @@ const secciones = [
               >
                 <td class="px-3 py-3">
                   {f.tmdbId ? (
-                    <a href={localizePath(lang, `film/${filmSlug(f.tmdbId, f.shown)}`)} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{f.shown}</a>
+                    <a href={localizePath(lang, filmPathFor(f.tmdbId, lang, titulosEnlaces, f.shown))} class="font-display text-headline-md leading-tight text-ink no-underline underline-offset-2 hover:underline">{f.shown}</a>
                   ) : (
                     <span class="font-display text-headline-md leading-tight text-ink">{f.shown}</span>
                   )}

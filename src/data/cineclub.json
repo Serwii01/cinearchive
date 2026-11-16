@@ -1,0 +1,29 @@
+{
+  "note": "Sesiones del cineclub fijadas a mano (lib/cineclub.ts): una película y, si se quiere, una presentación para un día y hora concretos. El resto de viernes 22:00 y domingos 18:00 elige la película solo.",
+  "sessions": [
+    {
+      "date": "2026-11-20",
+      "time": "22:00",
+      "film": "the-circus-charlie-chaplin",
+      "intro": {
+        "es": "Primera sesión del cineclub. «El circo» es la película que Chaplin casi nunca mencionaba: un rodaje lleno de desgracias —un incendio en el decorado, el divorcio más sonado de Hollywood— del que salió una de sus comedias más perfectas. Fijaos en la escena del funambulista con los monos.",
+        "en": "The film club’s first screening. “The Circus” is the film Chaplin hardly ever mentioned: a shoot full of disasters —a fire on the set, Hollywood’s most talked-about divorce— that produced one of his most perfect comedies. Watch out for the tightrope scene with the monkeys.",
+        "gl": "Primeira sesión do cineclube. «O circo» é a película que Chaplin case nunca mencionaba: unha rodaxe chea de desgrazas —un incendio no decorado, o divorcio máis sonado de Hollywood— da que saíu unha das súas comedias máis perfectas. Fixádevos na escena do funambulista cos monos.",
+        "eu": "Zineklubaren lehen saioa. «Zirkua» Chaplinek ia inoiz aipatzen ez zuen filma da: zorigaitzez betetako filmaketa —sute bat dekoratuan, Hollywoodeko dibortziorik ezagunena— eta hortik atera zen haren komediarik perfektuenetako bat. Erreparatu tximinoekin egiten duen soka-dantzariaren eszenari.",
+        "ca": "Primera sessió del cineclub. «El circ» és la pel·lícula que Chaplin gairebé mai esmentava: un rodatge ple de desgràcies —un incendi al decorat, el divorci més sonat de Hollywood— del qual va sortir una de les seves comèdies més perfectes. Fixeu-vos en l’escena del funambulista amb les mones."
+      }
+    },
+    {
+      "date": "2026-11-22",
+      "time": "18:00",
+      "film": "sunrise-a-song-of-two-humans-f.-w.-murnau-1927",
+      "intro": {
+        "es": "«Amanecer» ganó en la primera gala de los Óscar un premio que solo se dio aquella vez, a la «producción única y artística». Murnau llegó de Alemania con carta blanca y la usó entera: decorados en perspectiva forzada, una ciudad construida para la cámara y una historia de amor contada casi sin rótulos.",
+        "en": "“Sunrise” won, at the first Academy Awards, a prize given only that once, for “Unique and Artistic Production”. Murnau arrived from Germany with a free hand and used all of it: forced-perspective sets, a city built for the camera and a love story told almost without intertitles.",
+        "gl": "«Amencer» gañou na primeira gala dos Óscar un premio que só se deu aquela vez, á «produción única e artística». Murnau chegou de Alemaña con carta branca e usouna enteira: decorados en perspectiva forzada, unha cidade construída para a cámara e unha historia de amor contada case sen rótulos.",
+        "eu": "«Egunsentia»-k Oscarren lehen galan behin bakarrik eman zen sari bat irabazi zuen, «ekoizpen bakar eta artistikoarena». Murnau Alemaniatik iritsi zen esku libreekin eta osorik erabili zituen: perspektiba behartuko dekoratuak, kamerarako eraikitako hiri bat eta ia errotulurik gabe kontatutako maitasun-istorio bat.",
+        "ca": "«Albada» va guanyar a la primera gala dels Oscar un premi que només es va donar aquella vegada, a la «producció única i artística». Murnau va arribar d’Alemanya amb carta blanca i la va fer servir sencera: decorats en perspectiva forçada, una ciutat construïda per a la càmera i una història d’amor explicada gairebé sense rètols."
+      }
+    }
+  ]
+}

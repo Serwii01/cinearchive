@@ -45,6 +45,10 @@ const lang: Lang = getLangFromUrl(new URL(Astro.originPathname, Astro.url));
 const t = useTranslations(lang);
 
 const { title, description, image, noindex, ogType = 'website', jsonLd, alternatePaths } = Astro.props;
+// El selector de idioma de la cabecera lleva a estas mismas rutas: si cambiara
+// solo el prefijo, desde /film/el-padrino-238 llevaría a /en/film/el-padrino-238,
+// que redirige a /en/film/the-godfather-238 (Search Console contaba cientos así).
+if (alternatePaths) Astro.locals.alternatePaths = alternatePaths;
 const pageTitle = title ? `${title} — ${t('site.title')}` : `${t('site.title')} — ${t('site.tagline')}`;
 const pageDesc = description ?? t('site.description');
 

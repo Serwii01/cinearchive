@@ -34,7 +34,8 @@ describe('privacidad de lo social', () => {
 
   it('borrar el texto de una reseña o la película borra sus «me gusta»', () => {
     const api = readFileSync('src/pages/api/me/films.ts', 'utf8');
-    expect(api.match(/db\.delete\(reviewLikes\)/g)?.length).toBe(2);
+    // Tres sitios: al quedarse sin texto, al vaciarla sin nada más que guardar y al quitar la película.
+    expect(api.match(/db\.delete\(reviewLikes\)/g)?.length).toBe(3);
   });
 });
 

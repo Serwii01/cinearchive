@@ -3,15 +3,23 @@
     "version": "1.20",
     "date": "2026-11-07",
     "title": {
-      "es": "Juegos de cine, reseñas de la comunidad y más cine abierto",
-      "en": "Film games, community reviews and more open cinema",
-      "gl": "Xogos de cine, recensións da comunidade e máis cine aberto",
-      "eu": "Zinema-jokoak, komunitatearen kritikak eta zinema ireki gehiago",
-      "ca": "Jocs de cinema, ressenyes de la comunitat i més cinema obert"
+      "es": "Foro y cineclub, juegos de cine y reseñas de la comunidad",
+      "en": "Forum and film club, film games and community reviews",
+      "gl": "Foro e cineclube, xogos de cine e recensións da comunidade",
+      "eu": "Foroa eta zineklub, zinema-jokoak eta komunitatearen kritikak",
+      "ca": "Fòrum i cineclub, jocs de cinema i ressenyes de la comunitat"
     },
     "changes": {
       "es": [
+        "Nueva sección Foro, también en la portada: un cineclub en el que vemos a la vez una película de Cine abierto (viernes a las 22:00 y domingos a las 18:00) con chat en directo, y conversaciones por tema para hablar de cine.",
+        "En Estrenos, «¿Qué echaban en los cines el día que…?»: elige una fecha —el día que naciste, por ejemplo— y mira qué se estrenaba esas semanas. Enlazado con Encuentra tu cine.",
+        "Diez películas más en Cine abierto (124 en total): «El circo», tres de Keaton, la última muda de Harold Lloyd, el debut de los hermanos Marx, dos de von Sternberg, el primer protagonista de John Wayne y «El cantor de jazz».",
+        "Artículos nuevos: el palmarés del Festival de Sevilla, la apertura del cineclub, las diez películas nuevas de Cine abierto y «1928, el año en que el cine mudo tocó techo».",
+        "Novedades por correo, unas pocas veces al año, con baja en un clic en cada correo y en tu cuenta.",
         "Nueva sección de Juegos: Fotograma (adivina la película por un detalle de su imagen, también con clásicos de Cine abierto), Cronología (ordena cinco películas por año) y ¿Cuál tiene mejor nota? Un reto nuevo cada día, gratis y sin cuenta.",
+        "Si vuelves a ver una película, pulsa «Vista otra vez» en la ficha: se apunta en tu diario y en tus últimos visionados, y la nota que le des va a ese visionado. La nota de cada película sale ahora también en el diario, y cambiar «Cuándo la viste» mueve el visionado a ese día.",
+        "Reseñas: escribir una sin puntuar ya no manda la película a «Pendiente», sino a vistas y al diario; guardar con la nota vacía no añade nada, la fecha que cambies al editar una reseña se lleva también al diario, y si una reseña no se puede guardar (por ejemplo, por pasar de 2.000 caracteres) la web lo dice en vez de perderla en silencio.",
+        "Los enlaces a las fichas desde el catálogo, el palmarés, los estrenos, las filmografías y el selector de idioma llevan directamente a la página, sin pasar por una redirección.",
         "Dos juegos nuevos: Reparto (adivina la película por sus actores, del sexto al protagonista) y ¿En qué año? (di cuándo se estrenaron cinco películas). Los dos con reto del día e ilimitado.",
         "Las fichas de películas y personas cargan antes en gallego, euskera y catalán, y el servidor trabaja mucho menos cuando los buscadores las recorren.",
         "Ocho colecciones nuevas: el Nuevo Hollywood, el nuevo cine alemán, el cine latinoamericano, la mirada iraní, el western, Hitchcock, la edad de oro del musical y el terror clásico. Ya son 20.",
@@ -32,7 +40,15 @@
         "En el Archivo, las portadas de la Biblioteca vuelven a verse con su marco."
       ],
       "en": [
+        "New Forum section, also on the home page: a film club where we watch an Open Cinema film at the same time (Fridays at 22:00 and Sundays at 18:00) with a live chat, and conversations by topic to talk about film.",
+        "In «New in cinemas», «What was showing in cinemas the day…?»: pick a date —your birthday, say— and see what was opening in those weeks. Linked with «Find your cinema».",
+        "Ten more films in Open Cinema (124 in total): “The Circus”, three Keatons, Harold Lloyd’s last silent, the Marx Brothers’ debut, two von Sternbergs, John Wayne’s first lead and “The Jazz Singer”.",
+        "New articles: the Seville Film Festival winners, the opening of the film club, the ten new Open Cinema films and “1928, the year silent cinema peaked”.",
+        "News by email, a few times a year, with one-click unsubscribe in every email and in your account.",
         "New Games section: Frame (guess the film from a detail of one of its images, also with Open Cinema classics), Timeline (put five films in order by year) and Which one rates higher? A new challenge every day, free and with no account.",
+        "If you watch a film again, press «Watched again» on its page: it goes into your diary and recently watched, and the rating you give goes to that viewing. Each film’s rating now shows in the diary too, and changing «When you watched it» moves the viewing to that day.",
+        "Reviews: writing one without a rating no longer sends the film to «Watchlist» but to watched and your diary; saving an empty note adds nothing, the date you change when editing a review also moves it in the diary, and if a review can’t be saved (for example, over 2,000 characters) the site says so instead of losing it silently.",
+        "Links to film pages from the catalogue, awards, new releases, filmographies and the language switcher now go straight to the page, without a redirect.",
         "Two new games: Cast (guess the film from its actors, from the sixth name to the lead) and What year? (say when five films came out). Both with a daily challenge and unlimited play.",
         "Film and people pages load faster in Galician, Basque and Catalan, and the server works much less when search engines crawl them.",
         "Eight new collections: New Hollywood, New German Cinema, Latin American cinema, the Iranian gaze, the Western, Hitchcock, the golden age of the musical and classic horror. That makes 20.",
@@ -53,7 +69,15 @@
         "In the Archive, Library covers have their frame back."
       ],
       "gl": [
+        "Nova sección Foro, tamén na portada: un cineclube no que vemos á vez unha película de Cine aberto (venres ás 22:00 e domingos ás 18:00) con chat en directo, e conversas por tema para falar de cine.",
+        "En Estreas, «Que botaban nos cines o día que…?»: escolle unha data —o día que naciches, por exemplo— e mira que se estreaba esas semanas. Ligado con Atopa o teu cine.",
+        "Dez películas máis en Cine aberto (124 en total): «O circo», tres de Keaton, a última muda de Harold Lloyd, a estrea dos irmáns Marx, dúas de von Sternberg, o primeiro protagonista de John Wayne e «O cantor de jazz».",
+        "Artigos novos: o palmarés do Festival de Sevilla, a apertura do cineclube, as dez películas novas de Cine aberto e «1928, o ano no que o cine mudo tocou teito».",
+        "Novidades por correo, unhas poucas veces ao ano, con baixa nun clic en cada correo e na túa conta.",
         "Nova sección de Xogos: Fotograma (adiviña a película por un detalle da súa imaxe, tamén con clásicos de Cine aberto), Cronoloxía (ordena cinco películas por ano) e Cal ten mellor nota? Un reto novo cada día, de balde e sen conta.",
+        "Se volves ver unha película, preme «Vista outra vez» na ficha: apúntase no teu diario e nos teus últimos visionados, e a nota que lle deas vai a ese visionado. A nota de cada película sae agora tamén no diario, e cambiar «Cando a viches» move o visionado a ese día.",
+        "Recensións: escribir unha sen puntuar xa non manda a película a «Pendente», senón a vistas e ao diario; gardar coa nota baleira non engade nada, a data que cambies ao editar unha recensión lévase tamén ao diario, e se unha recensión non se pode gardar (por exemplo, por pasar de 2.000 caracteres) a web dío en vez de perdela en silencio.",
+        "As ligazóns ás fichas desde o catálogo, o palmarés, as estreas, as filmografías e o selector de idioma levan directamente á páxina, sen pasar por unha redirección.",
         "Dous xogos novos: Reparto (adiviña a película polos seus actores, do sexto ao protagonista) e En que ano? (di cando se estrearon cinco películas). Os dous con reto do día e ilimitado.",
         "As fichas de películas e persoas cargan antes en galego, éuscaro e catalán, e o servidor traballa moito menos cando os buscadores as percorren.",
         "Oito coleccións novas: o Novo Hollywood, o novo cine alemán, o cine latinoamericano, a mirada iraniana, o western, Hitchcock, a idade de ouro do musical e o terror clásico. Xa son 20.",
@@ -74,7 +98,15 @@
         "No Arquivo, as portadas da Biblioteca volven verse co seu marco."
       ],
       "eu": [
+        "Foroa atal berria, hasierako orrian ere: zineklub bat, non Zinema irekiko film bat batera ikusten dugun (ostiraletan 22:00etan eta igandeetan 18:00etan) zuzeneko txatarekin, eta gaika antolatutako elkarrizketak zinemaz hitz egiteko.",
+        "Estreinaldietan, «Zer ematen zuten zinemetan… egunean?»: aukeratu data bat —jaio zinen eguna, adibidez— eta ikusi zer estreinatzen zen aste haietan. Aurkitu zure zinema atalarekin lotuta.",
+        "Beste hamar film Zinema irekian (124 guztira): «Zirkua», hiru Keaton, Harold Lloyden azken film mutua, Marx anaien estreinaldia, bi von Sternberg, John Wayneren lehen protagonista-papera eta «Jazz abeslaria».",
+        "Artikulu berriak: Sevillako Jaialdiko sari-zerrenda, zineklubaren irekiera, Zinema irekiko hamar film berriak eta «1928, zinema mutua goia jo zuen urtea».",
+        "Berritasunak posta elektronikoz, urtean gutxitan, mezu bakoitzean eta zure kontuan klik bakarrean baja emateko aukerarekin.",
         "Jokoen atal berria: Fotograma (asmatu filma bere irudi bateko xehetasun batetik, Zinema irekiko klasikoekin ere), Kronologia (ordenatu bost filma urteka) eta Zeinek du nota hobea? Erronka berri bat egunero, doan eta konturik gabe.",
+        "Film bat berriro ikusten baduzu, sakatu «Berriro ikusia» fitxan: zure egunerokoan eta azken ikustaldietan gehitzen da, eta ematen diozun nota ikustaldi horri dagokio. Film bakoitzaren nota egunerokoan ere ageri da orain, eta «Noiz ikusi zenuen» aldatzeak ikustaldia egun horretara eramaten du.",
+        "Kritikak: puntuatu gabe bat idazteak ez du filma «Ikusteko» zerrendara bidaltzen, ikusitakoetara eta egunerokora baizik; nota hutsik gordetzeak ez du ezer gehitzen, kritika bat editatzean aldatzen duzun data egunerokora ere eramaten da, eta kritika bat ezin bada gorde (adibidez, 2.000 karaktere gainditzeagatik) webguneak esaten du, isilean galdu beharrean.",
+        "Katalogotik, sarietatik, estreinaldietatik, filmografietatik eta hizkuntza-hautatzailetik fitxetarako estekek zuzenean eramaten dute orrira, birbideratzerik gabe.",
         "Bi joko berri: Aktoreak (asmatu filma bere aktoreen bidez, seigarrenetik protagonistara) eta Zein urtetan? (esan noiz estreinatu ziren bost filma). Biak eguneko erronkarekin eta mugagabeak.",
         "Filmen eta pertsonen fitxak azkarrago kargatzen dira galegoz, euskaraz eta katalanez, eta zerbitzariak askoz gutxiago lan egiten du bilatzaileek arakatzen dituztenean.",
         "Zortzi bilduma berri: Hollywood Berria, Alemaniako zinema berria, Latinoamerikako zinema, irandar begirada, westerna, Hitchcock, musikalaren urrezko aroa eta beldurrezko zinema klasikoa. Dagoeneko 20 dira.",
@@ -95,7 +127,15 @@
         "Artxiboan, Liburutegiko azalek berriro dute beren markoa."
       ],
       "ca": [
+        "Nova secció Fòrum, també a la portada: un cineclub on veiem alhora una pel·lícula de Cinema obert (divendres a les 22:00 i diumenges a les 18:00) amb xat en directe, i converses per tema per parlar de cinema.",
+        "A Estrenes, «Què feien als cinemes el dia que…?»: tria una data —el dia que vas néixer, per exemple— i mira què s’estrenava aquelles setmanes. Enllaçat amb Troba el teu cinema.",
+        "Deu pel·lícules més a Cinema obert (124 en total): «El circ», tres de Keaton, l’última muda de Harold Lloyd, el debut dels germans Marx, dues de von Sternberg, el primer protagonista de John Wayne i «El cantor de jazz».",
+        "Articles nous: el palmarès del Festival de Sevilla, l’obertura del cineclub, les deu pel·lícules noves de Cinema obert i «1928, l’any en què el cinema mut va tocar sostre».",
+        "Novetats per correu, unes poques vegades l’any, amb baixa en un clic a cada correu i al teu compte.",
         "Nova secció de Jocs: Fotograma (endevina la pel·lícula per un detall de la seva imatge, també amb clàssics de Cinema obert), Cronologia (ordena cinc pel·lícules per any) i Quina té millor nota? Un repte nou cada dia, gratis i sense compte.",
+        "Si tornes a veure una pel·lícula, prem «Vista una altra vegada» a la fitxa: s’apunta al teu diari i als teus últims visionats, i la nota que li donis va a aquest visionat. La nota de cada pel·lícula surt ara també al diari, i canviar «Quan la vas veure» mou el visionat a aquell dia.",
+        "Ressenyes: escriure’n una sense puntuar ja no envia la pel·lícula a «Pendent», sinó a vistes i al diari; desar amb la nota buida no afegeix res, la data que canviïs en editar una ressenya també es mou al diari, i si una ressenya no es pot desar (per exemple, per passar de 2.000 caràcters) la web ho diu en lloc de perdre-la en silenci.",
+        "Els enllaços a les fitxes des del catàleg, el palmarès, les estrenes, les filmografies i el selector d’idioma porten directament a la pàgina, sense passar per una redirecció.",
         "Dos jocs nous: Repartiment (endevina la pel·lícula pels seus actors, del sisè al protagonista) i En quin any? (digues quan es van estrenar cinc pel·lícules). Tots dos amb repte del dia i il·limitat.",
         "Les fitxes de pel·lícules i persones carreguen abans en gallec, basc i català, i el servidor treballa molt menys quan els cercadors les recorren.",
         "Vuit col·leccions noves: el Nou Hollywood, el nou cinema alemany, el cinema llatinoamericà, la mirada iraniana, el western, Hitchcock, l'edat d'or del musical i el terror clàssic. Ja en són 20.",

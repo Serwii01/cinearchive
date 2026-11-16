@@ -105,3 +105,16 @@ describe('hoyEnEspana', () => {
     expect(hoyEnEspana(new Date('2026-07-01T10:00:00Z'))).toBe('2026-07-01');
   });
 });
+
+describe('aplicarReglas: reseñar es haberla visto', () => {
+  it('escribir texto sin estado la deja como vista', () => {
+    expect(aplicarReglas({ note: 'Obra maestra.' }).status).toBe('seen');
+  });
+  it('una nota vacía no cambia nada (no la mete en pendientes)', () => {
+    expect(aplicarReglas({ note: '' }).status).toBeUndefined();
+    expect(aplicarReglas({ note: '   ' }).status).toBeUndefined();
+  });
+  it('lo explícito gana: con «pendiente» mandado, se respeta', () => {
+    expect(aplicarReglas({ note: 'Para ver con calma', status: 'want' }).status).toBe('want');
+  });
+});

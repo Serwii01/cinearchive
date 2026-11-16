@@ -109,7 +109,9 @@ analitica.{$DOMAIN} {
 		# analitica.{$DOMAIN} es la analítica propia: de ahí sale el guion de
 		# medición (script-src) y ahí manda los eventos (connect-src). Es el único
 		# tercero con permiso para ejecutar código, y es nuestro.
-		Content-Security-Policy "default-src 'self'; img-src 'self' https://image.tmdb.org https://archive.org https://*.archive.org https://*.tile.openstreetmap.org data:; script-src 'self' https://analitica.{$DOMAIN}; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self' https://analitica.{$DOMAIN}; frame-src https://archive.org https://*.archive.org https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+		# media-src: el cineclub reproduce el MP4 de Internet Archive en un <video>
+		# propio (el incrustado no se puede llevar al segundo de los demás).
+		Content-Security-Policy "default-src 'self'; img-src 'self' https://image.tmdb.org https://archive.org https://*.archive.org https://*.tile.openstreetmap.org data:; script-src 'self' https://analitica.{$DOMAIN}; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self' https://analitica.{$DOMAIN}; media-src 'self' https://archive.org https://*.archive.org; frame-src https://archive.org https://*.archive.org https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 		-Server
 	}
 

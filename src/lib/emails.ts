@@ -353,3 +353,62 @@ export function followEmail(lang: Lang, quien: { name: string; username: string 
   const lines = [`${quien.name} (@${quien.username})`];
   return { subject: c.subject, html: layout(c, url, lines), text: plain(c, url, lines) };
 }
+
+/* ------------------------------------------------------------------ *
+ * Boletín de novedades (lib/newsletter.ts)
+ * ------------------------------------------------------------------ */
+
+const NEWS_FOOTER: Record<Lang, { why: string; unsubscribe: string; prefs: string }> = {
+  es: { why: 'Te llega porque tienes cuenta en Cine Archive.', unsubscribe: 'Darme de baja de las novedades', prefs: 'O cámbialo en tu cuenta' },
+  en: { why: 'You are getting this because you have a Cine Archive account.', unsubscribe: 'Unsubscribe from news', prefs: 'Or change it in your account' },
+  gl: { why: 'Chégache porque tes conta en Cine Archive.', unsubscribe: 'Darme de baixa das novidades', prefs: 'Ou cámbiao na túa conta' },
+  eu: { why: 'Cine Archiven kontua duzulako jasotzen duzu.', unsubscribe: 'Berritasunetatik baja eman', prefs: 'Edo aldatu zure kontuan' },
+  ca: { why: 'Et arriba perquè tens compte a Cine Archive.', unsubscribe: 'Donar-me de baixa de les novetats', prefs: 'O canvia-ho al teu compte' },
+};
+
+export interface NewsletterParts {
+  subject: string;
+  preheader: string;
+  title: string;
+  intro: string;
+  items: { title: string; text: string; url: string }[];
+  outro: string;
+}
+
+/**
+ * El boletín: misma cara que el resto de correos, una lista de novedades con
+ * su enlace cada una y, al pie, por qué llega y la baja en un clic (que además
+ * va en la cabecera List-Unsubscribe: ver lib/newsletter.ts).
+ */
+export function newsletterEmail(lang: Lang, n: NewsletterParts, unsubscribeUrl: string, accountUrl: string): BuiltEmail {
+  const f = NEWS_FOOTER[lang] ?? NEWS_FOOTER[defaultLang];
+  const items = n.items
+    .map(
+      (i) => `<tr><td style="padding:0 0 18px">
+        <a href="${esc(i.url)}" style="font-family:Georgia,'Times New Roman',serif;font-size:19px;color:#1a1a1a;text-decoration:underline">${esc(i.title)}</a>
+        <p style="margin:6px 0 0;font-size:15px;line-height:1.6">${esc(i.text)}</p>
+      </td></tr>`,
+    )
+    .join('');
+  const html = `<!doctype html>
+<html><body style="margin:0;padding:24px;background:#f9f9f9;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a">
+  <span style="display:none;max-height:0;overflow:hidden">${esc(n.preheader)}</span>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;border:1px solid #000;background:#fff">
+    <tr><td style="border-bottom:1px solid #000;padding:16px 24px">
+      <span style="font-family:Georgia,'Times New Roman',serif;font-size:20px;letter-spacing:.01em">Cine Archive</span>
+    </td></tr>
+    <tr><td style="padding:24px">
+      <h1 style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:400;line-height:1.2">${esc(n.title)}</h1>
+      <p style="margin:0 0 24px;font-size:15px;line-height:1.6">${esc(n.intro)}</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${items}</table>
+      <p style="margin:8px 0 0;font-size:15px;line-height:1.6">${esc(n.outro)}</p>
+    </td></tr>
+    <tr><td style="border-top:1px solid #000;padding:16px 24px;font-size:12px;color:#666;line-height:1.6">
+      ${esc(f.why)}<br />
+      <a href="${esc(unsubscribeUrl)}" style="color:#6b4e07">${esc(f.unsubscribe)}</a> · <a href="${esc(accountUrl)}" style="color:#6b4e07">${esc(f.prefs)}</a>
+    </td></tr>
+  </table>
+</body></html>`;
+  const text = `${n.title}\n\n${n.intro}\n\n${n.items.map((i) => `${i.title}\n${i.text}\n${i.url}`).join('\n\n')}\n\n${n.outro}\n\n--\n${f.why}\n${f.unsubscribe}: ${unsubscribeUrl}\n${f.prefs}: ${accountUrl}`;
+  return { subject: n.subject, html, text };
+}

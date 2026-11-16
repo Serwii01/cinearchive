@@ -6,7 +6,7 @@ import { userFilms, reviewLikes } from '../../../db/schema';
 import { invalidateRecommendations } from '../../../lib/recs';
 import { invalidateStats } from '../../../lib/stats';
 import { aplicarReglas, fechaVista, hoyEnEspana } from '../../../lib/filmstate';
-import { ensureFirstViewing } from '../../../lib/viewings';
+import { ensureFirstViewing, moveOnlyViewing, rateLatestViewing } from '../../../lib/viewings';
 
 export const prerender = false;
 
@@ -65,8 +65,29 @@ export const POST: APIRoute = async ({ locals, request }) => {
       if (!d) return new Response(JSON.stringify({ error: 'fecha_invalida' }), { status: 400 });
       reviewedAt = d;
     }
-  } else if (touchesReview && (rating != null || note != null)) {
+  } else if (touchesReview && (rating != null || String(note ?? '').trim())) {
+    // Solo con algo que fechar: una nota vacía no es una reseña de hoy.
     reviewedAt = now;
+  }
+
+  // Nada que guardar (p. ej. «Guardar» con la nota vacía en una película sin
+  // tocar): solo se actualiza si ya estaba. Antes se creaba la fila con el
+  // estado por defecto y la película aparecía en «Pendientes» sin pedirlo.
+  const nadaQueGuardar =
+    status === undefined && favorite === undefined && rating == null && !String(note ?? '').trim() && reviewedAt === undefined;
+  if (nadaQueGuardar) {
+    if (note !== undefined || rating !== undefined) {
+      await db
+        .update(userFilms)
+        .set({ ...(note !== undefined ? { note } : {}), ...(rating !== undefined ? { rating } : {}), updatedAt: now })
+        .where(and(eq(userFilms.userId, locals.user.id), eq(userFilms.tmdbId, tmdbId)));
+      // Sin texto ya no es una reseña: sus «me gusta» se van con ella.
+      if (note !== undefined) await db.delete(reviewLikes).where(and(eq(reviewLikes.authorId, locals.user.id), eq(reviewLikes.tmdbId, tmdbId)));
+      if (rating !== undefined) await rateLatestViewing(locals.user.id, tmdbId, null);
+    }
+    invalidateRecommendations(locals.user.id);
+    invalidateStats(locals.user.id);
+    return Response.json({ ok: true });
   }
 
   await db
@@ -99,11 +120,18 @@ export const POST: APIRoute = async ({ locals, request }) => {
   // diario ni en «lo último que ha visto» del perfil, que leen user_viewings.
   // Solo marcarla como vista no lo apunta: puede ser algo visto hace años.
   // Si ya tiene algún visionado no se toca: cambiar la nota no es volver a verla.
+  const reseña = typeof note === 'string' && note.trim().length > 0;
   const primerVisionado =
-    typeof parsed.data.reviewedAt === 'string' ? parsed.data.reviewedAt : rating != null ? hoyEnEspana(now) : null;
+    typeof parsed.data.reviewedAt === 'string' ? parsed.data.reviewedAt : rating != null || reseña ? hoyEnEspana(now) : null;
   if (primerVisionado) {
     await ensureFirstViewing(locals.user.id, tmdbId, primerVisionado);
   }
+  // La nota también va al visionado (el último): es la que enseña el diario.
+  if (rating !== undefined) await rateLatestViewing(locals.user.id, tmdbId, rating);
+  // Con fecha de «Cuándo la viste» (desde la ficha o desde el editor de la
+  // reseña): si hay un único visionado apuntado aquí, se mueve a ese día, para
+  // que el diario y la reseña digan lo mismo. Con varios no se toca ninguno.
+  if (typeof parsed.data.reviewedAt === 'string') await moveOnlyViewing(locals.user.id, tmdbId, parsed.data.reviewedAt);
 
   // Sin texto ya no es una reseña: sus «me gusta» se van con ella, para que no
   // reaparezcan si algún día escribe otra.

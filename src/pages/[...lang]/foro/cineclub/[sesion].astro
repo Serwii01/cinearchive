@@ -1,0 +1,246 @@
+---
+/**
+ * La sala de una sesión del cineclub: la película a la vez para todos y el
+ * chat al lado.
+ *
+ * Sincronía sin servidor de vídeo: la sesión empieza a una hora fija, así que
+ * cada navegador calcula en qué segundo debería ir (hora del servidor menos
+ * hora de inicio) y lleva ahí su <video>. Si alguien pausa o se adelanta,
+ * «Volver al directo» le devuelve con los demás. El vídeo es el MP4 de
+ * Internet Archive (lib/iavideo.ts); si no lo hay, el reproductor incrustado,
+ * sin sincronía.
+ */
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { normalizeLang, useTranslations, localizePath, locales, localizedField, type Lang } from '../../../../i18n/ui';
+import { sessionByKey, sessionState, AFTER_MIN, BEFORE_MIN } from '../../../../lib/cineclub';
+import { getIaVideo } from '../../../../lib/iavideo';
+import { pdTitle, pdEmbedUrl, pdThumbUrl } from '../../../../lib/pdfilms';
+import { getMyProfile } from '../../../../lib/social';
+import { CHAT_MAX } from '../../../../lib/cineclubchat';
+
+export const prerender = false;
+
+const lang: Lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const viewer = Astro.locals.user;
+
+const sesion = sessionByKey(Astro.params.sesion ?? '');
+if (!sesion) {
+  Astro.locals.notFound = true;
+  return Astro.rewrite('/404');
+}
+const now = Date.now();
+const estado = sessionState(sesion, now);
+const video = await getIaVideo(sesion.film.id);
+const duracion = video?.length ?? sesion.film.runtime * 60;
+const titulo = pdTitle(sesion.film, lang);
+const conPerfil = viewer ? !!(await getMyProfile(viewer.id)) : false;
+const cuando = new Intl.DateTimeFormat(locales[lang], { timeZone: 'Europe/Madrid', weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }).format(new Date(sesion.startsAt));
+const intro = sesion.intro?.[lang] ?? sesion.intro?.es ?? null;
+const i18n = {
+  startsIn: t('forum.startsIn'),
+  playing: t('forum.nowPlaying'),
+  ended: t('forum.ended'),
+  closed: t('forum.chatClosed'),
+  error: t('diary.error'),
+  limit: t('forum.rateLimited'),
+  live: t('forum.live'),
+  backLive: t('forum.backLive'),
+};
+---
+
+<BaseLayout title={`${titulo} · ${t('forum.cineclub')}`} description={t('forum.cineclubIntro')} noindex>
+  <section class="frame py-10">
+    <a href={localizePath(lang, 'foro')} class="label no-underline hover:text-ink">← {t('forum.title')}</a>
+    <header class="mt-6 flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-5">
+      <div>
+        <span class="label">{t('forum.cineclub')} · <span class="first-letter:uppercase">{cuando}</span></span>
+        <h1 class="mt-2 text-display-mobile md:text-display-lg">{titulo}</h1>
+        <p class="mt-1 font-mono text-meta-data text-muted">{sesion.film.director} · {sesion.film.year} · {Math.round(duracion / 60)} min</p>
+      </div>
+      <a href={localizePath(lang, `cinema/${sesion.film.id}`)} class="btn btn-secondary no-underline">{t('forum.aboutFilm')} →</a>
+    </header>
+    {intro && <p class="mt-4 max-w-3xl text-body-lg text-charcoal">{intro}</p>}
+
+    <div
+      class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12"
+      data-sala={sesion.key}
+      data-starts={sesion.startsAt}
+      data-length={duracion}
+      data-after={AFTER_MIN * 60}
+      data-server-now={now}
+      data-i18n={JSON.stringify(i18n)}
+    >
+      <div class="lg:col-span-8">
+        <div class="relative border border-ink bg-charcoal">
+          {video ? (
+            <>
+              <video data-video src={video.url} poster={pdThumbUrl(sesion.film.id)} preload="none" playsinline controls class="aspect-video w-full bg-charcoal"></video>
+              {/* Antes de empezar y al entrar: la cuenta atrás o el botón de entrar. */}
+              <div data-cortina class="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-ink/80 p-6 text-center">
+                <p data-reloj class="font-display text-display-mobile text-white">—</p>
+                <button type="button" data-entrar class="btn btn-primary">{t('forum.enter')}</button>
+                <p class="max-w-md font-mono text-meta-data text-white/80">{t('forum.enterNote')}</p>
+              </div>
+            </>
+          ) : (
+            <iframe src={pdEmbedUrl(sesion.film.id)} title={titulo} loading="lazy" allow="fullscreen" allowfullscreen class="aspect-video w-full" style="border:0"></iframe>
+          )}
+        </div>
+        <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
+          <p data-estado class="font-mono text-meta-data text-muted">{!video && t('forum.noSync')}</p>
+          {video && <button type="button" data-directo class="label hover:text-ink" hidden>{t('forum.backLive')} ↻&#xFE0E;</button>}
+        </div>
+        <p class="mt-4 max-w-3xl text-body-md text-charcoal">{localizedField(sesion.film as never, 'blurb', lang)}</p>
+        <p class="mt-2 font-mono text-meta-data text-muted">{t('forum.roomTimes').replace('{before}', String(BEFORE_MIN)).replace('{after}', String(AFTER_MIN))}</p>
+      </div>
+
+      <aside class="flex flex-col border border-ink bg-surface lg:col-span-4" aria-labelledby="chat-titulo">
+        <h2 id="chat-titulo" class="border-b border-ink px-4 py-2 label">{t('forum.chat')}</h2>
+        <ol data-chat class="flex h-[26rem] flex-col gap-2 overflow-y-auto px-4 py-3" aria-live="polite"></ol>
+        {estado === 'over' ? (
+          <p class="border-t border-ink px-4 py-3 font-mono text-meta-data text-muted">{t('forum.chatClosed')}</p>
+        ) : !viewer ? (
+          <p class="border-t border-ink px-4 py-3 text-body-md text-charcoal">
+            {t('forum.loginToWrite')} <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname)}`} class="text-ink">{t('forum.login')} →</a>
+          </p>
+        ) : !conPerfil ? (
+          <p class="border-t border-ink px-4 py-3 text-body-md text-charcoal">
+            {t('forum.needProfile')} <a href={localizePath(lang, 'account')} class="text-ink">{t('forum.createProfile')} →</a>
+          </p>
+        ) : (
+          <form data-chat-form class="flex gap-2 border-t border-ink p-3">
+            <label for="chat-msg" class="sr-only">{t('forum.message')}</label>
+            <input id="chat-msg" name="body" maxlength={CHAT_MAX} autocomplete="off" required placeholder={t('forum.chatPlaceholder')} class="min-w-0 flex-1 border border-ink bg-white px-2 py-2 font-body text-body-md" />
+            <button type="submit" class="btn btn-primary">{t('forum.send')}</button>
+          </form>
+        )}
+        <p data-chat-msg role="status" class="px-4 pb-2 font-mono text-meta-data text-error empty:hidden"></p>
+      </aside>
+    </div>
+  </section>
+
+  <script>
+    import { driftSeconds, DERIVA_MAX } from '../../../../lib/cineclubsync';
+
+    const sala = document.querySelector<HTMLElement>('[data-sala]');
+    if (sala) {
+      const key = sala.dataset.sala!;
+      const empieza = Number(sala.dataset.starts);
+      const dura = Number(sala.dataset.length);
+      const despues = Number(sala.dataset.after);
+      const T = JSON.parse(sala.dataset.i18n!) as Record<string, string>;
+      // Diferencia entre el reloj del servidor y el de este navegador: se ajusta
+      // con cada respuesta del chat. Sin esto, un reloj adelantado iría por delante.
+      let desfase = Number(sala.dataset.serverNow) - Date.now();
+      const ahora = () => Date.now() + desfase;
+      const enPelicula = () => Math.max(0, Math.min((ahora() - empieza) / 1000, dura));
+
+      const video = sala.querySelector<HTMLVideoElement>('[data-video]');
+      const cortina = sala.querySelector<HTMLElement>('[data-cortina]');
+      const reloj = sala.querySelector<HTMLElement>('[data-reloj]');
+      const estado = sala.querySelector<HTMLElement>('[data-estado]')!;
+      const directo = sala.querySelector<HTMLButtonElement>('[data-directo]');
+      let dentro = false;
+
+      const mmss = (s: number) => {
+        const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = Math.floor(s % 60);
+        return `${h ? `${h}:` : ''}${String(m).padStart(h ? 2 : 1, '0')}:${String(x).padStart(2, '0')}`;
+      };
+      const alDirecto = () => {
+        if (!video) return;
+        // Salto puesto por la sala, no por la persona: no cuenta como «se ha ido».
+        video.dataset.auto = '1';
+        video.currentTime = enPelicula();
+        if (ahora() >= empieza && ahora() < empieza + dura * 1000) void video.play().catch(() => {});
+      };
+
+      function tic() {
+        const t = ahora();
+        if (t < empieza) {
+          const falta = (empieza - t) / 1000;
+          if (reloj) reloj.textContent = mmss(falta);
+          estado.textContent = T.startsIn.replace('{time}', mmss(falta));
+        } else if (t < empieza + dura * 1000) {
+          estado.textContent = `● ${T.live} · ${mmss(enPelicula())} / ${mmss(dura)}`;
+          if (video && dentro) {
+            if (cortina) cortina.hidden = true;
+            // Empieza sola si ya se había entrado antes de la hora.
+            if (video.paused && !video.dataset.pausada) alDirecto();
+            const deriva = driftSeconds(video.currentTime, enPelicula());
+            // Se queda atrás al cargar o si la red va lenta: se recoloca sola,
+            // salvo que la persona haya pausado o movido la barra a propósito.
+            if (deriva > DERIVA_MAX && !video.paused && !video.seeking && !video.dataset.pausada) alDirecto();
+            if (directo) directo.hidden = !video.dataset.pausada && !video.paused;
+          }
+          if (reloj) reloj.textContent = T.playing;
+        } else {
+          estado.textContent = t < empieza + (dura + despues) * 1000 ? T.ended : T.closed;
+          if (reloj) reloj.textContent = T.ended;
+          if (directo) directo.hidden = true;
+        }
+      }
+      sala.querySelector('[data-entrar]')?.addEventListener('click', () => {
+        dentro = true;
+        if (cortina && ahora() >= empieza) cortina.hidden = true;
+        sala.querySelector('[data-entrar]')?.remove();
+        alDirecto();
+        tic();
+      });
+      // Quien pausa a propósito no vuelve solo al directo; para eso está el botón.
+      video?.addEventListener('pause', () => { if (!video.ended) video.dataset.pausada = '1'; });
+      // Mover la barra a mano también es irse del directo (el salto de la sala no).
+      video?.addEventListener('seeked', () => {
+        if (video.dataset.auto) delete video.dataset.auto;
+        else video.dataset.pausada = '1';
+      });
+      directo?.addEventListener('click', () => { if (video) delete video.dataset.pausada; alDirecto(); });
+      tic();
+      setInterval(tic, 1000);
+
+      // --- Chat: pregunta cada 4 s por lo nuevo ---
+      const lista = sala.querySelector<HTMLOListElement>('[data-chat]')!;
+      const aviso = sala.querySelector<HTMLElement>('[data-chat-msg]')!;
+      let ultimo = 0;
+      const hora = new Intl.DateTimeFormat(document.documentElement.lang || 'es', { hour: '2-digit', minute: '2-digit' });
+      async function trae() {
+        try {
+          const r = await fetch(`/api/forum/cineclub/${key}?after=${ultimo}`, { cache: 'no-store' });
+          if (!r.ok) return;
+          const d = (await r.json()) as { now: number; messages: { id: number; username: string; body: string; at: string }[] };
+          desfase = d.now - Date.now();
+          const abajo = lista.scrollHeight - lista.scrollTop - lista.clientHeight < 40;
+          for (const m of d.messages) {
+            const li = document.createElement('li');
+            li.className = 'text-body-md text-charcoal';
+            const quien = document.createElement('span');
+            quien.className = 'font-mono text-meta-data text-muted';
+            quien.textContent = `${hora.format(new Date(m.at))} @${m.username} `;
+            li.append(quien, document.createTextNode(m.body));
+            lista.append(li);
+            ultimo = Math.max(ultimo, m.id);
+          }
+          if (abajo || d.messages.length) lista.scrollTop = lista.scrollHeight;
+        } catch {
+          /* sin red un momento: lo intenta en la siguiente vuelta */
+        }
+      }
+      void trae();
+      setInterval(() => { if (!document.hidden) void trae(); }, 4000);
+
+      const form = sala.querySelector<HTMLFormElement>('[data-chat-form]');
+      form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const campo = form.querySelector<HTMLInputElement>('input[name=body]')!;
+        const texto = campo.value.trim();
+        if (!texto) return;
+        aviso.textContent = '';
+        const r = await fetch(`/api/forum/cineclub/${key}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ body: texto }) }).catch(() => null);
+        if (r?.ok) {
+          campo.value = '';
+          void trae();
+        } else aviso.textContent = r?.status === 409 ? T.closed : r?.status === 429 ? T.limit : T.error;
+      });
+    }
+  </script>
+</BaseLayout>

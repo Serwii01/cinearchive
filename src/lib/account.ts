@@ -18,6 +18,9 @@ import {
   userLists,
   userPreferences,
   badges,
+  forumThreads,
+  forumPosts,
+  cineclubMessages,
 } from '../db/schema';
 
 /** ¿Entra con correo y contraseña? Las cuentas solo de Google/GitHub no tienen. */
@@ -45,6 +48,8 @@ export interface ExportInput {
   followers: Row[];
   badges: Row[];
   providers: string[];
+  /** Lo escrito en el foro y en el chat del cineclub (también lo oculto: es suyo). */
+  forum?: { threads: Row[]; posts: Row[]; chat: Row[] };
 }
 
 /**
@@ -72,6 +77,11 @@ export function shapeExport(d: ExportInput, now = new Date()) {
     following: d.following,
     followers: d.followers,
     badges: d.badges,
+    forum: {
+      threads: (d.forum?.threads ?? []).map((t) => pick(t, ['id', 'category', 'title', 'body', 'createdAt', 'hidden'])),
+      replies: (d.forum?.posts ?? []).map((p) => pick(p, ['threadId', 'body', 'createdAt', 'hidden'])),
+      cineclubChat: (d.forum?.chat ?? []).map((m) => pick(m, ['session', 'body', 'createdAt', 'hidden'])),
+    },
   };
 }
 
@@ -110,6 +120,12 @@ export async function exportUserData(userId: string) {
     await db.select({ providerId: account.providerId }).from(account).where(eq(account.userId, userId))
   ).map((a) => (a.providerId === 'credential' ? 'email' : a.providerId));
 
+  const forum = {
+    threads: (await db.select().from(forumThreads).where(eq(forumThreads.userId, userId))) as Row[],
+    posts: (await db.select().from(forumPosts).where(eq(forumPosts.userId, userId))) as Row[],
+    chat: (await db.select().from(cineclubMessages).where(eq(cineclubMessages.userId, userId))) as Row[],
+  };
+
   return shapeExport({
     user: u as Row,
     profile: (p as Row) ?? null,
@@ -122,5 +138,6 @@ export async function exportUserData(userId: string) {
     followers,
     badges: myBadges,
     providers,
+    forum,
   });
 }

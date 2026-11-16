@@ -7,7 +7,7 @@
  * jueves: el viernes 30 empieza «esta semana» aunque hoy sea miércoles 4 y la
  * semana natural ya vaya por la mitad.
  */
-import { regionReleases, posterUrl, posterSrcset, type TmdbSearchResult } from './tmdb';
+import { regionReleases, worldReleases, posterUrl, posterSrcset, type TmdbSearchResult } from './tmdb';
 import { createMemo } from './memo';
 import { registerCache } from './cache-registry';
 
@@ -119,5 +119,59 @@ export function getCartelera(locale: string, today = new Date().toISOString().sl
     const laterByDate = toReleaseFilms(later).sort((a, b) => a.date.localeCompare(b.date));
     const [a, b, c, d] = dedupeLists([toReleaseFilms(thisWeek), toReleaseFilms(nextWeek), laterByDate, toReleaseFilms(earlier)]);
     return { windows, thisWeek: a, nextWeek: b, later: c, nowPlaying: d };
+  });
+}
+
+/* ------------------------------------------------------------------ *
+ * ¿Qué echaban en los cines el día que…?
+ * ------------------------------------------------------------------ */
+
+/**
+ * Lo que había en cartel un día se aproxima con lo que se estrenó en las
+ * cuatro semanas anteriores: una película aguantaba en cartel unas semanas, y
+ * TMDB no guarda carteleras, solo fechas de estreno.
+ */
+export const DIAS_EN_CARTEL = 28;
+/** Antes de esto TMDB apenas tiene fechas de estreno por país. */
+export const PRIMER_DIA = '1920-01-01';
+
+export function ventanaDelDia(dia: string): { from: string; to: string } {
+  return { from: addDays(dia, -(DIAS_EN_CARTEL - 1)), to: dia };
+}
+
+/** El día pedido, si es una fecha real entre PRIMER_DIA y hoy; si no, null. Pura. */
+export function diaValido(dia: string | null | undefined, hoy: string): string | null {
+  if (!dia || !/^\d{4}-\d{2}-\d{2}$/.test(dia)) return null;
+  const d = new Date(`${dia}T12:00:00Z`);
+  if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== dia) return null;
+  return dia >= PRIMER_DIA && dia <= hoy ? dia : null;
+}
+
+export interface CarteleraDelDia {
+  dia: string;
+  /** 'es': estrenos en España; 'mundo': sin fechas de España, los del mundo esas semanas. */
+  ambito: 'es' | 'mundo';
+  films: ReleaseFilm[];
+}
+
+/** Con menos de esto en España, se completa con lo estrenado en el mundo. */
+const MINIMO_ES = 6;
+const memoDia = createMemo<CarteleraDelDia>(7 * 24 * 60 * 60 * 1000, 300);
+registerCache({
+  id: 'releases-day',
+  label: '¿Qué echaban el día que…?',
+  ttlMs: 7 * 24 * 60 * 60 * 1000,
+  maxKeys: 300,
+  size: () => memoDia.size,
+  clear: () => memoDia.clear(),
+});
+
+export function carteleraDelDia(dia: string, locale: string): Promise<CarteleraDelDia> {
+  return memoDia.get(`${locale}:${dia}`, async () => {
+    const { from, to } = ventanaDelDia(dia);
+    const es = toReleaseFilms(await regionReleases(REGION, from, to, locale, 2));
+    if (es.length >= MINIMO_ES) return { dia, ambito: 'es', films: es.slice(0, 24) };
+    const mundo = toReleaseFilms(await worldReleases(from, to, locale));
+    return { dia, ambito: 'mundo', films: mundo.slice(0, 24) };
   });
 }

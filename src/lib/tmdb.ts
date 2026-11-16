@@ -480,6 +480,23 @@ export async function regionReleases(
   return out;
 }
 
+/**
+ * Estrenos en cines de todo el mundo entre dos fechas (fecha de estreno
+ * principal). Para «¿Qué echaban el día que…?» cuando TMDB no tiene las fechas
+ * de España de esa época, que pasa a menudo con lo anterior a los ochenta.
+ */
+export async function worldReleases(from: string, to: string, locale: string): Promise<TmdbSearchResult[]> {
+  const data = await tmdbFetch<{ results: TmdbSearchResult[] }>('/discover/movie', {
+    language: toTmdbLang(locale),
+    'primary_release_date.gte': from,
+    'primary_release_date.lte': to,
+    sort_by: 'vote_count.desc',
+    include_adult: 'false',
+    page: '1',
+  });
+  return data.results;
+}
+
 export function director(movie: TmdbMovie): string | null {
   return movie.credits?.crew.find((c) => c.job === 'Director')?.name ?? null;
 }

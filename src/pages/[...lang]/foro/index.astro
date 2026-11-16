@@ -1,0 +1,176 @@
+---
+/**
+ * Foro: el cineclub (sesiones a la vez para todos, con chat) y los hilos de
+ * conversación por categoría. Leer es libre; escribir pide cuenta con perfil.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Avatar from '../../../components/Avatar.astro';
+import CineclubSessions from '../../../components/forum/CineclubSessions.astro';
+import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../../i18n/ui';
+import { listThreads, isForumCategory, FORUM_CATEGORIES, THREADS_PAGE, TITLE_MAX, BODY_MAX, type ForumCategory } from '../../../lib/forum';
+import { upcomingSessions } from '../../../lib/cineclub';
+import { getMyProfile } from '../../../lib/social';
+import { threadPath } from '../../../lib/forumpaths';
+import { breadcrumbLd } from '../../../lib/seo';
+
+export const prerender = false;
+
+const lang: Lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+const viewer = Astro.locals.user;
+
+const catParam = Astro.url.searchParams.get('cat');
+const cat: ForumCategory | undefined = isForumCategory(catParam) ? catParam : undefined;
+const page = Math.max(1, Math.min(200, Number(Astro.url.searchParams.get('p')) || 1));
+
+const now = Date.now();
+const sesiones = upcomingSessions(now, 4);
+let hilos: Awaited<ReturnType<typeof listThreads>> = [];
+try {
+  hilos = await listThreads({ category: cat, page });
+} catch {
+  hilos = [];
+}
+const conPerfil = viewer ? !!(await getMyProfile(viewer.id)) : false;
+
+const base = localizePath(lang, 'foro');
+const hrefCat = (c?: ForumCategory) => (c ? `${base}?cat=${c}` : base);
+const hrefPag = (p: number) => `${base}?${new URLSearchParams({ ...(cat ? { cat } : {}), ...(p > 1 ? { p: String(p) } : {}) })}`;
+const catLabel = (c: string) => t(`forum.cat.${c}` as never);
+const hace = (d: Date) => formatDate(d, lang);
+---
+
+<BaseLayout
+  title={cat ? `${catLabel(cat)} · ${t('forum.title')}` : t('forum.title')}
+  description={t('forum.metaDesc')}
+  jsonLd={[breadcrumbLd([{ name: t('forum.title'), url: new URL(base, Astro.site).href }])]}
+>
+  <section class="frame py-12">
+    <header class="border-b border-ink pb-6">
+      <span class="label">{t('forum.label')}</span>
+      <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('forum.title')}</h1>
+      <p class="mt-4 max-w-2xl text-body-lg text-charcoal">{t('forum.intro')}</p>
+    </header>
+
+    {/* Cineclub */}
+    <section class="mt-10" aria-labelledby="cineclub">
+      <h2 id="cineclub" class="border-b border-ink pb-2 text-headline-lg text-ink">{t('forum.cineclub')}</h2>
+      <p class="mt-2 max-w-2xl text-body-md text-charcoal">{t('forum.cineclubIntro')}</p>
+      <div class="mt-4">
+        <CineclubSessions lang={lang} sessions={sesiones} now={now} />
+      </div>
+    </section>
+
+    {/* Hilos */}
+    <section class="mt-12" aria-labelledby="hilos">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-2">
+        <h2 id="hilos" class="text-headline-lg text-ink">{t('forum.threads')}</h2>
+        {conPerfil && <a href="#nuevo" class="btn btn-primary no-underline">{t('forum.newThread')}</a>}
+      </div>
+      <nav class="mt-4 flex flex-wrap gap-2" aria-label={t('forum.categories')}>
+        <a href={hrefCat()} aria-current={!cat ? 'page' : undefined} class:list={['label border border-ink px-3 py-1 no-underline', !cat ? 'bg-ink text-white' : 'hover:bg-ink hover:text-white']}>{t('forum.all')}</a>
+        {FORUM_CATEGORIES.map((c) => (
+          <a href={hrefCat(c)} aria-current={cat === c ? 'page' : undefined} class:list={['label border border-ink px-3 py-1 no-underline', cat === c ? 'bg-ink text-white' : 'hover:bg-ink hover:text-white']}>{catLabel(c)}</a>
+        ))}
+      </nav>
+
+      {hilos.length === 0 ? (
+        <p class="mt-6 font-mono text-body-md text-muted">{t('forum.empty')}</p>
+      ) : (
+        <ul class="mt-4 border border-ink">
+          {hilos.map((h, i) => (
+            <li class:list={['bg-surface', i > 0 && 'border-t border-ink/40']}>
+              <a href={localizePath(lang, threadPath(h.id, h.title))} class="flex items-center gap-3 p-4 no-underline hover:bg-film-white">
+                <Avatar userId={h.author.userId} name={h.author.name} hasAvatar={h.author.hasAvatar} size={32} />
+                <div class="min-w-0 flex-1">
+                  <p class="font-display text-headline-md leading-tight text-ink">{h.title}</p>
+                  <p class="mt-1 font-mono text-meta-data text-muted">
+                    {catLabel(h.category)} · @{h.author.username} · {hace(h.lastPostAt)}
+                  </p>
+                </div>
+                <span class="shrink-0 text-right font-mono text-meta-data text-muted">
+                  <span class="block font-display text-headline-md text-ink">{h.replies}</span>{t('forum.replies')}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+      {(page > 1 || hilos.length === THREADS_PAGE) && (
+        <nav class="mt-4 flex justify-between" aria-label={t('forum.threads')}>
+          {page > 1 ? <a href={hrefPag(page - 1)} class="label no-underline hover:text-ink">← {t('forum.newer')}</a> : <span></span>}
+          {hilos.length === THREADS_PAGE && <a href={hrefPag(page + 1)} class="label no-underline hover:text-ink">{t('forum.older')} →</a>}
+        </nav>
+      )}
+    </section>
+
+    {/* Nuevo hilo */}
+    <section id="nuevo" class="mt-12 scroll-mt-24 border border-ink bg-film-white p-5">
+      <h2 class="text-headline-lg text-ink">{t('forum.newThread')}</h2>
+      {!viewer ? (
+        <p class="mt-3 text-body-md text-charcoal">
+          {t('forum.loginToWrite')} <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(base + '#nuevo')}`} class="text-ink">{t('forum.login')} →</a>
+        </p>
+      ) : !conPerfil ? (
+        <p class="mt-3 text-body-md text-charcoal">
+          {t('forum.needProfile')} <a href={localizePath(lang, 'account')} class="text-ink">{t('forum.createProfile')} →</a>
+        </p>
+      ) : (
+        <form data-new-thread data-base={base} class="mt-4 flex flex-col gap-3" data-error={t('diary.error')} data-limit={t('forum.rateLimited')}>
+          <label class="flex flex-col gap-1">
+            <span class="label">{t('forum.category')}</span>
+            <select name="category" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md sm:w-72">
+              {FORUM_CATEGORIES.map((c) => <option value={c} selected={c === (cat ?? 'general')}>{catLabel(c)}</option>)}
+            </select>
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="label">{t('forum.threadTitle')}</span>
+            <input name="title" required minlength="4" maxlength={TITLE_MAX} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md" />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="label">{t('forum.message')}</span>
+            <textarea name="body" required rows="6" maxlength={BODY_MAX} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md"></textarea>
+          </label>
+          <p class="font-mono text-meta-data text-muted">{t('forum.publicNote')}</p>
+          <div class="flex items-center gap-3">
+            <button type="submit" class="btn btn-primary">{t('forum.publish')}</button>
+            <p data-msg role="status" class="font-mono text-meta-data text-error"></p>
+          </div>
+        </form>
+      )}
+    </section>
+  </section>
+
+  <script>
+    import { slugify } from '../../../lib/slug';
+
+    const form = document.querySelector<HTMLFormElement>('[data-new-thread]');
+    if (form) {
+      const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const datos = new FormData(form);
+        const boton = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+        boton.disabled = true;
+        msg.textContent = '';
+        try {
+          const res = await fetch('/api/forum/threads', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ category: datos.get('category'), title: datos.get('title'), body: datos.get('body') }),
+          });
+          if (res.ok) {
+            const { id } = await res.json();
+            const titulo = String(datos.get('title') ?? '');
+            window.location.href = `${form.dataset.base}/${id}${slugify(titulo) ? `-${slugify(titulo)}` : ''}`;
+            return;
+          }
+          msg.textContent = res.status === 429 ? form.dataset.limit! : form.dataset.error!;
+        } catch {
+          msg.textContent = form.dataset.error!;
+        }
+        boton.disabled = false;
+      });
+    }
+  </script>
+</BaseLayout>
