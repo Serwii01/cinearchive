@@ -1,5 +1,38 @@
 [
   {
+    "version": "1.23",
+    "date": "2026-11-17",
+    "title": {
+      "es": "Notas de IMDb, Rotten Tomatoes y Metacritic más fiables",
+      "en": "More reliable IMDb, Rotten Tomatoes and Metacritic scores",
+      "gl": "Notas de IMDb, Rotten Tomatoes e Metacritic máis fiables",
+      "eu": "IMDb, Rotten Tomatoes eta Metacritic-eko nota fidagarriagoak",
+      "ca": "Notes d’IMDb, Rotten Tomatoes i Metacritic més fiables"
+    },
+    "changes": {
+      "es": [
+        "Las notas de IMDb, Rotten Tomatoes y Metacritic dependen de un servicio con un número de consultas al día que se agotaba, y muchas fichas se quedaban solo con la de TMDB. Ahora se gastan mucho menos: las películas que ese servicio no tiene ya no se le vuelven a preguntar, y si se acaban las consultas se espera un rato en vez de seguir insistiendo.",
+        "Las notas nuevas se piden al abrir una ficha con la sesión iniciada. Sin cuenta se siguen viendo las que ya estén guardadas."
+      ],
+      "en": [
+        "IMDb, Rotten Tomatoes and Metacritic scores come from a service with a daily limit that kept running out, leaving many pages with only the TMDB score. Now far fewer requests are used: films that service doesn’t have are no longer asked for again, and when the limit is reached the site waits a while instead of insisting.",
+        "New scores are fetched when a page is opened while signed in. Without an account you still see the ones already saved."
+      ],
+      "gl": [
+        "As notas de IMDb, Rotten Tomatoes e Metacritic dependen dun servizo cun número de consultas ao día que se esgotaba, e moitas fichas quedaban só coa de TMDB. Agora gástanse moitas menos: as películas que ese servizo non ten xa non se lle volven preguntar, e se se acaban as consultas espérase un anaco en vez de seguir insistindo.",
+        "As notas novas pídense ao abrir unha ficha coa sesión iniciada. Sen conta seguen véndose as que xa estean gardadas."
+      ],
+      "eu": [
+        "IMDb, Rotten Tomatoes eta Metacritic-eko notak eguneko kontsulta-kopuru mugatua duen zerbitzu batetik datoz; agortu egiten zen, eta fitxa askok TMDBrena besterik ez zuten. Orain askoz gutxiago gastatzen dira: zerbitzu horrek ez dituen filmak ez zaizkio berriro galdetzen, eta kontsultak amaitzen badira, denbora batez itxaroten da tematu beharrean.",
+        "Nota berriak saioa hasita fitxa bat irekitzean eskatzen dira. Konturik gabe, gordeta daudenak ikusten jarraitzen dira."
+      ],
+      "ca": [
+        "Les notes d’IMDb, Rotten Tomatoes i Metacritic depenen d’un servei amb un nombre de consultes al dia que s’esgotava, i moltes fitxes es quedaven només amb la de TMDB. Ara se’n gasten moltes menys: les pel·lícules que aquest servei no té ja no se li tornen a preguntar, i si s’acaben les consultes s’espera una estona en lloc de continuar insistint.",
+        "Les notes noves es demanen en obrir una fitxa amb la sessió iniciada. Sense compte es continuen veient les que ja estiguin desades."
+      ]
+    }
+  },
+  {
     "version": "1.22",
     "date": "2026-11-17",
     "title": {

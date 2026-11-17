@@ -21,7 +21,7 @@ import {
   type TmdbMovie,
   type WatchAvailability,
 } from './tmdb';
-import { getOmdbByImdbId, type OmdbData } from './omdb';
+import { getOmdbByImdbId, OMDB_SIN_DATOS, type OmdbData } from './omdb';
 import { getFilmLocations, esFormatoActual, type FilmLocations } from './wikidata';
 import { createMemo } from './memo';
 import { registerCache } from './cache-registry';
@@ -227,8 +227,12 @@ export async function getOmdbFresh(tmdbId: number): Promise<{ omdb: OmdbData | n
   const voteAverage = ficha.vote_average ?? 0;
   const guardado = (fila.omdb as OmdbData | null) ?? null;
   if (omdbAlDia(guardado, fila.omdbFetchedAt) || !ficha.imdb_id) return { omdb: guardado, voteAverage };
-  const nuevas = await getOmdbByImdbId(ficha.imdb_id);
-  if (!nuevas) return { omdb: guardado, voteAverage };
+  const r = await getOmdbByImdbId(ficha.imdb_id);
+  // Agotada o caída: se enseña lo que hubiera, sin guardar nada.
+  if (r.tipo === 'agotada' || r.tipo === 'fallo') return { omdb: guardado, voteAverage };
+  // Si OMDb no la tiene, también se guarda (con fecha): antes no se apuntaba,
+  // la ficha seguía «pendiente» y cada visita gastaba otra consulta.
+  const nuevas = r.tipo === 'notas' ? r.data : OMDB_SIN_DATOS;
   await db.update(filmsCache).set({ omdb: nuevas, omdbFetchedAt: new Date() }).where(eq(filmsCache.tmdbId, tmdbId));
   for (const l of ['es', 'en', 'gl', 'eu', 'ca']) filmMemo.clear(`${tmdbId}:${l}`);
   return { omdb: nuevas, voteAverage };

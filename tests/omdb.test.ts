@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { translateAwards } from '../src/lib/omdb';
+import { translateAwards, clasificarOmdb, omdbEnPausa, pausarOmdb, OMDB_PAUSA_MS, getOmdbByImdbId } from '../src/lib/omdb';
 
 describe('translateAwards', () => {
   it('el caso de «Cuentos de Tokio»: solo el total', () => {
@@ -37,5 +37,45 @@ describe('translateAwards', () => {
   it('lo que no encaja se deja como viene, antes que inventar', () => {
     expect(translateAwards('Won 2 Palme d\'Or awards. 3 wins total', 'es')).toBe("Won 2 Palme d'Or awards. 3 wins total");
     expect(translateAwards('Something else entirely', 'es')).toBe('Something else entirely');
+  });
+});
+
+describe('clasificarOmdb', () => {
+  it('notas', () => {
+    expect(clasificarOmdb(200, { Response: 'True', imdbRating: '8.1' }).tipo).toBe('notas');
+  });
+  it('no la tiene: se guarda para no volver a preguntar', () => {
+    expect(clasificarOmdb(200, { Response: 'False', Error: 'Movie not found!' }).tipo).toBe('no-existe');
+    expect(clasificarOmdb(200, { Response: 'False', Error: 'Incorrect IMDb ID.' }).tipo).toBe('no-existe');
+  });
+  it('cuota agotada o clave mala: se deja de llamar', () => {
+    expect(clasificarOmdb(401, { Response: 'False', Error: 'Request limit reached!' }).tipo).toBe('agotada');
+    expect(clasificarOmdb(200, { Response: 'False', Error: 'Request limit reached!' }).tipo).toBe('agotada');
+    expect(clasificarOmdb(401, { Response: 'False', Error: 'Invalid API key!' }).tipo).toBe('agotada');
+  });
+  it('lo demás es un fallo pasajero: no se guarda', () => {
+    expect(clasificarOmdb(503, null).tipo).toBe('fallo');
+    expect(clasificarOmdb(200, null).tipo).toBe('fallo');
+    expect(clasificarOmdb(200, { Response: 'False', Error: 'Something else' }).tipo).toBe('fallo');
+  });
+});
+
+describe('pausa al agotarse la cuota', () => {
+  it('dura una hora', () => {
+    const t = 1_000_000;
+    pausarOmdb(t);
+    expect(omdbEnPausa(t + 1)).toBe(true);
+    expect(omdbEnPausa(t + OMDB_PAUSA_MS - 1)).toBe(true);
+    expect(omdbEnPausa(t + OMDB_PAUSA_MS)).toBe(false);
+  });
+  it('en pausa no se llama a OMDb', async () => {
+    process.env.OMDB_API_KEY = 'x';
+    const antes = globalThis.fetch;
+    let llamadas = 0;
+    globalThis.fetch = (async () => { llamadas++; return new Response('{}'); }) as typeof fetch;
+    pausarOmdb();
+    expect((await getOmdbByImdbId('tt0111161')).tipo).toBe('agotada');
+    expect(llamadas).toBe(0);
+    globalThis.fetch = antes;
   });
 });

@@ -69,6 +69,8 @@ try {
   return Astro.rewrite('/404');
 }
 const { tmdb, omdb, omdbPending, providers, locations, locationsPending, titles } = film;
+// Notas de OMDb nuevas, solo con sesión: la cuota (1.000 al día) se agotaba
+// con visitas sueltas. Sin sesión se ve lo ya guardado, aunque haya caducado.
 
 // URL canónica con nombre: si llegan por id pelado o con un slug distinto (título
 // cambiado/otro idioma), 301 al slug real. El id garantiza resolver siempre.
@@ -382,7 +384,7 @@ const crumbsJsonLd = breadcrumbLd([
 
         {/* Notas externas. Si las de OMDb faltan o caducaron, salen huecos y las
             pide el navegador (ver components/FilmScores.astro). */}
-        <FilmScores tmdbId={tmdbId} lang={lang} voteAverage={tmdb.vote_average} omdb={omdb} pendiente={omdbPending} />
+        <FilmScores tmdbId={tmdbId} lang={lang} voteAverage={tmdb.vote_average} omdb={omdb} pendiente={omdbPending && !!Astro.locals.user} />
 
         {/* Datos curiosos: presupuesto, recaudación, premios, productoras */}
         {facts.length > 0 && (

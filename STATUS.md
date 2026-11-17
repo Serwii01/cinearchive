@@ -31,6 +31,10 @@ En producción en cinearchive.es: Foro con cineclub sincronizado y, desde el 17 
 
 ## Última sesión
 
+### 2026-11-17 (cuota de OMDb)
+- La cuota de OMDb (1.000/día) se agotaba y las fichas solo enseñaban la nota de TMDB. Fugas tapadas (v1.23): (1) si OMDb no tiene la película se guarda `OMDB_SIN_DATOS` con fecha (antes no se guardaba, la ficha seguía «pendiente» y cada visita gastaba otra consulta); (2) «Request limit reached!»/401 pone OMDb en pausa una hora en memoria (`omdbEnPausa`), sin guardar nada; (3) las notas nuevas solo las pide quien tiene sesión (ficha: `pendiente={omdbPending && !!Astro.locals.user}`; /api/films/[id]/notes da 401 sin sesión). Sin sesión se ve lo guardado aunque haya caducado. lib/omdb.ts `clasificarOmdb` (pura, con tests). Tests 756 y build OK.
+- Queda propuesto (sin hacer): caducidad según la edad de la película (30 días los estrenos del último año, 6 meses las de más de 5 años).
+
 ### 2026-11-17 (la crítica de su época)
 - Sergio comprobó en producción todo el foro (citas de TMDB, respuestas, votos, avisos, correo y /foro/moderacion): bien.
 - «La crítica de su época» (v1.22): src/data/critica.json con 30 críticas de la prensa del estreno (Wid's/Film Daily, Photoplay, Motion Picture News, National Board of Review) para películas de Cine abierto de 1920-1929. Cada una: fragmento original leído en el escaneo (no el OCR), fecha, página impresa y nota en 5 idiomas. lib/critica.ts (+ tests/critica.test.ts valida los datos), components/CriticaEpoca.astro en /cinema/[id] y /film/[slug]; /archive/[id] lista las películas que reseña ese número.

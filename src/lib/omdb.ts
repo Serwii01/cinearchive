@@ -19,20 +19,61 @@ export interface OmdbData {
   Error?: string;
 }
 
-export async function getOmdbByImdbId(imdbId: string): Promise<OmdbData | null> {
+/**
+ * Lo que contestó OMDb. Antes todo lo que no eran notas se volvía null y se
+ * trataba igual, y eso gastaba la cuota: una película que OMDb no tiene se
+ * volvía a pedir en cada visita (nunca quedaba «al día»), y con la cuota ya
+ * agotada se seguía preguntando sin parar.
+ */
+export type OmdbRespuesta =
+  | { tipo: 'notas'; data: OmdbData }
+  /** OMDb no la tiene: se guarda para no volver a preguntar en un mes. */
+  | { tipo: 'no-existe' }
+  /** Cuota del día agotada (o clave rechazada): se deja de llamar un rato. */
+  | { tipo: 'agotada' }
+  /** Red caída, error del servidor…: no se guarda nada y se reintenta otro día. */
+  | { tipo: 'fallo' };
+
+/** De la respuesta HTTP de OMDb a lo que significa. Pura (tiene tests). */
+export function clasificarOmdb(status: number, body: Partial<OmdbData> | null): OmdbRespuesta {
+  const error = String(body?.Error ?? '');
+  // OMDb contesta 401 tanto a «Request limit reached!» como a una clave mala:
+  // en los dos casos no sirve de nada seguir llamando.
+  if (status === 401 || /limit|api key/i.test(error)) return { tipo: 'agotada' };
+  if (status < 200 || status >= 300 || !body) return { tipo: 'fallo' };
+  if (body.Response === 'True') return { tipo: 'notas', data: body as OmdbData };
+  if (/not found|incorrect imdb id/i.test(error)) return { tipo: 'no-existe' };
+  return { tipo: 'fallo' };
+}
+
+/** Lo que se guarda cuando OMDb no tiene la película: no da ninguna nota. */
+export const OMDB_SIN_DATOS: OmdbData = { Response: 'False', Error: 'Movie not found!' };
+
+/* Pausa al agotarse la cuota. En memoria: es un solo proceso, y si se reinicia
+ * lo peor que pasa es una petición más para descubrir que sigue agotada. */
+export const OMDB_PAUSA_MS = 60 * 60 * 1000; // una hora
+let pausaHasta = 0;
+export const omdbEnPausa = (ahora = Date.now()): boolean => ahora < pausaHasta;
+export const pausarOmdb = (ahora = Date.now()): void => {
+  pausaHasta = ahora + OMDB_PAUSA_MS;
+};
+
+export async function getOmdbByImdbId(imdbId: string): Promise<OmdbRespuesta> {
   const key = process.env.OMDB_API_KEY;
-  if (!key || !imdbId) return null;
+  if (!key || !imdbId) return { tipo: 'fallo' };
+  if (omdbEnPausa()) return { tipo: 'agotada' };
   const url = new URL(BASE);
   url.searchParams.set('apikey', key);
   url.searchParams.set('i', imdbId);
   url.searchParams.set('tomatoes', 'true');
   try {
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const data = (await res.json()) as OmdbData;
-    return data.Response === 'True' ? data : null;
+    const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+    const body = (await res.json().catch(() => null)) as Partial<OmdbData> | null;
+    const r = clasificarOmdb(res.status, body);
+    if (r.tipo === 'agotada') pausarOmdb();
+    return r;
   } catch {
-    return null;
+    return { tipo: 'fallo' };
   }
 }
 

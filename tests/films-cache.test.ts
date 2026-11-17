@@ -59,6 +59,18 @@ describe('localizaciones de Wikidata', () => {
     expect(ruta).toContain('getOmdbFresh(');
     expect(ruta).toContain('rateLimit(');
   });
+
+  it('OMDb: lo que no tiene también se guarda, y las notas nuevas solo las pide quien tiene sesión', () => {
+    // Sin guardar el «no está», la ficha seguía pendiente y cada visita gastaba otra consulta.
+    const src = readFileSync('src/lib/films.ts', 'utf8');
+    const fresh = src.slice(src.indexOf('export async function getOmdbFresh'));
+    expect(fresh).toContain('OMDB_SIN_DATOS');
+    expect(fresh).toMatch(/r.tipo === 'agotada' || r.tipo === 'fallo'/);
+    const ruta = readFileSync('src/pages/api/films/[id]/notes.astro', 'utf8');
+    expect(ruta).toMatch(/const permitido = valido && conSesion &&/);
+    const ficha = readFileSync('src/pages/[...lang]/film/[slug].astro', 'utf8');
+    expect(ficha).toContain('pendiente={omdbPending && !!Astro.locals.user}');
+  });
 });
 
 describe('films_cache: cuándo se pinta la ficha sin pedirla a TMDB', () => {
