@@ -1,0 +1,194 @@
+{
+  "note": "Sinopsis propias en gallego, euskera y catalán para fichas de TMDB que no las tienen (sin ellas, la ficha en ese idioma lleva noindex). Clave: id de TMDB. Solo se usan si TMDB no trae la suya. Escritas a mano: películas de Cine abierto con crítica de su época, en el cineclub o de Segundo de Chomón (estas, con su sinopsis breve).",
+  "items": {
+    "19": {
+      "gl": "Na cidade do futuro, os ricos viven en xardíns sobre rañaceos e os obreiros traballan baixo terra coidando as máquinas. O fillo do amo da cidade baixa ás profundidades, coñece a María, que predica a paz entre os dous mundos, e o seu pai encarga a un inventor unha copia robot dela.",
+      "eu": "Etorkizuneko hirian, aberatsak etxe orratzen gaineko lorategietan bizi dira eta langileek lur azpian egiten dute lan makinak zaintzen. Hiriko nagusiaren semea sakonera jaisten da, bi munduen arteko bakea predikatzen duen Maria ezagutzen du, eta aitak asmatzaile bati haren robot-kopia bat agintzen dio."
+    },
+    "234": {
+      "gl": "Nunha feira dunha pequena cidade alemá, o misterioso doutor Caligari exhibe a Cesare, un sonámbulo que adiviña o futuro. Esa mesma noite empezan os asasinatos, e un mozo que perdeu o seu amigo decide seguir ao doutor ata descubrir quen é en realidade.",
+      "eu": "Alemaniako hiri txiki bateko azokan, Caligari doktore misteriotsuak Cesare erakusten du, etorkizuna asmatzen duen loiblea. Gau horretan bertan hasten dira hilketak, eta lagunik gabe geratu den gazte batek doktoreari jarraitzea erabakitzen du benetan nor den jakin arte."
+    },
+    "631": {
+      "gl": "Un labrego, enfeitizado por unha muller da cidade que pasa o verán na aldea, deixa que ela o convenza para afogar a súa esposa e fuxir xuntos. No medio do lago non é capaz de facelo, e a viaxe en barca convértese nun día enteiro na cidade no que os dous terán que volver atoparse.",
+      "eu": "Herrian uda pasatzen ari den hiriko emakume batek liluratutako nekazari bat haren eraginez emaztea itotzera eta harekin ihes egitera ausartzen da. Aintzira erdian ez da gai, eta txalupako bidaia hirian igarotako egun oso bihurtzen da, non biek elkar berriro aurkitu beharko duten."
+    },
+    "643": {
+      "gl": "En 1905, os mariñeiros do acoirazado Potemkin, fartos dos malos tratos, rebélanse cando os obrigan a comer carne con vermes. O motín chega ao porto de Odesa, onde a poboación se pon do seu lado ata que chegan as tropas do tsar.",
+      "eu": "1905ean, Potemkin gerraontziko marinelak, tratu txarrez nazkatuta, matxinatu egiten dira har-haragia jatera behartzen dituztenean. Matxinada Odesako portura iristen da, eta biztanleak haien alde jartzen dira tsarraren tropak iritsi arte."
+    },
+    "669": {
+      "gl": "Un ano na vida de Nanook, un cazador inuit, e da súa familia no norte do Canadá: a pesca no xeo, a caza da morsa e da foca, as viaxes en trineo e a construción dun iglú antes de que caia a noite e a tormenta.",
+      "eu": "Nanook ehiztari inuitaren eta haren familiaren urtebete Kanadako iparraldean: izotz gaineko arrantza, mortsa eta itsas txakurraren ehiza, lera-bidaiak eta iglu baten eraikuntza gaua eta ekaitza iritsi aurretik."
+    },
+    "701": {
+      "gl": "A principios do século XIX, un mozo volve ao sur dos Estados Unidos para reclamar a herdanza do seu pai, sen saber que a súa familia leva décadas en guerra con outra. A rapaza que coñece no tren resulta ser da familia rival, que non pode matalo mentres sexa convidado na súa casa.",
+      "eu": "XIX. mendearen hasieran, mutil bat Estatu Batuetako hegoaldera itzultzen da aitaren herentzia eskatzera, bere familiak hamarkadak daramatzala beste batekin gerran jakin gabe. Trenean ezagutzen duen neska familia arerioarena da, eta horiek ezin dute hil beren etxean gonbidatua den bitartean.",
+      "ca": "A principis del segle XIX, un noi torna al sud dels Estats Units per reclamar l’herència del seu pare, sense saber que la seva família fa dècades que està en guerra amb una altra. La noia que coneix al tren resulta ser de la família rival, que no el pot matar mentre sigui convidat a casa seva."
+    },
+    "780": {
+      "gl": "As últimas horas de Xoana de Arco, presa polos ingleses en 1431: os interrogatorios dun tribunal eclesiástico que quere facela renegar, as ameazas de tortura e a súa morte na fogueira, contadas case por completo en primeiros planos.",
+      "eu": "Joana Arkokoaren azken orduak, 1431n ingelesek preso hartuta: uko eginarazi nahi dion eliz auzitegi baten galdeketak, tortura-mehatxuak eta sutan hiltzea, ia osorik lehen planoetan kontatuak."
+    },
+    "885": {
+      "gl": "Un fogoneiro dun barco baixa a terra para unha soa noite e rescata da auga a unha muller que intentou suicidarse no porto de Nova York. Nunha taberna chea de mariñeiros decide casar con ela de broma, pero para ela esa voda improvisada pode ser a única saída.",
+      "eu": "Itsasontzi bateko sutegizain bat gau bakar baterako jaisten da lehorrera, eta New Yorkeko portuan bere buruaz beste egin nahi izan duen emakume bat uretatik ateratzen du. Marinelez betetako taberna batean txantxetan harekin ezkontzea erabakitzen du, baina harentzat inprobisatutako ezkontza hori irtenbide bakarra izan daiteke.",
+      "ca": "Un fogoner d’un vaixell baixa a terra per a una sola nit i rescata de l’aigua una dona que ha intentat suïcidar-se al port de Nova York. En una taverna plena de mariners decideix casar-s’hi de broma, però per a ella aquest casament improvisat pot ser l’única sortida."
+    },
+    "939": {
+      "gl": "O fillo dun cantor da sinagoga de Nova York foxe da casa porque quere cantar jazz e non salmos. Anos despois, a piques de estrear en Broadway, ten que escoller entre o seu soño e substituír ao seu pai, enfermo, na celebración máis importante do ano.",
+      "eu": "New Yorkeko sinagogako kantari baten semea etxetik ihes egiten du jazza abestu nahi duelako, ez salmoak. Urte batzuk geroago, Broadwayn estreinatzear dagoela, bere ametsaren eta urteko ospakizun garrantzitsuenean aita gaixoa ordezkatzearen artean aukeratu beharko du."
+    },
+    "961": {
+      "gl": "En plena guerra de Secesión, un maquinista do Sur é rexeitado polo exército e pola súa noiva, que o toma por covarde. Cando uns espías do Norte rouban a súa locomotora, A General, coa rapaza dentro, sae tras eles el só nunha persecución de tren a tren.",
+      "eu": "Sezesio Gerraren erdian, Hegoaldeko makinista bat armadak eta andregaiak baztertzen dute, koldartzat hartzen baitute. Iparraldeko espioi batzuek bere lokomotora, La General, lapurtzen dutenean, neska barruan dela, bera bakarrik ateratzen da haien atzetik trenetik trenerako jazarpen batean."
+    },
+    "962": {
+      "gl": "Durante a febre do ouro de Alasca, un buscador solitario sobrevive como pode á neve, á fame e a un compañeiro que o confunde cunha galiña. Na vila mineira namórase dunha bailarina do salón, que ao principio nin se fixa nel.",
+      "eu": "Alaskako urrearen sukarraren garaian, urre-bilatzaile bakarti batek ahal duen moduan bizirauten dio elurrari, goseari eta oilo batekin nahasten duen lagun bati. Meatzari-herrian saloiko dantzari batez maitemintzen da, hasieran ez baitio kasurik ere egiten."
+    },
+    "964": {
+      "gl": "Baixo a Ópera de París, entre sotos e canles subterráneas, vive un home de rostro desfigurado que se fai chamar o Fantasma. Obsesionado coa nova cantante Christine, que adestra en segredo, aterroriza o teatro para que ela ocupe o lugar da diva.",
+      "eu": "Pariseko Operaren azpian, sotoen eta lurpeko ubideen artean, aurpegi desitxuratuko gizon bat bizi da, Mamua deitzen diotena. Christine abeslari gazteaz obsesionatuta, ezkutuan irakasten dio eta antzokia izutzen du hark dibaren lekua har dezan."
+    },
+    "992": {
+      "gl": "Un proxeccionista que estuda para detective é acusado polo seu rival de roubar un reloxo na casa da súa noiva. Desanimado, quédase durmido na cabina e soña que entra na película que se está a proxectar, onde é Sherlock Jr., o mellor detective do mundo.",
+      "eu": "Detektibe izateko ikasten ari den proiekzionista bat bere arerioak andregaiaren etxean erloju bat lapurtzea leporatzen dio. Etsita, kabinan lokartzen da eta proiektatzen ari den filmean sartzen dela amesten du, non Sherlock Jr. den, munduko detektiberik onena."
+    },
+    "2972": {
+      "gl": "Na Praga do século XVI, o emperador ordena expulsar os xudeus da cidade. Para salvar o seu pobo, o rabino Loew dálle vida a un xigante de barro, o Golem, que lle obedece cegamente ata que a criatura escapa ao seu control.",
+      "eu": "XVI. mendeko Pragan, enperadoreak juduak hiritik kanporatzeko agindua ematen du. Bere herria salbatzeko, Loew errabinoak buztinezko erraldoi bati ematen dio bizia, Golemari; itsu-itsuan obeditzen dio, harik eta izakia haren kontroletik ihes egiten duen arte.",
+      "ca": "A la Praga del segle XVI, l’emperador ordena expulsar els jueus de la ciutat. Per salvar el seu poble, el rabí Loew dona vida a un gegant de fang, el Gòlem, que l’obeeix cegament fins que la criatura s’escapa del seu control."
+    },
+    "2981": {
+      "gl": "O excéntrico profesor Challenger asegura que en Sudamérica quedan dinosauros vivos, e todos se rin del. Para demostralo organiza unha expedición a unha meseta illada da selva, onde atopan un mundo perdido que ninguén esperaba.",
+      "eu": "Challenger irakasle bitxiak dio Hego Amerikan dinosauro biziak geratzen direla, eta denek barre egiten diote. Frogatzeko, oihaneko goi-ordoki isolatu batera espedizio bat antolatzen du, eta inork espero ez zuen mundu galdu bat aurkitzen dute."
+    },
+    "3016": {
+      "gl": "O doutor Henry Jekyll, médico entregado aos pobres de Londres, inventa unha poción que separa o lado bo do malvado de cada persoa. Ao probala convértese en Edward Hyde, un ser cruel que goza do vicio, e cada vez lle custa máis volver a ser el mesmo.",
+      "eu": "Henry Jekyll doktoreak, Londresko pobreei emandako medikuak, pertsona bakoitzaren alde ona gaiztotik bereizten duen edabe bat asmatzen du. Probatzean Edward Hyde bihurtzen da, bizioaz gozatzen duen izaki krudela, eta gero eta zailagoa egiten zaio bere onera itzultzea."
+    },
+    "5991": {
+      "gl": "O vello porteiro dun hotel de luxo vive orgulloso do seu uniforme, que o fai respectable entre os veciños. Cando o encargado o considera xa vello e o manda aos lavabos, a perda do uniforme afúndeo diante de todos.",
+      "eu": "Luxuzko hotel bateko atezain zaharra harro bizi da bere uniformearekin, auzokideen artean errespetagarri egiten baitu. Arduradunak zahartzat jo eta komunetara bidaltzen duenean, uniformea galtzeak hondoratu egiten du guztien aurrean.",
+      "ca": "El vell porter d’un hotel de luxe viu orgullós del seu uniforme, que el fa respectable davant dels veïns. Quan l’encarregat el considera massa gran i l’envia als lavabos, la pèrdua de l’uniforme l’enfonsa davant de tothom."
+    },
+    "10098": {
+      "gl": "Unha nai sen recursos abandona o seu fillo recén nado nun coche de luxo, e o bebé acaba nos brazos dun vagabundo. Cinco anos despois, o vagabundo e o rapaz sobreviven xuntos con pequenas trampas pola rúa, ata que as autoridades queren separalos.",
+      "eu": "Baliabiderik gabeko ama batek jaio berria den semea luxuzko auto batean uzten du, eta haurra alderrai baten besoetan amaitzen da. Bost urte geroago, alderraia eta mutikoa elkarrekin bizirauten dute kalean tranpa txikiekin, agintariek bereizi nahi dituzten arte."
+    },
+    "10728": {
+      "gl": "O demo aposta co arcanxo que pode corromper a alma do sabio Fausto, e para gañar envía unha peste á súa cidade. Desesperado por non poder salvar a ninguén, Fausto vende a súa alma a cambio da mocidade, e o pacto arrastra consigo a inocente Margarida.",
+      "eu": "Deabruak arkanjeluarekin apustu egiten du Fausto jakintsuaren arima usteltzeko gai dela, eta irabazteko izurrite bat bidaltzen dio haren hiriari. Inor salbatu ezinik etsita, Faustok bere arima saltzen du gaztaroaren truke, eta itunak Margarita errugabea eramango du berekin."
+    },
+    "15493": {
+      "gl": "O capitán Pirk, perdido no século XXI despois dun accidente no tempo, decide arranxar o futuro ao seu xeito: facerse co control da Terra. Parodia finlandesa das series de naves espaciais, con batallas, uniformes de ciencia ficción e moito humor absurdo.",
+      "eu": "Pirk kapitaina, denboran izandako istripu baten ondoren XXI. mendean galdua, etorkizuna bere erara konpontzea erabakitzen du: Lurraren kontrola hartzea. Espazio-ontzien telesailen parodia finlandiarra, guduekin, zientzia-fikziozko uniformeekin eta umore absurdo ugarirekin.",
+      "ca": "El capità Pirk, perdut al segle XXI després d’un accident en el temps, decideix arreglar el futur a la seva manera: fer-se amb el control de la Terra. Paròdia finlandesa de les sèries de naus espacials, amb batalles, uniformes de ciència-ficció i molt d’humor absurd."
+    },
+    "18987": {
+      "gl": "No París de 1482, Quasimodo, o campaneiro xorobado de Notre Dame, vive escondido na catedral ao servizo do seu amo. A súa vida cambia cando a xitana Esmeralda se compadece del despois dunha humillación pública, e el estará disposto a todo por protexela.",
+      "eu": "1482ko Parisen, Quasimodo, Notre Dameko kanpai-jotzaile konkorduna, katedralean ezkutatuta bizi da bere nagusiaren zerbitzura. Bere bizitza aldatu egiten da Esmeralda ijitoak errukia erakusten dionean jendaurreko umiliazio baten ondoren, eta hura babesteko edozer egiteko prest egongo da."
+    },
+    "22595": {
+      "gl": "Speedy, un mozo de Nova York que non dura nun traballo porque só pensa no béisbol, axuda ao avó da súa noiva, que ten o último tranvía de cabalos da cidade. Unha compañía quere quitarllo como sexa, e Speedy terá que demostrar que o tranvía segue en servizo.",
+      "eu": "Speedyk, beisbolean bakarrik pentsatzen duelako lanik irauten ez duen New Yorkeko mutilak, andregaiaren aitonari laguntzen dio, hiriko zaldi-tranbia zaharrena duena. Konpainia batek edozein modutan kendu nahi dio, eta Speedyk tranbiak oraindik zerbitzuan jarraitzen duela frogatu beharko du.",
+      "ca": "Speedy, un noi de Nova York que no dura en cap feina perquè només pensa en el beisbol, ajuda l’avi de la seva xicota, que té l’últim tramvia de cavalls de la ciutat. Una companyia el hi vol prendre com sigui, i Speedy haurà de demostrar que el tramvia continua en servei."
+    },
+    "22596": {
+      "gl": "Un mozo de pobo marcha á gran cidade e escríbelle á súa noiva que triunfa nuns grandes almacéns, cando en realidade é un simple dependente. Cando ela se presenta de improviso, terá que manter a mentira, e un concurso para atraer clientes acaba levándoo a escalar a fachada do edificio.",
+      "eu": "Herriko mutil bat hiri handira joaten da eta andregaiari idazten dio saltoki handi batean arrakasta duela, benetan saltzaile hutsa denean. Hura ustekabean agertzen denean, gezurrari eutsi beharko dio, eta bezeroak erakartzeko lehiaketa batek eraikinaren fatxadan gora igotzera eramango du."
+    },
+    "22642": {
+      "gl": "Walter Paisley, un camareiro torpe dun café de beatniks, soña con ser artista como os poetas e pintores aos que serve. Despois dun accidente cun gato, cuberto de xeso, a súa «escultura» faino famoso de súpeto, e para seguir sendo admirado terá que conseguir modelos cada vez máis grandes.",
+      "eu": "Walter Paisley, beatnik kafetegi bateko zerbitzari baldarra, zerbitzatzen dituen poeta eta margolariak bezala artista izatearekin amesten du. Katu batekin istripu bat izan ondoren, igeltsuz estalita, haren «eskulturak» bat-batean ospetsu egiten du, eta miretsia izaten jarraitzeko gero eta eredu handiagoak lortu beharko ditu.",
+      "ca": "Walter Paisley, un cambrer maldestre d’un cafè de beatniks, somia ser artista com els poetes i pintors que serveix. Després d’un accident amb un gat, cobert de guix, la seva «escultura» el fa famós de cop, i per continuar sent admirat haurà d’aconseguir models cada vegada més grans."
+    },
+    "23282": {
+      "gl": "Uns recén casados reciben como agasallo de voda unha casa desmontable para armar eles mesmos. Un antigo pretendente da noiva cambia os números das caixas, e a casa que levantan durante a súa primeira semana xuntos sae torta, xiratoria e cada vez máis disparatada.",
+      "eu": "Ezkonberri batzuek beraiek muntatzeko etxe desmuntagarri bat jasotzen dute ezkontza-opari gisa. Andregaiaren lehengo pretendente batek kutxen zenbakiak aldatzen ditu, eta elkarrekin igarotako lehen astean altxatzen duten etxea okerra, biraka dabilena eta gero eta zentzugabeagoa ateratzen da.",
+      "ca": "Uns acabats de casar reben com a regal de noces una casa desmuntable per muntar-la ells mateixos. Un antic pretendent de la núvia canvia els números de les caixes, i la casa que aixequen durant la seva primera setmana junts surt torta, giratòria i cada vegada més disbaratada."
+    },
+    "24452": {
+      "gl": "Seymour, o empregado máis desastroso dunha floraría dos barrios baixos, cría unha planta rara que atrae clientes e salva o negocio. O problema é que a planta medra sen parar e só come unha cousa: sangue humano.",
+      "eu": "Seymourrek, auzo pobreko loradenda bateko langilerik hondamendizkoenak, landare arraro bat hazten du, bezeroak erakarri eta negozioa salbatzen duena. Arazoa da landarea gelditu gabe hazten dela eta gauza bakarra jaten duela: giza odola."
+    },
+    "27517": {
+      "gl": "Na Inglaterra do século XVII, un rei manda desfigurar o rostro dun neno para que leve para sempre un sorriso gravado. De adulto, Gwynplaine traballa nunha compañía ambulante e quere a unha moza cega que non pode ver a súa cara, ata que a corte descobre quen é en realidade.",
+      "eu": "XVII. mendeko Ingalaterran, errege batek haur baten aurpegia desitxuratzeko agintzen du, betiko irribarre bat grabatuta eraman dezan. Heldua denean, Gwynplainek ibiltari-konpainia batean egiten du lan eta haren aurpegia ikusi ezin duen neska itsu bat maite du, gorteak benetan nor den jakin arte.",
+      "ca": "A l’Anglaterra del segle XVII, un rei fa desfigurar la cara d’un nen perquè porti per sempre un somriure gravat. De gran, Gwynplaine treballa en una companyia ambulant i estima una noia cega que no li pot veure la cara, fins que la cort descobreix qui és en realitat."
+    },
+    "28963": {
+      "gl": "Ahmed, un ladrón alegre de Bagdad, cólase no palacio para roubar e namórase da princesa. Para gañala terá que competir cos príncipes que a pretenden nunha viaxe chea de monstros, alfombras voadoras e cabalos con ás.",
+      "eu": "Ahmed, Bagdadeko lapur alaia, jauregian sartzen da lapurtzera eta printzesaz maitemintzen da. Hura irabazteko, haren eskua nahi duten printzeekin lehiatu beharko du, munstroz, alfonbra hegalariz eta zaldi hegodunez betetako bidaia batean.",
+      "ca": "Ahmed, un lladre alegre de Bagdad, es cola al palau per robar i s’enamora de la princesa. Per guanyar-la haurà de competir amb els prínceps que la pretenen en un viatge ple de monstres, catifes voladores i cavalls amb ales."
+    },
+    "28978": {
+      "gl": "Un vagabundo sen un centavo foxe da policía e acaba no medio da pista dun circo ambulante, onde o público morre de risa coas súas torpezas. O dono contrátao sen dicirlle que é a estrela do espectáculo, e el namórase da filla do director, que só ten ollos para o funambulista.",
+      "eu": "Zentimorik gabeko alderrai bat poliziari ihesi zirkuko pista erdian amaitzen da, eta ikusleak barrez lehertzen dira haren baldarkeriekin. Jabeak kontratatu egiten du ikuskizunaren izarra dela esan gabe, eta zuzendariaren alabaz maitemintzen da, baina hark soka-dantzaria baino ez du begiko."
+    },
+    "32318": {
+      "gl": "Un millonario mimado e a rapaza que acaba de rexeitalo quedan sós a bordo dun transatlántico á deriva, sen tripulación. Ningún dos dous sabe nin fritir un ovo, e terán que aprender a sobrevivir no barco ata chegar a unha illa pouco acolledora.",
+      "eu": "Milioidun mimatu bat eta ezezkoa eman berri dion neska bakarrik geratzen dira itsasontzi transatlantiko batean, noraezean eta tripulaziorik gabe. Bietako inork ez daki arrautza bat frijitzen ere, eta ontzian bizirauten ikasi beharko dute uharte ez oso abegikor batera iritsi arte.",
+      "ca": "Un milionari consentit i la noia que l’acaba de rebutjar es queden sols a bord d’un transatlàntic a la deriva, sense tripulació. Cap dels dos no sap ni fregir un ou, i hauran d’aprendre a sobreviure al vaixell fins a arribar a una illa poc acollidora."
+    },
+    "32574": {
+      "gl": "Unha xornalista a piques de perder o traballo inventa a carta dun home anónimo que ameaza con suicidarse en protesta polas inxustizas do mundo. Cando a carta triunfa, o xornal contrata a un vagabundo para que faga de «John Doe», e o personaxe convértese nun movemento de masas que outros queren aproveitar.",
+      "eu": "Lana galtzear dagoen kazetari batek munduko bidegabekerien aurka protesta gisa bere buruaz beste egiteko mehatxua egiten duen gizon anonimo baten gutuna asmatzen du. Gutunak arrakasta duenean, egunkariak alderrai bat kontratatzen du «John Doe» izan dadin, eta pertsonaia beste batzuek aprobetxatu nahi duten masa-mugimendu bihurtzen da."
+    },
+    "32600": {
+      "gl": "Un mozo arruinado descobre que herdará sete millóns de dólares se se casa antes das sete da tarde do día do seu aniversario. Despois de que a súa noiva o rexeite, un anuncio no xornal fai que centos de noivas se presenten á vez dispostas a todo.",
+      "eu": "Hondatutako mutil batek jakingo du zazpi milioi dolar jasoko dituela bere urtebetetze-eguneko arratsaldeko zazpiak baino lehen ezkontzen bada. Andregaiak ezetz esan ondoren, egunkariko iragarki batek ehunka emaztegai aldi berean agertzea eragiten du, edozertarako prest."
+    },
+    "42657": {
+      "gl": "Na California colonial, Don Diego Vega fai de mozo preguiceiro e afectado para que ninguén sospeite de que é o Zorro, o xinete enmascarado que defende os labregos dos abusos do gobernador. Mentres, a moza á que corteixa desprécao como Diego e admírao como Zorro.",
+      "eu": "Kalifornia kolonialean, Don Diego Vegak mutil alfer eta harroarena egiten du inork susma ez dezan bera dela Zorro, nekazariak gobernadorearen gehiegikerietatik babesten dituen zaldun maskaraduna. Bitartean, gorteiatzen duen neskak Diego gisa mespretxatzen du eta Zorro gisa miresten.",
+      "ca": "A la Califòrnia colonial, Don Diego Vega fa de noi gandul i afectat perquè ningú no sospiti que és el Zorro, el genet emmascarat que defensa els pagesos dels abusos del governador. Mentrestant, la noia que festeja el menysprea com a Diego i l’admira com a Zorro."
+    },
+    "52679": {
+      "gl": "En Hollywood, un vello inmigrante ruso con tremor nas mans é contratado como extra para facer de xeneral nunha película sobre a revolución. O director recoñéceo: anos atrás, ese home era un gran duque do exército do tsar, e os dous teñen contas pendentes.",
+      "eu": "Hollywooden, eskuetan dardara duen errusiar etorkin zahar bat figurante gisa kontratatzen dute iraultzari buruzko film batean jenerala izateko. Zuzendariak ezagutzen du: urte batzuk lehenago gizon hori tsarraren armadako duke handi bat zen, eta biek kontuak dituzte konpontzeko.",
+      "ca": "A Hollywood, un vell immigrant rus amb tremolor a les mans és contractat com a extra per fer de general en una pel·lícula sobre la revolució. El director el reconeix: anys enrere, aquest home era un gran duc de l’exèrcit del tsar, i tots dos tenen comptes pendents."
+    },
+    "143634": {
+      "gl": "Unha parella aloxase nun hotel onde todo funciona só, do cepillo ás maletas, ata que a electricidade se volve tola: maxia do aragonés Segundo de Chomón.",
+      "eu": "Bikote bat hotel batean hartzen du ostatu, non dena bakarrik dabilen, eskuilatik maletetaraino, elektrizitatea erotu arte: Segundo de Chomón aragoiarraren magia.",
+      "ca": "Una parella s’allotja en un hotel on tot funciona sol, del raspall a les maletes, fins que l’electricitat es torna boja: màgia de l’aragonès Segundo de Chomón."
+    },
+    "150396": {
+      "gl": "Nunha gruta, un mago demoníaco con caveira fai aparecer mulleres que arden e flotan, ata que un espírito do ben lle fai fronte. Chomón e Ferdinand Zecca para Pathé, coa cor pintada con modelo.",
+      "eu": "Kobazulo batean, garezur-aurpegiko mago deabruzko batek sutan dauden eta flotatzen duten emakumeak agerrarazten ditu, ongiaren espiritu batek aurre egiten dion arte. Chomón eta Ferdinand Zecca Pathérentzat, txantiloiz margotutako kolorearekin.",
+      "ca": "En una gruta, un mag demoníac amb calavera fa aparèixer dones que cremen i suren, fins que un esperit del bé li planta cara. Chomón i Ferdinand Zecca per a Pathé, amb el color pintat amb plantilla."
+    },
+    "151534": {
+      "gl": "Unha familia sae ao campo de merenda e nada está quieto: a comida móvese, os mobles cobran vida e o hotel onde se refuxian é aínda peor. Un pesadelo cómico de Chomón para Pathé.",
+      "eu": "Familia bat landara ateratzen da askaria egitera eta ezer ez dago geldi: janaria mugitzen da, altzariek bizia hartzen dute eta babesten diren hotela are okerragoa da. Chomónen amesgaizto komiko bat Pathérentzat.",
+      "ca": "Una família surt al camp a berenar i res no s’està quiet: el menjar es mou, els mobles cobren vida i l’hotel on es refugien és encara pitjor. Un malson còmic de Chomón per a Pathé."
+    },
+    "193861": {
+      "gl": "Unha muller que botou da súa porta a unha xitana imaxina a vinganza que a agarda, e o patio andaluz vaise convertendo nun mundo de cartón pedra cheo de monstros. Chomón para Pathé.",
+      "eu": "Ijito bat atetik bota duen emakume batek zain duen mendekua irudikatzen du, eta Andaluziako patioa munstroz betetako kartoi-harrizko mundu bihurtzen da. Chomón Pathérentzat.",
+      "ca": "Una dona que ha fet fora de casa una gitana s’imagina la venjança que l’espera, i el pati andalús es va convertint en un món de cartó pedra ple de monstres. Chomón per a Pathé."
+    },
+    "194071": {
+      "gl": "Un home compra «O home invisible» de H. G. Wells, proba a fórmula e descobre que pode roubar diante dos narices de todo o mundo. A policía persegue un ladrón que non ve, cos trucos de cámara de Chomón.",
+      "eu": "Gizon batek H. G. Wellsen «Gizon ikusezina» erosten du, formula probatzen du eta denen sudurraren aurrean lapurtu dezakeela deskubritzen du. Poliziak ikusten ez duen lapur baten atzetik dabil, Chomónen kamera-trikimailuekin.",
+      "ca": "Un home compra «L’home invisible» de H. G. Wells, prova la fórmula i descobreix que pot robar davant del nas de tothom. La policia persegueix un lladre que no veu, amb els trucs de càmera de Chomón."
+    },
+    "196376": {
+      "gl": "Un mago malvado actúa no palacio dun raxá, róuballe un cofre de xoias e foxe a lombos dun dragón; o raxá persígueo ata unha cova baixo terra. Fantasía oriental de Chomón e Gaston Velle para Pathé.",
+      "eu": "Mago gaizto batek errajá baten jauregian emanaldia egiten du, bitxi-kutxa bat lapurtzen dio eta herensuge baten gainean ihes egiten du; errajak lurpeko kobazulo bateraino jarraitzen dio. Chomón eta Gaston Vellek Pathérentzat egindako ekialdeko fantasia.",
+      "ca": "Un mag malvat actua al palau d’un rajà, li roba un cofre de joies i fuig a cavall d’un drac; el rajà el persegueix fins a una cova sota terra. Fantasia oriental de Chomón i Gaston Velle per a Pathé."
+    },
+    "270102": {
+      "gl": "O fillo dunha familia rica de Barcelona pon un anuncio buscando esposa e acaba fuxindo dunha ducia de pretendentas: unha das primeiras comedias de Segundo de Chomón, rodada na súa cidade.",
+      "eu": "Bartzelonako familia aberats bateko semeak emazte bila iragarki bat jartzen du eta dozena bat pretendenteri ihesi amaitzen du: Segundo de Chomónen lehen komedietako bat, bere hirian filmatua.",
+      "ca": "El fill d’una família rica de Barcelona posa un anunci buscant esposa i acaba fugint d’una dotzena de pretendents: una de les primeres comèdies de Segundo de Chomón, rodada a la seva ciutat."
+    },
+    "1631640": {
+      "gl": "O demo sobe á Terra nun ascensor máxico, disfrázase e sementa o caos por París: liortas cun cocheiro, cun sarxento de policía e cun camareiro, ata que volve ao inferno.",
+      "eu": "Deabrua Lurrera igotzen da igogailu magiko batean, mozorrotu eta kaosa ereiten du Parisen: liskarrak gurdizain batekin, polizia-sarjentu batekin eta zerbitzari batekin, infernura itzultzen den arte.",
+      "ca": "El diable puja a la Terra en un ascensor màgic, es disfressa i sembra el caos per París: baralles amb un cotxer, amb un sergent de policia i amb un cambrer, fins que torna a l’infern."
+    }
+  }
+}

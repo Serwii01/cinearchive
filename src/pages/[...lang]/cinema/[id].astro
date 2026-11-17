@@ -17,6 +17,7 @@ import {
   pdTitle,
   pdKindPath,
   pdKinds,
+  pdCopyInfo,
   type PdFilm,
 } from '../../../lib/pdfilms';
 import { localizedField, useTranslations, localizePath, langStaticPaths, normalizeLang } from '../../../i18n/ui';
@@ -52,6 +53,13 @@ const nombreIdioma = (code: string) => {
 const sonido = item.language
   ? t(item.sound ? 'cinema.soundIn' : 'cinema.silentIn').replace('{lang}', nombreIdioma(item.language))
   : t(item.sound ? 'cinema.sound' : 'cinema.silent');
+// La copia que se ve, que no siempre es la película entera ni en buena calidad.
+const copia = pdCopyInfo(item);
+// Párrafos separados por una línea en blanco en el JSON.
+const parrafosContexto = localizedField(item, 'context', lang)
+  .split('\n\n')
+  .map((p) => p.trim())
+  .filter(Boolean);
 const subtitulos = item.subtitles ? t('cinema.subtitlesIn').replace('{lang}', nombreIdioma(item.subtitles)) : null;
 
 const fichaCompleta = pdFilmPath(item);
@@ -91,6 +99,12 @@ const jsonLd = [
       <p class="mt-1 font-mono text-meta-data text-muted">
         {sonido}{subtitulos && ` · ${subtitulos}`}
       </p>
+      {copia && (
+        <p class="mt-1 font-mono text-meta-data text-muted">
+          {t('cinema.copy').replace('{min}', String(copia.minutes))} · {t(`cinema.quality.${copia.quality}` as Parameters<typeof t>[0])}
+          {copia.shorter && <> · <span class="text-ink">{t('cinema.copyShorter').replace('{min}', String(item.runtime))}</span></>}
+        </p>
+      )}
       <p class="mt-5 max-w-2xl text-body-lg text-charcoal">{blurb}</p>
 
       <ul class="mt-4 flex flex-wrap gap-2" aria-label={t('cinema.filterType')}>
@@ -135,6 +149,15 @@ const jsonLd = [
     </div>
 
     <p class="mt-6 font-mono text-meta-data text-muted">{t('cinema.viewerNote')}</p>
+
+    {parrafosContexto.length > 0 && (
+      <section class="mt-14" aria-labelledby="cinema-context">
+        <h2 id="cinema-context" class="border-b border-ink pb-3 text-headline-lg text-ink">{t('cinema.context')}</h2>
+        <div class="mt-4 max-w-2xl space-y-4 text-body-lg text-charcoal">
+          {parrafosContexto.map((p) => <p>{p}</p>)}
+        </div>
+      </section>
+    )}
 
     <CriticaEpoca lang={lang} items={criticasDe(item.id)} />
 

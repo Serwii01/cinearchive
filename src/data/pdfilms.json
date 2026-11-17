@@ -28,6 +28,10 @@
         "es": "El viaje a la Luna",
         "en": "A Trip to the Moon",
         "ca": "Viatge a la Lluna"
+      },
+      "copy": {
+        "minutes": 13,
+        "height": 1080
       }
     },
     {
@@ -53,6 +57,10 @@
       "titles": {
         "es": "Asalto y robo de un tren",
         "en": "The Great Train Robbery"
+      },
+      "copy": {
+        "minutes": 10,
+        "height": 480
       }
     },
     {
@@ -80,6 +88,129 @@
       "titles": {
         "es": "Viaje a través de lo imposible",
         "en": "The Impossible Voyage"
+      },
+      "copy": {
+        "minutes": 20,
+        "height": 480
+      }
+    },
+    {
+      "id": "lhereu-de-casa-pruna-1904",
+      "title": "The Gallants of the Park",
+      "original_title": "El heredero de casa Pruna",
+      "year": 1904,
+      "country": "España",
+      "runtime": 6,
+      "tags": [
+        "comedy"
+      ],
+      "published": "2026-02-23",
+      "tmdbId": 270102,
+      "titles": {
+        "es": "El heredero de casa Pruna",
+        "en": "The Gallants of the Park"
+      },
+      "director": "Segundo de Chomón",
+      "lang": "es",
+      "sound": false,
+      "blurb_es": "El hijo de una familia rica de Barcelona pone un anuncio buscando esposa y acaba huyendo de una docena de pretendientas: una de las primeras comedias de Segundo de Chomón, rodada en su ciudad.",
+      "blurb_en": "The heir of a wealthy Barcelona family advertises for a wife and ends up fleeing a dozen suitors: one of Segundo de Chomón’s first comedies, shot in his own city.",
+      "blurb_gl": "O fillo dunha familia rica de Barcelona pon un anuncio buscando esposa e acaba fuxindo dunha ducia de pretendentas: unha das primeiras comedias de Segundo de Chomón, rodada na súa cidade.",
+      "blurb_eu": "Bartzelonako familia aberats bateko semeak emazte bila iragarki bat jartzen du eta dozena bat pretendenteri ihesi amaitzen du: Segundo de Chomónen lehen komedietako bat, bere hirian filmatua.",
+      "blurb_ca": "El fill d’una família rica de Barcelona posa un anunci buscant esposa i acaba fugint d’una dotzena de pretendents: una de les primeres comèdies de Segundo de Chomón, rodada a la seva ciutat.",
+      "copy": {
+        "minutes": 6,
+        "height": 480
+      }
+    },
+    {
+      "id": "LcrinDuRaja",
+      "title": "The Rajah's Casket",
+      "original_title": "L'Écrin du rajah",
+      "year": 1906,
+      "country": "Francia",
+      "runtime": 7,
+      "tags": [
+        "fantasy",
+        "adventure"
+      ],
+      "published": "2011-04-22",
+      "tmdbId": 196376,
+      "titles": {
+        "es": "El cofre del rajá",
+        "en": "The Rajah's Casket"
+      },
+      "director": "Segundo de Chomón",
+      "lang": "es",
+      "sound": false,
+      "blurb_es": "Un mago malvado actúa en el palacio de un rajá, le roba un cofre de joyas y huye a lomos de un dragón; el rajá lo persigue hasta una cueva bajo tierra. Fantasía oriental de Chomón y Gaston Velle para Pathé.",
+      "blurb_en": "An evil magician performs at a rajah’s palace, steals a jewel casket and escapes on a dragon; the rajah pursues him into an underground cavern. Oriental fantasy by Chomón and Gaston Velle for Pathé.",
+      "blurb_gl": "Un mago malvado actúa no palacio dun raxá, róuballe un cofre de xoias e foxe a lombos dun dragón; o raxá persígueo ata unha cova baixo terra. Fantasía oriental de Chomón e Gaston Velle para Pathé.",
+      "blurb_eu": "Mago gaizto batek errajá baten jauregian emanaldia egiten du, bitxi-kutxa bat lapurtzen dio eta herensuge baten gainean ihes egiten du; errajak lurpeko kobazulo bateraino jarraitzen dio. Chomón eta Gaston Vellek Pathérentzat egindako ekialdeko fantasia.",
+      "blurb_ca": "Un mag malvat actua al palau d’un rajà, li roba un cofre de joies i fuig a cavall d’un drac; el rajà el persegueix fins a una cova sota terra. Fantasia oriental de Chomón i Gaston Velle per a Pathé.",
+      "copy": {
+        "minutes": 7,
+        "height": 240
+      }
+    },
+    {
+      "id": "le-spectre-rouge-1907-segundo-de-chomon",
+      "title": "The Red Spectre",
+      "original_title": "Le Spectre rouge",
+      "year": 1907,
+      "country": "Francia",
+      "runtime": 6,
+      "tags": [
+        "fantasy",
+        "horror"
+      ],
+      "published": "2021-03-08",
+      "tmdbId": 150396,
+      "titles": {
+        "es": "El espectro rojo",
+        "en": "The Red Spectre"
+      },
+      "director": "Segundo de Chomón",
+      "lang": "es",
+      "sound": false,
+      "blurb_es": "En una gruta, un mago demoníaco con calavera hace aparecer mujeres que arden y flotan, hasta que un espíritu del bien le planta cara. Chomón y Ferdinand Zecca para Pathé, con el color pintado a plantilla.",
+      "blurb_en": "In a grotto, a skull-faced demon magician conjures up women who burn and float, until a good spirit stands up to him. Chomón and Ferdinand Zecca for Pathé, with stencil-coloured prints.",
+      "blurb_gl": "Nunha gruta, un mago demoníaco con caveira fai aparecer mulleres que arden e flotan, ata que un espírito do ben lle fai fronte. Chomón e Ferdinand Zecca para Pathé, coa cor pintada con modelo.",
+      "blurb_eu": "Kobazulo batean, garezur-aurpegiko mago deabruzko batek sutan dauden eta flotatzen duten emakumeak agerrarazten ditu, ongiaren espiritu batek aurre egiten dion arte. Chomón eta Ferdinand Zecca Pathérentzat, txantiloiz margotutako kolorearekin.",
+      "blurb_ca": "En una gruta, un mag demoníac amb calavera fa aparèixer dones que cremen i suren, fins que un esperit del bé li planta cara. Chomón i Ferdinand Zecca per a Pathé, amb el color pintat amb plantilla.",
+      "copy": {
+        "minutes": 6,
+        "height": 540
+      }
+    },
+    {
+      "id": "SatanSamuse",
+      "title": "Satan at Play",
+      "original_title": "Satan s'amuse",
+      "year": 1907,
+      "country": "Francia",
+      "runtime": 10,
+      "tags": [
+        "fantasy",
+        "comedy"
+      ],
+      "published": "2012-04-20",
+      "tmdbId": 1631640,
+      "titles": {
+        "es": "Satán se divierte",
+        "en": "Satan at Play"
+      },
+      "director": "Segundo de Chomón",
+      "lang": "es",
+      "sound": false,
+      "blurb_es": "El diablo sube a la Tierra en un ascensor mágico, se disfraza y siembra el caos por París: peleas con un cochero, con un sargento de policía y con un camarero, hasta que vuelve al infierno.",
+      "blurb_en": "The Devil comes up to Earth in a magic lift, puts on a disguise and spreads chaos around Paris: rows with a coachman, a police sergeant and a barman, until he goes back to Hell.",
+      "blurb_gl": "O demo sobe á Terra nun ascensor máxico, disfrázase e sementa o caos por París: liortas cun cocheiro, cun sarxento de policía e cun camareiro, ata que volve ao inferno.",
+      "blurb_eu": "Deabrua Lurrera igotzen da igogailu magiko batean, mozorrotu eta kaosa ereiten du Parisen: liskarrak gurdizain batekin, polizia-sarjentu batekin eta zerbitzari batekin, infernura itzultzen den arte.",
+      "blurb_ca": "El diable puja a la Terra en un ascensor màgic, es disfressa i sembra el caos per París: baralles amb un cotxer, amb un sergent de policia i amb un cambrer, fins que torna a l’infern.",
+      "copy": {
+        "minutes": 10,
+        "height": 480
       }
     },
     {
@@ -106,7 +237,72 @@
       "titles": {
         "es": "El hotel eléctrico",
         "en": "The Electric Hotel"
+      },
+      "copy": {
+        "minutes": 10,
+        "height": 240
       }
+    },
+    {
+      "id": "LeVoleurInvisible",
+      "title": "The Invisible Thief",
+      "original_title": "Le Voleur invisible",
+      "year": 1909,
+      "country": "Francia",
+      "runtime": 7,
+      "tags": [
+        "comedy",
+        "fantasy"
+      ],
+      "published": "2012-04-26",
+      "tmdbId": 194071,
+      "titles": {
+        "es": "El ladrón invisible",
+        "en": "The Invisible Thief"
+      },
+      "director": "Segundo de Chomón",
+      "lang": "es",
+      "sound": false,
+      "blurb_es": "Un hombre compra «El hombre invisible» de H. G. Wells, prueba la fórmula y descubre que puede robar ante las narices de todo el mundo. La policía persigue a un ladrón que no ve, con los trucos de cámara de Chomón.",
+      "blurb_en": "A man buys H. G. Wells’s “The Invisible Man”, tries the formula and finds he can steal under everyone’s nose. The police chase a thief they cannot see, with Chomón’s camera tricks.",
+      "blurb_gl": "Un home compra «O home invisible» de H. G. Wells, proba a fórmula e descobre que pode roubar diante dos narices de todo o mundo. A policía persegue un ladrón que non ve, cos trucos de cámara de Chomón.",
+      "blurb_eu": "Gizon batek H. G. Wellsen «Gizon ikusezina» erosten du, formula probatzen du eta denen sudurraren aurrean lapurtu dezakeela deskubritzen du. Poliziak ikusten ez duen lapur baten atzetik dabil, Chomónen kamera-trikimailuekin.",
+      "blurb_ca": "Un home compra «L’home invisible» de H. G. Wells, prova la fórmula i descobreix que pot robar davant del nas de tothom. La policia persegueix un lladre que no veu, amb els trucs de càmera de Chomón.",
+      "copy": {
+        "minutes": 7,
+        "height": 480
+      }
+    },
+    {
+      "id": "UneExcursionIncohrente",
+      "title": "A Panicky Picnic",
+      "original_title": "Une excursion incohérente",
+      "year": 1909,
+      "country": "Francia",
+      "runtime": 8,
+      "tags": [
+        "comedy",
+        "fantasy"
+      ],
+      "published": "2012-04-20",
+      "tmdbId": 151534,
+      "titles": {
+        "es": "Una excursión incoherente",
+        "en": "A Panicky Picnic"
+      },
+      "director": "Segundo de Chomón",
+      "lang": "es",
+      "sound": false,
+      "blurb_es": "Una familia sale al campo de merienda y nada se está quieto: la comida se mueve, los muebles cobran vida y el hotel donde se refugian es todavía peor. Una pesadilla cómica de Chomón para Pathé.",
+      "blurb_en": "A family goes for a picnic in the country and nothing stays still: the food moves, the furniture comes to life and the inn where they take refuge is even worse. A comic nightmare by Chomón for Pathé.",
+      "blurb_gl": "Unha familia sae ao campo de merenda e nada está quieto: a comida móvese, os mobles cobran vida e o hotel onde se refuxian é aínda peor. Un pesadelo cómico de Chomón para Pathé.",
+      "blurb_eu": "Familia bat landara ateratzen da askaria egitera eta ezer ez dago geldi: janaria mugitzen da, altzariek bizia hartzen dute eta babesten diren hotela are okerragoa da. Chomónen amesgaizto komiko bat Pathérentzat.",
+      "blurb_ca": "Una família surt al camp a berenar i res no s’està quiet: el menjar es mou, els mobles cobren vida i l’hotel on es refugien és encara pitjor. Un malson còmic de Chomón per a Pathé.",
+      "copy": {
+        "minutes": 8,
+        "height": 480
+      },
+      "image": "ia"
     },
     {
       "id": "falling_leaves_1912",
@@ -131,6 +327,39 @@
       "tmdbId": 147624,
       "titles": {
         "en": "Falling Leaves"
+      },
+      "copy": {
+        "minutes": 12,
+        "height": 240
+      }
+    },
+    {
+      "id": "SegundoDeChomonSuperstitionAndalouse1912",
+      "title": "Andalusian Superstition",
+      "original_title": "Superstition andalouse",
+      "year": 1912,
+      "country": "Francia",
+      "runtime": 10,
+      "tags": [
+        "fantasy"
+      ],
+      "published": "2016-12-13",
+      "tmdbId": 193861,
+      "titles": {
+        "es": "Superstición andaluza",
+        "en": "Andalusian Superstition"
+      },
+      "director": "Segundo de Chomón",
+      "lang": "es",
+      "sound": false,
+      "blurb_es": "Una mujer que ha echado de su puerta a una gitana imagina la venganza que le espera, y el patio andaluz se va convirtiendo en un mundo de cartón piedra lleno de monstruos. Chomón para Pathé.",
+      "blurb_en": "A woman who has turned a gypsy away from her door imagines the revenge awaiting her, and the Andalusian courtyard turns into a papier-mâché world full of monsters. Chomón for Pathé.",
+      "blurb_gl": "Unha muller que botou da súa porta a unha xitana imaxina a vinganza que a agarda, e o patio andaluz vaise convertendo nun mundo de cartón pedra cheo de monstros. Chomón para Pathé.",
+      "blurb_eu": "Ijito bat atetik bota duen emakume batek zain duen mendekua irudikatzen du, eta Andaluziako patioa munstroz betetako kartoi-harrizko mundu bihurtzen da. Chomón Pathérentzat.",
+      "blurb_ca": "Una dona que ha fet fora de casa una gitana s’imagina la venjança que l’espera, i el pati andalús es va convertint en un món de cartó pedra ple de monstres. Chomón per a Pathé.",
+      "copy": {
+        "minutes": 10,
+        "height": 480
       }
     },
     {
@@ -157,6 +386,10 @@
       "tmdbId": 100246,
       "titles": {
         "en": "Gertie the Dinosaur"
+      },
+      "copy": {
+        "minutes": 12,
+        "height": 240
       }
     },
     {
@@ -184,6 +417,10 @@
       "titles": {
         "es": "20.000 leguas de viaje submarino",
         "en": "20,000 Leagues Under the Sea"
+      },
+      "copy": {
+        "minutes": 99,
+        "height": 240
       }
     },
     {
@@ -211,6 +448,10 @@
         "es": "Intolerancia",
         "en": "Intolerance",
         "ca": "Intolerància"
+      },
+      "copy": {
+        "minutes": 211,
+        "height": 480
       }
     },
     {
@@ -238,6 +479,10 @@
       "titles": {
         "es": "Charlot emigrante",
         "en": "The Immigrant"
+      },
+      "copy": {
+        "minutes": 20,
+        "height": 240
       }
     },
     {
@@ -266,6 +511,10 @@
         "es": "Lirios rotos",
         "en": "Broken Blossoms",
         "ca": "Lliris trencats"
+      },
+      "copy": {
+        "minutes": 57,
+        "height": 240
       }
     },
     {
@@ -294,6 +543,10 @@
         "es": "El hombre y la bestia",
         "en": "Dr. Jekyll and Mr. Hyde",
         "ca": "El Dr. Jekyll i el Sr. Hyde"
+      },
+      "copy": {
+        "minutes": 82,
+        "height": 240
       }
     },
     {
@@ -321,6 +574,10 @@
         "es": "Una semana",
         "en": "One Week",
         "ca": "Una setmana"
+      },
+      "copy": {
+        "minutes": 22,
+        "height": 240
       }
     },
     {
@@ -349,7 +606,16 @@
         "es": "El gabinete del doctor Caligari",
         "en": "The Cabinet of Dr. Caligari",
         "ca": "El gabinet del Dr. Caligari"
-      }
+      },
+      "copy": {
+        "minutes": 51,
+        "height": 240
+      },
+      "context_es": "La escribieron Carl Mayer y Hans Janowitz al acabar la Primera Guerra Mundial, y la produjo Erich Pommer en la Decla de Berlín. Los decorados, pintados sobre lienzo con sombras y calles imposibles, son de Hermann Warm, Walter Reimann y Walter Röhrig, y la convirtieron en el emblema del expresionismo alemán.\n\nEl relato enmarcado —la historia la cuenta alguien de quien al final dudamos— fue una novedad que el cine no ha dejado de copiar. En 1947 Siegfried Kracauer la leyó como un presagio del nazismo en su libro «De Caligari a Hitler».\n\nOjo: esta copia dura 51 minutos y la película unos 76. Falta metraje o se pasa más deprisa de lo que se proyectaba.",
+      "context_en": "It was written by Carl Mayer and Hans Janowitz at the end of the First World War and produced by Erich Pommer at Decla in Berlin. The sets, painted on canvas with shadows and impossible streets, are by Hermann Warm, Walter Reimann and Walter Röhrig, and they made it the emblem of German Expressionism.\n\nThe framing story —the tale is told by someone we end up doubting— was a novelty that cinema has never stopped copying. In 1947 Siegfried Kracauer read it as a foreshadowing of Nazism in his book “From Caligari to Hitler”.\n\nNote: this copy runs 51 minutes and the film about 76. Footage is missing or it plays faster than it was projected.",
+      "context_gl": "Escribírona Carl Mayer e Hans Janowitz ao acabar a Primeira Guerra Mundial, e produciuna Erich Pommer na Decla de Berlín. Os decorados, pintados sobre lenzo con sombras e rúas imposibles, son de Hermann Warm, Walter Reimann e Walter Röhrig, e convertérona no emblema do expresionismo alemán.\n\nO relato enmarcado —a historia cóntaa alguén de quen ao final dubidamos— foi unha novidade que o cine non deixou de copiar. En 1947 Siegfried Kracauer leuna como un presaxio do nazismo no seu libro «De Caligari a Hitler».\n\nOllo: esta copia dura 51 minutos e a película uns 76. Falta metraxe ou pásase máis rápido do que se proxectaba.",
+      "context_eu": "Carl Mayerrek eta Hans Janowitzek idatzi zuten Lehen Mundu Gerra amaitzean, eta Erich Pommerrek ekoiztu zuen Berlingo Declan. Dekoratuak, mihise gainean margotuak, itzal eta kale ezinezkoekin, Hermann Warm, Walter Reimann eta Walter Röhrigenak dira, eta espresionismo alemaniarraren ikur bihurtu zuten.\n\nKontakizun markoa —istorioa azkenean zalantzan jartzen dugun norbaitek kontatzen du— zinemak kopiatzeari utzi ez dion berritasuna izan zen. 1947an Siegfried Kracauerrek nazismoaren iragarpen gisa irakurri zuen «Caligaritik Hitlerrera» liburuan.\n\nKontuz: kopia honek 51 minutu irauten du eta filmak 76 inguru. Metrajea falta da edo proiektatzen zen baino azkarrago doa.",
+      "context_ca": "La van escriure Carl Mayer i Hans Janowitz en acabar la Primera Guerra Mundial, i la va produir Erich Pommer a la Decla de Berlín. Els decorats, pintats sobre tela amb ombres i carrers impossibles, són de Hermann Warm, Walter Reimann i Walter Röhrig, i la van convertir en l’emblema de l’expressionisme alemany.\n\nEl relat emmarcat —la història l’explica algú de qui al final dubtem— va ser una novetat que el cinema no ha deixat de copiar. El 1947 Siegfried Kracauer la va llegir com un presagi del nazisme al seu llibre «De Caligari a Hitler».\n\nCompte: aquesta còpia dura 51 minuts i la pel·lícula uns 76. Hi falta metratge o va més de pressa del que es projectava."
     },
     {
       "id": "the-golem-how-he-came-into-the-world-full-movie-restored-720p-hd",
@@ -375,6 +641,10 @@
       "titles": {
         "es": "El Golem",
         "en": "The Golem"
+      },
+      "copy": {
+        "minutes": 85,
+        "height": 480
       }
     },
     {
@@ -401,6 +671,10 @@
       "titles": {
         "es": "La marca del Zorro",
         "en": "The Mark of Zorro"
+      },
+      "copy": {
+        "minutes": 74,
+        "height": 480
       }
     },
     {
@@ -430,6 +704,10 @@
         "es": "El chico",
         "en": "The Kid",
         "ca": "The Kid"
+      },
+      "copy": {
+        "minutes": 68,
+        "height": 576
       }
     },
     {
@@ -456,6 +734,10 @@
       "tmdbId": 57283,
       "titles": {
         "es": "La brujería a través de los tiempos"
+      },
+      "copy": {
+        "minutes": 105,
+        "height": 240
       }
     },
     {
@@ -483,7 +765,16 @@
         "es": "Nanuk, el esquimal",
         "en": "Nanook of the North",
         "ca": "Nanuk l'esquimal"
-      }
+      },
+      "copy": {
+        "minutes": 78,
+        "height": 240
+      },
+      "context_es": "Robert J. Flaherty llevaba años explorando el norte de Canadá cuando la peletera francesa Revillon Frères le pagó una película sobre la vida de los inuit. El primer material que rodó se perdió en un incendio y tuvo que volver a empezar.\n\nSe considera el primer largometraje documental, pero Flaherty preparó muchas escenas: el protagonista se llamaba en realidad Allakariallak, se cazó con arpón cuando ya se usaban rifles y el iglú se construyó partido por la mitad para que entrara la luz de la cámara. Ese debate, entre contar la verdad y ponerla en escena, sigue abierto.",
+      "context_en": "Robert J. Flaherty had spent years exploring northern Canada when the French furriers Revillon Frères paid for a film about Inuit life. The first footage he shot was lost in a fire and he had to start again.\n\nIt is considered the first feature-length documentary, but Flaherty staged many scenes: the man we know as Nanook was really called Allakariallak, the hunting was done with harpoons when rifles were already in use, and the igloo was built cut in half to let in light for the camera. That debate, between telling the truth and staging it, is still open.",
+      "context_gl": "Robert J. Flaherty levaba anos explorando o norte do Canadá cando a peleteira francesa Revillon Frères lle pagou unha película sobre a vida dos inuit. O primeiro material que rodou perdeuse nun incendio e tivo que volver empezar.\n\nConsidérase a primeira longametraxe documental, pero Flaherty preparou moitas escenas: o protagonista chamábase en realidade Allakariallak, cazouse con arpón cando xa se usaban rifles e o iglú construíuse partido pola metade para que entrase a luz da cámara. Ese debate, entre contar a verdade e poñela en escena, segue aberto.",
+      "context_eu": "Robert J. Flahertyk urteak zeramatzan Kanadako iparraldea esploratzen Revillon Frères larrugile frantsesak inuiten bizitzari buruzko film bat ordaindu zionean. Filmatu zuen lehen materiala sute batean galdu zen, eta berriro hasi behar izan zuen.\n\nLehen film luze dokumentaltzat hartzen da, baina Flahertyk eszena asko prestatu zituen: protagonistak benetan Allakariallak zuen izena, arpoiarekin ehizatu zen jada fusilak erabiltzen zirenean, eta iglua erditik moztuta eraiki zen kamerarentzako argia sar zedin. Egia kontatzearen eta eszenaratzearen arteko eztabaida hori irekita dago oraindik.",
+      "context_ca": "Robert J. Flaherty feia anys que explorava el nord del Canadà quan la pelleteria francesa Revillon Frères li va pagar una pel·lícula sobre la vida dels inuit. El primer material que va rodar es va perdre en un incendi i va haver de tornar a començar.\n\nEs considera el primer llargmetratge documental, però Flaherty va preparar moltes escenes: el protagonista es deia en realitat Allakariallak, es va caçar amb arpó quan ja es feien servir rifles i l’iglú es va construir partit per la meitat perquè hi entrés la llum de la càmera. Aquest debat, entre explicar la veritat i posar-la en escena, continua obert."
     },
     {
       "id": "Nosferatu_most_complete_version_93_mins.",
@@ -509,6 +800,10 @@
       "titles": {
         "es": "Nosferatu",
         "en": "Nosferatu"
+      },
+      "copy": {
+        "minutes": 93,
+        "height": 240
       }
     },
     {
@@ -537,6 +832,10 @@
         "es": "La ley de la hospitalidad",
         "en": "Our Hospitality",
         "ca": "La nostra hospitalitat"
+      },
+      "copy": {
+        "minutes": 73,
+        "height": 360
       }
     },
     {
@@ -564,6 +863,10 @@
         "es": "El hombre mosca",
         "en": "Safety Last!",
         "ca": "L’home mosca"
+      },
+      "copy": {
+        "minutes": 74,
+        "height": 480
       }
     },
     {
@@ -591,6 +894,10 @@
       "titles": {
         "es": "El jorobado de Notre Dame",
         "en": "The Hunchback of Notre Dame"
+      },
+      "copy": {
+        "minutes": 101,
+        "height": 240
       }
     },
     {
@@ -613,7 +920,11 @@
       "sound": false,
       "published": "2017-10-20",
       "tmdbId": 107011,
-      "titles": {}
+      "titles": {},
+      "copy": {
+        "minutes": 12,
+        "height": 480
+      }
     },
     {
       "id": "sherlock-jr-buster-keaton-1924",
@@ -640,6 +951,10 @@
         "es": "El moderno Sherlock Holmes",
         "en": "Sherlock Jr.",
         "ca": "Sherlock Jr"
+      },
+      "copy": {
+        "minutes": 45,
+        "height": 720
       }
     },
     {
@@ -665,6 +980,10 @@
       "titles": {
         "es": "El último",
         "en": "The Last Laugh"
+      },
+      "copy": {
+        "minutes": 88,
+        "height": 360
       }
     },
     {
@@ -693,6 +1012,10 @@
         "es": "El ladrón de Bagdad",
         "en": "The Thief of Bagdad",
         "ca": "El lladre de Bagdad"
+      },
+      "copy": {
+        "minutes": 140,
+        "height": 240
       }
     },
     {
@@ -720,7 +1043,11 @@
         "es": "El navegante",
         "en": "The Navigator"
       },
-      "published": "2020-06-16"
+      "published": "2020-06-16",
+      "copy": {
+        "minutes": 60,
+        "height": 1072
+      }
     },
     {
       "id": "BattleshipPotemkin",
@@ -747,6 +1074,10 @@
         "es": "El acorazado Potemkin",
         "en": "Battleship Potemkin",
         "ca": "El cuirassat Potemkin"
+      },
+      "copy": {
+        "minutes": 73,
+        "height": 240
       }
     },
     {
@@ -773,6 +1104,10 @@
       "titles": {
         "es": "La huelga",
         "en": "Strike"
+      },
+      "copy": {
+        "minutes": 89,
+        "height": 720
       }
     },
     {
@@ -799,6 +1134,10 @@
       "titles": {
         "es": "El estudiante novato",
         "en": "The Freshman"
+      },
+      "copy": {
+        "minutes": 76,
+        "height": 480
       }
     },
     {
@@ -827,6 +1166,10 @@
         "es": "La quimera del oro",
         "en": "The Gold Rush",
         "ca": "La quimera de l’or"
+      },
+      "copy": {
+        "minutes": 87,
+        "height": 480
       }
     },
     {
@@ -855,6 +1198,10 @@
         "es": "El mundo perdido",
         "en": "The Lost World",
         "ca": "El món perdut"
+      },
+      "copy": {
+        "minutes": 92,
+        "height": 480
       }
     },
     {
@@ -883,7 +1230,16 @@
         "es": "El fantasma de la ópera",
         "en": "The Phantom of the Opera",
         "ca": "El fantasma de l'Òpera"
-      }
+      },
+      "copy": {
+        "minutes": 106,
+        "height": 240
+      },
+      "context_es": "Universal la planteó como su gran producción de 1925, a partir de la novela de Gaston Leroux, y construyó en sus estudios una réplica del interior de la Ópera de París que se siguió usando durante décadas.\n\nLon Chaney diseñó él mismo su maquillaje y lo mantuvo en secreto hasta el estreno: el momento en que Christine le quita la máscara es uno de los sustos más famosos del cine. El rodaje fue accidentado, con escenas repetidas y cambios de montaje, y el baile de máscaras se rodó en un Technicolor primitivo de dos colores.",
+      "context_en": "Universal conceived it as its big production of 1925, from Gaston Leroux’s novel, and built on its lot a replica of the interior of the Paris Opera that was reused for decades.\n\nLon Chaney designed his own make-up and kept it secret until the premiere: the moment Christine pulls off his mask is one of the most famous scares in film. The shoot was troubled, with reshoots and changes in the editing, and the masked ball was filmed in an early two-colour Technicolor.",
+      "context_gl": "Universal formulouna como a súa gran produción de 1925, a partir da novela de Gaston Leroux, e construíu nos seus estudos unha réplica do interior da Ópera de París que se seguiu usando durante décadas.\n\nLon Chaney deseñou el mesmo a súa maquillaxe e mantívoa en segredo ata a estrea: o momento en que Christine lle quita a máscara é un dos sustos máis famosos do cine. A rodaxe foi accidentada, con escenas repetidas e cambios de montaxe, e o baile de máscaras rodouse nun Technicolor primitivo de dúas cores.",
+      "context_eu": "Universalek 1925eko bere ekoizpen handi gisa planteatu zuen, Gaston Lerouxen eleberritik abiatuta, eta Pariseko Operaren barrualdearen erreplika bat eraiki zuen bere estudioetan, hamarkadetan erabiltzen jarraitu zena.\n\nLon Chaneyk berak diseinatu zuen bere makillajea eta sekretuan gorde zuen estreinaldira arte: Christinek maskara kentzen dion unea zinemako ikaraldirik ospetsuenetako bat da. Filmaketa gorabeheratsua izan zen, eszena errepikatuekin eta muntaketa-aldaketekin, eta maskaradun dantzaldia bi koloreko Technicolor primitibo batean filmatu zen.",
+      "context_ca": "Universal la va plantejar com la seva gran producció del 1925, a partir de la novel·la de Gaston Leroux, i va construir als seus estudis una rèplica de l’interior de l’Òpera de París que es va continuar fent servir durant dècades.\n\nLon Chaney va dissenyar ell mateix el seu maquillatge i el va mantenir en secret fins a l’estrena: el moment en què Christine li treu la màscara és un dels ensurts més famosos del cinema. El rodatge va ser accidentat, amb escenes repetides i canvis de muntatge, i el ball de màscares es va rodar en un Technicolor primitiu de dos colors."
     },
     {
       "id": "silent-seven-chances",
@@ -910,7 +1266,11 @@
         "en": "Seven Chances",
         "ca": "Set ocasions"
       },
-      "published": "2020-12-02"
+      "published": "2020-12-02",
+      "copy": {
+        "minutes": 57,
+        "height": 480
+      }
     },
     {
       "id": "1926-faust",
@@ -937,6 +1297,10 @@
         "es": "Fausto",
         "en": "Faust",
         "ca": "Faust"
+      },
+      "copy": {
+        "minutes": 108,
+        "height": 720
       }
     },
     {
@@ -965,6 +1329,10 @@
         "es": "Las aventuras del príncipe Achmed",
         "en": "The Adventures of Prince Achmed",
         "ca": "Les aventures del Príncep Achmed"
+      },
+      "copy": {
+        "minutes": 66,
+        "height": 1080
       }
     },
     {
@@ -994,6 +1362,10 @@
         "es": "El maquinista de La General",
         "en": "The General",
         "ca": "El maquinista de la general"
+      },
+      "copy": {
+        "minutes": 79,
+        "height": 480
       }
     },
     {
@@ -1020,6 +1392,10 @@
       "titles": {
         "es": "Berlín, sinfonía de una gran ciudad",
         "en": "Berlin: Symphony of a Great City"
+      },
+      "copy": {
+        "minutes": 62,
+        "height": 1072
       }
     },
     {
@@ -1048,6 +1424,10 @@
       "titles": {
         "es": "Metrópolis",
         "ca": "Metròpolis"
+      },
+      "copy": {
+        "minutes": 119,
+        "height": 480
       }
     },
     {
@@ -1077,7 +1457,16 @@
         "es": "Amanecer",
         "en": "Sunrise: A Song of Two Humans",
         "ca": "Aurora"
-      }
+      },
+      "copy": {
+        "minutes": 94,
+        "height": 720
+      },
+      "context_es": "Después de «El último», William Fox se trajo a Murnau de Alemania con todo pagado y libertad completa. El guion es de Carl Mayer, el mismo de «Caligari», sobre un relato de Hermann Sudermann, y se rodó en decorados enormes construidos en perspectiva forzada para que la ciudad pareciera infinita.\n\nSe estrenó con la música y los efectos de sonido grabados en la propia película, el sistema Movietone, y en la primera gala de los Óscar ganó tres premios, entre ellos el de mejor actriz para Janet Gaynor. En taquilla, en cambio, decepcionó.",
+      "context_en": "After “The Last Laugh”, William Fox brought Murnau over from Germany with everything paid and a completely free hand. The script is by Carl Mayer, who also wrote “Caligari”, from a story by Hermann Sudermann, and it was shot on huge forced-perspective sets so that the city would seem endless.\n\nIt opened with its music and sound effects recorded on the film itself, the Movietone system, and at the first Academy Awards it won three prizes, including Best Actress for Janet Gaynor. At the box office, however, it disappointed.",
+      "context_gl": "Despois de «O último», William Fox trouxo a Murnau de Alemaña con todo pagado e liberdade completa. O guión é de Carl Mayer, o mesmo de «Caligari», sobre un relato de Hermann Sudermann, e rodouse en decorados enormes construídos en perspectiva forzada para que a cidade parecese infinita.\n\nEstreouse coa música e os efectos de son gravados na propia película, o sistema Movietone, e na primeira gala dos Óscar gañou tres premios, entre eles o de mellor actriz para Janet Gaynor. Na billeteira, en cambio, decepcionou.",
+      "context_eu": "«Der letzte Mann»-en ondoren, William Foxek Alemaniatik ekarri zuen Murnau, dena ordainduta eta erabateko askatasunarekin. Gidoia Carl Mayerrena da, «Caligari»-rena idatzi zuen berarena, Hermann Sudermannen kontakizun batean oinarrituta, eta perspektiba behartuan eraikitako dekoratu erraldoietan filmatu zen, hiria amaigabea irudi zedin.\n\nMusika eta soinu-efektuak filmean bertan grabatuta estreinatu zen, Movietone sistemarekin, eta Oscarren lehen galan hiru sari irabazi zituen, horien artean aktore onenarena Janet Gaynorrentzat. Leihatilan, ordea, etsipena izan zen.",
+      "context_ca": "Després de «L’últim», William Fox va portar Murnau d’Alemanya amb tot pagat i llibertat completa. El guió és de Carl Mayer, el mateix de «Caligari», a partir d’un relat de Hermann Sudermann, i es va rodar en decorats enormes construïts en perspectiva forçada perquè la ciutat semblés infinita.\n\nEs va estrenar amb la música i els efectes de so enregistrats a la mateixa pel·lícula, el sistema Movietone, i a la primera gala dels Oscar va guanyar tres premis, entre ells el de millor actriu per a Janet Gaynor. A la taquilla, en canvi, va decebre."
     },
     {
       "id": "the-lodger-a-story-of-the-london-fog-1927-by-alfred-hitchcock",
@@ -1103,6 +1492,10 @@
       "titles": {
         "es": "El enemigo de las rubias",
         "en": "The Lodger: A Story of the London Fog"
+      },
+      "copy": {
+        "minutes": 91,
+        "height": 720
       }
     },
     {
@@ -1131,7 +1524,11 @@
         "ca": "El cantor de jazz"
       },
       "published": "2022-12-21",
-      "image": "ia"
+      "image": "ia",
+      "copy": {
+        "minutes": 96,
+        "height": 480
+      }
     },
     {
       "id": "SteamboatBillJr",
@@ -1158,6 +1555,10 @@
         "es": "El héroe del río",
         "en": "Steamboat Bill, Jr.",
         "ca": "L’heroi del riu"
+      },
+      "copy": {
+        "minutes": 69,
+        "height": 240
       }
     },
     {
@@ -1183,6 +1584,10 @@
       "tmdbId": 53565,
       "titles": {
         "en": "Steamboat Willie"
+      },
+      "copy": {
+        "minutes": 8,
+        "height": 1080
       }
     },
     {
@@ -1209,6 +1614,10 @@
       "titles": {
         "en": "The Fall of the House of Usher",
         "ca": "La caiguda de la casa Usher"
+      },
+      "copy": {
+        "minutes": 13,
+        "height": 432
       }
     },
     {
@@ -1237,6 +1646,10 @@
       "titles": {
         "es": "El hombre que ríe",
         "en": "The Man Who Laughs"
+      },
+      "copy": {
+        "minutes": 110,
+        "height": 480
       }
     },
     {
@@ -1264,6 +1677,10 @@
         "es": "La pasión de Juana de Arco",
         "en": "The Passion of Joan of Arc",
         "ca": "La passió de Joana d'Arc"
+      },
+      "copy": {
+        "minutes": 82,
+        "height": 720
       }
     },
     {
@@ -1288,6 +1705,10 @@
       "tmdbId": 118014,
       "titles": {
         "en": "The Seashell and the Clergyman"
+      },
+      "copy": {
+        "minutes": 41,
+        "height": 1080
       }
     },
     {
@@ -1314,7 +1735,11 @@
         "es": "Relámpago",
         "en": "Speedy"
       },
-      "published": "2023-12-28"
+      "published": "2023-12-28",
+      "copy": {
+        "minutes": 86,
+        "height": 480
+      }
     },
     {
       "id": "TheCameramanWBusterKeatonFULLHDVideoDailymotion",
@@ -1340,7 +1765,11 @@
         "es": "El cameraman",
         "en": "The Cameraman"
       },
-      "published": "2016-04-10"
+      "published": "2016-04-10",
+      "copy": {
+        "minutes": 75,
+        "height": 720
+      }
     },
     {
       "id": "the-last-command",
@@ -1366,7 +1795,11 @@
         "es": "La última orden",
         "en": "The Last Command"
       },
-      "published": "2021-08-13"
+      "published": "2021-08-13",
+      "copy": {
+        "minutes": 89,
+        "height": 480
+      }
     },
     {
       "id": "the-circus-charlie-chaplin",
@@ -1394,7 +1827,16 @@
         "en": "The Circus",
         "ca": "El circ"
       },
-      "published": "2026-01-11"
+      "published": "2026-01-11",
+      "copy": {
+        "minutes": 72,
+        "height": 720
+      },
+      "context_es": "Chaplin rodó «El circo» en el peor momento de su vida: un incendio arrasó el decorado de la carpa, su divorcio de Lita Grey llenaba los periódicos y Hacienda le reclamaba impuestos atrasados. Tardó casi dos años en terminarla y apenas volvió a hablar de ella.\n\nAun así, en la primera gala de los Óscar la Academia lo sacó de las categorías normales para darle un premio especial por escribir, dirigir, interpretar y producir la película. En 1969 le puso música nueva y cantó él mismo la canción de los créditos.",
+      "context_en": "Chaplin made “The Circus” at the worst moment of his life: a fire destroyed the big-top set, his divorce from Lita Grey filled the newspapers and the tax authorities were chasing him for back taxes. It took him almost two years to finish and he hardly ever spoke of it again.\n\nEven so, at the first Academy Awards he was taken out of the regular categories and given a special award for writing, directing, acting in and producing the film. In 1969 he gave it a new score and sang the title song himself.",
+      "context_gl": "Chaplin rodou «O circo» no peor momento da súa vida: un incendio arrasou o decorado da carpa, o seu divorcio de Lita Grey enchía os xornais e Facenda reclamáballe impostos atrasados. Tardou case dous anos en rematala e apenas volveu falar dela.\n\nAínda así, na primeira gala dos Óscar a Academia sacouno das categorías normais para darlle un premio especial por escribir, dirixir, interpretar e producir a película. En 1969 púxolle música nova e cantou el mesmo a canción dos créditos.",
+      "context_eu": "Chaplinek bere bizitzako unerik txarrenean filmatu zuen «Zirkua»: sute batek karparen dekoratua suntsitu zuen, Lita Greyrekin zuen dibortzioa egunkarietan zegoen eta Ogasunak atzeratutako zergak eskatzen zizkion. Ia bi urte behar izan zituen amaitzeko, eta ia ez zuen berriro haren berri eman.\n\nHala ere, Oscarren lehen galan Akademiak ohiko kategorietatik atera eta sari berezi bat eman zion filma idatzi, zuzendu, antzeztu eta ekoizteagatik. 1969an musika berria jarri zion, eta berak abestu zuen kredituetako abestia.",
+      "context_ca": "Chaplin va rodar «El circ» en el pitjor moment de la seva vida: un incendi va arrasar el decorat de la carpa, el seu divorci de Lita Grey omplia els diaris i Hisenda li reclamava impostos endarrerits. Va trigar gairebé dos anys a acabar-la i gairebé no en va tornar a parlar.\n\nTot i així, a la primera gala dels Oscar l’Acadèmia el va treure de les categories normals per donar-li un premi especial per escriure, dirigir, interpretar i produir la pel·lícula. El 1969 hi va posar música nova i va cantar ell mateix la cançó dels crèdits."
     },
     {
       "id": "the-docks-of-new-york",
@@ -1421,7 +1863,16 @@
         "es": "Los muelles de Nueva York",
         "en": "The Docks of New York"
       },
-      "published": "2021-08-13"
+      "published": "2021-08-13",
+      "copy": {
+        "minutes": 76,
+        "height": 480
+      },
+      "context_es": "Josef von Sternberg la rodó para Paramount en 1928, con la fotografía de Harold Rosson —que años después haría «El mago de Oz»— y los decorados de Hans Dreier: niebla, tabernas del puerto y una sola noche de permiso en tierra.\n\nLlegó a los cines cuando todo el mundo hablaba ya del cine sonoro y pasó casi sin ruido. Con el tiempo se ha convertido en una de las películas más admiradas del final del cine mudo, y en la mejor muestra de lo que Sternberg sabía hacer con la luz antes de conocer a Marlene Dietrich.",
+      "context_en": "Josef von Sternberg made it for Paramount in 1928, with photography by Harold Rosson —who would later shoot “The Wizard of Oz”— and sets by Hans Dreier: fog, waterfront saloons and a single night of shore leave.\n\nIt reached cinemas when everyone was already talking about sound films and went almost unnoticed. Over time it has become one of the most admired films of the late silent era, and the best example of what Sternberg could do with light before he met Marlene Dietrich.",
+      "context_gl": "Josef von Sternberg rodouna para Paramount en 1928, coa fotografía de Harold Rosson —que anos despois faría «O mago de Oz»— e os decorados de Hans Dreier: néboa, tabernas do porto e unha soa noite de permiso en terra.\n\nChegou aos cines cando todo o mundo falaba xa do cine sonoro e pasou case sen ruído. Co tempo converteuse nunha das películas máis admiradas do final do cine mudo, e na mellor mostra do que Sternberg sabía facer coa luz antes de coñecer a Marlene Dietrich.",
+      "context_eu": "Josef von Sternbergek Paramountentzat filmatu zuen 1928an, Harold Rossonen argazkiarekin —urte batzuk geroago «Ozeko aztia» egingo zuena— eta Hans Dreierren dekoratuekin: lainoa, portuko tabernak eta lehorrean emandako baimen-gau bakarra.\n\nDenek zinema soinudunaz hitz egiten zutenean iritsi zen zinemetara, eta ia oharkabean pasatu zen. Denborarekin, zinema mutuaren amaierako film miretsienetako bat bihurtu da, eta Sternbergek Marlene Dietrich ezagutu aurretik argiarekin egiten zekienaren adibiderik onena.",
+      "context_ca": "Josef von Sternberg la va rodar per a Paramount el 1928, amb la fotografia de Harold Rosson —que anys després faria «El màgic d’Oz»— i els decorats de Hans Dreier: boira, tavernes del port i una sola nit de permís a terra.\n\nVa arribar als cinemes quan tothom ja parlava del cinema sonor i va passar gairebé sense soroll. Amb el temps s’ha convertit en una de les pel·lícules més admirades del final del cinema mut, i en la millor mostra del que Sternberg sabia fer amb la llum abans de conèixer Marlene Dietrich."
     },
     {
       "id": "ChelovekskinoapparatomManWithAMovieCamera",
@@ -1448,6 +1899,10 @@
       "titles": {
         "es": "El hombre de la cámara",
         "en": "Man with a Movie Camera"
+      },
+      "copy": {
+        "minutes": 67,
+        "height": 240
       }
     },
     {
@@ -1474,6 +1929,10 @@
         "es": "La caja de Pandora",
         "en": "Pandora's Box",
         "ca": "Lulú, la caixa de Pandora"
+      },
+      "copy": {
+        "minutes": 133,
+        "height": 1080
       }
     },
     {
@@ -1499,6 +1958,10 @@
       "tmdbId": 128284,
       "titles": {
         "en": "Rain"
+      },
+      "copy": {
+        "minutes": 12,
+        "height": 240
       }
     },
     {
@@ -1525,6 +1988,10 @@
         "es": "Un perro andaluz",
         "en": "Un Chien Andalou",
         "ca": "Un chien andalou"
+      },
+      "copy": {
+        "minutes": 21,
+        "height": 480
       }
     },
     {
@@ -1552,7 +2019,11 @@
         "en": "The Cocoanuts",
         "ca": "Els quatre cocos"
       },
-      "published": "2024-12-18"
+      "published": "2024-12-18",
+      "copy": {
+        "minutes": 93,
+        "height": 480
+      }
     },
     {
       "id": "A_propos_de_Nice",
@@ -1577,6 +2048,10 @@
       "tmdbId": 47831,
       "titles": {
         "es": "A propósito de Niza"
+      },
+      "copy": {
+        "minutes": 23,
+        "height": 240
       }
     },
     {
@@ -1604,6 +2079,10 @@
         "es": "Sin novedad en el frente",
         "en": "All Quiet on the Western Front",
         "ca": "Res de nou al front de l’oest"
+      },
+      "copy": {
+        "minutes": 167,
+        "height": 576
       }
     },
     {
@@ -1631,6 +2110,10 @@
         "es": "El conflicto de los Marx",
         "en": "Animal Crackers",
         "ca": "El conflicte dels Marx"
+      },
+      "copy": {
+        "minutes": 93,
+        "height": 576
       }
     },
     {
@@ -1659,6 +2142,10 @@
         "es": "Tierra",
         "en": "Earth",
         "ca": "La terra"
+      },
+      "copy": {
+        "minutes": 78,
+        "height": 360
       }
     },
     {
@@ -1686,6 +2173,10 @@
       "titles": {
         "es": "Marruecos",
         "en": "Morocco"
+      },
+      "copy": {
+        "minutes": 92,
+        "height": 720
       }
     },
     {
@@ -1712,6 +2203,10 @@
         "es": "El ángel azul",
         "en": "The Blue Angel",
         "ca": "L'Àngel Blau"
+      },
+      "copy": {
+        "minutes": 100,
+        "height": 480
       }
     },
     {
@@ -1740,7 +2235,11 @@
         "en": "The Big Trail",
         "ca": "La gran jornada"
       },
-      "published": "2025-12-25"
+      "published": "2025-12-25",
+      "copy": {
+        "minutes": 117,
+        "height": 610
+      }
     },
     {
       "id": "white_zombie",
@@ -1767,6 +2266,10 @@
         "es": "La legión de los hombres sin alma",
         "en": "White Zombie",
         "ca": "Morts vivents"
+      },
+      "copy": {
+        "minutes": 65,
+        "height": 480
       }
     },
     {
@@ -1794,6 +2297,10 @@
       "titles": {
         "es": "Al servicio de las damas",
         "en": "My Man Godfrey"
+      },
+      "copy": {
+        "minutes": 95,
+        "height": 480
       }
     },
     {
@@ -1820,6 +2327,10 @@
       "titles": {
         "es": "Locura de la marihuana",
         "en": "Reefer Madness"
+      },
+      "copy": {
+        "minutes": 68,
+        "height": 480
       }
     },
     {
@@ -1847,6 +2358,10 @@
         "es": "La reina de Nueva York",
         "en": "Nothing Sacred",
         "ca": "La reina de Nova York"
+      },
+      "copy": {
+        "minutes": 74,
+        "height": 480
       }
     },
     {
@@ -1875,6 +2390,10 @@
         "es": "Los viajes de Gulliver",
         "en": "Gulliver's Travels",
         "ca": "Els viatges de Gulliver"
+      },
+      "copy": {
+        "minutes": 73,
+        "height": 480
       }
     },
     {
@@ -1904,6 +2423,10 @@
         "es": "Luna nueva",
         "en": "His Girl Friday",
         "ca": "Lluna nova"
+      },
+      "copy": {
+        "minutes": 92,
+        "height": 480
       }
     },
     {
@@ -1932,7 +2455,16 @@
         "es": "Juan Nadie",
         "en": "Meet John Doe",
         "ca": "L’home del carrer"
-      }
+      },
+      "copy": {
+        "minutes": 123,
+        "height": 480
+      },
+      "context_es": "Frank Capra y el guionista Robert Riskin la produjeron por su cuenta en 1941, después de sus éxitos en Columbia, y la estrenó Warner. Gary Cooper es un vagabundo al que un periódico convierte en símbolo de la gente corriente, y Barbara Stanwyck la periodista que se lo inventa.\n\nEs la película más amarga de Capra: el movimiento de buena voluntad que nace del engaño acaba en manos de un magnate con ambiciones políticas. Capra rodó varios finales y nunca quedó contento con ninguno. Como nadie renovó sus derechos, pasó al dominio público.",
+      "context_en": "Frank Capra and screenwriter Robert Riskin produced it themselves in 1941, after their hits at Columbia, and Warner released it. Gary Cooper is a drifter turned by a newspaper into a symbol of ordinary people, and Barbara Stanwyck the reporter who invents him.\n\nIt is Capra’s bitterest film: the goodwill movement born of the hoax ends up in the hands of a tycoon with political ambitions. Capra shot several endings and was never happy with any of them. Because no one renewed its copyright, it entered the public domain.",
+      "context_gl": "Frank Capra e o guionista Robert Riskin producírona pola súa conta en 1941, despois dos seus éxitos en Columbia, e estreouna Warner. Gary Cooper é un vagabundo ao que un xornal converte en símbolo da xente corrente, e Barbara Stanwyck a xornalista que o inventa.\n\nÉ a película máis amarga de Capra: o movemento de boa vontade que nace do engano acaba nas mans dun magnate con ambicións políticas. Capra rodou varios finais e nunca quedou contento con ningún. Como ninguén renovou os seus dereitos, pasou ao dominio público.",
+      "context_eu": "Frank Caprak eta Robert Riskin gidoilariak beren kontura ekoiztu zuten 1941ean, Columbian izandako arrakasten ondoren, eta Warnerrek estreinatu zuen. Gary Cooper egunkari batek jende arruntaren ikur bihurtzen duen alderraia da, eta Barbara Stanwyck hura asmatzen duen kazetaria.\n\nCapraren filmik mingotsena da: iruzurretik sortutako borondate oneko mugimendua asmo politikoak dituen magnate baten esku amaitzen da. Caprak hainbat amaiera filmatu zituen eta ez zen bat ere gustura geratu. Inork ez zituenez eskubideak berritu, jabari publikora igaro zen.",
+      "context_ca": "Frank Capra i el guionista Robert Riskin la van produir pel seu compte el 1941, després dels seus èxits a Columbia, i la va estrenar Warner. Gary Cooper és un rodamón a qui un diari converteix en símbol de la gent corrent, i Barbara Stanwyck la periodista que se l’inventa.\n\nÉs la pel·lícula més amarga de Capra: el moviment de bona voluntat que neix de l’engany acaba en mans d’un magnat amb ambicions polítiques. Capra va rodar diversos finals i mai no va quedar content amb cap. Com que ningú no en va renovar els drets, va passar al domini públic."
     },
     {
       "id": "superman_the_mechanical_monsters",
@@ -1960,6 +2492,10 @@
       "titles": {
         "es": "Los Monstruos Mecánicos",
         "en": "The Mechanical Monsters"
+      },
+      "copy": {
+        "minutes": 10,
+        "height": 240
       }
     },
     {
@@ -1987,6 +2523,10 @@
         "es": "Desvío",
         "en": "Detour",
         "ca": "Desviació"
+      },
+      "copy": {
+        "minutes": 68,
+        "height": 480
       }
     },
     {
@@ -2014,6 +2554,10 @@
         "es": "Perversidad",
         "en": "Scarlet Street",
         "ca": "Perversitat"
+      },
+      "copy": {
+        "minutes": 101,
+        "height": 480
       }
     },
     {
@@ -2042,6 +2586,10 @@
         "es": "El extraño",
         "en": "The Stranger",
         "ca": "El desconegut"
+      },
+      "copy": {
+        "minutes": 94,
+        "height": 1072
       }
     },
     {
@@ -2070,6 +2618,10 @@
         "es": "El ángel y el pistolero",
         "en": "Angel and the Badman",
         "ca": "L'àngel i el pistoler"
+      },
+      "copy": {
+        "minutes": 100,
+        "height": 480
       }
     },
     {
@@ -2097,6 +2649,10 @@
         "es": "Orden: caza sin cuartel",
         "en": "He Walked by Night",
         "ca": "Ordre: Caça sense treva"
+      },
+      "copy": {
+        "minutes": 79,
+        "height": 480
       }
     },
     {
@@ -2124,6 +2680,10 @@
         "es": "Con las horas contadas",
         "en": "D.O.A.",
         "ca": "Amb les hores comptades"
+      },
+      "copy": {
+        "minutes": 83,
+        "height": 240
       }
     },
     {
@@ -2152,6 +2712,10 @@
         "es": "Demasiado tarde para lágrimas",
         "en": "Too Late for Tears",
         "ca": "Massa tard per les llàgrimes"
+      },
+      "copy": {
+        "minutes": 101,
+        "height": 720
       }
     },
     {
@@ -2178,6 +2742,10 @@
       "titles": {
         "es": "Peligros de juventud",
         "en": "Quicksand"
+      },
+      "copy": {
+        "minutes": 79,
+        "height": 480
       }
     },
     {
@@ -2205,6 +2773,10 @@
       "titles": {
         "es": "El cuarto hombre",
         "en": "Kansas City Confidential"
+      },
+      "copy": {
+        "minutes": 99,
+        "height": 480
       }
     },
     {
@@ -2232,6 +2804,10 @@
       "titles": {
         "es": "La burla del diablo",
         "en": "Beat the Devil"
+      },
+      "copy": {
+        "minutes": 89,
+        "height": 360
       }
     },
     {
@@ -2258,6 +2834,10 @@
       "titles": {
         "es": "Robot Monster",
         "en": "Robot Monster"
+      },
+      "copy": {
+        "minutes": 63,
+        "height": 360
       }
     },
     {
@@ -2286,6 +2866,10 @@
         "es": "El autoestopista",
         "en": "The Hitch-Hiker",
         "ca": "L'autoestopista"
+      },
+      "copy": {
+        "minutes": 71,
+        "height": 480
       }
     },
     {
@@ -2314,6 +2898,10 @@
         "es": "De repente",
         "en": "Suddenly",
         "ca": "Suddenly"
+      },
+      "copy": {
+        "minutes": 76,
+        "height": 480
       }
     },
     {
@@ -2342,6 +2930,10 @@
         "es": "La última vez que vi París",
         "en": "The Last Time I Saw Paris",
         "ca": "L’última vegada que vaig veure París"
+      },
+      "copy": {
+        "minutes": 116,
+        "height": 480
       }
     },
     {
@@ -2369,6 +2961,10 @@
         "es": "Agente especial",
         "en": "The Big Combo",
         "ca": "Agent especial"
+      },
+      "copy": {
+        "minutes": 87,
+        "height": 480
       }
     },
     {
@@ -2397,6 +2993,10 @@
         "es": "Plan 9 del espacio exterior",
         "en": "Plan 9 from Outer Space",
         "ca": "Pla 9 des de l’espai"
+      },
+      "copy": {
+        "minutes": 78,
+        "height": 240
       }
     },
     {
@@ -2425,7 +3025,16 @@
         "es": "Un cubo de sangre",
         "en": "A Bucket of Blood",
         "ca": "Una galleda de sang"
-      }
+      },
+      "copy": {
+        "minutes": 65,
+        "height": 480
+      },
+      "context_es": "Roger Corman la rodó en unos cinco días y con muy poco dinero, sobre un guion de Charles B. Griffith, aprovechando la moda de los beatniks: cafés con poesía, jazz y artistas que se toman muy en serio a sí mismos.\n\nDick Miller, actor fijo de Corman, es Walter Paisley, un camarero torpe que se convierte en escultor de éxito por un método que es mejor no contar. Es comedia negra y sátira a la vez, y fue el ensayo general de «La tienda de los horrores», que Corman rodaría al año siguiente con el mismo equipo.",
+      "context_en": "Roger Corman shot it in about five days on very little money, from a script by Charles B. Griffith, riding the beatnik craze: coffee houses with poetry, jazz and artists who take themselves very seriously.\n\nDick Miller, a Corman regular, plays Walter Paisley, a clumsy busboy who becomes a successful sculptor by a method best left unsaid. It is black comedy and satire at once, and the dress rehearsal for “The Little Shop of Horrors”, which Corman would shoot the following year with the same team.",
+      "context_gl": "Roger Corman rodouna nuns cinco días e con moi pouco diñeiro, sobre un guión de Charles B. Griffith, aproveitando a moda dos beatniks: cafés con poesía, jazz e artistas que se toman moi en serio a si mesmos.\n\nDick Miller, actor fixo de Corman, é Walter Paisley, un camareiro torpe que se converte en escultor de éxito por un método que é mellor non contar. É comedia negra e sátira á vez, e foi o ensaio xeral de «A tenda dos horrores», que Corman rodaría ao ano seguinte co mesmo equipo.",
+      "context_eu": "Roger Cormanek bost egun ingurutan eta diru gutxirekin filmatu zuen, Charles B. Griffithen gidoi baten gainean, beatniken modari etekina ateraz: poesiadun kafetegiak, jazza eta beren burua oso serio hartzen duten artistak.\n\nDick Miller, Cormanen ohiko aktorea, Walter Paisley da, zerbitzari baldar bat, hobe kontatzen ez den metodo baten bidez arrakastatsu bihurtzen den eskultorea. Komedia beltza eta satira da aldi berean, eta «Izuen denda»-ren entsegu orokorra izan zen; Cormanek hurrengo urtean filmatu zuen talde berarekin.",
+      "context_ca": "Roger Corman la va rodar en uns cinc dies i amb molt pocs diners, a partir d’un guió de Charles B. Griffith, aprofitant la moda dels beatniks: cafès amb poesia, jazz i artistes que es prenen molt seriosament a si mateixos.\n\nDick Miller, actor fix de Corman, és Walter Paisley, un cambrer maldestre que es converteix en escultor d’èxit per un mètode que val més no explicar. És comèdia negra i sàtira alhora, i va ser l’assaig general de «La botiga dels horrors», que Corman rodaria l’any següent amb el mateix equip."
     },
     {
       "id": "HouseOnHauntedHill1959",
@@ -2452,6 +3061,10 @@
         "es": "La mansión de los horrores",
         "en": "House on Haunted Hill",
         "ca": "La mansió de les tenebres"
+      },
+      "copy": {
+        "minutes": 75,
+        "height": 432
       }
     },
     {
@@ -2478,6 +3091,10 @@
       "titles": {
         "es": "Adolescentes del espacio exterior",
         "en": "Teenagers from Outer Space"
+      },
+      "copy": {
+        "minutes": 85,
+        "height": 480
       }
     },
     {
@@ -2505,6 +3122,10 @@
       "titles": {
         "es": "Musarañas asesinas",
         "en": "The Killer Shrews"
+      },
+      "copy": {
+        "minutes": 69,
+        "height": 480
       }
     },
     {
@@ -2533,7 +3154,16 @@
         "es": "La pequeña tienda de los horrores",
         "en": "The Little Shop of Horrors",
         "ca": "La botiga dels horrors"
-      }
+      },
+      "copy": {
+        "minutes": 73,
+        "height": 432
+      },
+      "context_es": "Es la película más famosa de las que Roger Corman rodó deprisa: dos días, aprovechando unos decorados que aún estaban montados, otra vez con guion de Charles B. Griffith y con el humor negro de «Un cubo de sangre».\n\nUn dependiente de floristería cría una planta que solo se alimenta de sangre humana. En un papel pequeño, como paciente de dentista que disfruta con el dolor, sale un Jack Nicholson muy joven. Veinte años después la historia se convirtió en musical en Nueva York y, en 1986, en una película de gran presupuesto.",
+      "context_en": "It is the most famous of the films Roger Corman made in a hurry: two days, using sets that were still standing, again with a script by Charles B. Griffith and the black humour of “A Bucket of Blood”.\n\nA flower-shop assistant raises a plant that feeds only on human blood. In a small part, as a dental patient who enjoys the pain, a very young Jack Nicholson appears. Twenty years later the story became a New York musical and, in 1986, a big-budget film.",
+      "context_gl": "É a película máis famosa das que Roger Corman rodou á présa: dous días, aproveitando uns decorados que aínda estaban montados, outra vez con guión de Charles B. Griffith e co humor negro de «Un balde de sangue».\n\nUn dependente de floraría cría unha planta que só se alimenta de sangue humano. Nun papel pequeno, como paciente de dentista que goza coa dor, sae un Jack Nicholson moi novo. Vinte anos despois a historia converteuse en musical en Nova York e, en 1986, nunha película de gran orzamento.",
+      "context_eu": "Roger Cormanek presaka filmatu zituen filmetatik ospetsuena da: bi egun, oraindik muntatuta zeuden dekoratu batzuk aprobetxatuz, berriro Charles B. Griffithen gidoiarekin eta «Odol-ontzi bat»-en umore beltzarekin.\n\nLoradenda bateko langile batek giza odolaz bakarrik elikatzen den landare bat hazten du. Paper txiki batean, minarekin gozatzen duen dentista-paziente gisa, Jack Nicholson oso gazte bat ageri da. Hogei urte geroago istorioa musikal bihurtu zen New Yorken, eta 1986an aurrekontu handiko film bat.",
+      "context_ca": "És la pel·lícula més famosa de les que Roger Corman va rodar de pressa: dos dies, aprofitant uns decorats que encara estaven muntats, un altre cop amb guió de Charles B. Griffith i amb l’humor negre de «Una galleda de sang».\n\nUn dependent de floristeria cria una planta que només s’alimenta de sang humana. En un paper petit, com a pacient de dentista que gaudeix amb el dolor, hi surt un Jack Nicholson molt jove. Vint anys després la història es va convertir en musical a Nova York i, el 1986, en una pel·lícula de gran pressupost."
     },
     {
       "id": "carnival_of_souls",
@@ -2559,6 +3189,10 @@
       "titles": {
         "es": "El carnaval de las almas",
         "en": "Carnival of Souls"
+      },
+      "copy": {
+        "minutes": 83,
+        "height": 240
       }
     },
     {
@@ -2586,6 +3220,10 @@
       "titles": {
         "es": "El cerebro que no quería morir",
         "en": "The Brain That Wouldn't Die"
+      },
+      "copy": {
+        "minutes": 71,
+        "height": 480
       }
     },
     {
@@ -2615,6 +3253,10 @@
         "es": "Charada",
         "en": "Charade",
         "ca": "Xarada"
+      },
+      "copy": {
+        "minutes": 113,
+        "height": 720
       }
     },
     {
@@ -2643,6 +3285,10 @@
       "titles": {
         "es": "Demencia 13",
         "en": "Dementia 13"
+      },
+      "copy": {
+        "minutes": 75,
+        "height": 240
       }
     },
     {
@@ -2670,6 +3316,10 @@
       "titles": {
         "es": "El gran McLintock",
         "en": "McLintock!"
+      },
+      "copy": {
+        "minutes": 127,
+        "height": 276
       }
     },
     {
@@ -2697,6 +3347,10 @@
         "es": "El terror",
         "en": "The Terror",
         "ca": "El terror"
+      },
+      "copy": {
+        "minutes": 79,
+        "height": 240
       }
     },
     {
@@ -2725,6 +3379,10 @@
       "titles": {
         "es": "El último hombre sobre la Tierra",
         "en": "The Last Man on Earth"
+      },
+      "copy": {
+        "minutes": 87,
+        "height": 480
       }
     },
     {
@@ -2751,6 +3409,10 @@
       "tmdbId": 22293,
       "titles": {
         "en": "Manos: The Hands of Fate"
+      },
+      "copy": {
+        "minutes": 69,
+        "height": 240
       }
     },
     {
@@ -2782,6 +3444,10 @@
         "en": "Night of the Living Dead",
         "eu": "Hildako Bizidunen Gaua",
         "ca": "La nit dels morts vivents"
+      },
+      "copy": {
+        "minutes": 96,
+        "height": 240
       }
     },
     {
@@ -2808,7 +3474,16 @@
       "tmdbId": 15493,
       "titles": {
         "es": "Star Wreck: In the Pirkinning"
-      }
+      },
+      "copy": {
+        "minutes": 104,
+        "height": 240
+      },
+      "context_es": "Una parodia de «Star Trek» y «Babylon 5» hecha en Tampere (Finlandia) por Samuli Torssonen y un grupo de aficionados, que tardaron unos siete años en terminarla, con un presupuesto mínimo y los efectos hechos en ordenadores de casa.\n\nSe estrenó gratis en internet en 2005 con una licencia libre y la descargaron millones de personas: fue uno de los primeros largometrajes que demostraron que una película podía hacerse popular sin pasar por cines ni distribuidoras.",
+      "context_en": "A parody of “Star Trek” and “Babylon 5” made in Tampere (Finland) by Samuli Torssonen and a group of amateurs, who took around seven years to finish it on a tiny budget, with the effects made on home computers.\n\nIt was released free online in 2005 under a free licence and downloaded by millions: one of the first features to show that a film could become popular without going through cinemas or distributors.",
+      "context_gl": "Unha parodia de «Star Trek» e «Babylon 5» feita en Tampere (Finlandia) por Samuli Torssonen e un grupo de afeccionados, que tardaron uns sete anos en rematala, cun orzamento mínimo e os efectos feitos en ordenadores da casa.\n\nEstreouse de balde en internet en 2005 cunha licenza libre e descargárona millóns de persoas: foi unha das primeiras longametraxes que demostraron que unha película podía facerse popular sen pasar por cines nin distribuidoras.",
+      "context_eu": "«Star Trek» eta «Babylon 5»-en parodia bat, Tamperen (Finlandia) egina Samuli Torssonenek eta zale talde batek; zazpi urte inguru behar izan zituzten amaitzeko, aurrekontu txiki-txikiarekin eta etxeko ordenagailuetan egindako efektuekin.\n\n2005ean doan estreinatu zen interneten, lizentzia libre batekin, eta milioika pertsonak deskargatu zuten: zinema-aretoetatik eta banatzaileetatik pasatu gabe film bat ezagun egin zitekeela erakutsi zuten lehen film luzeetako bat izan zen.",
+      "context_ca": "Una paròdia de «Star Trek» i «Babylon 5» feta a Tampere (Finlàndia) per Samuli Torssonen i un grup d’aficionats, que van trigar uns set anys a acabar-la, amb un pressupost mínim i els efectes fets en ordinadors de casa.\n\nEs va estrenar gratis a internet el 2005 amb una llicència lliure i la van descarregar milions de persones: va ser un dels primers llargmetratges que van demostrar que una pel·lícula podia fer-se popular sense passar per cinemes ni distribuïdores."
     },
     {
       "id": "ElephantsDream",
@@ -2835,6 +3510,10 @@
       "tmdbId": 9761,
       "titles": {
         "en": "Elephants Dream"
+      },
+      "copy": {
+        "minutes": 11,
+        "height": 360
       }
     },
     {
@@ -2862,6 +3541,10 @@
       "titles": {
         "es": "Big Buck Bunny",
         "en": "Big Buck Bunny"
+      },
+      "copy": {
+        "minutes": 10,
+        "height": 360
       }
     },
     {
@@ -2888,6 +3571,10 @@
       "tmdbId": 23996,
       "titles": {
         "en": "RiP!: A Remix Manifesto"
+      },
+      "copy": {
+        "minutes": 86,
+        "height": 360
       }
     },
     {
@@ -2913,6 +3600,10 @@
       "tmdbId": 20529,
       "titles": {
         "en": "Sita Sings the Blues"
+      },
+      "copy": {
+        "minutes": 82,
+        "height": 360
       }
     },
     {
@@ -2940,6 +3631,10 @@
       "tmdbId": 45745,
       "titles": {
         "en": "Sintel"
+      },
+      "copy": {
+        "minutes": 15,
+        "height": 872
       }
     },
     {
@@ -2964,7 +3659,11 @@
       "language": "es",
       "published": "2011-04-20",
       "tmdbId": 74174,
-      "titles": {}
+      "titles": {},
+      "copy": {
+        "minutes": 58,
+        "height": 240
+      }
     },
     {
       "id": "Decay2012-TheLhcZombieFilmfullFilm",
@@ -2991,6 +3690,10 @@
       "tmdbId": 148644,
       "titles": {
         "en": "Decay"
+      },
+      "copy": {
+        "minutes": 76,
+        "height": 640
       }
     },
     {
@@ -3017,6 +3720,10 @@
       "tmdbId": 133701,
       "titles": {
         "en": "Tears of Steel"
+      },
+      "copy": {
+        "minutes": 12,
+        "height": 360
       }
     },
     {
@@ -3044,6 +3751,10 @@
       "image": "ia",
       "titles": {
         "en": "Caminandes 1: Llama Drama"
+      },
+      "copy": {
+        "minutes": 2,
+        "height": 1080
       }
     },
     {
@@ -3067,7 +3778,11 @@
       "sound": true,
       "published": "2020-03-25",
       "tmdbId": 50275,
-      "titles": {}
+      "titles": {},
+      "copy": {
+        "minutes": 82,
+        "height": 480
+      }
     },
     {
       "id": "TheInternetsOwnBoyTheStoryOfAaronSwartz",
@@ -3094,6 +3809,10 @@
       "titles": {
         "es": "La historia de Aaron Swartz. El chico de Internet",
         "en": "The Internet's Own Boy: The Story of Aaron Swartz"
+      },
+      "copy": {
+        "minutes": 105,
+        "height": 720
       }
     },
     {
@@ -3121,6 +3840,10 @@
       "tmdbId": 358332,
       "titles": {
         "en": "Cosmos Laundromat"
+      },
+      "copy": {
+        "minutes": 12,
+        "height": 320
       }
     },
     {
@@ -3145,7 +3868,11 @@
       "sound": true,
       "published": "2017-03-05",
       "tmdbId": 406956,
-      "titles": {}
+      "titles": {},
+      "copy": {
+        "minutes": 3,
+        "height": 1080
+      }
     },
     {
       "id": "agent327operationbarbershop",
@@ -3172,6 +3899,10 @@
       "tmdbId": 457784,
       "titles": {
         "en": "Agent 327: Operation Barbershop"
+      },
+      "copy": {
+        "minutes": 4,
+        "height": 806
       }
     },
     {
@@ -3198,6 +3929,10 @@
       "tmdbId": 615324,
       "titles": {
         "en": "Hero"
+      },
+      "copy": {
+        "minutes": 4,
+        "height": 858
       }
     },
     {
@@ -3224,6 +3959,10 @@
       "tmdbId": 593048,
       "titles": {
         "en": "Spring"
+      },
+      "copy": {
+        "minutes": 8,
+        "height": 804
       }
     },
     {
@@ -3250,6 +3989,10 @@
       "tmdbId": 717986,
       "titles": {
         "en": "Coffee Run"
+      },
+      "copy": {
+        "minutes": 3,
+        "height": 536
       }
     },
     {
@@ -3278,6 +4021,10 @@
       "tmdbId": 891761,
       "titles": {
         "en": "Sprite Fright"
+      },
+      "copy": {
+        "minutes": 10,
+        "height": 804
       }
     },
     {
@@ -3304,6 +4051,10 @@
       "tmdbId": 1062079,
       "titles": {
         "en": "Charge"
+      },
+      "copy": {
+        "minutes": 4,
+        "height": 1608
       }
     },
     {
@@ -3330,6 +4081,10 @@
       "tmdbId": 1177628,
       "titles": {
         "ca": "Endavant!"
+      },
+      "copy": {
+        "minutes": 4,
+        "height": 1080
       }
     }
   ]

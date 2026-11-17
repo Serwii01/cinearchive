@@ -71,6 +71,33 @@ export interface PdFilm {
    * mano. Falta donde TMDB no lo tiene o el que traía era peor: ver pdTitle.
    */
   titles?: Partial<Record<'es' | 'en' | 'gl' | 'eu' | 'ca', string>>;
+  /**
+   * La copia de Internet Archive que se ve: minutos y altura en píxeles del MP4
+   * que sirve el reproductor (scripts/fetch-pd-copias.mjs). Puede durar menos
+   * que la película (`runtime`): falta metraje o va a otra velocidad.
+   */
+  copy?: { minutes: number; height: number };
+  /** Contexto histórico, escrito a mano (de momento, las del cineclub). */
+  context_es?: string;
+  context_en?: string;
+  context_gl?: string;
+  context_eu?: string;
+  context_ca?: string;
+}
+
+/** Calidad de imagen de la copia, en tres escalones que entiende cualquiera. */
+export type PdQuality = 'hd' | 'sd' | 'low';
+
+/**
+ * Cómo es la copia: duración, calidad y si es bastante más corta que la
+ * película (más de un 10 %: unos minutos de diferencia son normales, por
+ * créditos o por la velocidad a la que se pasaba el cine mudo). Pura.
+ */
+export function pdCopyInfo(f: Pick<PdFilm, 'copy' | 'runtime'>): { minutes: number; quality: PdQuality; shorter: boolean } | null {
+  if (!f.copy) return null;
+  const { minutes, height } = f.copy;
+  const quality: PdQuality = height >= 720 ? 'hd' : height >= 480 ? 'sd' : 'low';
+  return { minutes, quality, shorter: f.runtime > 0 && minutes < f.runtime * 0.9 };
 }
 
 export const pdFilms = data.items as PdFilm[];

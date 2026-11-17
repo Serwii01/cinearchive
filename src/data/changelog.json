@@ -1,5 +1,48 @@
 [
   {
+    "version": "1.24",
+    "date": "2026-11-17",
+    "title": {
+      "es": "Cine abierto: qué copia ves, el contexto del cineclub y Segundo de Chomón",
+      "en": "Open Cinema: which copy you are watching, film club context and Segundo de Chomón",
+      "gl": "Cine aberto: que copia ves, o contexto do cineclube e Segundo de Chomón",
+      "eu": "Zinema irekia: zein kopia ikusten duzun, zineklubaren testuingurua eta Segundo de Chomón",
+      "ca": "Cinema obert: quina còpia veus, el context del cineclub i Segundo de Chomón"
+    },
+    "changes": {
+      "es": [
+        "Cada película de Cine abierto dice cuánto dura la copia que vas a ver y con qué calidad de imagen, y avisa cuando es bastante más corta que la película: la de Caligari dura 51 minutos y el original unos 76.",
+        "Las diez películas del cineclub hasta Navidad tienen un texto de contexto: cómo se hicieron, qué pasó en su estreno y por qué importan.",
+        "Cuarenta y dos fichas de películas clásicas tienen ya sinopsis en gallego, en euskera y, donde faltaba, en catalán.",
+        "Llega Segundo de Chomón, el pionero de Teruel que hizo los trucos de Pathé: siete cortos suyos nuevos en Cine abierto (ya estaba «El hotel eléctrico»), de «El heredero de casa Pruna» (1904) a «Superstición andaluza» (1912), y un artículo que cuenta quién fue."
+      ],
+      "en": [
+        "Every Open Cinema film now says how long the copy you are about to watch runs and its picture quality, and warns when it is much shorter than the film: Caligari’s runs 51 minutes against about 76 for the original.",
+        "The ten film club titles up to Christmas have a context text: how they were made, what happened when they came out and why they matter.",
+        "Forty-two classic film pages now have synopses in Galician, Basque and, where it was missing, Catalan.",
+        "Segundo de Chomón arrives, the pioneer from Teruel who made Pathé’s tricks: seven new shorts of his in Open Cinema (“The Electric Hotel” was already there), from “The Gallants of the Park” (1904) to “Andalusian Superstition” (1912), and an article on who he was."
+      ],
+      "gl": [
+        "Cada película de Cine aberto di canto dura a copia que vas ver e con que calidade de imaxe, e avisa cando é bastante máis curta que a película: a de Caligari dura 51 minutos e o orixinal uns 76.",
+        "As dez películas do cineclube ata o Nadal teñen un texto de contexto: como se fixeron, que pasou na súa estrea e por que importan.",
+        "Corenta e dúas fichas de películas clásicas teñen xa sinopse en galego, en éuscaro e, onde faltaba, en catalán.",
+        "Chega Segundo de Chomón, o pioneiro de Teruel que fixo os trucos de Pathé: sete curtas súas novas en Cine aberto (xa estaba «O hotel eléctrico»), de «El heredero de casa Pruna» (1904) a «Superstición andaluza» (1912), e un artigo que conta quen foi."
+      ],
+      "eu": [
+        "Zinema irekiko film bakoitzak esaten du ikusiko duzun kopiak zenbat irauten duen eta zer irudi-kalitate duen, eta ohartarazten du filma baino askoz laburragoa denean: Caligarirenak 51 minutu irauten du, eta jatorrizkoak 76 inguru.",
+        "Zineklubeko hamar filmek, Gabonetara artekoek, testuinguru-testu bat dute: nola egin ziren, estreinatzean zer gertatu zen eta zergatik diren garrantzitsuak.",
+        "Film klasikoen berrogeita bi fitxak badute jada laburpena galegoz, euskaraz eta, falta zen tokian, katalanez.",
+        "Segundo de Chomón iritsi da, Pathéren trikimailuak egin zituen Teruelgo aitzindaria: haren zazpi film labur berri Zinema irekian («Hotel elektrikoa» bazegoen jada), «El heredero de casa Pruna»-tik (1904) «Andaluziako superstizioa»-raino (1912), eta nor izan zen kontatzen duen artikulu bat."
+      ],
+      "ca": [
+        "Cada pel·lícula de Cinema obert diu quant dura la còpia que veuràs i amb quina qualitat d’imatge, i avisa quan és força més curta que la pel·lícula: la de Caligari dura 51 minuts i l’original uns 76.",
+        "Les deu pel·lícules del cineclub fins a Nadal tenen un text de context: com es van fer, què va passar a l’estrena i per què importen.",
+        "Quaranta-dues fitxes de pel·lícules clàssiques ja tenen sinopsi en gallec, en basc i, on faltava, en català.",
+        "Arriba Segundo de Chomón, el pioner de Terol que va fer els trucs de Pathé: set curtmetratges seus nous a Cinema obert («L’hotel elèctric» ja hi era), d’«El heredero de casa Pruna» (1904) a «Superstició andalusa» (1912), i un article que explica qui va ser."
+      ]
+    }
+  },
+  {
     "version": "1.23",
     "date": "2026-11-17",
     "title": {

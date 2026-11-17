@@ -17,6 +17,7 @@ import { movieLd, breadcrumbLd } from '../../../lib/seo';
 import { pdFilmByTmdbId, pdThumbUrl } from '../../../lib/pdfilms';
 import { threadsCiting } from '../../../lib/forum';
 import ForumAbout from '../../../components/forum/ForumAbout.astro';
+import { conSinopsisPropia } from '../../../lib/sinopsis';
 import CriticaEpoca from '../../../components/CriticaEpoca.astro';
 import { criticasDeTmdb } from '../../../lib/critica';
 import { filmSlug, parseFilmId } from '../../../lib/slug';
@@ -68,7 +69,10 @@ try {
   Astro.locals.notFound = true;
   return Astro.rewrite('/404');
 }
-const { tmdb, omdb, omdbPending, providers, locations, locationsPending, titles } = film;
+const { tmdb: tmdbBase, omdb, omdbPending, providers, locations, locationsPending, titles } = film;
+// En gl/eu/ca, si TMDB no tiene sinopsis, la nuestra (src/data/sinopsis.json):
+// con ella la ficha deja de ser una copia de la castellana y se puede indexar.
+const tmdb = conSinopsisPropia(tmdbBase, lang);
 // Notas de OMDb nuevas, solo con sesión: la cuota (1.000 al día) se agotaba
 // con visitas sueltas. Sin sesión se ve lo ya guardado, aunque haya caducado.
 
