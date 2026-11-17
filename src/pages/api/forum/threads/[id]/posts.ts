@@ -6,9 +6,13 @@ import { escritor, json } from '../../_comun';
 
 export const prerender = false;
 
-const schema = z.object({ body: z.string().max(BODY_MAX + 200) });
+const schema = z.object({
+  body: z.string().max(BODY_MAX + 200),
+  /** La respuesta a la que se contesta; sin ella, al hilo. */
+  parentId: z.number().int().positive().nullable().optional(),
+});
 
-/** POST — responde a un hilo. Una respuesta cada diez segundos por persona. */
+/** POST — responde a un hilo o a una de sus respuestas. Una cada diez segundos por persona. */
 export const POST: APIRoute = async ({ locals, params, request }) => {
   const w = await escritor(locals);
   if (w instanceof Response) return w;
@@ -18,6 +22,8 @@ export const POST: APIRoute = async ({ locals, params, request }) => {
   if (!Number.isInteger(id) || id <= 0 || !parsed.success) return json(400, { error: 'invalid' });
   const body = cleanText(parsed.data.body);
   if (!body || body.length > BODY_MAX) return json(400, { error: 'body' });
-  const postId = await replyToThread(w.userId, id, body);
-  return postId ? json(200, { id: postId }) : json(404, { error: 'not_found' });
+  const r = await replyToThread(w.userId, id, body, parsed.data.parentId ?? null);
+  if (r === 'not_found') return json(404, { error: 'not_found' });
+  if (r === 'bad_parent') return json(400, { error: 'bad_parent' });
+  return json(200, { id: r });
 };

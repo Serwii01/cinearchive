@@ -12,6 +12,8 @@ import { providerLogoUrl } from '../../lib/tmdb';
 import { filmSlug } from '../../lib/slug';
 import { getMyProfile, getConnections, markNotificationsSeen } from '../../lib/social';
 import { likeNotifications } from '../../lib/filmsocial';
+import { forumReplyNotifications } from '../../lib/forum';
+import { threadPath } from '../../lib/forumpaths';
 
 export const prerender = false;
 
@@ -59,6 +61,7 @@ for (const a of alerts) {
 // «Me gusta» recibidos en reseñas y listas. Lo nuevo es lo posterior a la
 // última visita a esta página (se lee antes de marcarla).
 const likes = myProfile ? await likeNotifications(userId) : [];
+const respuestas = myProfile ? await forumReplyNotifications(userId).catch(() => []) : [];
 const vistoAntes = myProfile?.notificationsSeenAt ?? null;
 const likeBriefs = await getFilmsBrief([...new Set(likes.flatMap((l) => (l.tmdbId ? [l.tmdbId] : [])))], lang);
 
@@ -120,6 +123,37 @@ await markNotificationsSeen(userId);
       </p>
     ) : (
       <>
+        {/* Respuestas en el foro a tus hilos y a tus mensajes */}
+        <div class="mt-10" id="foro">
+          <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('forum.notifSection')} <span class="label">· {respuestas.length}</span></h2>
+          {respuestas.length === 0 ? (
+            <p class="mt-3 font-mono text-body-md text-muted">{t('forum.notifNone')}</p>
+          ) : (
+            <ul class="mt-4 grid ruled grid-cols-1 border border-ink">
+              {respuestas.map((r) => {
+                const texto = t(r.to === 'thread' ? 'forum.notifThread' : 'forum.notifPost').replace('{thread}', r.threadTitle);
+                const [antes, despues] = texto.split('{user}');
+                const nuevo = !vistoAntes || r.at > vistoAntes;
+                const extracto = r.excerpt.replace(/\[\[[a-z]+:[^\]]+\]\]/g, '…').replace(/^\s*>.*$/gm, '').replace(/\s+/g, ' ').trim();
+                return (
+                  <li class="bg-surface">
+                    <a href={`${localizePath(lang, threadPath(r.threadId, r.threadTitle))}#r${r.postId}`} class="flex items-center gap-3 p-3 no-underline hover:bg-film-white">
+                      <Avatar userId={r.userId} name={r.name} hasAvatar={r.hasAvatar} size={40} class="h-10 w-10" />
+                      <span class="min-w-0">
+                        <span class="block text-body-md text-charcoal">
+                          {antes}<strong class="font-medium text-ink">@{r.username}</strong>{despues}
+                        </span>
+                        {extracto && <span class="block truncate font-mono text-meta-data text-muted">«{extracto.slice(0, 140)}»</span>}
+                        <span class="label">{formatDate(r.at, lang)}{nuevo && <span class="ml-2 bg-ochre px-1 text-on-accent">{t('alerts.new')}</span>}</span>
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+
         {/* «Me gusta» en tus reseñas y listas */}
         <div class="mt-10" id="likes">
           <h2 class="border-b border-ink pb-2 text-headline-lg text-ink">{t('likes.section')} <span class="label">· {likes.length}</span></h2>

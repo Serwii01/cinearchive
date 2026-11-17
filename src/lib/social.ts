@@ -3,6 +3,7 @@ import { db } from '../db/client';
 import { profile, follows, user, userFilms, userViewings, streamAlerts } from '../db/schema';
 import { buildFeed, pageFeed, type FeedItem } from './feed';
 import { newLikeCount } from './filmsocial';
+import { newForumReplyCount } from './forum';
 import type { Profile } from '../db/schema';
 
 /* ------------------------------------------------------------------ *
@@ -251,8 +252,10 @@ export async function notificationCount(userId: string): Promise<number> {
 
   // Y los «me gusta» nuevos en sus reseñas y listas.
   const likes = await newLikeCount(userId, p.seen);
+  // Y las respuestas nuevas en el foro a sus hilos y mensajes.
+  const foro = await newForumReplyCount(userId, p.seen).catch(() => 0);
 
-  return Number(pend?.c ?? 0) + Number(nf?.c ?? 0) + alerts + likes;
+  return Number(pend?.c ?? 0) + Number(nf?.c ?? 0) + alerts + likes + foro;
 }
 
 /** Marca las notificaciones como vistas (limpia el "nuevo" de los seguidores). */

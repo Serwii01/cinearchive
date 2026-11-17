@@ -3,11 +3,12 @@
 > Lo mantiene Claude al terminar cada tarea, sin esperar a `/cerrar`. Es la memoria de trabajo: dónde se quedó y qué viene después.
 
 ## Estado actual
-En producción en cinearchive.es (main en 4229ba3, desplegar tras la CI): Foro con cineclub sincronizado y hilos, «¿Qué echaban el día que…?», juegos Reparto y ¿En qué año?, 20 colecciones, Cine abierto con 124 películas, diario con una sola regla (vista = visionado con fecha) y correos a usuarios desde /admin (boletín «2026-11-foro» escrito y SIN ENVIAR). Todo en la v1.20 del changelog. Astro 7, despliegue desde GHCR, films_cache con tope.
+En producción en cinearchive.es: Foro con cineclub sincronizado y, desde el 17 nov, respuestas en árbol (responder a un mensaje concreto), citas del archivo como tarjetas, votos y avisos de respuestas (v1.21 del changelog, migración 0030); «¿Qué echaban el día que…?», juegos Reparto y ¿En qué año?, 20 colecciones, Cine abierto con 124 películas, diario con una sola regla (vista = visionado con fecha) y correos a usuarios desde /admin (probados por Sergio el 17 nov). Astro 7, despliegue desde GHCR, films_cache con tope.
 
 ## Siguientes pasos
 - [ ] Search Console (alta y sitemap el 11 nov; verificada con public/googlea443dd55fa015b63.html, que no se debe borrar; Bing no). 16 nov: 1.842 bloqueadas por robots (las privadas y /login?next=…, a propósito), 1.723 con redirección (arreglado: ver sesión del 16), 179 noindex (gl/eu/ca sin traducir y privadas), 38.188 rastreadas sin indexar (decisión de Google: fichas parecidas a TMDB en 5 idiomas). Tras desplegar: pedir validación de «Página con redirección» y, a final de mes, ver qué búsquedas traen gente y escribir artículos para ellas.
-- [ ] Foro: pensar en avisos (respuestas a tus hilos en Notificaciones) y en moderación desde /admin si hay movimiento.
+- [ ] Tras desplegar lo del 17 nov (foro): abrir un hilo citando una película de TMDB (en local no había clave y solo se probaron las citas del archivo), responder a una respuesta, votar y ver el aviso en Notificaciones con otra cuenta.
+- [ ] Foro: moderación desde /admin si hay movimiento (hoy solo se oculta desde el propio hilo); valorar avisos por correo de respuestas.
 - [ ] Cine abierto subtitulado por la comunidad (idea 1) y visionado comentado (idea 2): aparcadas hasta que haya comunidad.
 - [ ] Difundir la web: lista de sitios en el vault (SEO y difusión).
 - [ ] (Aparcado) Más cine con permiso: la NFB de Canadá deja incrustar (nfb.ca/film/<slug>/embed/player/, oEmbed con datos). Probado el 8 nov desde España: 44 de 50 se ven (todas las clásicas de McLaren, Óscar…). Sus condiciones piden uso no comercial y enlace a la NFB; antes, pedirles permiso por escrito. El reproductor carga Google Tag Manager: cargarlo solo al pulsar, frame-src en la CSP y mención en privacidad.
@@ -26,12 +27,18 @@ En producción en cinearchive.es (main en 4229ba3, desplegar tras la CI): Foro c
 - [ ] Valorar un generador para las crónicas con fotos: de zip + nombres por foto a fotos en tres tamaños y galería escrita en articles.ts.
 - [ ] Comprobar en producción con sesión real que la cabecera no salta y que llegan las notas de OMDb (el 8 nov la cuota estaba agotada).
 - [ ] Probar el correo por seguidor nuevo en producción (casilla en Preferencias y que otra cuenta te siga): en local no hay Resend.
-- [ ] Tras desplegar 4229ba3: en /admin → Correos, ver la vista previa del boletín «2026-11-foro», mandarse la prueba y enviarlo a todos; escribir y borrar un borrador de prueba (la pantalla no se probó a clics).
-- [ ] Tras desplegar: comprobar en el diario que marcar «Vista» apunta el visionado y que las vistas antiguas aparecen; si molestan las de Letterboxd sin diario, se reconocen por user_viewings.source = 'auto'.
 - [ ] Primera sesión real del cineclub: viernes 20 nov 22:00 («El circo»); comprobar vídeo (media-src en Caddy), sincronía y chat con varias personas.
 - [ ] Crónicas con fotos del Festival de Sevilla si Ana Gómez Collado pasa más (campo photos, fotos a 3600/1800/900 px).
 
 ## Última sesión
+
+### 2026-11-17 (foro)
+- Sergio probó en producción los correos de /admin y el diario: bien.
+- Foro como foro: respuestas a un mensaje concreto (forum_posts.parent_id), votos a favor en hilos y respuestas (forum_votes + `score` guardado; no se vota lo propio; un clic pone y otro quita), orden de respuestas (votos/antiguas/recientes) y de hilos (actividad/nuevos/votados). Migración 0030.
+- Citas del archivo en los mensajes: `[[tipo:id]]` (film, cinema, periodical, book, article, dossier, collection) guardado como referencia; sola en su línea es tarjeta con portada, en una frase es enlace; título en el idioma de quien lee. Formato y escape en lib/forumbody.ts (puro), resolución y buscador en lib/forumcites.ts (archivo en memoria + TMDB; a igual relevancia, primero películas); `ref` y `score` añadidos a lib/sitesearch.ts. Botón «Citar del archivo», cita de otro mensaje con `>`, vista previa y Ctrl+Intro (components/forum/ForumComposer.astro). APIs /api/forum/vote, /cite, /preview.
+- Lectura: sin caja por mensaje, avatar con una línea que abarca la rama (pulsarla pliega), «↩ @x: comienzo» en cada respuesta anidada que lleva al original, hora relativa pequeña (`timeAgo` en lib/format.ts), icono de voto propio (VOTE_SVG). Árbol en lib/forumtree.ts (ocultas con respuestas quedan como hueco; desde el 6.º nivel no se sangra).
+- Avisos: respuestas a tus hilos y a tus mensajes en Notificaciones y en el contador (consulta sobre forum_posts, sin tabla nueva).
+- Probado en local con 4 cuentas y el navegador (escritorio y móvil). Para eso: Postgres 16 portátil (embedded-postgres, puerto 5433, base en UTC: con la hora de Madrid el orden «con movimiento» salía mal) y Node 22.23.5 portátil (npm node-win-x64), ambos fuera del repo. Tests 733.
 
 ### 2026-11-17
 - Diario con una sola regla: vista (marcar, puntuar, reseñar o favorita) = visionado con fecha → diario, «Últimos visionados» y reseñas. Nota al último visionado apuntado; «Quitar» borra también los visionados (doble clic).

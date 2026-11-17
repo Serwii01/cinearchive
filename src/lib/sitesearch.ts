@@ -29,6 +29,10 @@ export interface SiteHit {
   /** Una línea de contexto: revista y año, autor, definición… */
   meta: string;
   href: string;
+  /** Identificador dentro de su tipo (slug o id): lo usan las citas del foro. */
+  ref: string;
+  /** Puntuación de scoreEntry: más es más relevante. */
+  score: number;
 }
 
 interface Entry extends SiteHit {
@@ -52,28 +56,28 @@ const blurb = (o: { blurb_es: string; blurb_en: string }, lang: Lang) => (lang =
 
 function build(lang: Lang): Entry[] {
   const out: Entry[] = [];
-  const push = (kind: SiteKind, title: string, meta: string, href: string, extra = '') =>
-    out.push({ kind, title, meta, href, nt: norm(title), nx: norm(`${meta} ${extra}`) });
+  const push = (kind: SiteKind, title: string, meta: string, href: string, extra = '', ref = '') =>
+    out.push({ kind, title, meta, href, ref, score: 0, nt: norm(title), nx: norm(`${meta} ${extra}`) });
 
   for (const a of articles) {
     const c = articleCopy(a, lang);
-    push('article', c.title, c.kicker, localizePath(lang, `articles/${a.slug}`), `${c.lead} ${c.body.join(' ')}`);
+    push('article', c.title, c.kicker, localizePath(lang, `articles/${a.slug}`), `${c.lead} ${c.body.join(' ')}`, a.slug);
   }
   for (const d of dossiers) {
     const c = dossierCopy(d, lang);
-    push('dossier', c.title, c.kicker, localizePath(lang, `dossiers/${d.slug}`), `${c.blurb} ${c.lead}`);
+    push('dossier', c.title, c.kicker, localizePath(lang, `dossiers/${d.slug}`), `${c.blurb} ${c.lead}`, d.slug);
   }
   for (const c of collections) {
-    push('collection', collectionTitle(c, lang), collectionBlurb(c, lang), localizePath(lang, `collections/${c.slug}`));
+    push('collection', collectionTitle(c, lang), collectionBlurb(c, lang), localizePath(lang, `collections/${c.slug}`), '', c.slug);
   }
   for (const f of figures) {
-    push('figure', f.name, '', localizePath(lang, `person/${f.id}`));
+    push('figure', f.name, '', localizePath(lang, `person/${f.id}`), '', String(f.id));
   }
   for (const p of periodicals) {
-    push('periodical', `${p.title} · ${p.issue}`, `${p.year} · ${p.publisher}`, localizePath(lang, `archive/${p.id}`), `${p.country} ${blurb(p, lang)}`);
+    push('periodical', `${p.title} · ${p.issue}`, `${p.year} · ${p.publisher}`, localizePath(lang, `archive/${p.id}`), `${p.country} ${blurb(p, lang)}`, p.id);
   }
   for (const b of books) {
-    push('book', b.title, `${b.author} · ${b.year}`, localizePath(lang, `library/${b.id}`), blurb(b, lang));
+    push('book', b.title, `${b.author} · ${b.year}`, localizePath(lang, `library/${b.id}`), blurb(b, lang), b.id);
   }
   for (const f of pdFilms) {
     push(
@@ -83,6 +87,7 @@ function build(lang: Lang): Entry[] {
       localizePath(lang, `cinema/${f.id}`),
       // Todos los títulos: «Potemkin» o «acorazado» la encuentran en cualquier idioma.
       `${pdSearchText(f)} ${f.country} ${blurb(f, lang)}`,
+      f.id,
     );
   }
   for (const g of glossary) {
@@ -90,7 +95,7 @@ function build(lang: Lang): Entry[] {
     const letra = norm(term).charAt(0).toUpperCase();
     // Se busca también por el término en castellano e inglés: «plano» y «shot»
     // llevan a la misma definición en cualquier idioma.
-    push('glossary', term, glossaryDef(g, lang), `${localizePath(lang, 'glossary')}#l-${letra}`, `${g.term_es} ${g.term_en}`);
+    push('glossary', term, glossaryDef(g, lang), `${localizePath(lang, 'glossary')}#l-${letra}`, `${g.term_es} ${g.term_en}`, g.term_es);
   }
   return out;
 }
@@ -125,5 +130,5 @@ export function searchSite(q: string, lang: Lang, limit = 24): SiteHit[] {
     .filter((x) => x.s > 0)
     .sort((a, b) => b.s - a.s || a.e.title.localeCompare(b.e.title, lang))
     .slice(0, limit)
-    .map(({ e }) => ({ kind: e.kind, title: e.title, meta: e.meta, href: e.href }));
+    .map(({ e, s }) => ({ kind: e.kind, title: e.title, meta: e.meta, href: e.href, ref: e.ref, score: s }));
 }

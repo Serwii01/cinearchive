@@ -1,13 +1,24 @@
 ---
 /**
- * Un hilo del foro con sus respuestas. Se indexa (es conversación propia, lo
- * que Google no encuentra en otra parte); la URL lleva el título como las
- * fichas, y si llega con otro se redirige al bueno.
+ * Un hilo del foro con sus respuestas en árbol. Se indexa (es conversación
+ * propia, lo que Google no encuentra en otra parte); la URL lleva el título
+ * como las fichas, y si llega con otro se redirige al bueno.
+ *
+ * Cada respuesta se puede contestar por separado (se abre una caja debajo de
+ * ella), votar, citar y plegar con todo lo que cuelga. Los mensajes pueden
+ * citar cosas del archivo, que salen como tarjetas (lib/forumbody.ts).
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Avatar from '../../../components/Avatar.astro';
-import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../../i18n/ui';
-import { getThread, BODY_MAX } from '../../../lib/forum';
+import ForumComposer from '../../../components/forum/ForumComposer.astro';
+import ForumPost, { type ParentInfo } from '../../../components/forum/ForumPost.astro';
+import { normalizeLang, useTranslations, localizePath, formatDate, locales, type Lang } from '../../../i18n/ui';
+import { timeAgo } from '../../../lib/format';
+import { VOTE_SVG } from '../../../lib/ui/icons';
+import { getThread, myVotesIn, voteKey } from '../../../lib/forum';
+import { buildTree, countVisible, isPostSort, POST_SORTS, type PostSort } from '../../../lib/forumtree';
+import { extractCites, plainForumBody, renderForumBody } from '../../../lib/forumbody';
+import { resolveCites, citeLabelsFor } from '../../../lib/forumcites';
 import { threadPath, parseThreadId } from '../../../lib/forumpaths';
 import { getMyProfile } from '../../../lib/social';
 import { isAdmin } from '../../../lib/admin';
@@ -28,29 +39,66 @@ if (!hilo) {
 const canonica = threadPath(hilo.id, hilo.title);
 if (`foro/${Astro.params.hilo}` !== canonica) return Astro.redirect(localizePath(lang, canonica), 301);
 
+const ordenParam = Astro.url.searchParams.get('orden');
+const orden: PostSort = isPostSort(ordenParam) ? ordenParam : 'votes';
+
 const conPerfil = viewer ? !!(await getMyProfile(viewer.id)) : false;
 const admin = isAdmin(viewer);
-const puedeOcultar = (userId: string) => !!viewer && (viewer.id === userId || admin);
+const visibles = hilo.posts.filter((p) => !p.hidden);
+const votos = viewer ? await myVotesIn(viewer.id, hilo.id, visibles.map((p) => p.id)).catch(() => new Set<string>()) : new Set<string>();
+
+// Todas las citas de la página de una vez: una consulta para las películas.
+const cites = await resolveCites(extractCites([hilo.body, ...visibles.map((p) => p.body)].join('\n')), lang).catch(() => new Map());
+const etiquetas = citeLabelsFor(lang);
+const htmlHilo = renderForumBody(hilo.body, cites, etiquetas);
+const html = new Map(visibles.map((p) => [p.id, renderForumBody(p.body, cites, etiquetas)]));
+// Para el «↩ @marta: …» de cada respuesta anidada: quién y qué dijo, sin lo que
+// esa persona citaba de otros (si no, el comienzo sería la frase de un tercero).
+const info = new Map<number, ParentInfo>(
+  visibles.map((p) => {
+    const propio = p.body.split('\n').filter((l) => !/^\s*>/.test(l)).join('\n');
+    const texto = plainForumBody(propio, cites);
+    return [p.id, { username: p.author.username, excerpt: texto.length > 90 ? `${texto.slice(0, 90).trimEnd()}…` : texto }];
+  }),
+);
+const ahora = Date.now();
+const arbol = buildTree(hilo.posts, orden);
+const total = countVisible(arbol);
+
 const base = localizePath(lang, 'foro');
+const aqui = localizePath(lang, canonica);
+const loginHref = `${localizePath(lang, 'login')}?next=${encodeURIComponent(aqui)}`;
+const hrefOrden = (o: PostSort) => (o === 'votes' ? aqui : `${aqui}?orden=${o}`);
 const catLabel = t(`forum.cat.${hilo.category}` as never);
-const url = new URL(localizePath(lang, canonica), Astro.site).href;
-const descripcion = hilo.body.replace(/\s+/g, ' ').slice(0, 155);
+const url = new URL(aqui, Astro.site).href;
+const textoHilo = plainForumBody(hilo.body, cites);
+const descripcion = textoHilo.slice(0, 155);
+const suyo = viewer?.id === hilo.author.userId;
+const hiloVotado = votos.has(voteKey('thread', hilo.id));
+const porId = new Map(visibles.map((p) => [p.id, p]));
 // Datos estructurados de conversación (DiscussionForumPosting): Google los usa
-// para entender que es un foro y no contenido copiado.
+// para entender que es un foro y no contenido copiado. Cada respuesta dice a
+// cuál contesta (parentItem) para que se lea el árbol.
 const ld = {
   '@context': 'https://schema.org',
   '@type': 'DiscussionForumPosting',
   headline: hilo.title,
-  text: hilo.body,
+  text: textoHilo,
   url,
   datePublished: hilo.createdAt.toISOString(),
   author: { '@type': 'Person', name: hilo.author.name, url: new URL(localizePath(lang, `u/${hilo.author.username}`), Astro.site).href },
-  interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/CommentAction', userInteractionCount: hilo.replies },
-  comment: hilo.posts.slice(0, 50).map((p) => ({
+  interactionStatistic: [
+    { '@type': 'InteractionCounter', interactionType: 'https://schema.org/CommentAction', userInteractionCount: total },
+    { '@type': 'InteractionCounter', interactionType: 'https://schema.org/LikeAction', userInteractionCount: hilo.score },
+  ],
+  comment: visibles.slice(0, 50).map((p) => ({
     '@type': 'Comment',
-    text: p.body,
+    url: `${url}#r${p.id}`,
+    text: plainForumBody(p.body, cites),
     datePublished: p.createdAt.toISOString(),
     author: { '@type': 'Person', name: p.author.name },
+    interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/LikeAction', userInteractionCount: p.score },
+    ...(p.parentId && porId.has(p.parentId) ? { parentItem: { '@type': 'Comment', url: `${url}#r${p.parentId}` } } : {}),
   })),
 };
 ---
@@ -61,58 +109,72 @@ const ld = {
   ogType="article"
   jsonLd={[ld, breadcrumbLd([{ name: t('forum.title'), url: new URL(base, Astro.site).href }, { name: hilo.title, url }])]}
 >
-  <section class="frame py-12">
+  <section class="frame py-12" data-thread={hilo.id} data-login={loginHref} data-error={t('diary.error')} data-limit={t('forum.rateLimited')} data-need-profile={t('forum.needProfile')}>
     <a href={`${base}?cat=${hilo.category}`} class="label no-underline hover:text-ink">← {t('forum.title')} · {catLabel}</a>
 
-    <article class="mt-6 border border-ink bg-surface" data-item={`hilo:${hilo.id}`}>
-      <header class="border-b border-ink p-5">
-        <h1 class="text-headline-lg text-ink md:text-display-mobile">{hilo.title}</h1>
-        <div class="mt-3 flex flex-wrap items-center gap-2 font-mono text-meta-data text-muted">
-          <a href={localizePath(lang, `u/${hilo.author.username}`)} class="flex items-center gap-2 no-underline hover:text-ink">
-            <Avatar userId={hilo.author.userId} name={hilo.author.name} hasAvatar={hilo.author.hasAvatar} size={28} />@{hilo.author.username}
+    {/* El mensaje que abre el hilo, en su marco: es el tema; lo de debajo, la conversación. */}
+    <article class="mt-6 border border-ink bg-surface" id="hilo">
+      <header class="px-5 pt-5">
+        <span class="label">{catLabel}</span>
+        <h1 class="mt-2 text-headline-lg text-ink md:text-display-mobile">{hilo.title}</h1>
+        <div class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <a href={localizePath(lang, `u/${hilo.author.username}`)} class="flex items-center gap-2 no-underline">
+            <Avatar userId={hilo.author.userId} name={hilo.author.name} hasAvatar={hilo.author.hasAvatar} size={24} />
+            <span class="forum-author">@{hilo.author.username}</span>
           </a>
-          <span>· <time datetime={hilo.createdAt.toISOString()}>{formatDate(hilo.createdAt, lang)}</time></span>
-          {puedeOcultar(hilo.author.userId) && <button type="button" data-hide={`/api/forum/threads/${hilo.id}`} data-back={base} class="label ml-auto text-error hover:underline">{t('forum.hide')}</button>}
+          <span class="forum-time" title={formatDate(hilo.createdAt, lang)}><time datetime={hilo.createdAt.toISOString()}>{timeAgo(hilo.createdAt, locales[lang], ahora)}</time></span>
         </div>
       </header>
-      <p class="whitespace-pre-line p-5 text-body-lg text-charcoal">{hilo.body}</p>
+      <div class="forum-body px-5 pb-2 pt-4 text-body-lg" set:html={htmlHilo} />
+      <div class="forum-actions !m-0 border-t border-ink/20 px-3 py-1">
+        {!viewer ? (
+          <a href={loginHref} class="forum-vote" title={t('forum.voteLogin')}><Fragment set:html={VOTE_SVG} /><span>{hilo.score}</span></a>
+        ) : suyo || !conPerfil ? (
+          <span class="forum-vote" title={suyo ? t('forum.voteOwn') : t('forum.needProfile')}><Fragment set:html={VOTE_SVG} /><span>{hilo.score}</span></span>
+        ) : (
+          <button type="button" class="forum-vote" data-vote={`thread:${hilo.id}`} aria-pressed={hiloVotado ? 'true' : 'false'} aria-label={t('forum.vote')}><Fragment set:html={VOTE_SVG} /><span data-score>{hilo.score}</span></button>
+        )}
+        {conPerfil && <a href="#responder" class="forum-action no-underline">{t('forum.replyTo')}</a>}
+        <button type="button" class="forum-action" data-copy-link="hilo" data-done={t('forum.linkCopied')}>{t('forum.link')}</button>
+        {(suyo || admin) && <button type="button" data-hide={`/api/forum/threads/${hilo.id}`} data-back={base} class="forum-action forum-action-danger">{t('forum.hide')}</button>}
+      </div>
     </article>
 
-    <h2 class="mt-10 border-b border-ink pb-2 text-headline-md text-ink">{t('forum.replies')} <span class="label">· {hilo.posts.length}</span></h2>
-    {hilo.posts.length === 0 ? (
+    <div class="mt-10 flex flex-wrap items-center justify-between gap-3 border-b border-ink pb-2">
+      <h2 class="text-headline-md text-ink">{total} {t('forum.replies')}</h2>
+      {total > 1 && (
+        <nav class="flex flex-wrap items-center gap-1" aria-label={t('forum.sortBy')}>
+          {POST_SORTS.map((o) => (
+            <a href={hrefOrden(o)} aria-current={orden === o ? 'true' : undefined} class:list={['forum-action no-underline', orden === o && '!text-ink underline decoration-ochre decoration-2 underline-offset-4']}>{t(`forum.sort.${o}` as never)}</a>
+          ))}
+          <span class="mx-1 h-4 w-px bg-outline-variant" aria-hidden="true"></span>
+          <button type="button" data-collapse-all class="forum-action" data-label-on={t('forum.expandAll')} data-label-off={t('forum.collapseAll')}>{t('forum.collapseAll')}</button>
+        </nav>
+      )}
+    </div>
+
+    {arbol.length === 0 ? (
       <p class="mt-4 font-mono text-body-md text-muted">{t('forum.noReplies')}</p>
     ) : (
-      <ol class="mt-4 flex flex-col gap-3">
-        {hilo.posts.map((p) => (
-          <li id={`r${p.id}`} class="scroll-mt-24 border border-ink bg-surface">
-            <div class="flex flex-wrap items-center gap-2 border-b border-ink/40 px-4 py-2 font-mono text-meta-data text-muted">
-              <a href={localizePath(lang, `u/${p.author.username}`)} class="flex items-center gap-2 no-underline hover:text-ink">
-                <Avatar userId={p.author.userId} name={p.author.name} hasAvatar={p.author.hasAvatar} size={24} />@{p.author.username}
-              </a>
-              <span>· <a href={`#r${p.id}`} class="no-underline hover:text-ink"><time datetime={p.createdAt.toISOString()}>{formatDate(p.createdAt, lang)}</time></a></span>
-              {puedeOcultar(p.author.userId) && <button type="button" data-hide={`/api/forum/posts/${p.id}`} class="label ml-auto text-error hover:underline">{t('forum.hide')}</button>}
-            </div>
-            <p class="whitespace-pre-line px-4 py-3 text-body-md text-charcoal">{p.body}</p>
-          </li>
+      <ol class="forum-tree mt-6 flex flex-col gap-5" data-tree>
+        {arbol.map((n) => (
+          <ForumPost node={n} lang={lang} html={html} info={info} votes={votos} viewerId={viewer?.id ?? null} canWrite={conPerfil} admin={admin} threadAuthorId={hilo.author.userId} loginHref={loginHref} now={ahora} />
         ))}
       </ol>
     )}
 
-    <section class="mt-8 border border-ink bg-film-white p-5">
+    <section id="responder" class="mt-8 scroll-mt-24 border border-ink bg-film-white p-5">
       {!viewer ? (
         <p class="text-body-md text-charcoal">
-          {t('forum.loginToWrite')} <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(localizePath(lang, canonica))}`} class="text-ink">{t('forum.login')} →</a>
+          {t('forum.loginToWrite')} <a href={loginHref} class="text-ink">{t('forum.login')} →</a>
         </p>
       ) : !conPerfil ? (
         <p class="text-body-md text-charcoal">
           {t('forum.needProfile')} <a href={localizePath(lang, 'account')} class="text-ink">{t('forum.createProfile')} →</a>
         </p>
       ) : (
-        <form data-reply={hilo.id} class="flex flex-col gap-3" data-error={t('diary.error')} data-limit={t('forum.rateLimited')}>
-          <label class="flex flex-col gap-1">
-            <span class="label">{t('forum.reply')}</span>
-            <textarea name="body" required rows="4" maxlength={BODY_MAX} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md"></textarea>
-          </label>
+        <form data-reply-form class="flex flex-col gap-3">
+          <ForumComposer lang={lang} label={t('forum.replyThread')} />
           <p class="font-mono text-meta-data text-muted">{t('forum.publicNote')}</p>
           <div class="flex items-center gap-3">
             <button type="submit" class="btn btn-primary">{t('forum.publish')}</button>
@@ -121,50 +183,237 @@ const ld = {
         </form>
       )}
     </section>
+
+    {conPerfil && (
+      <template id="reply-template">
+        <form data-reply-form class="mt-2 flex flex-col gap-2 border border-ink bg-film-white p-3">
+          <ForumComposer lang={lang} label={t('forum.replyingTo')} rows={4} />
+          <div class="flex flex-wrap items-center gap-3">
+            <button type="submit" class="btn btn-primary">{t('forum.publish')}</button>
+            <button type="button" data-cancel class="forum-action">{t('forum.cancel')}</button>
+            <p data-msg role="status" class="font-mono text-meta-data text-error"></p>
+          </div>
+        </form>
+      </template>
+    )}
   </section>
 
   <script>
-    const form = document.querySelector<HTMLFormElement>('[data-reply]');
-    if (form) {
-      const msg = form.querySelector<HTMLElement>('[data-msg]')!;
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const boton = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
-        boton.disabled = true;
-        msg.textContent = '';
-        try {
-          const res = await fetch(`/api/forum/threads/${form.dataset.reply}/posts`, {
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ body: new FormData(form).get('body') }),
-          });
-          if (res.ok) {
-            const { id } = await res.json();
-            // Se recarga en la respuesta nueva: así sale con su fecha y su sitio.
-            window.location.hash = `r${id}`;
-            window.location.reload();
-            return;
-          }
-          msg.textContent = res.status === 429 ? form.dataset.limit! : form.dataset.error!;
-        } catch {
-          msg.textContent = form.dataset.error!;
-        }
-        boton.disabled = false;
-      });
+    import { quoteFor } from '../../../lib/forumbody';
+
+    const raiz = document.querySelector<HTMLElement>('[data-thread]')!;
+    const hiloId = raiz.dataset.thread!;
+
+    /** Abre (o reutiliza) la caja de respuesta debajo de un mensaje. */
+    function cajaBajo(postId: string): HTMLFormElement | null {
+      const post = document.getElementById(`r${postId}`);
+      const hueco = post?.querySelector<HTMLElement>(':scope > .forum-row > .forum-content > [data-reply-slot]');
+      const plantilla = document.querySelector<HTMLTemplateElement>('#reply-template');
+      if (!post || !hueco || !plantilla) return null;
+      let form = hueco.querySelector<HTMLFormElement>('form');
+      if (!form) {
+        hueco.append(plantilla.content.cloneNode(true));
+        form = hueco.querySelector<HTMLFormElement>('form')!;
+        form.dataset.parent = postId;
+        const etiqueta = form.querySelector<HTMLElement>('[data-composer] > .label');
+        if (etiqueta) etiqueta.textContent = `${etiqueta.textContent} @${post.dataset.user}`;
+      }
+      return form;
     }
-    // Ocultar (autor o administrador): sin confirm() del navegador, con un segundo clic.
-    for (const b of document.querySelectorAll<HTMLButtonElement>('[data-hide]')) {
-      b.addEventListener('click', async () => {
-        if (!b.dataset.armed) {
-          b.dataset.armed = '1';
-          b.textContent = `${b.textContent} ?`;
+
+    function enfocar(form: HTMLFormElement, texto = '') {
+      const area = form.querySelector<HTMLTextAreaElement>('textarea[name=body]')!;
+      if (texto) area.value = texto + area.value;
+      area.focus();
+      area.setSelectionRange(area.value.length, area.value.length);
+      form.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    /** Cita: lo seleccionado dentro del mensaje o, si no hay nada, el mensaje (recortado). */
+    function textoACitar(post: HTMLElement): string {
+      const sel = window.getSelection();
+      const elegido = sel && !sel.isCollapsed && post.contains(sel.anchorNode) ? sel.toString() : '';
+      const crudo = post.querySelector<HTMLTemplateElement>(':scope > .forum-row > .forum-content > template[data-raw]')?.content.textContent ?? '';
+      // Sin las citas de otros que ya llevaba: se cita lo que dijo esta persona.
+      const propio = crudo.split('\n').filter((l) => !/^\s*>/.test(l)).join('\n').trim();
+      return quoteFor(post.dataset.user ?? '', elegido || propio);
+    }
+
+    function plegar(post: HTMLElement, plegado: boolean) {
+      post.toggleAttribute('data-collapsed', plegado);
+      const fila = post.querySelector(':scope > .forum-row')!;
+      for (const b of fila.querySelectorAll<HTMLElement>(':scope > .forum-rail > [data-collapse], :scope > .forum-content > .forum-meta > [data-collapse]')) {
+        b.setAttribute('aria-expanded', String(!plegado));
+      }
+      const meta = fila.querySelector(':scope > .forum-content > .forum-meta');
+      meta?.querySelector<HTMLElement>('[data-fold-open]')?.toggleAttribute('hidden', plegado);
+      meta?.querySelector<HTMLElement>('[data-fold-closed]')?.toggleAttribute('hidden', !plegado);
+    }
+
+    /** Lleva a un mensaje (desplegando lo que lo tape) y lo marca un momento. */
+    function irA(id: string) {
+      const destino = document.getElementById(id);
+      if (!destino) return;
+      for (let p = destino.parentElement?.closest<HTMLElement>('.forum-post'); p; p = p.parentElement?.closest<HTMLElement>('.forum-post')) {
+        if (p.hasAttribute('data-collapsed')) plegar(p, false);
+      }
+      history.replaceState(null, '', `#${id}`);
+      destino.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      destino.setAttribute('data-flash', '');
+      setTimeout(() => destino.removeAttribute('data-flash'), 1600);
+    }
+
+    async function publicar(form: HTMLFormElement) {
+      const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+      const boton = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+      boton.disabled = true;
+      msg.textContent = '';
+      try {
+        const res = await fetch(`/api/forum/threads/${hiloId}/posts`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            body: new FormData(form).get('body'),
+            parentId: form.dataset.parent ? Number(form.dataset.parent) : null,
+          }),
+        });
+        if (res.ok) {
+          const { id } = await res.json();
+          // Se recarga en la respuesta nueva: así sale con su fecha, su sitio y sus citas.
+          const u = new URL(window.location.href);
+          u.hash = `r${id}`;
+          window.location.replace(u.href);
+          window.location.reload();
           return;
         }
-        const res = await fetch(b.dataset.hide!, { method: 'DELETE' });
-        if (!res.ok) return;
-        if (b.dataset.back) window.location.href = b.dataset.back;
-        else b.closest('li')?.remove();
-      });
+        msg.textContent = res.status === 429 ? raiz.dataset.limit! : raiz.dataset.error!;
+      } catch {
+        msg.textContent = raiz.dataset.error!;
+      }
+      boton.disabled = false;
     }
+
+    document.addEventListener('submit', (e) => {
+      const form = (e.target as Element).closest<HTMLFormElement>('[data-reply-form]');
+      if (!form) return;
+      e.preventDefault();
+      void publicar(form);
+    });
+
+    document.addEventListener('click', async (e) => {
+      const el = e.target as Element;
+
+      const responder = el.closest<HTMLElement>('[data-reply-to]');
+      if (responder) {
+        const form = cajaBajo(responder.dataset.replyTo!);
+        if (form) enfocar(form);
+        return;
+      }
+
+      const citar = el.closest<HTMLElement>('[data-quote]');
+      if (citar) {
+        const post = document.getElementById(`r${citar.dataset.quote}`)!;
+        const texto = textoACitar(post);
+        const form = cajaBajo(citar.dataset.quote!);
+        if (form) enfocar(form, texto);
+        return;
+      }
+
+      if (el.closest('[data-cancel]')) {
+        el.closest('[data-reply-slot]')?.replaceChildren();
+        return;
+      }
+
+      const plegador = el.closest<HTMLElement>('[data-collapse]');
+      if (plegador) {
+        const post = plegador.closest<HTMLElement>('.forum-post')!;
+        plegar(post, !post.hasAttribute('data-collapsed'));
+        return;
+      }
+
+      const ir = el.closest<HTMLAnchorElement>('[data-goto]');
+      if (ir) {
+        e.preventDefault();
+        irA(ir.dataset.goto!);
+        return;
+      }
+
+      const todo = el.closest<HTMLElement>('[data-collapse-all]');
+      if (todo) {
+        // Pliega las ramas de primer nivel que tienen respuestas: queda el índice de la conversación.
+        const plegar1 = todo.dataset.state !== 'on';
+        todo.dataset.state = plegar1 ? 'on' : '';
+        todo.textContent = plegar1 ? todo.dataset.labelOn! : todo.dataset.labelOff!;
+        for (const p of document.querySelectorAll<HTMLElement>('[data-tree] > .forum-post')) {
+          if (p.querySelector(':scope > .forum-row > .forum-content > .forum-children, :scope > .forum-children-flat')) plegar(p, plegar1);
+        }
+        return;
+      }
+
+      const voto = el.closest<HTMLButtonElement>('[data-vote]');
+      if (voto) {
+        const [kind, id] = voto.dataset.vote!.split(':');
+        const antes = voto.getAttribute('aria-pressed') === 'true';
+        const marcador = voto.querySelector<HTMLElement>('[data-score]')!;
+        // Se marca ya y se corrige con lo que diga el servidor: votar tiene que sentirse inmediato.
+        const todos = document.querySelectorAll<HTMLButtonElement>(`[data-vote="${voto.dataset.vote}"]`);
+        const pintar = (on: boolean, score: number) =>
+          todos.forEach((b) => {
+            b.setAttribute('aria-pressed', String(on));
+            b.querySelector('[data-score]')!.textContent = String(score);
+          });
+        const previo = Number(marcador.textContent);
+        pintar(!antes, previo + (antes ? -1 : 1));
+        voto.disabled = true;
+        try {
+          const res = await fetch('/api/forum/vote', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ kind, id: Number(id) }),
+          });
+          if (!res.ok) throw new Error(String(res.status));
+          const r = (await res.json()) as { voted: boolean; score: number };
+          pintar(r.voted, r.score);
+        } catch {
+          pintar(antes, previo);
+        }
+        voto.disabled = false;
+        return;
+      }
+
+      const enlace = el.closest<HTMLElement>('[data-copy-link]');
+      if (enlace) {
+        const u = new URL(window.location.href);
+        u.search = '';
+        u.hash = enlace.dataset.copyLink!;
+        try {
+          await navigator.clipboard.writeText(u.href);
+          const antes = enlace.textContent;
+          enlace.textContent = enlace.dataset.done!;
+          setTimeout(() => (enlace.textContent = antes), 1500);
+        } catch {
+          window.location.hash = enlace.dataset.copyLink!;
+        }
+        return;
+      }
+
+      // Ocultar (autor o administrador): sin confirm() del navegador, con un segundo clic.
+      const ocultar = el.closest<HTMLButtonElement>('[data-hide]');
+      if (ocultar) {
+        if (!ocultar.dataset.armed) {
+          ocultar.dataset.armed = '1';
+          ocultar.textContent = `${ocultar.textContent} ?`;
+          return;
+        }
+        const res = await fetch(ocultar.dataset.hide!, { method: 'DELETE' });
+        if (!res.ok) return;
+        if (ocultar.dataset.back) window.location.href = ocultar.dataset.back;
+        else window.location.reload();
+      }
+    });
+
+    // Al llegar por el enlace de una respuesta, centrada (la cabecera fija taparía el principio).
+    const destino = window.location.hash.startsWith('#r') ? document.getElementById(window.location.hash.slice(1)) : null;
+    destino?.scrollIntoView({ block: 'center' });
   </script>
 </BaseLayout>

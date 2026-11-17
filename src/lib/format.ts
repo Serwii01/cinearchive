@@ -105,3 +105,19 @@ export function formatPct(valor: number | null | undefined, decimales = 0): stri
   if (valor == null || !Number.isFinite(valor)) return SIN_DATO;
   return `${valor.toFixed(decimales).replace('.', ',')} %`;
 }
+
+/**
+ * «hace 5 min», «hace 3 h», «ayer»… en el idioma de la página; a partir de un
+ * mes, la fecha corta («12 nov 2026»). En una conversación importa más cuánto
+ * hace que el día exacto, que queda en el title. Pura (con `ahora` para los tests).
+ */
+export function timeAgo(fecha: Date, locale: string, ahora = Date.now()): string {
+  const seg = Math.round((fecha.getTime() - ahora) / 1000);
+  const abs = Math.abs(seg);
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'short' });
+  if (abs < 60) return rtf.format(0, 'second');
+  if (abs < 3600) return rtf.format(Math.round(seg / 60), 'minute');
+  if (abs < 86400) return rtf.format(Math.round(seg / 3600), 'hour');
+  if (abs < 30 * 86400) return rtf.format(Math.round(seg / 86400), 'day');
+  return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(fecha);
+}

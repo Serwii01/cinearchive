@@ -1,0 +1,258 @@
+---
+/**
+ * Caja para escribir en el foro: el texto, un buscador para citar lo del
+ * archivo (películas de TMDB y de Cine abierto, hemeroteca, biblioteca,
+ * artículos, dosieres y colecciones) y la vista previa con las tarjetas.
+ *
+ * Va dentro de un <form>: el campo se llama `body` y lo envía la página. Los
+ * botones funcionan por delegación en `document`, así que también sirven las
+ * copias que el hilo mete al pulsar «Responder» (salen de un <template>).
+ */
+import { useTranslations, type Lang } from '../../i18n/ui';
+import { BODY_MAX } from '../../lib/forum';
+
+interface Props {
+  lang: Lang;
+  rows?: number;
+  label: string;
+  placeholder?: string;
+}
+const { lang, rows = 5, label, placeholder } = Astro.props;
+const t = useTranslations(lang);
+const tipos = {
+  film: t('forum.kindFilm'),
+  cinema: t('search.kindCinema'),
+  periodical: t('search.kindPeriodical'),
+  book: t('search.kindBook'),
+  article: t('search.kindArticle'),
+  dossier: t('search.kindDossier'),
+  collection: t('search.kindCollection'),
+};
+---
+
+<div
+  data-composer
+  data-lang={lang}
+  data-kinds={JSON.stringify(tipos)}
+  data-loading={t('forum.citeLoading')}
+  data-none={t('forum.citeNone')}
+  data-error={t('diary.error')}
+  data-watch={t('forum.watchFull')}
+  class="flex flex-col"
+>
+  <span class="label mb-1">{label}</span>
+  <div class="flex flex-wrap items-center gap-1 border border-b-0 border-ink bg-surface px-1">
+    <button type="button" data-cite-open class="forum-action" aria-expanded="false">＋ {t('forum.cite')}</button>
+    <button type="button" data-preview-toggle class="forum-action" aria-pressed="false">{t('forum.preview')}</button>
+    <span class="ml-auto hidden px-2 font-mono text-meta-data text-muted sm:inline">{t('forum.formatHelp')}</span>
+  </div>
+  <textarea
+    name="body"
+    required
+    rows={rows}
+    maxlength={BODY_MAX}
+    placeholder={placeholder}
+    aria-label={label}
+    class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md"></textarea>
+
+  <div data-cite-panel hidden class="border border-t-0 border-ink bg-white p-3">
+    <div class="flex flex-wrap gap-2">
+      <input
+        type="search"
+        data-cite-q
+        autocomplete="off"
+        placeholder={t('forum.citePlaceholder')}
+        aria-label={t('forum.cite')}
+        class="min-w-0 flex-1 border border-ink bg-white px-3 py-2 font-body text-body-md"
+      />
+      <select data-cite-kind aria-label={t('forum.citeKind')} class="border border-ink bg-white px-2 py-2 font-mono text-meta-data">
+        <option value="">{t('forum.all')}</option>
+        {Object.entries(tipos).map(([k, v]) => <option value={k}>{v}</option>)}
+      </select>
+      <button type="button" data-cite-close class="forum-action" aria-label={t('forum.close')}>✕</button>
+    </div>
+    <p data-cite-status role="status" class="mt-2 font-mono text-meta-data text-muted">{t('forum.citeHint')}</p>
+    <ul data-cite-results class="mt-1 max-h-80 overflow-y-auto"></ul>
+  </div>
+
+  <div data-preview-box hidden class="border border-t-0 border-ink bg-film-white p-4">
+    <span class="label">{t('forum.preview')}</span>
+    <div data-preview class="forum-body mt-2"></div>
+  </div>
+</div>
+
+<script>
+  type Hit = { kind: string; title: string; meta: string; image: string | null; token: string; watchHref?: string };
+
+  const composerDe = (el: Element | null) => el?.closest<HTMLElement>('[data-composer]') ?? null;
+  const areaDe = (c: HTMLElement) => c.querySelector<HTMLTextAreaElement>('textarea[name=body]')!;
+  const tiempos = new WeakMap<HTMLElement, { busca?: number; vista?: number; peticion?: AbortController }>();
+  const reloj = (c: HTMLElement) => tiempos.get(c) ?? tiempos.set(c, {}).get(c)!;
+
+  /** Mete texto donde está el cursor; una cita, sola en su línea para que salga como tarjeta. */
+  function insertar(area: HTMLTextAreaElement, texto: string, sola: boolean) {
+    const ini = area.selectionStart ?? area.value.length;
+    const fin = area.selectionEnd ?? ini;
+    const antes = area.value.slice(0, ini);
+    const despues = area.value.slice(fin);
+    const pre = sola && antes && !antes.endsWith('\n') ? '\n' : '';
+    const post = sola && !despues.startsWith('\n') ? '\n' : '';
+    area.value = antes + pre + texto + post + despues;
+    const cursor = (antes + pre + texto + post).length;
+    area.focus();
+    area.setSelectionRange(cursor, cursor);
+    area.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  function pintarResultados(c: HTMLElement, hits: Hit[]) {
+    const ul = c.querySelector<HTMLUListElement>('[data-cite-results]')!;
+    const estado = c.querySelector<HTMLElement>('[data-cite-status]')!;
+    const tipos = JSON.parse(c.dataset.kinds ?? '{}') as Record<string, string>;
+    ul.replaceChildren();
+    estado.textContent = hits.length ? '' : c.dataset.none!;
+    for (const h of hits) {
+      const li = document.createElement('li');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.citeToken = h.token;
+      b.className = 'flex w-full items-center gap-3 border-b border-ink/20 px-1 py-2 text-left hover:bg-film-white focus:bg-film-white';
+      if (h.image) {
+        const img = document.createElement('img');
+        img.src = h.image;
+        img.alt = '';
+        img.loading = 'lazy';
+        img.className = 'h-14 w-10 flex-none border border-ink object-cover';
+        b.append(img);
+      } else {
+        const hueco = document.createElement('span');
+        hueco.className = 'forum-cite-noimg h-14 w-10 flex-none border border-ink';
+        b.append(hueco);
+      }
+      const txt = document.createElement('span');
+      txt.className = 'min-w-0 flex-1';
+      const tipo = document.createElement('span');
+      tipo.className = 'forum-cite-kind block';
+      tipo.textContent = tipos[h.kind] ?? h.kind;
+      const titulo = document.createElement('span');
+      titulo.className = 'line-clamp-2 font-display text-[1.125rem] leading-tight text-ink';
+      titulo.textContent = h.title;
+      const meta = document.createElement('span');
+      meta.className = 'block truncate font-mono text-meta-data text-muted';
+      meta.textContent = [h.meta, h.watchHref ? `▶ ${c.dataset.watch}` : ''].filter(Boolean).join(' · ');
+      txt.append(tipo, titulo, meta);
+      b.append(txt);
+      li.append(b);
+      ul.append(li);
+    }
+  }
+
+  async function buscar(c: HTMLElement) {
+    const q = c.querySelector<HTMLInputElement>('[data-cite-q]')!.value.trim();
+    const kind = c.querySelector<HTMLSelectElement>('[data-cite-kind]')!.value;
+    const estado = c.querySelector<HTMLElement>('[data-cite-status]')!;
+    const r = reloj(c);
+    r.peticion?.abort();
+    if (q.length < 2) {
+      c.querySelector('[data-cite-results]')!.replaceChildren();
+      return;
+    }
+    r.peticion = new AbortController();
+    estado.textContent = c.dataset.loading!;
+    try {
+      const qs = new URLSearchParams({ q, lang: c.dataset.lang ?? 'es', ...(kind ? { kind } : {}) });
+      const res = await fetch(`/api/forum/cite?${qs}`, { signal: r.peticion.signal });
+      if (!res.ok) throw new Error(String(res.status));
+      pintarResultados(c, (await res.json()).results as Hit[]);
+    } catch (e) {
+      if ((e as Error).name !== 'AbortError') estado.textContent = c.dataset.error!;
+    }
+  }
+
+  async function vistaPrevia(c: HTMLElement) {
+    const caja = c.querySelector<HTMLElement>('[data-preview]')!;
+    const body = areaDe(c).value;
+    if (!body.trim()) {
+      caja.replaceChildren();
+      return;
+    }
+    try {
+      const res = await fetch('/api/forum/preview', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ body, lang: c.dataset.lang }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      // El HTML lo genera el servidor con todo escapado (lib/forumbody.ts).
+      caja.innerHTML = (await res.json()).html;
+    } catch {
+      caja.textContent = c.dataset.error!;
+    }
+  }
+
+  function abrirCitas(c: HTMLElement, abrir: boolean) {
+    const panel = c.querySelector<HTMLElement>('[data-cite-panel]')!;
+    panel.hidden = !abrir;
+    c.querySelector('[data-cite-open]')!.setAttribute('aria-expanded', String(abrir));
+    if (abrir) c.querySelector<HTMLInputElement>('[data-cite-q]')!.focus();
+  }
+
+  document.addEventListener('click', (e) => {
+    const el = e.target as Element;
+    const c = composerDe(el);
+    if (!c) return;
+    if (el.closest('[data-cite-open]')) {
+      abrirCitas(c, c.querySelector<HTMLElement>('[data-cite-panel]')!.hidden);
+    } else if (el.closest('[data-cite-close]')) {
+      abrirCitas(c, false);
+      areaDe(c).focus();
+    } else if (el.closest('[data-cite-token]')) {
+      insertar(areaDe(c), el.closest<HTMLElement>('[data-cite-token]')!.dataset.citeToken!, true);
+      abrirCitas(c, false);
+    } else if (el.closest('[data-preview-toggle]')) {
+      const b = el.closest<HTMLElement>('[data-preview-toggle]')!;
+      const on = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', String(on));
+      b.classList.toggle('!text-ink', on);
+      c.querySelector<HTMLElement>('[data-preview-box]')!.hidden = !on;
+      if (on) void vistaPrevia(c);
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const el = e.target as Element;
+    const c = composerDe(el);
+    if (!c) return;
+    const r = reloj(c);
+    if (el.matches('[data-cite-q]')) {
+      clearTimeout(r.busca);
+      r.busca = window.setTimeout(() => void buscar(c), 250);
+    } else if (el.matches('textarea[name=body]') && !c.querySelector<HTMLElement>('[data-preview-box]')!.hidden) {
+      clearTimeout(r.vista);
+      r.vista = window.setTimeout(() => void vistaPrevia(c), 600);
+    }
+  });
+
+  document.addEventListener('change', (e) => {
+    const el = e.target as Element;
+    const c = composerDe(el);
+    if (c && el.matches('[data-cite-kind]')) void buscar(c);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const el = e.target as Element;
+    const c = composerDe(el);
+    if (!c) return;
+    // Intro en el buscador no envía el mensaje: elige el primer resultado.
+    if (el.matches('[data-cite-q]') && e.key === 'Enter') {
+      e.preventDefault();
+      c.querySelector<HTMLButtonElement>('[data-cite-token]')?.click();
+    } else if (el.matches('[data-cite-q]') && e.key === 'Escape') {
+      abrirCitas(c, false);
+      areaDe(c).focus();
+    } else if (el.matches('textarea[name=body]') && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      // Ctrl+Intro publica, como en casi todos los foros.
+      e.preventDefault();
+      el.closest('form')?.requestSubmit();
+    }
+  });
+</script>

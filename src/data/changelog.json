@@ -1,5 +1,53 @@
 [
   {
+    "version": "1.21",
+    "date": "2026-11-17",
+    "title": {
+      "es": "Un foro de verdad: respuestas a cada mensaje, citas del archivo y votos",
+      "en": "A proper forum: reply to any message, cite the archive and vote",
+      "gl": "Un foro de verdade: respostas a cada mensaxe, citas do arquivo e votos",
+      "eu": "Benetako foroa: mezu bakoitzari erantzunak, artxiboko aipuak eta botoak",
+      "ca": "Un fòrum de debò: respostes a cada missatge, cites de l’arxiu i vots"
+    },
+    "changes": {
+      "es": [
+        "En el foro ya puedes responder a un mensaje concreto, no solo al hilo: la respuesta queda debajo, cada una dice a quién contesta y las ramas se pliegan para no perderse.",
+        "Cita lo que hay en la web: con «Citar del archivo» buscas películas (también las de Cine abierto), revistas de la hemeroteca, libros, artículos, dosieres y colecciones, y salen en el mensaje como una tarjeta con su portada y su enlace. También puedes citar un trozo de otro mensaje y ver cómo quedará antes de publicar.",
+        "Vota los hilos y las respuestas que te gusten. Las respuestas se ordenan por votos, antiguas o recientes, y los hilos por actividad, nuevos o más votados.",
+        "Cuando alguien responde a tu hilo o a un mensaje tuyo, te avisa Notificaciones.",
+        "El foro se lee mejor: sin cajas, con una línea por conversación y la hora en pequeño («hace 20 min»)."
+      ],
+      "en": [
+        "In the forum you can now reply to a specific message, not just the thread: the reply sits underneath it, each one says who it answers, and branches fold away so you don’t get lost.",
+        "Cite what’s on the site: “Cite from the archive” searches films (including Open Cinema), magazines, books, articles, dossiers and collections, and shows them in your message as a card with cover and link. You can also quote part of another message and preview yours before posting.",
+        "Upvote the threads and replies you like. Replies can be sorted by votes, oldest or newest, and threads by activity, new or top.",
+        "When someone replies to your thread or to one of your messages, you’ll see it in Notifications.",
+        "The forum is easier to read: no boxes, one line per conversation and small times (“20 min ago”)."
+      ],
+      "gl": [
+        "No foro xa podes responder a unha mensaxe concreta, non só ao fío: a resposta queda debaixo, cada unha di a quen contesta e as pólas préganse para non perderse.",
+        "Cita o que hai na web: con «Citar do arquivo» buscas películas (tamén as de Cine aberto), revistas da hemeroteca, libros, artigos, dosieres e coleccións, e saen na mensaxe como unha tarxeta coa súa portada e a súa ligazón. Tamén podes citar un anaco doutra mensaxe e ver como quedará antes de publicar.",
+        "Vota os fíos e as respostas que che gusten. As respostas ordénanse por votos, antigas ou recentes, e os fíos por actividade, novos ou máis votados.",
+        "Cando alguén responde ao teu fío ou a unha mensaxe túa, avísate Notificacións.",
+        "O foro lese mellor: sen caixas, cunha liña por conversa e a hora en pequeno («hai 20 min»)."
+      ],
+      "eu": [
+        "Foroan mezu jakin bati erantzun diezaiokezu orain, ez hariari bakarrik: erantzuna haren azpian geratzen da, bakoitzak nori erantzuten dion esaten du, eta adarrak tolestu egiten dira ez galtzeko.",
+        "Aipatu webean dagoena: «Artxibotik aipatu» botoiarekin filmak (Zinema irekikoak ere), aldizkariak, liburuak, artikuluak, dosierrak eta bildumak bilatzen dituzu, eta mezuan txartel gisa agertzen dira, azala eta estekarekin. Beste mezu baten zati bat ere aipa dezakezu, eta argitaratu aurretik nola geratuko den ikusi.",
+        "Bozkatu gustuko dituzun hariak eta erantzunak. Erantzunak botoen, zaharrenen edo berrienen arabera ordenatzen dira, eta hariak jardueraren, berrien edo bozkatuenen arabera.",
+        "Norbaitek zure hariari edo zure mezu bati erantzuten dionean, Jakinarazpenetan ikusiko duzu.",
+        "Foroa hobeto irakurtzen da: kutxarik gabe, elkarrizketa bakoitzeko lerro batekin eta ordua txiki («duela 20 min»)."
+      ],
+      "ca": [
+        "Al fòrum ja pots respondre a un missatge concret, no només al fil: la resposta queda a sota, cadascuna diu a qui contesta i les branques es pleguen per no perdre’s.",
+        "Cita el que hi ha al web: amb «Citar de l’arxiu» cerques pel·lícules (també les de Cinema obert), revistes de l’hemeroteca, llibres, articles, dossiers i col·leccions, i surten al missatge com una targeta amb la portada i l’enllaç. També pots citar un tros d’un altre missatge i veure com quedarà abans de publicar.",
+        "Vota els fils i les respostes que t’agradin. Les respostes s’ordenen per vots, antigues o recents, i els fils per activitat, nous o més votats.",
+        "Quan algú respon al teu fil o a un missatge teu, t’avisa Notificacions.",
+        "El fòrum es llegeix millor: sense caixes, amb una línia per conversa i l’hora en petit («fa 20 min»)."
+      ]
+    }
+  },
+  {
     "version": "1.20",
     "date": "2026-11-07",
     "title": {

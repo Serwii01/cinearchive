@@ -6,8 +6,11 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Avatar from '../../../components/Avatar.astro';
 import CineclubSessions from '../../../components/forum/CineclubSessions.astro';
-import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../../i18n/ui';
-import { listThreads, isForumCategory, FORUM_CATEGORIES, THREADS_PAGE, TITLE_MAX, BODY_MAX, type ForumCategory } from '../../../lib/forum';
+import { normalizeLang, useTranslations, localizePath, locales, type Lang } from '../../../i18n/ui';
+import { timeAgo } from '../../../lib/format';
+import ForumComposer from '../../../components/forum/ForumComposer.astro';
+import { VOTE_SVG } from '../../../lib/ui/icons';
+import { listThreads, isForumCategory, isThreadSort, FORUM_CATEGORIES, THREAD_SORTS, THREADS_PAGE, TITLE_MAX, type ForumCategory, type ThreadSort } from '../../../lib/forum';
 import { upcomingSessions } from '../../../lib/cineclub';
 import { getMyProfile } from '../../../lib/social';
 import { threadPath } from '../../../lib/forumpaths';
@@ -22,22 +25,34 @@ const viewer = Astro.locals.user;
 const catParam = Astro.url.searchParams.get('cat');
 const cat: ForumCategory | undefined = isForumCategory(catParam) ? catParam : undefined;
 const page = Math.max(1, Math.min(200, Number(Astro.url.searchParams.get('p')) || 1));
+const ordenParam = Astro.url.searchParams.get('orden');
+const orden: ThreadSort = isThreadSort(ordenParam) ? ordenParam : 'active';
 
 const now = Date.now();
 const sesiones = upcomingSessions(now, 4);
 let hilos: Awaited<ReturnType<typeof listThreads>> = [];
 try {
-  hilos = await listThreads({ category: cat, page });
+  hilos = await listThreads({ category: cat, page, sort: orden });
 } catch {
   hilos = [];
 }
 const conPerfil = viewer ? !!(await getMyProfile(viewer.id)) : false;
 
 const base = localizePath(lang, 'foro');
-const hrefCat = (c?: ForumCategory) => (c ? `${base}?cat=${c}` : base);
-const hrefPag = (p: number) => `${base}?${new URLSearchParams({ ...(cat ? { cat } : {}), ...(p > 1 ? { p: String(p) } : {}) })}`;
+/** Enlace de la lista con la categoría, el orden y la página (lo que no cambia, se conserva). */
+const hrefLista = (o: { cat?: ForumCategory; orden?: ThreadSort; p?: number }) => {
+  const q = new URLSearchParams({
+    ...(o.cat ? { cat: o.cat } : {}),
+    ...(o.orden && o.orden !== 'active' ? { orden: o.orden } : {}),
+    ...(o.p && o.p > 1 ? { p: String(o.p) } : {}),
+  }).toString();
+  return q ? `${base}?${q}` : base;
+};
+const hrefCat = (c?: ForumCategory) => hrefLista({ cat: c, orden });
+const hrefPag = (p: number) => hrefLista({ cat, orden, p });
 const catLabel = (c: string) => t(`forum.cat.${c}` as never);
-const hace = (d: Date) => formatDate(d, lang);
+const ahora = Date.now();
+const hace = (d: Date) => timeAgo(d, locales[lang], ahora);
 ---
 
 <BaseLayout
@@ -73,6 +88,12 @@ const hace = (d: Date) => formatDate(d, lang);
           <a href={hrefCat(c)} aria-current={cat === c ? 'page' : undefined} class:list={['label border border-ink px-3 py-1 no-underline', cat === c ? 'bg-ink text-white' : 'hover:bg-ink hover:text-white']}>{catLabel(c)}</a>
         ))}
       </nav>
+      <nav class="mt-3 flex flex-wrap items-center gap-1" aria-label={t('forum.sortBy')}>
+        <span class="label pr-1">{t('forum.sortBy')}</span>
+        {THREAD_SORTS.map((o) => (
+          <a href={hrefLista({ cat, orden: o })} aria-current={orden === o ? 'true' : undefined} class:list={['label border border-ink px-2 py-1 no-underline', orden === o ? 'bg-ink text-white' : 'hover:bg-ink hover:text-white']}>{t(`forum.tsort.${o}` as never)}</a>
+        ))}
+      </nav>
 
       {hilos.length === 0 ? (
         <p class="mt-6 font-mono text-body-md text-muted">{t('forum.empty')}</p>
@@ -80,12 +101,17 @@ const hace = (d: Date) => formatDate(d, lang);
         <ul class="mt-4 border border-ink">
           {hilos.map((h, i) => (
             <li class:list={['bg-surface', i > 0 && 'border-t border-ink/40']}>
-              <a href={localizePath(lang, threadPath(h.id, h.title))} class="flex items-center gap-3 p-4 no-underline hover:bg-film-white">
-                <Avatar userId={h.author.userId} name={h.author.name} hasAvatar={h.author.hasAvatar} size={32} />
+              <a href={localizePath(lang, threadPath(h.id, h.title))} class="flex items-center gap-3 p-3 no-underline hover:bg-film-white sm:p-4">
+                {/* Votos: la columna que se lee primero en un foro. */}
+                <span class="flex w-9 shrink-0 flex-col items-center gap-0.5 text-muted" title={t('forum.votes')}>
+                  <Fragment set:html={VOTE_SVG} />
+                  <span class="font-display text-headline-md leading-none text-ink">{h.score}</span>
+                </span>
+                <span class="hidden sm:block"><Avatar userId={h.author.userId} name={h.author.name} hasAvatar={h.author.hasAvatar} size={32} /></span>
                 <div class="min-w-0 flex-1">
                   <p class="font-display text-headline-md leading-tight text-ink">{h.title}</p>
                   <p class="mt-1 font-mono text-meta-data text-muted">
-                    {catLabel(h.category)} · @{h.author.username} · {hace(h.lastPostAt)}
+                    {catLabel(h.category)} · @{h.author.username} · {hace(orden === 'new' ? h.createdAt : h.lastPostAt)}
                   </p>
                 </div>
                 <span class="shrink-0 text-right font-mono text-meta-data text-muted">
@@ -127,10 +153,7 @@ const hace = (d: Date) => formatDate(d, lang);
             <span class="label">{t('forum.threadTitle')}</span>
             <input name="title" required minlength="4" maxlength={TITLE_MAX} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md" />
           </label>
-          <label class="flex flex-col gap-1">
-            <span class="label">{t('forum.message')}</span>
-            <textarea name="body" required rows="6" maxlength={BODY_MAX} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md"></textarea>
-          </label>
+          <ForumComposer lang={lang} label={t('forum.message')} rows={6} />
           <p class="font-mono text-meta-data text-muted">{t('forum.publicNote')}</p>
           <div class="flex items-center gap-3">
             <button type="submit" class="btn btn-primary">{t('forum.publish')}</button>

@@ -1,0 +1,122 @@
+---
+/**
+ * Una respuesta del foro y, debajo, las que cuelgan de ella (se llama a sí
+ * mismo).
+ *
+ * Para que se lea como una conversación y no como un montón de cajas: sin
+ * borde por mensaje, avatar a la izquierda y, bajo él, una línea que abarca
+ * todas sus respuestas (pulsarla pliega la rama). Cada respuesta anidada dice
+ * arriba a quién contesta y con qué frase, enlazando al original. A partir de
+ * MAX_DEPTH no se sangra más: en el móvil no quedaría sitio para el texto.
+ *
+ * Los botones (votar, responder, citar, plegar) los maneja el script de la
+ * página del hilo por delegación.
+ */
+import Avatar from '../Avatar.astro';
+import { useTranslations, localizePath, formatDate, locales, type Lang } from '../../i18n/ui';
+import { MAX_DEPTH, type PostNode } from '../../lib/forumtree';
+import { voteKey, type ForumPost as Post } from '../../lib/forum';
+import { timeAgo } from '../../lib/format';
+import { VOTE_SVG } from '../../lib/ui/icons';
+
+export interface ParentInfo {
+  username: string;
+  excerpt: string;
+}
+
+interface Props {
+  node: PostNode<Post>;
+  lang: Lang;
+  /** HTML ya formateado de cada respuesta (lib/forumbody.ts). */
+  html: Map<number, string>;
+  /** Autor y comienzo de cada respuesta, para el «↩ a @x: …» de las que le contestan. */
+  info: Map<number, ParentInfo>;
+  votes: Set<string>;
+  viewerId: string | null;
+  canWrite: boolean;
+  admin: boolean;
+  threadAuthorId: string;
+  loginHref: string;
+  now: number;
+}
+const { node, lang, html, info, votes, viewerId, canWrite, admin, threadAuthorId, loginHref, now } = Astro.props;
+const t = useTranslations(lang);
+const p = node.post;
+const suya = !!viewerId && viewerId === p.author.userId;
+const votada = votes.has(voteKey('post', p.id));
+// Las respuestas de esta ya no se sangran: van debajo, a su misma altura.
+const plano = node.depth >= MAX_DEPTH - 1;
+const padre = p.parentId != null ? info.get(p.parentId) : undefined;
+// Si ya empieza citando a quien responde, el comienzo de su mensaje sobra: se vería dos veces.
+const yaLoCita = !!padre && p.body.trimStart().startsWith(`> @${padre.username}:`);
+const plegadas = node.descendants === 1 ? t('forum.collapsedOne') : t('forum.collapsedN').replace('{n}', String(node.descendants));
+const hijos = node.children.map((c) => ({ c }));
+const props = { lang, html, info, votes, viewerId, canWrite, admin, threadAuthorId, loginHref, now };
+---
+
+<li id={`r${p.id}`} class="forum-post scroll-mt-24" data-post={p.id} data-user={p.author.username} data-depth={node.depth}>
+  <div class="forum-row">
+    <div class="forum-rail">
+      {p.hidden ? <span class="forum-avatar-empty" aria-hidden="true"></span> : <Avatar userId={p.author.userId} name={p.author.name} hasAvatar={p.author.hasAvatar} size={28} />}
+      {hijos.length > 0 && !plano && <button type="button" class="forum-line" data-collapse aria-expanded="true" aria-label={t('forum.collapse')} title={t('forum.collapse')}></button>}
+    </div>
+
+    <div class="forum-content">
+      <div class="forum-meta">
+        {p.hidden ? (
+          <span class="italic">{t('forum.removed')}</span>
+        ) : (
+          <>
+            <a href={localizePath(lang, `u/${p.author.username}`)} class="forum-author">@{p.author.username}</a>
+            {p.author.userId === threadAuthorId && <span class="forum-op" title={t('forum.opTitle')}>{t('forum.op')}</span>}
+            <a href={`#r${p.id}`} class="forum-time" title={formatDate(p.createdAt, lang)}><time datetime={p.createdAt.toISOString()}>{timeAgo(p.createdAt, locales[lang], now)}</time></a>
+          </>
+        )}
+        {hijos.length > 0 && (
+          <button type="button" class="forum-fold" data-collapse aria-expanded="true" aria-label={t('forum.collapse')}>
+            <span data-fold-open>−</span><span data-fold-closed hidden>+ {plegadas}</span>
+          </button>
+        )}
+      </div>
+
+      {padre && node.depth > 0 && (
+        <a href={`#r${p.parentId}`} class="forum-replyto" data-goto={`r${p.parentId}`}>
+          <span aria-hidden="true">↩</span> <span class="sr-only">{t('forum.inReplyTo')}</span>@{padre.username}{padre.excerpt && !yaLoCita && <span class="forum-replyto-text">: {padre.excerpt}</span>}
+        </a>
+      )}
+
+      {!p.hidden && (
+        <>
+          <div class="forum-body" set:html={html.get(p.id) ?? ''} />
+          <div class="forum-actions">
+            {!viewerId ? (
+              <a href={loginHref} class="forum-vote" title={t('forum.voteLogin')}><Fragment set:html={VOTE_SVG} /><span>{p.score}</span></a>
+            ) : suya || !canWrite ? (
+              <span class="forum-vote" title={suya ? t('forum.voteOwn') : t('forum.needProfile')}><Fragment set:html={VOTE_SVG} /><span>{p.score}</span></span>
+            ) : (
+              <button type="button" class="forum-vote" data-vote={`post:${p.id}`} aria-pressed={votada ? 'true' : 'false'} aria-label={t('forum.vote')}><Fragment set:html={VOTE_SVG} /><span data-score>{p.score}</span></button>
+            )}
+            {canWrite && <button type="button" class="forum-action" data-reply-to={p.id}>{t('forum.replyTo')}</button>}
+            {canWrite && <button type="button" class="forum-action" data-quote={p.id}>{t('forum.quote')}</button>}
+            <button type="button" class="forum-action" data-copy-link={`r${p.id}`} data-done={t('forum.linkCopied')}>{t('forum.link')}</button>
+            {(suya || admin) && <button type="button" class="forum-action forum-action-danger" data-hide={`/api/forum/posts/${p.id}`}>{t('forum.hide')}</button>}
+          </div>
+          {canWrite && <template data-raw>{p.body}</template>}
+        </>
+      )}
+      <div data-reply-slot></div>
+
+      {hijos.length > 0 && !plano && (
+        <ol class="forum-children">
+          {hijos.map(({ c }) => <Astro.self node={c} {...props} />)}
+        </ol>
+      )}
+    </div>
+  </div>
+
+  {hijos.length > 0 && plano && (
+    <ol class="forum-children-flat">
+      {hijos.map(({ c }) => <Astro.self node={c} {...props} />)}
+    </ol>
+  )}
+</li>

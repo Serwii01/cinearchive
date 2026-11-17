@@ -10,3 +10,10 @@ export const LOCK_SVG =
 /** Corazón de «me gusta»: relleno cuando ya te gusta. */
 export const heartSvg = (lleno: boolean) =>
   `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="${lleno ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.5-9.3C1.2 8.6 3.2 5 6.6 5c2.1 0 3.6 1.2 5.4 3.2C13.8 6.2 15.3 5 17.4 5c3.4 0 5.4 3.6 4.1 6.7C19.5 16.4 12 21 12 21z"></path></svg>`;
+
+/**
+ * Voto a favor del foro: flecha de trazo recto. El relleno lo pone el CSS
+ * (.forum-vote[aria-pressed=true]), así votar no tiene que cambiar el SVG.
+ */
+export const VOTE_SVG =
+  '<svg aria-hidden="true" class="forum-vote-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"><path d="M12 3.5 4 12.5h4.75V20.5h6.5V12.5H20z"></path></svg>';

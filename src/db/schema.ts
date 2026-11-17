@@ -13,6 +13,7 @@ import {
   customType,
   index,
   uniqueIndex,
+  type AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 
 /** Tipo `bytea` de Postgres (Drizzle no lo trae de serie). Guarda/lee Buffer. */
@@ -531,6 +532,8 @@ export const forumThreads = pgTable(
     /** Película de la que se habla (opcional): enlaza el hilo con su ficha. */
     tmdbId: integer('tmdb_id'),
     replies: integer('replies').notNull().default(0),
+    /** Votos a favor (forum_votes), guardados aquí para ordenar sin contar. */
+    score: integer('score').notNull().default(0),
     hidden: boolean('hidden').notNull().default(false),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     lastPostAt: timestamp('last_post_at').notNull().defaultNow(),
@@ -542,7 +545,11 @@ export const forumThreads = pgTable(
   }),
 );
 
-/** Respuestas de un hilo, en orden. */
+/**
+ * Respuestas de un hilo. `parentId` es la respuesta a la que contesta (null:
+ * al hilo); así la conversación se ramifica como en un foro y no se pierde a
+ * quién se responde. Siempre del mismo hilo (lo comprueba lib/forum.ts).
+ */
 export const forumPosts = pgTable(
   'forum_posts',
   {
@@ -550,15 +557,41 @@ export const forumPosts = pgTable(
     threadId: integer('thread_id')
       .notNull()
       .references(() => forumThreads.id, { onDelete: 'cascade' }),
+    parentId: integer('parent_id').references((): AnyPgColumn => forumPosts.id, { onDelete: 'cascade' }),
     userId: text('user_id')
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     body: text('body').notNull(),
+    /** Votos a favor (forum_votes), guardados aquí para ordenar sin contar. */
+    score: integer('score').notNull().default(0),
     hidden: boolean('hidden').notNull().default(false),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (t) => ({
     threadIdx: index('forum_posts_thread_idx').on(t.threadId, t.id),
+    // Avisos: «quién ha respondido a mis mensajes».
+    parentIdx: index('forum_posts_parent_idx').on(t.parentId),
+  }),
+);
+
+/**
+ * Votos a favor en el foro: uno por persona y mensaje. `kind` dice si
+ * `targetId` es un hilo ('thread') o una respuesta ('post'). No lleva clave
+ * ajena porque apunta a dos tablas; ocultar un mensaje no borra sus votos.
+ */
+export const forumVotes = pgTable(
+  'forum_votes',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    kind: text('kind').notNull(),
+    targetId: integer('target_id').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.kind, t.targetId] }),
+    targetIdx: index('forum_votes_target_idx').on(t.kind, t.targetId),
   }),
 );
 
