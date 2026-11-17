@@ -3,6 +3,8 @@ export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CinemaCard from '../../../components/CinemaCard.astro';
 import ForumAbout from '../../../components/forum/ForumAbout.astro';
+import CriticaEpoca from '../../../components/CriticaEpoca.astro';
+import { criticasDe } from '../../../lib/critica';
 import {
   pdFilms,
   pdEmbedUrl,
@@ -133,6 +135,8 @@ const jsonLd = [
     </div>
 
     <p class="mt-6 font-mono text-meta-data text-muted">{t('cinema.viewerNote')}</p>
+
+    <CriticaEpoca lang={lang} items={criticasDe(item.id)} />
 
     {/* El foro, pedido desde el navegador: esta página se genera en el build. */}
     <ForumAbout lang={lang} cite={`cinema:${item.id}`} refs={[`cinema:${item.id}`, ...(item.tmdbId ? [`film:${item.tmdbId}`] : [])].join(',')} />

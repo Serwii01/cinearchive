@@ -17,3 +17,6 @@ pnpm-debug.log*
 
 # Copias de seguridad de Postgres en el VPS (scripts/vps/backup.sh)
 backups/
+
+# Candidatos y caché de scripts/fetch-critica.mjs (se revisan a mano)
+scripts/.critica/

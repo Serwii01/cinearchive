@@ -3,6 +3,8 @@ export const prerender = true;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { periodicals, embedUrl, iaUrl, coverUrl, type Periodical } from '../../../lib/periodicals';
 import { publicationIssueLd, breadcrumbLd } from '../../../lib/seo';
+import { criticasEnNumero, paginaUrl } from '../../../lib/critica';
+import { pdFilms, pdTitle } from '../../../lib/pdfilms';
 import { localizedField, useTranslations, localizePath, langStaticPaths, normalizeLang, type Lang } from '../../../i18n/ui';
 
 export function getStaticPaths() {
@@ -21,6 +23,13 @@ const { item } = Astro.props as { item: Periodical };
 
 const blurb = localizedField(item, 'blurb', lang);
 const typeLabel = t(item.type === 'magazine' ? 'archive.type.magazine' : 'archive.type.newspaper');
+
+// Las películas de Cine abierto que este número reseña: del archivo de prensa a
+// la película, que se puede ver entera, y a su página escaneada.
+const reseñadas = criticasEnNumero(item.id).flatMap((c) => {
+  const f = pdFilms.find((p) => p.id === c.film);
+  return f ? [{ c, f }] : [];
+});
 
 // SEO: el número (PublicationIssue) dentro de su cabecera, con portada y migas.
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
@@ -74,6 +83,24 @@ const jsonLd = [
         style="border:0"
       ></iframe>
     </div>
+
+    {reseñadas.length > 0 && (
+      <section class="mt-10" aria-labelledby="numero-resenas">
+        <h2 id="numero-resenas" class="border-b border-ink pb-3 text-headline-lg text-ink">{t('critica.inIssue')}</h2>
+        <ul class="mt-4 border border-ink">
+          {reseñadas.map(({ c, f }, i) => (
+            <li class:list={['flex flex-wrap items-baseline justify-between gap-3 bg-surface px-4 py-3', i > 0 && 'border-t border-ink/40']}>
+              <a href={localizePath(lang, `cinema/${f.id}`)} class="font-display text-headline-md leading-tight text-ink no-underline hover:text-muted">
+                {pdTitle(f, lang)} <span class="font-mono text-meta-data text-muted">({f.year})</span>
+              </a>
+              <a href={paginaUrl(c)} target="_blank" rel="noopener noreferrer" class="font-mono text-meta-data">
+                {c.impresa ? `${t('critica.p')} ${c.impresa}` : t('critica.page')} ↗︎
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
 
     {/* El crédito genérico dice «dominio público»; un número con licencia
         Creative Commons no lo es, y el pie tiene que decir la verdad. */}

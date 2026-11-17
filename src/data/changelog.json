@@ -1,5 +1,43 @@
 [
   {
+    "version": "1.22",
+    "date": "2026-11-17",
+    "title": {
+      "es": "La crítica de su época: lo que dijo la prensa cuando se estrenaron",
+      "en": "What the critics said at the time: the press on release day",
+      "gl": "A crítica da súa época: o que dixo a prensa cando se estrearon",
+      "eu": "Bere garaiko kritika: prentsak estreinatu zirenean esan zuena",
+      "ca": "La crítica de la seva època: el que va dir la premsa quan es van estrenar"
+    },
+    "changes": {
+      "es": [
+        "Treinta películas de Cine abierto, de Jekyll y Caligari a Metrópolis y Juana de Arco, enseñan lo que escribió de ellas la prensa de cine de su estreno: el fragmento original de Photoplay, Film Daily, Motion Picture News o el National Board of Review, con una nota en tu idioma y el enlace a la página escaneada.",
+        "Se ve en la ficha de Cine abierto y en la ficha completa de la película. Hay sorpresas: a Photoplay La quimera del oro le supo a poco, despachó El cantor de jazz en cuatro líneas («Jolson no es actor de cine») y a Film Daily le sobraban dos rollos de La ley de la hospitalidad.",
+        "Los números de la hemeroteca que reseñan alguna película lo dicen, con enlace a la película para verla entera."
+      ],
+      "en": [
+        "Thirty Open Cinema films, from Jekyll and Caligari to Metropolis and Joan of Arc, now show what the film press wrote about them on release: the original passage from Photoplay, Film Daily, Motion Picture News or the National Board of Review, with a note in your language and a link to the scanned page.",
+        "It appears on the Open Cinema page and on the film’s full page. There are surprises: Photoplay found The Gold Rush wanting and dismissed The Jazz Singer in four lines (‘Jolson is no movie actor’), and Film Daily wanted two reels cut from Our Hospitality.",
+        "Archive issues that review one of these films now say so, with a link to watch the whole film."
+      ],
+      "gl": [
+        "Trinta películas de Cine aberto, de Jekyll e Caligari a Metrópolis e Xoana de Arco, amosan o que escribiu delas a prensa de cine da súa estrea: o fragmento orixinal de Photoplay, Film Daily, Motion Picture News ou o National Board of Review, cunha nota no teu idioma e a ligazón á páxina escaneada.",
+        "Vese na ficha de Cine aberto e na ficha completa da película. Hai sorpresas: a Photoplay A quimera do ouro soubolle a pouco, despachou O cantor de jazz en catro liñas («Jolson non é actor de cine») e a Film Daily sobrábanlle dous rolos de A lei da hospitalidade.",
+        "Os números da hemeroteca que recensionan algunha película dino, con ligazón á película para vela enteira."
+      ],
+      "eu": [
+        "Zinema irekiko hogeita hamar filmek, Jekyll eta Caligaritik Metropolis eta Joana Arkokoraino, estreinatu zirenean zinema-prentsak haiei buruz idatzi zuena erakusten dute: Photoplay, Film Daily, Motion Picture News edo National Board of Review-eko jatorrizko pasartea, zure hizkuntzako ohar batekin eta eskaneatutako orrialderako estekarekin.",
+        "Zinema irekiko fitxan eta filmaren fitxa osoan ikusten da. Badira ezustekoak: Photoplayri gutxi iruditu zitzaion The Gold Rush, eta lau lerrotan bota zuen The Jazz Singer («Jolson ez da zinema-aktorea»); Film Dailyk bi bobina kentzea nahi zuen Our Hospitality-tik.",
+        "Film horietakoren bat aztertzen duten hemerotekako zenbakiek hala diote orain, filma osorik ikusteko estekarekin."
+      ],
+      "ca": [
+        "Trenta pel·lícules de Cinema obert, de Jekyll i Caligari a Metropolis i Joana d’Arc, mostren el que en va escriure la premsa de cinema de la seva estrena: el fragment original de Photoplay, Film Daily, Motion Picture News o el National Board of Review, amb una nota en el teu idioma i l’enllaç a la pàgina escanejada.",
+        "Es veu a la fitxa de Cinema obert i a la fitxa completa de la pel·lícula. Hi ha sorpreses: a Photoplay La febre de l’or li va saber a poc, va despatxar El cantor de jazz en quatre línies («Jolson no és actor de cinema») i a Film Daily li sobraven dues bobines de La llei de l’hospitalitat.",
+        "Els números de l’hemeroteca que ressenyen alguna pel·lícula ho diuen, amb enllaç a la pel·lícula per veure-la sencera."
+      ]
+    }
+  },
+  {
     "version": "1.21",
     "date": "2026-11-17",
     "title": {

@@ -1,0 +1,52 @@
+---
+/**
+ * «La crítica de su época»: fragmentos de la prensa de cine del estreno, con
+ * la cabecera, la fecha y el enlace a la página escaneada. Sirve igual en la
+ * ficha de Cine abierto (generada en el build) y en la de TMDB (en servidor):
+ * los datos son un JSON del repositorio, no hace falta base de datos.
+ *
+ * El fragmento va en su idioma (lang=…) para que el lector de pantalla lo lea
+ * bien; la nota de debajo, en el de la página, cuenta qué dice.
+ */
+import { useTranslations, localizePath, type Lang } from '../i18n/ui';
+import { paginaUrl, numeroPropio, notaDe, fechaCritica, type Critica } from '../lib/critica';
+
+interface Props {
+  lang: Lang;
+  items: Critica[];
+}
+const { lang, items } = Astro.props;
+const t = useTranslations(lang);
+---
+
+{items.length > 0 && (
+  <section class="mt-14" aria-labelledby="critica-epoca">
+    <div class="border-b border-ink pb-3">
+      <h2 id="critica-epoca" class="text-headline-lg text-ink">{t('critica.title')}</h2>
+      <p class="mt-2 max-w-2xl text-body-md text-muted">{t('critica.intro')}</p>
+    </div>
+    <ul class="mt-4 grid gap-6">
+      {items.map((c) => (
+        <li class="border border-ink bg-surface">
+          <figure class="p-5 md:p-6">
+            <blockquote lang={c.lang} class="whitespace-pre-line font-display text-body-lg italic leading-relaxed text-charcoal">
+              {c.texto}
+            </blockquote>
+            <figcaption class="mt-4 border-t border-ink/40 pt-3">
+              <p class="font-mono text-meta-data uppercase tracking-[0.08em] text-ink">
+                {[c.revista, fechaCritica(c.fecha, lang), c.autor].filter(Boolean).join(' · ')}
+              </p>
+              <p class="mt-2 max-w-2xl text-body-md text-charcoal">{notaDe(c, lang)}</p>
+              <p class="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-meta-data">
+                <a href={paginaUrl(c)} target="_blank" rel="noopener noreferrer">
+                  {t('critica.page')}{c.impresa ? ` (${t('critica.p')} ${c.impresa})` : ''} ↗︎
+                </a>
+                {numeroPropio(c.ia) && <a href={localizePath(lang, `archive/${c.ia}`)}>{t('critica.inArchive')}</a>}
+              </p>
+            </figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

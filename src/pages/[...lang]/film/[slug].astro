@@ -17,6 +17,8 @@ import { movieLd, breadcrumbLd } from '../../../lib/seo';
 import { pdFilmByTmdbId, pdThumbUrl } from '../../../lib/pdfilms';
 import { threadsCiting } from '../../../lib/forum';
 import ForumAbout from '../../../components/forum/ForumAbout.astro';
+import CriticaEpoca from '../../../components/CriticaEpoca.astro';
+import { criticasDeTmdb } from '../../../lib/critica';
 import { filmSlug, parseFilmId } from '../../../lib/slug';
 import { savedTitles, filmPathFor } from '../../../lib/filmlinks';
 import { mentionsOf } from '../../../lib/mentions';
@@ -213,6 +215,8 @@ const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t, [
 // Si está en Cine abierto, la ficha lo dice bien arriba: es lo que más busca
 // quien llega desde Google («ver X completa») y enlaza la página del vídeo.
 const gratis = pdFilmByTmdbId(tmdbId);
+// Lo que dijo la prensa del estreno, si es una película de Cine abierto con críticas elegidas.
+const criticasEpoca = criticasDeTmdb(tmdbId);
 
 // Conversaciones del foro que citan esta película (como ficha de TMDB o en
 // Cine abierto). Si la base de datos falla, la ficha sale sin ellas.
@@ -576,6 +580,8 @@ const crumbsJsonLd = breadcrumbLd([
       </section>
     )}
 
+
+    <CriticaEpoca lang={lang} items={criticasEpoca} />
 
     {/* Reseñas de la comunidad y quién de la gente que sigues la ha visto. */}
     <FilmSocial lang={lang} tmdbId={tmdbId} reviews={reseñas} followed={seguidos} viewerId={Astro.locals.user?.id ?? null} />
