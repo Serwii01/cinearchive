@@ -100,6 +100,9 @@ En producción en cinearchive.es: Foro con cineclub sincronizado y, desde el 17 
 - Boletín encendido por defecto para cuentas existentes (art. 21.2 LSSI, decisión de Sergio) con baja en un clic; nunca baja por GET.
 - Cineclub sin WebSockets (sondeo cada 4 s) por la RAM del VPS; calendario sin base de datos, fijadas en src/data/cineclub.json.
 - Ideas 1 y 2 (subtítulos de la comunidad, visionado comentado) aparcadas hasta que haya comunidad.
+- **Foro: citas como referencia** (17 nov): `[[tipo:id]]` en el texto, no el título copiado; se pinta en el idioma de quien lee y se guarda en forum_cites para «En el foro» de cada ficha.
+- **Avisos del foro en tabla** (17 nov): forum_notifications se llena al publicar (reply > mention > follow, uno por persona y mensaje). El correo del foro está apagado por defecto y manda como mucho uno por hilo cada media hora.
+- **Probar en local en este equipo** (17 nov): Node 22.12 no vale para Astro 7 ni hay Docker; se usa Node 22.23.5 portátil (npm node-win-x64) y Postgres 16 portátil (embedded-postgres, puerto 5433, base en UTC), ambos fuera del repo.
 
 ## Problemas conocidos
 - Margen de RAM y conexiones muy justo en el VPS: cualquier servicio nuevo tiene que caber en lo que queda.
