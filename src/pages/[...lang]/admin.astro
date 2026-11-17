@@ -13,6 +13,7 @@ import { listCaches } from '../../lib/caches';
 import { formatBytes, formatDuration, formatNum, formatPct, pct, SIN_DATO } from '../../lib/format';
 import { listBadges, badgesForUsers, badgeClasses, BADGE_COLORS, BADGE_NAME_MAX, BADGE_DESC_MAX } from '../../lib/badges';
 import Badges from '../../components/Badges.astro';
+import { pendingReportCount } from '../../lib/forummod';
 
 // El middleware garantiza que solo entran cuentas de ADMIN_EMAILS.
 const lang = normalizeLang(Astro.params.lang);
@@ -100,6 +101,8 @@ const etiquetaSemana = (iso: string) =>
     month: 'short',
     timeZone: 'UTC',
   });
+// Denuncias del foro sin resolver: el aviso de arriba.
+const denunciasForo = await pendingReportCount().catch(() => 0);
 ---
 
 <BaseLayout title={t('admin.title')} noindex>
@@ -146,6 +149,12 @@ const etiquetaSemana = (iso: string) =>
         <span id="ultima-act">{t('admin.lastUpdate')}</span>
       </p>
     </header>
+
+    {/* Foro: lo que hay que mirar, arriba del todo (si no hay nada, un enlace discreto). */}
+    <p class:list={['mt-6 border px-4 py-3 text-body-md', denunciasForo > 0 ? 'border-ink bg-ochre text-on-accent' : 'border-outline-variant text-charcoal']}>
+      {denunciasForo === 1 ? t('admin.forumReportsOne') : denunciasForo > 0 ? t('admin.forumReports').replace('{n}', String(denunciasForo)) : t('admin.forumNoReports')}
+      <a href={localizePath(lang, 'foro/moderacion')} class="ml-2 font-mono text-meta-data uppercase tracking-[0.1em] text-ink">{t('admin.forumModerate')} →</a>
+    </p>
 
     {/* ================= RECURSOS DEL SERVIDOR ================= */}
     <h2 class="mt-10 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.resources')}</h2>

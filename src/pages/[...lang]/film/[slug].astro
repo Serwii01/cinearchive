@@ -15,6 +15,8 @@ import { getFilm } from '../../../lib/films';
 import { translateAwards } from '../../../lib/omdb';
 import { movieLd, breadcrumbLd } from '../../../lib/seo';
 import { pdFilmByTmdbId, pdThumbUrl } from '../../../lib/pdfilms';
+import { threadsCiting } from '../../../lib/forum';
+import ForumAbout from '../../../components/forum/ForumAbout.astro';
 import { filmSlug, parseFilmId } from '../../../lib/slug';
 import { savedTitles, filmPathFor } from '../../../lib/filmlinks';
 import { mentionsOf } from '../../../lib/mentions';
@@ -211,6 +213,13 @@ const back = resolveBackLink(Astro.request.headers.get('referer'), lang, t, [
 // Si está en Cine abierto, la ficha lo dice bien arriba: es lo que más busca
 // quien llega desde Google («ver X completa») y enlaza la página del vídeo.
 const gratis = pdFilmByTmdbId(tmdbId);
+
+// Conversaciones del foro que citan esta película (como ficha de TMDB o en
+// Cine abierto). Si la base de datos falla, la ficha sale sin ellas.
+const conversaciones = await threadsCiting([
+  { kind: 'film', ref: String(tmdbId) },
+  ...(gratis ? [{ kind: 'cinema' as const, ref: gratis.id }] : []),
+]).catch(() => []);
 
 // SEO: imagen social (fotograma > cartel) y datos estructurados (Movie + migas).
 const socialImg = backdropUrl(tmdb.backdrop_path, 'w1280') ?? posterUrl(tmdb.poster_path, 'w780');
@@ -570,6 +579,9 @@ const crumbsJsonLd = breadcrumbLd([
 
     {/* Reseñas de la comunidad y quién de la gente que sigues la ha visto. */}
     <FilmSocial lang={lang} tmdbId={tmdbId} reviews={reseñas} followed={seguidos} viewerId={Astro.locals.user?.id ?? null} />
+
+    {/* Conversaciones del foro sobre ella, y abrir una nueva con la cita puesta. */}
+    <ForumAbout lang={lang} threads={conversaciones} cite={`film:${tmdbId}`} />
 
     {/* Películas similares */}
     {similar.length > 0 && (

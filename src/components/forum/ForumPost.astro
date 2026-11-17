@@ -38,8 +38,10 @@ interface Props {
   threadAuthorId: string;
   loginHref: string;
   now: number;
+  /** Última vez que quien mira abrió el hilo: lo de otros posterior sale como «nuevo». */
+  readBefore: Date | null;
 }
-const { node, lang, html, info, votes, viewerId, canWrite, admin, threadAuthorId, loginHref, now } = Astro.props;
+const { node, lang, html, info, votes, viewerId, canWrite, admin, threadAuthorId, loginHref, now, readBefore } = Astro.props;
 const t = useTranslations(lang);
 const p = node.post;
 const suya = !!viewerId && viewerId === p.author.userId;
@@ -51,10 +53,11 @@ const padre = p.parentId != null ? info.get(p.parentId) : undefined;
 const yaLoCita = !!padre && p.body.trimStart().startsWith(`> @${padre.username}:`);
 const plegadas = node.descendants === 1 ? t('forum.collapsedOne') : t('forum.collapsedN').replace('{n}', String(node.descendants));
 const hijos = node.children.map((c) => ({ c }));
-const props = { lang, html, info, votes, viewerId, canWrite, admin, threadAuthorId, loginHref, now };
+const props = { lang, html, info, votes, viewerId, canWrite, admin, threadAuthorId, loginHref, now, readBefore };
+const nueva = !p.hidden && !suya && !!readBefore && p.createdAt > readBefore;
 ---
 
-<li id={`r${p.id}`} class="forum-post scroll-mt-24" data-post={p.id} data-user={p.author.username} data-depth={node.depth}>
+<li id={`r${p.id}`} class="forum-post scroll-mt-24" data-post={p.id} data-user={p.author.username} data-depth={node.depth} data-new={nueva ? '' : undefined}>
   <div class="forum-row">
     <div class="forum-rail">
       {p.hidden ? <span class="forum-avatar-empty" aria-hidden="true"></span> : <Avatar userId={p.author.userId} name={p.author.name} hasAvatar={p.author.hasAvatar} size={28} />}
@@ -70,6 +73,8 @@ const props = { lang, html, info, votes, viewerId, canWrite, admin, threadAuthor
             <a href={localizePath(lang, `u/${p.author.username}`)} class="forum-author">@{p.author.username}</a>
             {p.author.userId === threadAuthorId && <span class="forum-op" title={t('forum.opTitle')}>{t('forum.op')}</span>}
             <a href={`#r${p.id}`} class="forum-time" title={formatDate(p.createdAt, lang)}><time datetime={p.createdAt.toISOString()}>{timeAgo(p.createdAt, locales[lang], now)}</time></a>
+            {p.editedAt && <span class="forum-time" title={formatDate(p.editedAt, lang)}>· {t('forum.edited')}</span>}
+            {nueva && <span class="forum-new">{t('forum.new')}</span>}
           </>
         )}
         {hijos.length > 0 && (
@@ -99,6 +104,8 @@ const props = { lang, html, info, votes, viewerId, canWrite, admin, threadAuthor
             {canWrite && <button type="button" class="forum-action" data-reply-to={p.id}>{t('forum.replyTo')}</button>}
             {canWrite && <button type="button" class="forum-action" data-quote={p.id}>{t('forum.quote')}</button>}
             <button type="button" class="forum-action" data-copy-link={`r${p.id}`} data-done={t('forum.linkCopied')}>{t('forum.link')}</button>
+            {suya && canWrite && <button type="button" class="forum-action" data-edit-post={p.id}>{t('forum.edit')}</button>}
+            {!suya && canWrite && <button type="button" class="forum-action" data-report={`post:${p.id}`}>{t('forum.report')}</button>}
             {(suya || admin) && <button type="button" class="forum-action forum-action-danger" data-hide={`/api/forum/posts/${p.id}`}>{t('forum.hide')}</button>}
           </div>
           {canWrite && <template data-raw>{p.body}</template>}

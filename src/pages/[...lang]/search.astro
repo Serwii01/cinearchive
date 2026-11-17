@@ -26,6 +26,7 @@ const TABS = [
   { id: 'films', label: t('search.sectionFilms') },
   { id: 'people', label: t('search.sectionPeople') },
   { id: 'archive', label: t('search.sectionArchive') },
+  { id: 'forum', label: t('forum.title') },
   { id: 'users', label: t('search.sectionUsers') },
 ] as const;
 
@@ -44,6 +45,7 @@ const tabClass =
     data-noresults={t('search.noResults')}
     data-login-users={t('search.loginForUsers')}
     data-login-url={localizePath(lang, 'login')}
+    data-replies={t('forum.replies')}
     data-kinds={JSON.stringify({
       cinema: t('nav.cinema'),
       article: t('articles.short'),
@@ -123,8 +125,8 @@ const tabClass =
   import { filmSlug } from '../../lib/slug';
   import { LOCK_SVG } from '../../lib/ui/icons';
 
-  type Tab = 'films' | 'people' | 'archive' | 'users';
-  const ORDEN: Tab[] = ['films', 'people', 'archive', 'users'];
+  type Tab = 'films' | 'people' | 'archive' | 'forum' | 'users';
+  const ORDEN: Tab[] = ['films', 'people', 'archive', 'forum', 'users'];
 
   const root = document.querySelector('[data-user-base]') as HTMLElement;
   const d = root.dataset;
@@ -240,6 +242,21 @@ const tabClass =
       .join('');
   };
 
+  // Conversaciones del foro: título, dónde sale lo buscado y cuántas respuestas.
+  type ForumHit = { title: string; href: string; replies: number; snippet: string };
+  const htmlForum = (rows: ForumHit[]) =>
+    !rows.length
+      ? vacio()
+      : `<ul class="border border-ink">${rows
+          .map(
+            (r) => `<li class="border-b border-outline-variant last:border-b-0"><a href="${esc(r.href)}" class="flex items-baseline justify-between gap-3 bg-surface px-4 py-3 no-underline hover:bg-film-white">
+              <span class="min-w-0"><span class="block font-display text-headline-md leading-tight text-ink">${esc(r.title)}</span>
+              ${r.snippet ? `<span class="mt-0.5 block text-body-md text-charcoal">${esc(r.snippet)}</span>` : ''}</span>
+              <span class="shrink-0 font-mono text-meta-data text-muted">${r.replies} ${esc(d.replies)}</span>
+            </a></li>`,
+          )
+          .join('')}</ul>`;
+
   type User = { id: string; username: string; name: string; isPrivate: boolean; hasAvatar: boolean };
   const htmlUsers = (rows: User[]) => {
     if (!loggedIn) {
@@ -299,12 +316,14 @@ const tabClass =
       films: pedir<Film>(`/api/films/search?q=${enc}&lang=${lang}`, signal),
       people: pedir<Person>(`/api/search/people?q=${enc}&lang=${lang}`, signal),
       archive: pedir<SiteHit>(`/api/search/site?q=${enc}&lang=${lang}`, signal),
+      forum: pedir<ForumHit>(`/api/search/forum?q=${enc}&lang=${lang}`, signal),
       users: loggedIn ? pedir<User>(`/api/users/search?q=${enc}`, signal) : Promise.resolve([]),
     };
     const pintores: Record<Tab, (rows: never[]) => string> = {
       films: htmlFilms,
       people: htmlPeople,
       archive: htmlArchive,
+      forum: htmlForum,
       users: htmlUsers,
     };
 

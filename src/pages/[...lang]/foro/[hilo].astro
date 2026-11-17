@@ -15,13 +15,15 @@ import ForumPost, { type ParentInfo } from '../../../components/forum/ForumPost.
 import { normalizeLang, useTranslations, localizePath, formatDate, locales, type Lang } from '../../../i18n/ui';
 import { timeAgo } from '../../../lib/format';
 import { VOTE_SVG } from '../../../lib/ui/icons';
-import { getThread, myVotesIn, voteKey } from '../../../lib/forum';
+import { getThread, myVotesIn, voteKey, TITLE_MAX } from '../../../lib/forum';
 import { buildTree, countVisible, isPostSort, POST_SORTS, type PostSort } from '../../../lib/forumtree';
 import { extractCites, plainForumBody, renderForumBody } from '../../../lib/forumbody';
 import { resolveCites, citeLabelsFor } from '../../../lib/forumcites';
 import { threadPath, parseThreadId } from '../../../lib/forumpaths';
 import { getMyProfile } from '../../../lib/social';
 import { isAdmin } from '../../../lib/admin';
+import { markRead, isSubscribed, existingMentions } from '../../../lib/forumactivity';
+import { isBanned, REPORT_REASONS, REPORT_NOTE_MAX } from '../../../lib/forummod';
 import { breadcrumbLd } from '../../../lib/seo';
 
 export const prerender = false;
@@ -43,15 +45,26 @@ const ordenParam = Astro.url.searchParams.get('orden');
 const orden: PostSort = isPostSort(ordenParam) ? ordenParam : 'votes';
 
 const conPerfil = viewer ? !!(await getMyProfile(viewer.id)) : false;
+const bloqueado = conPerfil && viewer ? await isBanned(viewer.id).catch(() => false) : false;
+// Puede escribir, votar y denunciar: con perfil y sin bloqueo.
+const puedeEscribir = conPerfil && !bloqueado;
 const admin = isAdmin(viewer);
 const visibles = hilo.posts.filter((p) => !p.hidden);
 const votos = viewer ? await myVotesIn(viewer.id, hilo.id, visibles.map((p) => p.id)).catch(() => new Set<string>()) : new Set<string>();
+// Antes de apuntar esta visita: lo de otros posterior a la anterior sale como «nuevo».
+const leidoAntes = viewer ? await markRead(viewer.id, hilo.id).catch(() => null) : null;
+const siguiendo = puedeEscribir && viewer ? await isSubscribed(viewer.id, hilo.id).catch(() => false) : false;
 
-// Todas las citas de la página de una vez: una consulta para las películas.
-const cites = await resolveCites(extractCites([hilo.body, ...visibles.map((p) => p.body)].join('\n')), lang).catch(() => new Map());
+// Todas las citas y los @ de la página de una vez: una consulta para las películas y otra para las cuentas.
+const textos = [hilo.body, ...visibles.map((p) => p.body)];
+const [cites, menciones] = await Promise.all([
+  resolveCites(extractCites(textos.join('\n')), lang).catch(() => new Map()),
+  existingMentions(textos),
+]);
 const etiquetas = citeLabelsFor(lang);
-const htmlHilo = renderForumBody(hilo.body, cites, etiquetas);
-const html = new Map(visibles.map((p) => [p.id, renderForumBody(p.body, cites, etiquetas)]));
+const opciones = { users: menciones, userHref: (u: string) => localizePath(lang, `u/${u}`) };
+const htmlHilo = renderForumBody(hilo.body, cites, etiquetas, opciones);
+const html = new Map(visibles.map((p) => [p.id, renderForumBody(p.body, cites, etiquetas, opciones)]));
 // Para el «↩ @marta: …» de cada respuesta anidada: quién y qué dijo, sin lo que
 // esa persona citaba de otros (si no, el comienzo sería la frase de un tercero).
 const info = new Map<number, ParentInfo>(
@@ -109,7 +122,7 @@ const ld = {
   ogType="article"
   jsonLd={[ld, breadcrumbLd([{ name: t('forum.title'), url: new URL(base, Astro.site).href }, { name: hilo.title, url }])]}
 >
-  <section class="frame py-12" data-thread={hilo.id} data-login={loginHref} data-error={t('diary.error')} data-limit={t('forum.rateLimited')} data-need-profile={t('forum.needProfile')}>
+  <section class="frame py-12" data-thread={hilo.id} data-login={loginHref} data-error={t('diary.error')} data-limit={t('forum.rateLimited')} data-need-profile={t('forum.needProfile')} data-banned={t('forum.banned')}>
     <a href={`${base}?cat=${hilo.category}`} class="label no-underline hover:text-ink">← {t('forum.title')} · {catLabel}</a>
 
     {/* El mensaje que abre el hilo, en su marco: es el tema; lo de debajo, la conversación. */}
@@ -123,21 +136,31 @@ const ld = {
             <span class="forum-author">@{hilo.author.username}</span>
           </a>
           <span class="forum-time" title={formatDate(hilo.createdAt, lang)}><time datetime={hilo.createdAt.toISOString()}>{timeAgo(hilo.createdAt, locales[lang], ahora)}</time></span>
+          {hilo.editedAt && <span class="forum-time" title={formatDate(hilo.editedAt, lang)}>· {t('forum.edited')}</span>}
+          {puedeEscribir && (
+            <button type="button" class="forum-follow ml-auto" data-follow={hilo.id} aria-pressed={siguiendo ? 'true' : 'false'} data-on={t('forum.following')} data-off={t('forum.follow')} title={t('forum.followHelp')}>
+              {siguiendo ? t('forum.following') : t('forum.follow')}
+            </button>
+          )}
         </div>
       </header>
-      <div class="forum-body px-5 pb-2 pt-4 text-body-lg" set:html={htmlHilo} />
+      <div class="forum-body px-5 pb-2 pt-4 text-body-lg" data-thread-body set:html={htmlHilo} />
       <div class="forum-actions !m-0 border-t border-ink/20 px-3 py-1">
         {!viewer ? (
           <a href={loginHref} class="forum-vote" title={t('forum.voteLogin')}><Fragment set:html={VOTE_SVG} /><span>{hilo.score}</span></a>
-        ) : suyo || !conPerfil ? (
+        ) : suyo || !puedeEscribir ? (
           <span class="forum-vote" title={suyo ? t('forum.voteOwn') : t('forum.needProfile')}><Fragment set:html={VOTE_SVG} /><span>{hilo.score}</span></span>
         ) : (
           <button type="button" class="forum-vote" data-vote={`thread:${hilo.id}`} aria-pressed={hiloVotado ? 'true' : 'false'} aria-label={t('forum.vote')}><Fragment set:html={VOTE_SVG} /><span data-score>{hilo.score}</span></button>
         )}
-        {conPerfil && <a href="#responder" class="forum-action no-underline">{t('forum.replyTo')}</a>}
+        {puedeEscribir && <a href="#responder" class="forum-action no-underline">{t('forum.replyTo')}</a>}
         <button type="button" class="forum-action" data-copy-link="hilo" data-done={t('forum.linkCopied')}>{t('forum.link')}</button>
+        {suyo && puedeEscribir && <button type="button" class="forum-action" data-edit-thread>{t('forum.edit')}</button>}
+        {!suyo && puedeEscribir && <button type="button" class="forum-action" data-report={`thread:${hilo.id}`}>{t('forum.report')}</button>}
         {(suyo || admin) && <button type="button" data-hide={`/api/forum/threads/${hilo.id}`} data-back={base} class="forum-action forum-action-danger">{t('forum.hide')}</button>}
       </div>
+      <div data-thread-slot class="px-5"></div>
+      {suyo && puedeEscribir && <template data-thread-raw data-title={hilo.title}>{hilo.body}</template>}
     </article>
 
     <div class="mt-10 flex flex-wrap items-center justify-between gap-3 border-b border-ink pb-2">
@@ -158,7 +181,7 @@ const ld = {
     ) : (
       <ol class="forum-tree mt-6 flex flex-col gap-5" data-tree>
         {arbol.map((n) => (
-          <ForumPost node={n} lang={lang} html={html} info={info} votes={votos} viewerId={viewer?.id ?? null} canWrite={conPerfil} admin={admin} threadAuthorId={hilo.author.userId} loginHref={loginHref} now={ahora} />
+          <ForumPost node={n} lang={lang} html={html} info={info} votes={votos} viewerId={viewer?.id ?? null} canWrite={puedeEscribir} admin={admin} threadAuthorId={hilo.author.userId} loginHref={loginHref} now={ahora} readBefore={leidoAntes} />
         ))}
       </ol>
     )}
@@ -172,6 +195,8 @@ const ld = {
         <p class="text-body-md text-charcoal">
           {t('forum.needProfile')} <a href={localizePath(lang, 'account')} class="text-ink">{t('forum.createProfile')} →</a>
         </p>
+      ) : bloqueado ? (
+        <p class="text-body-md text-charcoal">{t('forum.banned')}</p>
       ) : (
         <form data-reply-form class="flex flex-col gap-3">
           <ForumComposer lang={lang} label={t('forum.replyThread')} />
@@ -184,25 +209,176 @@ const ld = {
       )}
     </section>
 
-    {conPerfil && (
-      <template id="reply-template">
-        <form data-reply-form class="mt-2 flex flex-col gap-2 border border-ink bg-film-white p-3">
-          <ForumComposer lang={lang} label={t('forum.replyingTo')} rows={4} />
-          <div class="flex flex-wrap items-center gap-3">
-            <button type="submit" class="btn btn-primary">{t('forum.publish')}</button>
-            <button type="button" data-cancel class="forum-action">{t('forum.cancel')}</button>
-            <p data-msg role="status" class="font-mono text-meta-data text-error"></p>
-          </div>
-        </form>
-      </template>
+    {puedeEscribir && (
+      <>
+        <template id="reply-template">
+          <form data-reply-form class="mt-2 flex flex-col gap-2 border border-ink bg-film-white p-3">
+            <ForumComposer lang={lang} label={t('forum.replyingTo')} rows={4} />
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="submit" class="btn btn-primary">{t('forum.publish')}</button>
+              <button type="button" data-cancel class="forum-action">{t('forum.cancel')}</button>
+              <p data-msg role="status" class="font-mono text-meta-data text-error"></p>
+            </div>
+          </form>
+        </template>
+
+        {/* Editar: la misma caja, con el texto de siempre; en el hilo, también el título. */}
+        <template id="edit-template">
+          <form data-edit-form class="my-2 flex flex-col gap-2 border border-ink bg-film-white p-3">
+            <label data-title-field hidden class="flex flex-col gap-1">
+              <span class="label">{t('forum.threadTitle')}</span>
+              <input name="title" minlength="4" maxlength={TITLE_MAX} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md" />
+            </label>
+            <ForumComposer lang={lang} label={t('forum.editing')} rows={5} />
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="submit" class="btn btn-primary">{t('forum.save')}</button>
+              <button type="button" data-cancel class="forum-action">{t('forum.cancel')}</button>
+              <p data-msg role="status" class="font-mono text-meta-data text-error"></p>
+            </div>
+          </form>
+        </template>
+
+        <template id="report-template">
+          <form data-report-form class="my-2 flex flex-col gap-3 border border-ink bg-film-white p-3">
+            <fieldset class="flex flex-col gap-1">
+              <legend class="label mb-1">{t('forum.reportWhy')}</legend>
+              {REPORT_REASONS.map((r, i) => (
+                <label class="flex items-center gap-2 text-body-md text-charcoal">
+                  <input type="radio" name="reason" value={r} checked={i === 0} class="accent-ink" />
+                  {t(`forum.reason.${r}` as never)}
+                </label>
+              ))}
+            </fieldset>
+            <label class="flex flex-col gap-1">
+              <span class="label">{t('forum.reportNote')}</span>
+              <textarea name="note" rows="2" maxlength={REPORT_NOTE_MAX} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md"></textarea>
+            </label>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="submit" class="btn btn-secondary">{t('forum.reportSend')}</button>
+              <button type="button" data-cancel class="forum-action">{t('forum.cancel')}</button>
+              <p data-msg role="status" class="font-mono text-meta-data text-muted" data-thanks={t('forum.reportThanks')}></p>
+            </div>
+          </form>
+        </template>
+      </>
     )}
   </section>
 
   <script>
     import { quoteFor } from '../../../lib/forumbody';
+    import '../../../lib/ui/spoilers';
 
     const raiz = document.querySelector<HTMLElement>('[data-thread]')!;
     const hiloId = raiz.dataset.thread!;
+
+    /** Mensaje de error para una respuesta fallida del servidor. */
+    const fallo = (status: number) => (status === 429 ? raiz.dataset.limit! : status === 403 ? raiz.dataset.banned! : raiz.dataset.error!);
+
+    /** Recarga la página en un ancla (para ver lo publicado o editado en su sitio). */
+    function recargarEn(ancla: string) {
+      const u = new URL(window.location.href);
+      u.hash = ancla;
+      window.location.replace(u.href);
+      window.location.reload();
+    }
+
+    /** Las piezas de un mensaje: su cuerpo, sus botones y el hueco de debajo. */
+    function piezas(objetivo: string) {
+      if (objetivo === 'thread') {
+        const art = document.getElementById('hilo')!;
+        return {
+          ocultables: [art.querySelector<HTMLElement>('[data-thread-body]')!, art.querySelector<HTMLElement>(':scope > .forum-actions')!],
+          hueco: art.querySelector<HTMLElement>('[data-thread-slot]')!,
+          crudo: art.querySelector<HTMLTemplateElement>('template[data-thread-raw]'),
+        };
+      }
+      const post = document.getElementById(`r${objetivo}`)!;
+      const contenido = post.querySelector<HTMLElement>(':scope > .forum-row > .forum-content')!;
+      return {
+        ocultables: [contenido.querySelector<HTMLElement>(':scope > .forum-body')!, contenido.querySelector<HTMLElement>(':scope > .forum-actions')!],
+        hueco: contenido.querySelector<HTMLElement>(':scope > [data-reply-slot]')!,
+        crudo: contenido.querySelector<HTMLTemplateElement>(':scope > template[data-raw]'),
+      };
+    }
+
+    /** Cambia el mensaje por la caja de edición, con su texto (y el título, si es el hilo). */
+    function editar(objetivo: string) {
+      const { ocultables, hueco, crudo } = piezas(objetivo);
+      const plantilla = document.querySelector<HTMLTemplateElement>('#edit-template');
+      if (!plantilla || !crudo) return;
+      hueco.replaceChildren(plantilla.content.cloneNode(true));
+      const form = hueco.querySelector<HTMLFormElement>('form')!;
+      form.dataset.target = objetivo;
+      const area = form.querySelector<HTMLTextAreaElement>('textarea[name=body]')!;
+      area.value = crudo.content.textContent ?? '';
+      if (objetivo === 'thread') {
+        const campo = form.querySelector<HTMLElement>('[data-title-field]')!;
+        campo.hidden = false;
+        campo.querySelector<HTMLInputElement>('input')!.value = crudo.dataset.title ?? '';
+      }
+      for (const o of ocultables) o.hidden = true;
+      area.focus();
+      area.setSelectionRange(area.value.length, area.value.length);
+    }
+
+    async function guardar(form: HTMLFormElement) {
+      const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+      const boton = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+      const objetivo = form.dataset.target!;
+      const datos = new FormData(form);
+      boton.disabled = true;
+      msg.textContent = '';
+      try {
+        const res = await fetch(objetivo === 'thread' ? `/api/forum/threads/${hiloId}` : `/api/forum/posts/${objetivo}`, {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(objetivo === 'thread' ? { title: datos.get('title'), body: datos.get('body') } : { body: datos.get('body') }),
+        });
+        if (res.ok) return recargarEn(objetivo === 'thread' ? 'hilo' : `r${objetivo}`);
+        msg.textContent = fallo(res.status);
+      } catch {
+        msg.textContent = raiz.dataset.error!;
+      }
+      boton.disabled = false;
+    }
+
+    /** Abre, bajo el mensaje, el formulario para denunciarlo. */
+    function denunciar(objetivo: string) {
+      const [kind, id] = objetivo.split(':');
+      const { hueco } = piezas(kind === 'thread' ? 'thread' : id);
+      const plantilla = document.querySelector<HTMLTemplateElement>('#report-template');
+      if (!plantilla) return;
+      hueco.replaceChildren(plantilla.content.cloneNode(true));
+      const form = hueco.querySelector<HTMLFormElement>('form')!;
+      form.dataset.target = objetivo;
+      form.querySelector<HTMLInputElement>('input[name=reason]')?.focus();
+    }
+
+    async function enviarDenuncia(form: HTMLFormElement) {
+      const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+      const [kind, id] = form.dataset.target!.split(':');
+      const datos = new FormData(form);
+      form.querySelector<HTMLButtonElement>('button[type=submit]')!.disabled = true;
+      try {
+        const res = await fetch('/api/forum/report', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ kind, id: Number(id), reason: datos.get('reason'), note: String(datos.get('note') ?? '') || null }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        // Gracias, y el botón de denunciar se apaga: no hace falta hacerlo dos veces.
+        const gracias = document.createElement('p');
+        gracias.className = 'my-2 font-mono text-meta-data text-muted';
+        gracias.setAttribute('role', 'status');
+        gracias.textContent = msg.dataset.thanks!;
+        form.replaceWith(gracias);
+        const b = document.querySelector<HTMLButtonElement>(`[data-report="${kind}:${id}"]`);
+        if (b) b.disabled = true;
+      } catch {
+        msg.textContent = raiz.dataset.error!;
+        form.querySelector<HTMLButtonElement>('button[type=submit]')!.disabled = false;
+      }
+    }
 
     /** Abre (o reutiliza) la caja de respuesta debajo de un mensaje. */
     function cajaBajo(postId: string): HTMLFormElement | null {
@@ -280,13 +456,9 @@ const ld = {
         if (res.ok) {
           const { id } = await res.json();
           // Se recarga en la respuesta nueva: así sale con su fecha, su sitio y sus citas.
-          const u = new URL(window.location.href);
-          u.hash = `r${id}`;
-          window.location.replace(u.href);
-          window.location.reload();
-          return;
+          return recargarEn(`r${id}`);
         }
-        msg.textContent = res.status === 429 ? raiz.dataset.limit! : raiz.dataset.error!;
+        msg.textContent = fallo(res.status);
       } catch {
         msg.textContent = raiz.dataset.error!;
       }
@@ -294,14 +466,46 @@ const ld = {
     }
 
     document.addEventListener('submit', (e) => {
-      const form = (e.target as Element).closest<HTMLFormElement>('[data-reply-form]');
-      if (!form) return;
+      const el = e.target as Element;
+      const respuesta = el.closest<HTMLFormElement>('[data-reply-form]');
+      const edicion = el.closest<HTMLFormElement>('[data-edit-form]');
+      const denuncia = el.closest<HTMLFormElement>('[data-report-form]');
+      if (!respuesta && !edicion && !denuncia) return;
       e.preventDefault();
-      void publicar(form);
+      if (respuesta) void publicar(respuesta);
+      else if (edicion) void guardar(edicion);
+      else if (denuncia) void enviarDenuncia(denuncia);
     });
 
     document.addEventListener('click', async (e) => {
       const el = e.target as Element;
+
+      const edPost = el.closest<HTMLElement>('[data-edit-post]');
+      if (edPost) return editar(edPost.dataset.editPost!);
+      if (el.closest('[data-edit-thread]')) return editar('thread');
+
+      const den = el.closest<HTMLElement>('[data-report]');
+      if (den) return denunciar(den.dataset.report!);
+
+      const seguir = el.closest<HTMLButtonElement>('[data-follow]');
+      if (seguir) {
+        seguir.disabled = true;
+        try {
+          const res = await fetch('/api/forum/subscribe', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ threadId: Number(seguir.dataset.follow) }),
+          });
+          if (res.ok) {
+            const { following } = (await res.json()) as { following: boolean };
+            seguir.setAttribute('aria-pressed', String(following));
+            seguir.textContent = following ? seguir.dataset.on! : seguir.dataset.off!;
+          }
+        } finally {
+          seguir.disabled = false;
+        }
+        return;
+      }
 
       const responder = el.closest<HTMLElement>('[data-reply-to]');
       if (responder) {
@@ -320,7 +524,11 @@ const ld = {
       }
 
       if (el.closest('[data-cancel]')) {
-        el.closest('[data-reply-slot]')?.replaceChildren();
+        // Cancelar: fuera la caja y, si se estaba editando, vuelve el mensaje.
+        const caja = el.closest<HTMLFormElement>('form');
+        const hueco = caja?.parentElement;
+        caja?.remove();
+        hueco?.parentElement?.querySelectorAll<HTMLElement>(':scope > .forum-body, :scope > .forum-actions, :scope > [data-thread-body]').forEach((o) => (o.hidden = false));
         return;
       }
 

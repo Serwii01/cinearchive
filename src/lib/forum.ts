@@ -11,7 +11,9 @@
  */
 import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
 import { db } from '../db/client';
-import { forumPosts, forumThreads, forumVotes, profile, user } from '../db/schema';
+import { forumCites, forumPosts, forumThreads, forumVotes, profile, user } from '../db/schema';
+import { afterWrite } from './forumactivity';
+import type { CiteKind } from './forumbody';
 
 export const FORUM_CATEGORIES = ['general', 'peliculas', 'cineclub', 'recomendaciones'] as const;
 export type ForumCategory = (typeof FORUM_CATEGORIES)[number];
@@ -125,11 +127,13 @@ export interface ForumPost {
   hidden: boolean;
   author: ForumAuthor;
   createdAt: Date;
+  editedAt: Date | null;
 }
 
 export interface Thread extends ThreadSummary {
   body: string;
   tmdbId: number | null;
+  editedAt: Date | null;
   posts: ForumPost[];
 }
 
@@ -151,6 +155,7 @@ export async function getThread(id: number): Promise<Thread | null> {
       replies: forumThreads.replies,
       score: forumThreads.score,
       createdAt: forumThreads.createdAt,
+      editedAt: forumThreads.editedAt,
       lastPostAt: forumThreads.lastPostAt,
       ...autor,
     })
@@ -168,6 +173,7 @@ export async function getThread(id: number): Promise<Thread | null> {
       score: forumPosts.score,
       hidden: forumPosts.hidden,
       createdAt: forumPosts.createdAt,
+      editedAt: forumPosts.editedAt,
       userId: forumPosts.userId,
       username: profile.username,
       name: user.name,
@@ -188,6 +194,7 @@ export async function getThread(id: number): Promise<Thread | null> {
     replies: t.replies,
     score: t.score,
     createdAt: t.createdAt,
+    editedAt: t.editedAt,
     lastPostAt: t.lastPostAt,
     author: { userId: t.userId, username: t.username, name: t.name, hasAvatar: !!t.avatarType },
     posts: posts.map((p) => ({
@@ -197,6 +204,7 @@ export async function getThread(id: number): Promise<Thread | null> {
       score: p.score,
       hidden: p.hidden,
       createdAt: p.createdAt,
+      editedAt: p.hidden ? null : p.editedAt,
       author: p.hidden ? SIN_AUTOR : { userId: p.userId, username: p.username, name: p.name, hasAvatar: !!p.avatarType },
     })),
   };
@@ -207,6 +215,7 @@ export async function createThread(userId: string, t: { category: ForumCategory;
     .insert(forumThreads)
     .values({ userId, category: t.category, title: cleanText(t.title), body: cleanText(t.body), tmdbId: t.tmdbId ?? null })
     .returning({ id: forumThreads.id });
+  await afterWrite({ threadId: row.id, postId: null, actorId: userId, body: cleanText(t.body), repliedTo: null });
   return row.id;
 }
 
@@ -223,25 +232,158 @@ export async function replyToThread(
   parentId: number | null = null,
 ): Promise<number | 'not_found' | 'bad_parent'> {
   const [hilo] = await db
-    .select({ id: forumThreads.id })
+    .select({ id: forumThreads.id, userId: forumThreads.userId })
     .from(forumThreads)
     .where(and(eq(forumThreads.id, threadId), eq(forumThreads.hidden, false)))
     .limit(1);
   if (!hilo) return 'not_found';
+  let contestaA = hilo.userId;
   if (parentId != null) {
     const [padre] = await db
-      .select({ id: forumPosts.id })
+      .select({ id: forumPosts.id, userId: forumPosts.userId })
       .from(forumPosts)
       .where(and(eq(forumPosts.id, parentId), eq(forumPosts.threadId, threadId), eq(forumPosts.hidden, false)))
       .limit(1);
     if (!padre) return 'bad_parent';
+    contestaA = padre.userId;
   }
-  const [row] = await db.insert(forumPosts).values({ threadId, parentId, userId, body: cleanText(body) }).returning({ id: forumPosts.id });
+  const limpio = cleanText(body);
+  const [row] = await db.insert(forumPosts).values({ threadId, parentId, userId, body: limpio }).returning({ id: forumPosts.id });
   await db
     .update(forumThreads)
     .set({ replies: sql`${forumThreads.replies} + 1`, lastPostAt: new Date() })
     .where(eq(forumThreads.id, threadId));
+  await afterWrite({ threadId, postId: row.id, actorId: userId, body: limpio, repliedTo: contestaA });
   return row.id;
+}
+
+/**
+ * Su autor cambia el texto de una respuesta (no de las ocultas). Queda la
+ * fecha de edición, se rehacen sus citas y se avisa solo a los @ nuevos.
+ */
+export async function editPost(userId: string, postId: number, body: string): Promise<{ threadId: number } | 'not_found'> {
+  const [p] = await db
+    .select({ threadId: forumPosts.threadId, body: forumPosts.body })
+    .from(forumPosts)
+    .where(and(eq(forumPosts.id, postId), eq(forumPosts.userId, userId), eq(forumPosts.hidden, false)))
+    .limit(1);
+  if (!p) return 'not_found';
+  const limpio = cleanText(body);
+  if (limpio === p.body) return { threadId: p.threadId };
+  await db.update(forumPosts).set({ body: limpio, editedAt: new Date() }).where(eq(forumPosts.id, postId));
+  await afterWrite({ threadId: p.threadId, postId, actorId: userId, body: limpio, repliedTo: null, previousBody: p.body });
+  return { threadId: p.threadId };
+}
+
+/** Su autor cambia el título o el texto con el que abrió un hilo. */
+export async function editThread(userId: string, threadId: number, t: { title: string; body: string }): Promise<boolean> {
+  const [h] = await db
+    .select({ body: forumThreads.body, title: forumThreads.title })
+    .from(forumThreads)
+    .where(and(eq(forumThreads.id, threadId), eq(forumThreads.userId, userId), eq(forumThreads.hidden, false)))
+    .limit(1);
+  if (!h) return false;
+  const title = cleanText(t.title);
+  const body = cleanText(t.body);
+  if (title === h.title && body === h.body) return true;
+  await db.update(forumThreads).set({ title, body, editedAt: new Date() }).where(eq(forumThreads.id, threadId));
+  await afterWrite({ threadId, postId: null, actorId: userId, body, repliedTo: null, previousBody: h.body });
+  return true;
+}
+
+/* ------------------------------------------------------------------ *
+ * Buscar y enlazar desde fuera del foro
+ * ------------------------------------------------------------------ */
+
+export interface ForumHit {
+  id: number;
+  title: string;
+  category: ForumCategory;
+  replies: number;
+  score: number;
+  lastPostAt: Date;
+  /** Trozo de texto donde sale la búsqueda (vacío si solo está en el título). */
+  snippet: string;
+}
+
+/** Escapa los comodines de LIKE para buscar el texto tal cual. Pura. */
+export const likeLiteral = (s: string): string => `%${s.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+
+/** Un trozo de unos 160 caracteres alrededor de la primera aparición de `q`. Pura. */
+export function snippetAround(text: string, q: string, ancho = 160): string {
+  const plano = text.replace(/\[\[[a-z]+:[^\]]+\]\]/g, '…').replace(/\[\/?spoiler\]/gi, '').replace(/\s+/g, ' ').trim();
+  const i = plano.toLowerCase().indexOf(q.toLowerCase());
+  if (i < 0) return '';
+  const desde = Math.max(0, i - Math.floor((ancho - q.length) / 2));
+  const trozo = plano.slice(desde, desde + ancho).trim();
+  return `${desde > 0 ? '…' : ''}${trozo}${desde + ancho < plano.length ? '…' : ''}`;
+}
+
+/**
+ * Hilos visibles en los que sale `q`: en el título, en el mensaje que lo abre
+ * o en alguna respuesta. Para un foro de este tamaño basta con ILIKE; si crece,
+ * un índice de texto completo.
+ */
+export async function searchForum(q: string, limit = 20): Promise<ForumHit[]> {
+  const patron = likeLiteral(q.trim());
+  const { rows } = await db.execute(sql`
+    select t.id, t.title, t.category, t.replies, t.score, t.last_post_at,
+           case when t.title ilike ${patron} then '' when t.body ilike ${patron} then t.body
+                else (select p.body from forum_posts p where p.thread_id = t.id and p.hidden = false and p.body ilike ${patron} order by p.id limit 1) end as texto
+      from forum_threads t
+     where t.hidden = false
+       and (t.title ilike ${patron} or t.body ilike ${patron}
+            or exists (select 1 from forum_posts p where p.thread_id = t.id and p.hidden = false and p.body ilike ${patron}))
+     order by (t.title ilike ${patron}) desc, t.last_post_at desc
+     limit ${limit}`);
+  return (rows as Record<string, unknown>[]).map((r) => ({
+    id: Number(r.id),
+    title: String(r.title),
+    category: String(r.category) as ForumCategory,
+    replies: Number(r.replies),
+    score: Number(r.score),
+    lastPostAt: new Date(String(r.last_post_at)),
+    snippet: r.texto ? snippetAround(String(r.texto), q.trim()) : '',
+  }));
+}
+
+/** Hilos visibles que citan alguna de estas cosas (una película, una revista…), los de más movimiento primero. */
+export async function threadsCiting(refs: { kind: CiteKind; ref: string }[], limit = 6): Promise<ThreadSummary[]> {
+  if (!refs.length) return [];
+  const conds = refs.map((r) => and(eq(forumCites.kind, r.kind), eq(forumCites.ref, r.ref)));
+  const ids = await db
+    .selectDistinct({ id: forumCites.threadId })
+    .from(forumCites)
+    .where(conds.length === 1 ? conds[0] : sql`(${sql.join(conds, sql` or `)})`)
+    .limit(200);
+  if (!ids.length) return [];
+  const rows = await db
+    .select({
+      id: forumThreads.id,
+      category: forumThreads.category,
+      title: forumThreads.title,
+      replies: forumThreads.replies,
+      score: forumThreads.score,
+      createdAt: forumThreads.createdAt,
+      lastPostAt: forumThreads.lastPostAt,
+      ...autor,
+    })
+    .from(forumThreads)
+    .innerJoin(profile, eq(profile.userId, forumThreads.userId))
+    .innerJoin(user, eq(user.id, forumThreads.userId))
+    .where(and(eq(forumThreads.hidden, false), inArray(forumThreads.id, ids.map((i) => i.id))))
+    .orderBy(desc(forumThreads.lastPostAt))
+    .limit(limit);
+  return rows.map((r) => ({
+    id: r.id,
+    category: r.category as ForumCategory,
+    title: r.title,
+    replies: r.replies,
+    score: r.score,
+    createdAt: r.createdAt,
+    lastPostAt: r.lastPostAt,
+    author: { userId: r.userId, username: r.username, name: r.name, hasAvatar: !!r.avatarType },
+  }));
 }
 
 /** Oculta un hilo (autor o administrador). */
@@ -327,70 +469,3 @@ export async function myVotesIn(userId: string, threadId: number, postIds: numbe
   return new Set(rows.map((r) => voteKey(r.kind as VoteKind, r.targetId)));
 }
 
-/* ------------------------------------------------------------------ *
- * Avisos: respuestas a mis hilos y a mis mensajes
- * ------------------------------------------------------------------ */
-
-export interface ForumReplyNotification {
-  postId: number;
-  threadId: number;
-  threadTitle: string;
-  /** 'thread': contestan a tu hilo; 'post': a un mensaje tuyo. */
-  to: 'thread' | 'post';
-  at: Date;
-  username: string;
-  name: string;
-  userId: string;
-  hasAvatar: boolean;
-  excerpt: string;
-}
-
-/**
- * Respuestas de otras personas a mis hilos (directas al hilo) o a mis
- * mensajes, visibles. Común al listado y al contador.
- */
-const respuestasAMi = (userId: string) => sql`
-      from forum_posts r
-      join forum_threads t on t.id = r.thread_id
-      left join forum_posts padre on padre.id = r.parent_id
-     where r.hidden = false and t.hidden = false and r.user_id <> ${userId}
-       and ((r.parent_id is null and t.user_id = ${userId}) or padre.user_id = ${userId})`;
-
-/**
- * Lo que otras personas han contestado a tus hilos o a tus mensajes en los
- * últimos 90 días. Sale de las propias respuestas, sin tabla de avisos: lo
- * nuevo es lo posterior a la última visita a Notificaciones.
- */
-export async function forumReplyNotifications(userId: string, limit = 60): Promise<ForumReplyNotification[]> {
-  const { rows } = await db.execute(sql`
-    select x.*, pr.username, u.name, (pr.avatar_type is not null) as has_avatar from (
-      select r.id as post_id, r.thread_id, t.title, (r.parent_id is null) as to_thread, r.created_at as at,
-             r.user_id, left(r.body, 240) as excerpt
-      ${respuestasAMi(userId)}
-         and r.created_at > now() - interval '90 days'
-       order by r.created_at desc
-       limit ${limit}
-    ) x
-    join profile pr on pr.user_id = x.user_id
-    join "user" u on u.id = x.user_id
-    order by x.at desc`);
-  return (rows as Record<string, unknown>[]).map((r) => ({
-    postId: Number(r.post_id),
-    threadId: Number(r.thread_id),
-    threadTitle: String(r.title),
-    to: r.to_thread ? 'thread' : 'post',
-    at: new Date(String(r.at)),
-    username: String(r.username),
-    name: String(r.name ?? r.username),
-    userId: String(r.user_id),
-    hasAvatar: !!r.has_avatar,
-    excerpt: String(r.excerpt ?? ''),
-  }));
-}
-
-/** Cuántas respuestas nuevas desde la última visita a Notificaciones (o en 90 días si nunca fue). */
-export async function newForumReplyCount(userId: string, since: Date | null): Promise<number> {
-  const desde = since ?? new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
-  const { rows } = await db.execute(sql`select count(*) as n ${respuestasAMi(userId)} and r.created_at > ${desde}`);
-  return Number((rows[0] as { n: number | string }).n ?? 0);
-}

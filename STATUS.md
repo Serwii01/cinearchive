@@ -3,12 +3,12 @@
 > Lo mantiene Claude al terminar cada tarea, sin esperar a `/cerrar`. Es la memoria de trabajo: dónde se quedó y qué viene después.
 
 ## Estado actual
-En producción en cinearchive.es: Foro con cineclub sincronizado y, desde el 17 nov, respuestas en árbol (responder a un mensaje concreto), citas del archivo como tarjetas, votos y avisos de respuestas (v1.21 del changelog, migración 0030); «¿Qué echaban el día que…?», juegos Reparto y ¿En qué año?, 20 colecciones, Cine abierto con 124 películas, diario con una sola regla (vista = visionado con fecha) y correos a usuarios desde /admin (probados por Sergio el 17 nov). Astro 7, despliegue desde GHCR, films_cache con tope.
+En producción en cinearchive.es: Foro con cineclub sincronizado y, desde el 17 nov, respuestas en árbol, citas del archivo como tarjetas, votos, editar, spoilers, menciones, seguir hilos, no leídos, avisos (también por correo), denuncias con /foro/moderacion y conversaciones en las fichas (v1.21 del changelog, migraciones 0030 y 0031); «¿Qué echaban el día que…?», juegos Reparto y ¿En qué año?, 20 colecciones, Cine abierto con 124 películas, diario con una sola regla (vista = visionado con fecha) y correos a usuarios desde /admin (probados por Sergio el 17 nov). Astro 7, despliegue desde GHCR, films_cache con tope.
 
 ## Siguientes pasos
 - [ ] Search Console (alta y sitemap el 11 nov; verificada con public/googlea443dd55fa015b63.html, que no se debe borrar; Bing no). 16 nov: 1.842 bloqueadas por robots (las privadas y /login?next=…, a propósito), 1.723 con redirección (arreglado: ver sesión del 16), 179 noindex (gl/eu/ca sin traducir y privadas), 38.188 rastreadas sin indexar (decisión de Google: fichas parecidas a TMDB en 5 idiomas). Tras desplegar: pedir validación de «Página con redirección» y, a final de mes, ver qué búsquedas traen gente y escribir artículos para ellas.
 - [ ] Tras desplegar lo del 17 nov (foro): abrir un hilo citando una película de TMDB (en local no había clave y solo se probaron las citas del archivo), responder a una respuesta, votar y ver el aviso en Notificaciones con otra cuenta.
-- [ ] Foro: moderación desde /admin si hay movimiento (hoy solo se oculta desde el propio hilo); valorar avisos por correo de respuestas.
+- [ ] Tras desplegar la migración 0031: mirar en /foro/moderacion que entra (con la cuenta de ADMIN_EMAILS), activar el correo del foro en una cuenta real y comprobar que llega uno por hilo y no más (en local no hay Resend), y que «En el foro» sale en una ficha de TMDB (en local no hay clave y solo se vio en Cine abierto).
 - [ ] Cine abierto subtitulado por la comunidad (idea 1) y visionado comentado (idea 2): aparcadas hasta que haya comunidad.
 - [ ] Difundir la web: lista de sitios en el vault (SEO y difusión).
 - [ ] (Aparcado) Más cine con permiso: la NFB de Canadá deja incrustar (nfb.ca/film/<slug>/embed/player/, oEmbed con datos). Probado el 8 nov desde España: 44 de 50 se ven (todas las clásicas de McLaren, Óscar…). Sus condiciones piden uso no comercial y enlace a la NFB; antes, pedirles permiso por escrito. El reproductor carga Google Tag Manager: cargarlo solo al pulsar, frame-src en la CSP y mención en privacidad.
@@ -31,6 +31,14 @@ En producción en cinearchive.es: Foro con cineclub sincronizado y, desde el 17 
 - [ ] Crónicas con fotos del Festival de Sevilla si Ana Gómez Collado pasa más (campo photos, fotos a 3600/1800/900 px).
 
 ## Última sesión
+
+### 2026-11-17 (foro, segunda tanda)
+- Editar lo propio (PATCH /api/forum/posts/:id y /threads/:id; `edited_at`, «editado»), spoilers `[spoiler]…[/spoiler]` (también de varias líneas; fuera de resúmenes, avisos y datos estructurados; lib/ui/spoilers.ts los destapa) y menciones `@usuario` (enlazadas solo si existen, autocompletado en la caja, avisan; no cuentan las de las líneas citadas).
+- Moderación: «Denunciar» (forum_reports, una por persona y mensaje, motivo y nota) y /foro/moderacion solo para admins (agrupadas por mensaje: dejarlo, ocultar, ocultar y bloquear; desbloquear). Aviso de pendientes arriba en /admin. Bloqueado (forum_bans): lee pero no escribe, vota ni denuncia (403 en la API y aviso en la página).
+- Avisos guardados en forum_notifications (reply > mention > follow, uno por persona y mensaje, nunca a uno mismo; al editar solo los @ nuevos) en vez de la consulta de antes; lib/forumactivity.ts `afterWrite`. Seguir hilos (forum_subscriptions; se sigue solo al abrir o responder), leídos (forum_reads): «N nuevas» en la lista y «Nuevo» en el hilo.
+- Correo de respuestas y menciones (preferencia forum_email, apagada; uno por persona e hilo cada media hora; lib/forummail.ts, plantilla en emails.ts).
+- Fuera del foro: «En el foro» en las fichas de TMDB (servidor) y de Cine abierto (navegador, /api/forum/about) con «Abrir un hilo sobre ella» (/foro?cita=film:ID#nuevo rellena la cita y la categoría); pestaña Foro en /search (/api/search/forum, ILIKE). Citas guardadas en forum_cites.
+- Migración 0031, que rellena citas, seguimientos y avisos con lo que ya había. Exportación de la cuenta con votos, hilos seguidos y denuncias. Tests 742 y build OK. Probado en el navegador con 4 cuentas y una admin: todo lo anterior, el bloqueo (y desbloqueo) y el límite del correo (en el registro del servidor, sin Resend).
 
 ### 2026-11-17 (foro)
 - Sergio probó en producción los correos de /admin y el diario: bien.

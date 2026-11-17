@@ -15,35 +15,55 @@
         "Cita lo que hay en la web: con «Citar del archivo» buscas películas (también las de Cine abierto), revistas de la hemeroteca, libros, artículos, dosieres y colecciones, y salen en el mensaje como una tarjeta con su portada y su enlace. También puedes citar un trozo de otro mensaje y ver cómo quedará antes de publicar.",
         "Vota los hilos y las respuestas que te gusten. Las respuestas se ordenan por votos, antiguas o recientes, y los hilos por actividad, nuevos o más votados.",
         "Cuando alguien responde a tu hilo o a un mensaje tuyo, te avisa Notificaciones.",
-        "El foro se lee mejor: sin cajas, con una línea por conversación y la hora en pequeño («hace 20 min»)."
+        "El foro se lee mejor: sin cajas, con una línea por conversación y la hora en pequeño («hace 20 min»).",
+        "Edita tus mensajes (queda la marca «editado»), tapa lo que destripe una película con el botón Spoiler y nombra a alguien con @: le llega un aviso.",
+        "Sigue los hilos que te interesan y verás «3 nuevas» en la lista y la marca «Nuevo» en lo que no habías leído. Si quieres, también por correo (en tu cuenta, Preferencias).",
+        "Cada película (también las de Cine abierto) enseña las conversaciones del foro que hablan de ella, con un botón para abrir una nueva con la cita puesta. Y el buscador tiene pestaña de Foro.",
+        "Si un mensaje no debería estar ahí, «Denunciar»: lo revisamos nosotros."
       ],
       "en": [
         "In the forum you can now reply to a specific message, not just the thread: the reply sits underneath it, each one says who it answers, and branches fold away so you don’t get lost.",
         "Cite what’s on the site: “Cite from the archive” searches films (including Open Cinema), magazines, books, articles, dossiers and collections, and shows them in your message as a card with cover and link. You can also quote part of another message and preview yours before posting.",
         "Upvote the threads and replies you like. Replies can be sorted by votes, oldest or newest, and threads by activity, new or top.",
         "When someone replies to your thread or to one of your messages, you’ll see it in Notifications.",
-        "The forum is easier to read: no boxes, one line per conversation and small times (“20 min ago”)."
+        "The forum is easier to read: no boxes, one line per conversation and small times (“20 min ago”).",
+        "Edit your messages (they show “edited”), hide what spoils a film with the Spoiler button and mention someone with @ so they get a notification.",
+        "Follow the threads you care about and you’ll see “3 new” in the list and a “New” mark on what you hadn’t read. You can also get it by email (in your account, Preferences).",
+        "Every film (Open Cinema ones too) shows the forum conversations about it, with a button to start a new one with the film already cited. And search has a Forum tab.",
+        "If a message shouldn’t be there, use “Report”: we’ll review it."
       ],
       "gl": [
         "No foro xa podes responder a unha mensaxe concreta, non só ao fío: a resposta queda debaixo, cada unha di a quen contesta e as pólas préganse para non perderse.",
         "Cita o que hai na web: con «Citar do arquivo» buscas películas (tamén as de Cine aberto), revistas da hemeroteca, libros, artigos, dosieres e coleccións, e saen na mensaxe como unha tarxeta coa súa portada e a súa ligazón. Tamén podes citar un anaco doutra mensaxe e ver como quedará antes de publicar.",
         "Vota os fíos e as respostas que che gusten. As respostas ordénanse por votos, antigas ou recentes, e os fíos por actividade, novos ou máis votados.",
         "Cando alguén responde ao teu fío ou a unha mensaxe túa, avísate Notificacións.",
-        "O foro lese mellor: sen caixas, cunha liña por conversa e a hora en pequeno («hai 20 min»)."
+        "O foro lese mellor: sen caixas, cunha liña por conversa e a hora en pequeno («hai 20 min»).",
+        "Edita as túas mensaxes (queda a marca «editado»), tapa o que destripe unha película co botón Spoiler e nomea a alguén con @: chégalle un aviso.",
+        "Segue os fíos que che interesan e verás «3 novas» na lista e a marca «Novo» no que non liras. Se queres, tamén por correo (na túa conta, Preferencias).",
+        "Cada película (tamén as de Cine aberto) amosa as conversas do foro que falan dela, cun botón para abrir unha nova coa cita posta. E o buscador ten lapela de Foro.",
+        "Se unha mensaxe non debería estar aí, «Denunciar»: revisámola nós."
       ],
       "eu": [
         "Foroan mezu jakin bati erantzun diezaiokezu orain, ez hariari bakarrik: erantzuna haren azpian geratzen da, bakoitzak nori erantzuten dion esaten du, eta adarrak tolestu egiten dira ez galtzeko.",
         "Aipatu webean dagoena: «Artxibotik aipatu» botoiarekin filmak (Zinema irekikoak ere), aldizkariak, liburuak, artikuluak, dosierrak eta bildumak bilatzen dituzu, eta mezuan txartel gisa agertzen dira, azala eta estekarekin. Beste mezu baten zati bat ere aipa dezakezu, eta argitaratu aurretik nola geratuko den ikusi.",
         "Bozkatu gustuko dituzun hariak eta erantzunak. Erantzunak botoen, zaharrenen edo berrienen arabera ordenatzen dira, eta hariak jardueraren, berrien edo bozkatuenen arabera.",
         "Norbaitek zure hariari edo zure mezu bati erantzuten dionean, Jakinarazpenetan ikusiko duzu.",
-        "Foroa hobeto irakurtzen da: kutxarik gabe, elkarrizketa bakoitzeko lerro batekin eta ordua txiki («duela 20 min»)."
+        "Foroa hobeto irakurtzen da: kutxarik gabe, elkarrizketa bakoitzeko lerro batekin eta ordua txiki («duela 20 min»).",
+        "Editatu zure mezuak («editatua» marka geratzen da), ezkutatu film baten amaiera Spoiler botoiarekin eta aipatu norbait @ bidez: abisu bat jasoko du.",
+        "Jarraitu interesatzen zaizkizun hariak eta zerrendan «3 berri» eta irakurri gabekoan «Berria» marka ikusiko dituzu. Nahi baduzu, posta bidez ere bai (zure kontuan, Hobespenak).",
+        "Film bakoitzak (Zinema irekikoak ere) bere inguruko foroko elkarrizketak erakusten ditu, eta botoi bat aipua jarrita berri bat irekitzeko. Bilatzaileak Foroa fitxa du.",
+        "Mezu batek hor egon behar ez badu, «Salatu»: guk berrikusiko dugu."
       ],
       "ca": [
         "Al fòrum ja pots respondre a un missatge concret, no només al fil: la resposta queda a sota, cadascuna diu a qui contesta i les branques es pleguen per no perdre’s.",
         "Cita el que hi ha al web: amb «Citar de l’arxiu» cerques pel·lícules (també les de Cinema obert), revistes de l’hemeroteca, llibres, articles, dossiers i col·leccions, i surten al missatge com una targeta amb la portada i l’enllaç. També pots citar un tros d’un altre missatge i veure com quedarà abans de publicar.",
         "Vota els fils i les respostes que t’agradin. Les respostes s’ordenen per vots, antigues o recents, i els fils per activitat, nous o més votats.",
         "Quan algú respon al teu fil o a un missatge teu, t’avisa Notificacions.",
-        "El fòrum es llegeix millor: sense caixes, amb una línia per conversa i l’hora en petit («fa 20 min»)."
+        "El fòrum es llegeix millor: sense caixes, amb una línia per conversa i l’hora en petit («fa 20 min»).",
+        "Edita els teus missatges (queda la marca «editat»), tapa el que destripi una pel·lícula amb el botó Espòiler i anomena algú amb @: li arriba un avís.",
+        "Segueix els fils que t’interessen i veuràs «3 noves» a la llista i la marca «Nou» al que no havies llegit. Si vols, també per correu (al teu compte, Preferències).",
+        "Cada pel·lícula (també les de Cinema obert) mostra les converses del fòrum que en parlen, amb un botó per obrir-ne una de nova amb la cita posada. I el cercador té pestanya de Fòrum.",
+        "Si un missatge no hauria de ser-hi, «Denunciar»: el revisarem nosaltres."
       ]
     }
   },

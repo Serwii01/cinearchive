@@ -16,8 +16,10 @@ interface Props {
   rows?: number;
   label: string;
   placeholder?: string;
+  /** Texto con el que empieza (p. ej. la cita de una película al abrir un hilo desde su ficha). */
+  initial?: string;
 }
-const { lang, rows = 5, label, placeholder } = Astro.props;
+const { lang, rows = 5, label, placeholder, initial = '' } = Astro.props;
 const t = useTranslations(lang);
 const tipos = {
   film: t('forum.kindFilm'),
@@ -43,6 +45,7 @@ const tipos = {
   <span class="label mb-1">{label}</span>
   <div class="flex flex-wrap items-center gap-1 border border-b-0 border-ink bg-surface px-1">
     <button type="button" data-cite-open class="forum-action" aria-expanded="false">＋ {t('forum.cite')}</button>
+    <button type="button" data-spoiler class="forum-action" title={t('forum.spoilerHelp')}>{t('forum.spoiler')}</button>
     <button type="button" data-preview-toggle class="forum-action" aria-pressed="false">{t('forum.preview')}</button>
     <span class="ml-auto hidden px-2 font-mono text-meta-data text-muted sm:inline">{t('forum.formatHelp')}</span>
   </div>
@@ -53,7 +56,10 @@ const tipos = {
     maxlength={BODY_MAX}
     placeholder={placeholder}
     aria-label={label}
-    class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md"></textarea>
+    class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md">{initial}</textarea>
+
+  {/* Al escribir @ y dos letras: a quién nombrar (cuentas con perfil). */}
+  <ul data-mention-list hidden role="listbox" aria-label={t('forum.mentionList')} class="border border-t-0 border-ink bg-white"></ul>
 
   <div data-cite-panel hidden class="border border-t-0 border-ink bg-white p-3">
     <div class="flex flex-wrap gap-2">
@@ -82,6 +88,8 @@ const tipos = {
 </div>
 
 <script>
+  import '../../lib/ui/spoilers';
+
   type Hit = { kind: string; title: string; meta: string; image: string | null; token: string; watchHref?: string };
 
   const composerDe = (el: Element | null) => el?.closest<HTMLElement>('[data-composer]') ?? null;
@@ -189,6 +197,79 @@ const tipos = {
     }
   }
 
+  /** Envuelve lo seleccionado en [spoiler]…[/spoiler]; sin selección, deja el cursor dentro. */
+  function spoiler(area: HTMLTextAreaElement) {
+    const ini = area.selectionStart ?? area.value.length;
+    const fin = area.selectionEnd ?? ini;
+    const dentro = area.value.slice(ini, fin);
+    area.setRangeText(`[spoiler]${dentro}[/spoiler]`, ini, fin, 'end');
+    if (!dentro) area.setSelectionRange(ini + 9, ini + 9);
+    area.focus();
+    area.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  /* --------------------------- Menciones --------------------------- */
+
+  type Usuario = { id: string; username: string; name: string; hasAvatar: boolean };
+  /** El @palabra que se está escribiendo justo antes del cursor, si lo hay. */
+  function mencionEnCurso(area: HTMLTextAreaElement): { desde: number; q: string } | null {
+    const antes = area.value.slice(0, area.selectionStart ?? 0);
+    const m = /(^|[\s(«"])@([A-Za-z0-9_]{2,20})$/.exec(antes);
+    return m ? { desde: antes.length - m[2].length - 1, q: m[2] } : null;
+  }
+
+  function cerrarMenciones(c: HTMLElement) {
+    const ul = c.querySelector<HTMLElement>('[data-mention-list]')!;
+    ul.hidden = true;
+    ul.replaceChildren();
+  }
+
+  async function buscarMenciones(c: HTMLElement) {
+    const area = areaDe(c);
+    const en = mencionEnCurso(area);
+    if (!en) return cerrarMenciones(c);
+    const r = reloj(c);
+    r.peticion?.abort();
+    r.peticion = new AbortController();
+    try {
+      const res = await fetch(`/api/users/search?q=${encodeURIComponent(en.q)}`, { signal: r.peticion.signal });
+      if (!res.ok) return cerrarMenciones(c);
+      const lista = ((await res.json()).results as Usuario[]).slice(0, 6);
+      const ul = c.querySelector<HTMLElement>('[data-mention-list]')!;
+      ul.replaceChildren();
+      for (const u of lista) {
+        const li = document.createElement('li');
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.dataset.mention = u.username;
+        b.setAttribute('role', 'option');
+        b.className = 'flex w-full items-baseline gap-2 px-3 py-1.5 text-left hover:bg-film-white focus:bg-film-white';
+        const nombre = document.createElement('span');
+        nombre.className = 'forum-author';
+        nombre.textContent = `@${u.username}`;
+        const real = document.createElement('span');
+        real.className = 'truncate font-mono text-meta-data text-muted';
+        real.textContent = u.name;
+        b.append(nombre, real);
+        li.append(b);
+        ul.append(li);
+      }
+      ul.hidden = lista.length === 0;
+    } catch {
+      /* cortada por otra letra */
+    }
+  }
+
+  function ponerMencion(c: HTMLElement, username: string) {
+    const area = areaDe(c);
+    const en = mencionEnCurso(area);
+    if (!en) return;
+    area.setRangeText(`@${username} `, en.desde, area.selectionStart ?? en.desde, 'end');
+    area.focus();
+    cerrarMenciones(c);
+    area.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
   function abrirCitas(c: HTMLElement, abrir: boolean) {
     const panel = c.querySelector<HTMLElement>('[data-cite-panel]')!;
     panel.hidden = !abrir;
@@ -208,6 +289,10 @@ const tipos = {
     } else if (el.closest('[data-cite-token]')) {
       insertar(areaDe(c), el.closest<HTMLElement>('[data-cite-token]')!.dataset.citeToken!, true);
       abrirCitas(c, false);
+    } else if (el.closest('[data-spoiler]')) {
+      spoiler(areaDe(c));
+    } else if (el.closest('[data-mention]')) {
+      ponerMencion(c, el.closest<HTMLElement>('[data-mention]')!.dataset.mention!);
     } else if (el.closest('[data-preview-toggle]')) {
       const b = el.closest<HTMLElement>('[data-preview-toggle]')!;
       const on = b.getAttribute('aria-pressed') !== 'true';
@@ -226,9 +311,13 @@ const tipos = {
     if (el.matches('[data-cite-q]')) {
       clearTimeout(r.busca);
       r.busca = window.setTimeout(() => void buscar(c), 250);
-    } else if (el.matches('textarea[name=body]') && !c.querySelector<HTMLElement>('[data-preview-box]')!.hidden) {
-      clearTimeout(r.vista);
-      r.vista = window.setTimeout(() => void vistaPrevia(c), 600);
+    } else if (el.matches('textarea[name=body]')) {
+      clearTimeout(r.busca);
+      r.busca = window.setTimeout(() => void buscarMenciones(c), 200);
+      if (!c.querySelector<HTMLElement>('[data-preview-box]')!.hidden) {
+        clearTimeout(r.vista);
+        r.vista = window.setTimeout(() => void vistaPrevia(c), 600);
+      }
     }
   });
 
@@ -242,6 +331,22 @@ const tipos = {
     const el = e.target as Element;
     const c = composerDe(el);
     if (!c) return;
+    // Con la lista de menciones abierta, Intro o Tab eligen la primera y Esc la cierra.
+    const menciones = c.querySelector<HTMLElement>('[data-mention-list]')!;
+    if (el.matches('textarea[name=body]') && !menciones.hidden) {
+      if ((e.key === 'Enter' || e.key === 'Tab') && !e.ctrlKey && !e.metaKey) {
+        const primera = menciones.querySelector<HTMLElement>('[data-mention]');
+        if (primera) {
+          e.preventDefault();
+          ponerMencion(c, primera.dataset.mention!);
+          return;
+        }
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        cerrarMenciones(c);
+        return;
+      }
+    }
     // Intro en el buscador no envía el mensaje: elige el primer resultado.
     if (el.matches('[data-cite-q]') && e.key === 'Enter') {
       e.preventDefault();

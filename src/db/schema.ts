@@ -275,6 +275,8 @@ export const userPreferences = pgTable('user_preferences', {
   alertsEmail: boolean('alerts_email').notNull().default(false),
   /** Correo cuando alguien empieza a seguirte o te pide seguirte. Apagado por defecto. */
   followEmail: boolean('follow_email').notNull().default(false),
+  /** Correo cuando responden en el foro a tus hilos o mensajes, o te mencionan. Apagado por defecto. */
+  forumEmail: boolean('forum_email').notNull().default(false),
   /**
    * Novedades de Cine Archive por correo (lib/newsletter.ts). Encendido por
    * defecto para las cuentas que ya existían (16-11-2026, decisión de Sergio:
@@ -535,6 +537,8 @@ export const forumThreads = pgTable(
     /** Votos a favor (forum_votes), guardados aquí para ordenar sin contar. */
     score: integer('score').notNull().default(0),
     hidden: boolean('hidden').notNull().default(false),
+    /** Última edición de su autor (null: nunca); la página dice «editado». */
+    editedAt: timestamp('edited_at'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     lastPostAt: timestamp('last_post_at').notNull().defaultNow(),
   },
@@ -565,6 +569,8 @@ export const forumPosts = pgTable(
     /** Votos a favor (forum_votes), guardados aquí para ordenar sin contar. */
     score: integer('score').notNull().default(0),
     hidden: boolean('hidden').notNull().default(false),
+    /** Última edición de su autor (null: nunca); la página dice «editado». */
+    editedAt: timestamp('edited_at'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (t) => ({
@@ -592,6 +598,128 @@ export const forumVotes = pgTable(
   (t) => ({
     pk: primaryKey({ columns: [t.userId, t.kind, t.targetId] }),
     targetIdx: index('forum_votes_target_idx').on(t.kind, t.targetId),
+  }),
+);
+
+/**
+ * Denuncias de mensajes del foro (17-11-2026). Una por persona y mensaje; las
+ * revisa un administrador en /foro/moderacion. `resolution`: 'hidden' (se
+ * ocultó), 'dismissed' (no pasa nada) o 'banned' (oculto y autor bloqueado).
+ */
+export const forumReports = pgTable(
+  'forum_reports',
+  {
+    id: serial('id').primaryKey(),
+    reporterId: text('reporter_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    kind: text('kind').notNull(),
+    targetId: integer('target_id').notNull(),
+    reason: text('reason').notNull(),
+    note: text('note'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    resolvedAt: timestamp('resolved_at'),
+    resolvedBy: text('resolved_by'),
+    resolution: text('resolution'),
+  },
+  (t) => ({
+    unica: uniqueIndex('forum_reports_unica').on(t.reporterId, t.kind, t.targetId),
+    pendientes: index('forum_reports_pending_idx').on(t.resolvedAt, t.createdAt),
+  }),
+);
+
+/** Cuentas que no pueden escribir en el foro (leer, sí). Las pone un administrador. */
+export const forumBans = pgTable('forum_bans', {
+  userId: text('user_id')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  byId: text('by_id'),
+  reason: text('reason'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+/**
+ * Qué cita cada mensaje (`[[kind:ref]]`, lib/forumbody.ts), para saber desde
+ * una ficha qué conversaciones hablan de ella. `postId` null: el mensaje que
+ * abre el hilo. Se rehace al publicar y al editar.
+ */
+export const forumCites = pgTable(
+  'forum_cites',
+  {
+    id: serial('id').primaryKey(),
+    threadId: integer('thread_id')
+      .notNull()
+      .references(() => forumThreads.id, { onDelete: 'cascade' }),
+    postId: integer('post_id').references(() => forumPosts.id, { onDelete: 'cascade' }),
+    kind: text('kind').notNull(),
+    ref: text('ref').notNull(),
+  },
+  (t) => ({
+    refIdx: index('forum_cites_ref_idx').on(t.kind, t.ref),
+    threadIdx: index('forum_cites_thread_idx').on(t.threadId),
+  }),
+);
+
+/** Hilos que sigue cada persona: se apunta sola al abrir uno o responder en él. */
+export const forumSubscriptions = pgTable(
+  'forum_subscriptions',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    threadId: integer('thread_id')
+      .notNull()
+      .references(() => forumThreads.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.threadId] }),
+    threadIdx: index('forum_subscriptions_thread_idx').on(t.threadId),
+  }),
+);
+
+/** Última vez que alguien abrió cada hilo: para «3 nuevas» y la marca de lo no leído. */
+export const forumReads = pgTable(
+  'forum_reads',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    threadId: integer('thread_id')
+      .notNull()
+      .references(() => forumThreads.id, { onDelete: 'cascade' }),
+    readAt: timestamp('read_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.threadId] }),
+  }),
+);
+
+/**
+ * Avisos del foro, uno por persona y mensaje: 'reply' (contestan a tu hilo o
+ * a un mensaje tuyo), 'mention' (te nombran con @) o 'follow' (algo nuevo en
+ * un hilo que sigues). Se guardan al publicar (antes salían de una consulta,
+ * que con menciones y hilos seguidos ya no se sostenía).
+ */
+export const forumNotifications = pgTable(
+  'forum_notifications',
+  {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    kind: text('kind').notNull(),
+    threadId: integer('thread_id')
+      .notNull()
+      .references(() => forumThreads.id, { onDelete: 'cascade' }),
+    postId: integer('post_id').references(() => forumPosts.id, { onDelete: 'cascade' }),
+    actorId: text('actor_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => ({
+    userIdx: index('forum_notifications_user_idx').on(t.userId, t.createdAt),
   }),
 );
 

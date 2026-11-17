@@ -1,0 +1,87 @@
+---
+/**
+ * «En el foro»: las conversaciones que citan algo (una película de TMDB, una
+ * de Cine abierto…) y un botón para abrir una nueva con la cita ya puesta.
+ *
+ * Con `threads`, la lista sale del servidor (fichas de TMDB). Sin ellos, la
+ * pide el navegador a /api/forum/about: las páginas de Cine abierto se generan
+ * en el build y no pueden preguntar a la base de datos.
+ */
+import { useTranslations, localizePath, locales, type Lang } from '../../i18n/ui';
+import { threadPath } from '../../lib/forumpaths';
+import { timeAgo } from '../../lib/format';
+import type { ThreadSummary } from '../../lib/forum';
+
+interface Props {
+  lang: Lang;
+  /** Lo citado, como en los mensajes: «film:603» o «cinema:the-general». */
+  cite: string;
+  threads?: ThreadSummary[];
+  /** Para pedirlas desde el navegador: varias referencias separadas por comas. */
+  refs?: string;
+}
+const { lang, cite, threads, refs } = Astro.props;
+const t = useTranslations(lang);
+const abrir = `${localizePath(lang, 'foro')}?cita=${encodeURIComponent(cite)}#nuevo`;
+const ahora = Date.now();
+const respuestas = (n: number) => (n === 1 ? t('forum.oneReply') : `${n} ${t('forum.replies')}`);
+---
+
+<section class="mt-14" aria-labelledby="en-el-foro" data-forum-about={threads ? undefined : refs ?? cite} data-lang={lang} data-replies={t('forum.replies')} data-one-reply={t('forum.oneReply')}>
+  <div class="flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-3">
+    <h2 id="en-el-foro" class="text-headline-lg text-ink">{t('forum.aboutTitle')}</h2>
+    <a href={abrir} class="btn btn-secondary no-underline">{t('forum.aboutOpen')}</a>
+  </div>
+  <ul data-about-list class:list={['mt-4 border border-ink', !threads?.length && 'hidden']}>
+    {threads?.map((h, i) => (
+      <li class:list={['bg-surface', i > 0 && 'border-t border-ink/40']}>
+        <a href={localizePath(lang, threadPath(h.id, h.title))} class="flex items-baseline justify-between gap-3 px-4 py-3 no-underline hover:bg-film-white">
+          <span class="min-w-0">
+            <span class="block font-display text-headline-md leading-tight text-ink">{h.title}</span>
+            <span class="font-mono text-meta-data text-muted">@{h.author.username} · {timeAgo(h.lastPostAt, locales[lang], ahora)}</span>
+          </span>
+          <span class="shrink-0 font-mono text-meta-data text-muted">{respuestas(h.replies)}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+  <p data-about-empty class:list={['mt-4 text-body-md text-charcoal', !!threads?.length && 'hidden']}>{t('forum.aboutEmpty')}</p>
+</section>
+
+<script>
+  type Hilo = { title: string; href: string; replies: number; username: string };
+  for (const caja of document.querySelectorAll<HTMLElement>('[data-forum-about]')) {
+    const qs = new URLSearchParams({ refs: caja.dataset.forumAbout!, lang: caja.dataset.lang ?? 'es' });
+    fetch(`/api/forum/about?${qs}`)
+      .then((r) => (r.ok ? r.json() : { results: [] }))
+      .then(({ results }: { results: Hilo[] }) => {
+        if (!results.length) return;
+        const ul = caja.querySelector<HTMLElement>('[data-about-list]')!;
+        for (const [i, h] of results.entries()) {
+          const li = document.createElement('li');
+          li.className = `bg-surface${i > 0 ? ' border-t border-ink/40' : ''}`;
+          const a = document.createElement('a');
+          a.href = h.href;
+          a.className = 'flex items-baseline justify-between gap-3 px-4 py-3 no-underline hover:bg-film-white';
+          const izq = document.createElement('span');
+          izq.className = 'min-w-0';
+          const titulo = document.createElement('span');
+          titulo.className = 'block font-display text-headline-md leading-tight text-ink';
+          titulo.textContent = h.title;
+          const autor = document.createElement('span');
+          autor.className = 'font-mono text-meta-data text-muted';
+          autor.textContent = `@${h.username}`;
+          izq.append(titulo, autor);
+          const n = document.createElement('span');
+          n.className = 'shrink-0 font-mono text-meta-data text-muted';
+          n.textContent = h.replies === 1 ? caja.dataset.oneReply! : `${h.replies} ${caja.dataset.replies}`;
+          a.append(izq, n);
+          li.append(a);
+          ul.append(li);
+        }
+        ul.classList.remove('hidden');
+        caja.querySelector('[data-about-empty]')?.classList.add('hidden');
+      })
+      .catch(() => {});
+  }
+</script>

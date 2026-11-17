@@ -39,6 +39,7 @@ const people = [
 ];
 const theme = prefs?.theme ?? 'light';
 const followEmail = prefs?.followEmail ?? false;
+const forumEmail = prefs?.forumEmail ?? false;
 // Sin fila de preferencias, las novedades cuentan como encendidas (lib/newsletter.ts).
 const newsEmail = prefs?.newsEmail ?? true;
 
@@ -368,6 +369,10 @@ const inputCls =
               <span class="text-body-md text-charcoal">{t('account.followEmail')}</span>
             </label>
             <label class="mt-3 flex items-start gap-3">
+              <input type="checkbox" name="forumEmail" checked={forumEmail} class="mt-1 h-4 w-4 accent-ink" />
+              <span class="text-body-md text-charcoal">{t('account.forumEmail')}</span>
+            </label>
+            <label class="mt-3 flex items-start gap-3">
               <input type="checkbox" name="newsEmail" checked={newsEmail} class="mt-1 h-4 w-4 accent-ink" />
               <span class="text-body-md text-charcoal">{t('account.newsEmail')}</span>
             </label>
@@ -686,8 +691,9 @@ const inputCls =
     const favoritePeople = people.filter((p): p is { id: number; name: string } => p.id != null);
     const favoriteDirectors = people.map((p) => p.name);
     const followEmail = (form.querySelector('input[name="followEmail"]') as HTMLInputElement | null)?.checked ?? false;
+    const forumEmail = (form.querySelector('input[name="forumEmail"]') as HTMLInputElement | null)?.checked ?? false;
     const newsEmail = (form.querySelector('input[name="newsEmail"]') as HTMLInputElement | null)?.checked ?? true;
-    const body = { locale: lang, favoriteGenres: genres, theme, favoriteDirectors, favoritePeople, followEmail, newsEmail };
+    const body = { locale: lang, favoriteGenres: genres, theme, favoriteDirectors, favoritePeople, followEmail, forumEmail, newsEmail };
 
     const res = await fetch('/api/me/preferences', {
       method: 'PATCH',

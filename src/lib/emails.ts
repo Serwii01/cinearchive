@@ -355,6 +355,73 @@ export function followEmail(lang: Lang, quien: { name: string; username: string 
 }
 
 /* ------------------------------------------------------------------ *
+ * Foro: te responden o te mencionan (lib/forummail.ts)
+ * ------------------------------------------------------------------ */
+
+type ForumCopy = Omit<Copy, 'subject' | 'title' | 'intro'> & {
+  subject: (quien: string, hilo: string, mencion: boolean) => string;
+  title: (mencion: boolean) => string;
+  intro: (quien: string, hilo: string, mencion: boolean) => string;
+};
+
+const FORUM: Record<Lang, ForumCopy> = {
+  es: {
+    subject: (q, h, m) => (m ? `${q} te ha mencionado en «${h}»` : `${q} te ha respondido en «${h}»`),
+    title: (m) => (m ? 'Te han mencionado en el foro' : 'Tienes una respuesta en el foro'),
+    intro: (q, h, m) => (m ? `${q} te ha nombrado en la conversación «${h}»:` : `${q} ha contestado en la conversación «${h}»:`),
+    cta: 'Ver la conversación',
+    note: 'Si llegan más respuestas en el mismo hilo en la próxima media hora, no te mandamos otro correo: las verás todas al entrar.',
+    ignore: 'Puedes dejar de recibir estos correos en tu cuenta, en «Preferencias».',
+    fallback: 'Si el botón no funciona, copia esta dirección en tu navegador:',
+  },
+  en: {
+    subject: (q, h, m) => (m ? `${q} mentioned you in “${h}”` : `${q} replied to you in “${h}”`),
+    title: (m) => (m ? 'You were mentioned in the forum' : 'You have a reply in the forum'),
+    intro: (q, h, m) => (m ? `${q} mentioned you in the conversation “${h}”:` : `${q} replied in the conversation “${h}”:`),
+    cta: 'See the conversation',
+    note: 'If more replies arrive in the same thread in the next half hour, we won’t send another email: you’ll see them all when you visit.',
+    ignore: 'You can stop these emails from your account, under “Preferences”.',
+    fallback: 'If the button does not work, copy this address into your browser:',
+  },
+  gl: {
+    subject: (q, h, m) => (m ? `${q} mencionoute en «${h}»` : `${q} respondeuche en «${h}»`),
+    title: (m) => (m ? 'Mencionáronte no foro' : 'Tes unha resposta no foro'),
+    intro: (q, h, m) => (m ? `${q} nomeoute na conversa «${h}»:` : `${q} contestou na conversa «${h}»:`),
+    cta: 'Ver a conversa',
+    note: 'Se chegan máis respostas no mesmo fío na próxima media hora, non che mandamos outro correo: verás todas ao entrar.',
+    ignore: 'Podes deixar de recibir estes correos na túa conta, en «Preferencias».',
+    fallback: 'Se o botón non funciona, copia este enderezo no teu navegador:',
+  },
+  eu: {
+    subject: (q, h, m) => (m ? `${q}(e)k aipatu zaitu «${h}» harian` : `${q}(e)k erantzun dizu «${h}» harian`),
+    title: (m) => (m ? 'Foroan aipatu zaituzte' : 'Erantzun bat duzu foroan'),
+    intro: (q, h, m) => (m ? `${q}(e)k aipatu zaitu «${h}» elkarrizketan:` : `${q}(e)k erantzun du «${h}» elkarrizketan:`),
+    cta: 'Ikusi elkarrizketa',
+    note: 'Hurrengo ordu erdian hari berean erantzun gehiago iristen badira, ez dizugu beste mezurik bidaliko: sartzean guztiak ikusiko dituzu.',
+    ignore: 'Zure kontuan, «Hobespenak» atalean, utz diezaiokezu mezu hauek jasotzeari.',
+    fallback: 'Botoiak funtzionatzen ez badu, kopiatu helbide hau nabigatzailean:',
+  },
+  ca: {
+    subject: (q, h, m) => (m ? `${q} t’ha mencionat a «${h}»` : `${q} t’ha respost a «${h}»`),
+    title: (m) => (m ? 'T’han mencionat al fòrum' : 'Tens una resposta al fòrum'),
+    intro: (q, h, m) => (m ? `${q} t’ha anomenat a la conversa «${h}»:` : `${q} ha contestat a la conversa «${h}»:`),
+    cta: 'Veure la conversa',
+    note: 'Si arriben més respostes al mateix fil la propera mitja hora, no t’enviem un altre correu: les veuràs totes en entrar.',
+    ignore: 'Pots deixar de rebre aquests correus al teu compte, a «Preferències».',
+    fallback: 'Si el botó no funciona, copia aquesta adreça al teu navegador:',
+  },
+};
+
+/** Correo de «te han respondido» o «te han mencionado» en el foro, con el comienzo del mensaje. */
+export function forumEmail(lang: Lang, quien: { name: string; username: string }, hilo: string, extracto: string, mencion: boolean, url: string): BuiltEmail {
+  const a = FORUM[lang] ?? FORUM[defaultLang];
+  const q = quien.name || `@${quien.username}`;
+  const c: Copy = { ...a, subject: a.subject(q, hilo, mencion), title: a.title(mencion), intro: a.intro(`${q} (@${quien.username})`, hilo, mencion) };
+  const lines = extracto ? [`«${extracto}»`] : [];
+  return { subject: c.subject, html: layout(c, url, lines), text: plain(c, url, lines) };
+}
+
+/* ------------------------------------------------------------------ *
  * Boletín de novedades (lib/newsletter.ts)
  * ------------------------------------------------------------------ */
 

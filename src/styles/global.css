@@ -646,3 +646,75 @@ span.forum-vote {
 .forum-action-danger:hover {
   color: var(--c-error);
 }
+
+/* Spoiler: tapado con la trama de «hueco» hasta que se pulsa (lib/ui/spoilers.ts). */
+.forum-spoiler {
+  cursor: pointer;
+  border-radius: 1px;
+  background: var(--c-ink);
+  color: transparent;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0 0.15em;
+}
+.forum-spoiler * {
+  color: transparent !important;
+  text-decoration: none !important;
+}
+.forum-spoiler img {
+  visibility: hidden;
+}
+.forum-spoiler:hover {
+  background: var(--c-charcoal);
+}
+.forum-spoiler[data-open] {
+  cursor: auto;
+  background: var(--c-surface-dim);
+  color: inherit;
+}
+.forum-spoiler[data-open] * {
+  color: inherit !important;
+}
+.forum-spoiler[data-open] a {
+  color: var(--c-ink) !important;
+  text-decoration: underline !important;
+}
+.forum-spoiler[data-open] img {
+  visibility: visible;
+}
+.forum-body .forum-mention {
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--c-ochre-dim);
+}
+.forum-body .forum-mention:hover {
+  text-decoration: underline;
+}
+/* «nuevo»: lo de otros desde tu última visita al hilo. */
+.forum-new {
+  background: var(--c-ochre);
+  color: var(--c-on-accent);
+  padding: 0 0.3rem;
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: 0.625rem;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.forum-follow {
+  border: 1px solid var(--c-ink);
+  padding: 0.2rem 0.6rem;
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+.forum-follow:hover {
+  background: var(--c-ink);
+  color: var(--c-white);
+}
+.forum-follow[aria-pressed='true'] {
+  background: var(--c-ink);
+  color: var(--c-white);
+}

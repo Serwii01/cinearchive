@@ -18,6 +18,7 @@ const labels = {
   collection: 'Colección',
   watch: 'Verla entera',
   missing: 'Cita no disponible',
+  spoiler: 'Spoiler: pulsa para verlo',
 };
 const tarjeta = {
   kind: 'film' as const,
@@ -140,5 +141,84 @@ describe('foro: hora relativa', async () => {
     expect(timeAgo(new Date(ahora - 86400_000), 'es-ES', ahora)).toBe('ayer');
     expect(timeAgo(new Date(ahora - 40 * 86400_000), 'es-ES', ahora)).toMatch(/2026/);
     expect(timeAgo(new Date(ahora - 3 * 3600_000), 'en-GB', ahora)).toMatch(/^3 hr.? ago$/);
+  });
+});
+
+describe('foro: spoilers y menciones', async () => {
+  const { spoilerLines } = await import('../src/lib/forumbody');
+  const { extractMentions } = await import('../src/lib/forumbody');
+  const opts = { users: new Set(['ana']), userHref: (u: string) => `/u/${u}` };
+
+  it('tapa lo que va entre [spoiler] y [/spoiler]', () => {
+    const html = renderForumBody('Al final [spoiler]muere el perro[/spoiler], qué pena', new Map(), labels);
+    expect(html).toBe('<p>Al final <span class="forum-spoiler" role="button" tabindex="0" aria-expanded="false" title="Spoiler: pulsa para verlo">muere el perro</span>, qué pena</p>');
+    expect(renderForumBody('[spoiler]<b>x</b>[/spoiler]', new Map(), labels)).toContain('&lt;b&gt;x&lt;/b&gt;');
+  });
+
+  it('un spoiler de varias líneas se tapa línea a línea, y uno sin cerrar llega al final', () => {
+    expect(spoilerLines(['a [spoiler]b', 'c', 'd[/spoiler] e'])).toEqual(['a [spoiler]b[/spoiler]', '[spoiler]c[/spoiler]', '[spoiler]d[/spoiler] e']);
+    expect(spoilerLines(['[spoiler]x', 'y'])).toEqual(['[spoiler]x[/spoiler]', '[spoiler]y[/spoiler]']);
+    // Una película citada dentro no sale como tarjeta destapada.
+    expect(renderForumBody('[spoiler]\n[[film:19]]\n[/spoiler]', cites, labels)).not.toContain('forum-cite"');
+  });
+
+  it('los resúmenes no destripan', () => {
+    expect(plainForumBody('Bien hasta que [spoiler]muere[/spoiler]. Ojo', new Map())).toBe('Bien hasta que […]. Ojo');
+  });
+
+  it('enlaza las menciones de cuentas que existen y deja el resto como texto', () => {
+    expect(renderForumBody('Hola @Ana y @nadie', new Map(), labels, opts)).toBe('<p>Hola <a href="/u/ana" class="forum-mention">@ana</a> y @nadie</p>');
+    expect(renderForumBody('correo ana@ana.com', new Map(), labels, opts)).toBe('<p>correo ana@ana.com</p>');
+  });
+
+  it('saca las menciones sin las de las citas ni las de direcciones', () => {
+    expect(extractMentions('> @marta:\n> hola @luis\n\n@Ana y @ana, mira https://x.com/@pepe y @eva.')).toEqual(['ana', 'eva']);
+    expect(extractMentions('@ab @abc')).toEqual(['abc']);
+  });
+});
+
+describe('foro: avisos, búsqueda y exportación', async () => {
+  const { recipientsFor } = await import('../src/lib/forumactivity');
+  const { snippetAround, likeLiteral } = await import('../src/lib/forum');
+
+  it('un aviso por persona, el más importante, y nunca a quien escribe', () => {
+    const r = recipientsFor({ actorId: 'yo', repliedTo: 'ana', mentioned: ['ana', 'luis', 'yo'], followers: ['ana', 'luis', 'eva', 'yo'] });
+    expect([...r]).toEqual([
+      ['ana', 'reply'],
+      ['luis', 'mention'],
+      ['eva', 'follow'],
+    ]);
+    expect(recipientsFor({ actorId: 'yo', repliedTo: 'yo', mentioned: [], followers: ['yo'] }).size).toBe(0);
+  });
+
+  it('el trozo de la búsqueda va alrededor de lo buscado y sin marcas', () => {
+    const largo = `${'a '.repeat(100)}Buster Keaton ${'b '.repeat(100)}`;
+    const s = snippetAround(largo, 'keaton', 40);
+    expect(s).toMatch(/^…/);
+    expect(s).toMatch(/…$/);
+    expect(s).toContain('Buster Keaton');
+    expect(snippetAround('Mirad [[film:19]] y [spoiler]x[/spoiler] Keaton', 'keaton')).toBe('Mirad … y x Keaton');
+    expect(snippetAround('nada', 'keaton')).toBe('');
+  });
+
+  it('busca el texto tal cual, aunque lleve % o _', () => {
+    expect(likeLiteral('50%_off')).toBe(String.raw`%50\%\_off%`);
+  });
+
+  it('la exportación de la cuenta lleva votos, hilos seguidos y denuncias', async () => {
+    const { shapeExport } = await import('../src/lib/account');
+    const out = shapeExport({
+      user: { name: 'A' }, profile: null, preferences: null, films: [], lists: [], listFilms: [], following: [], followers: [], badges: [], providers: [],
+      forum: {
+        threads: [], posts: [{ id: 2, threadId: 1, parentId: 1, body: 'R', userId: 'x' }], chat: [],
+        votes: [{ kind: 'post', targetId: 3, userId: 'x' }],
+        following: [{ threadId: 1, userId: 'x' }],
+        reports: [{ kind: 'post', targetId: 4, reason: 'spam', reporterId: 'x' }],
+      },
+    });
+    expect(out.forum.replies[0]).toEqual({ id: 2, threadId: 1, parentId: 1, body: 'R' });
+    expect(out.forum.votes).toEqual([{ kind: 'post', targetId: 3 }]);
+    expect(out.forum.followedThreads).toEqual([{ threadId: 1 }]);
+    expect(out.forum.reportsMade).toEqual([{ kind: 'post', targetId: 4, reason: 'spam' }]);
   });
 });

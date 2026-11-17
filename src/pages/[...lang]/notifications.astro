@@ -12,7 +12,8 @@ import { providerLogoUrl } from '../../lib/tmdb';
 import { filmSlug } from '../../lib/slug';
 import { getMyProfile, getConnections, markNotificationsSeen } from '../../lib/social';
 import { likeNotifications } from '../../lib/filmsocial';
-import { forumReplyNotifications } from '../../lib/forum';
+import { forumNotificationsFor } from '../../lib/forumactivity';
+import { plainForumBody } from '../../lib/forumbody';
 import { threadPath } from '../../lib/forumpaths';
 
 export const prerender = false;
@@ -61,7 +62,7 @@ for (const a of alerts) {
 // «Me gusta» recibidos en reseñas y listas. Lo nuevo es lo posterior a la
 // última visita a esta página (se lee antes de marcarla).
 const likes = myProfile ? await likeNotifications(userId) : [];
-const respuestas = myProfile ? await forumReplyNotifications(userId).catch(() => []) : [];
+const respuestas = myProfile ? await forumNotificationsFor(userId).catch(() => []) : [];
 const vistoAntes = myProfile?.notificationsSeenAt ?? null;
 const likeBriefs = await getFilmsBrief([...new Set(likes.flatMap((l) => (l.tmdbId ? [l.tmdbId] : [])))], lang);
 
@@ -131,13 +132,15 @@ await markNotificationsSeen(userId);
           ) : (
             <ul class="mt-4 grid ruled grid-cols-1 border border-ink">
               {respuestas.map((r) => {
-                const texto = t(r.to === 'thread' ? 'forum.notifThread' : 'forum.notifPost').replace('{thread}', r.threadTitle);
+                const clave = r.kind === 'mention' ? 'forum.notifMention' : r.kind === 'follow' ? 'forum.notifFollow' : 'forum.notifReply';
+                const texto = t(clave).replace('{thread}', r.threadTitle);
                 const [antes, despues] = texto.split('{user}');
                 const nuevo = !vistoAntes || r.at > vistoAntes;
-                const extracto = r.excerpt.replace(/\[\[[a-z]+:[^\]]+\]\]/g, '…').replace(/^\s*>.*$/gm, '').replace(/\s+/g, ' ').trim();
+                // Lo suyo, sin lo que citaba de otros ni los spoilers.
+                const extracto = plainForumBody(r.body.split('\n').filter((l) => !/^\s*>/.test(l)).join('\n'), new Map()).trim();
                 return (
                   <li class="bg-surface">
-                    <a href={`${localizePath(lang, threadPath(r.threadId, r.threadTitle))}#r${r.postId}`} class="flex items-center gap-3 p-3 no-underline hover:bg-film-white">
+                    <a href={`${localizePath(lang, threadPath(r.threadId, r.threadTitle))}${r.postId ? `#r${r.postId}` : ''}`} class="flex items-center gap-3 p-3 no-underline hover:bg-film-white">
                       <Avatar userId={r.userId} name={r.name} hasAvatar={r.hasAvatar} size={40} class="h-10 w-10" />
                       <span class="min-w-0">
                         <span class="block text-body-md text-charcoal">

@@ -21,6 +21,7 @@ import { getFilmsBrief } from './films';
 import { savedTitles, filmPathFor } from './filmlinks';
 import { searchMovies, posterUrl } from './tmdb';
 import { searchSite } from './sitesearch';
+import { existingMentions } from './forumactivity';
 import { citeKey, citeToken, isCiteKind, extractCites, renderForumBody, type CiteCard, type CiteKind, type CiteLabels, type CiteRef } from './forumbody';
 import { localizePath, useTranslations, type Lang } from '../i18n/ui';
 
@@ -167,13 +168,15 @@ export function citeLabelsFor(lang: Lang): CiteLabels {
     collection: t('search.kindCollection'),
     watch: t('forum.watchFull'),
     missing: t('forum.citeMissing'),
+    spoiler: t('forum.spoilerReveal'),
   };
 }
 
-/** El HTML de varios mensajes de una vez: una sola resolución de citas para toda la página. */
+/** El HTML de varios mensajes de una vez: una sola resolución de citas y de @ para toda la página. */
 export async function renderBodies(bodies: string[], lang: Lang): Promise<string[]> {
   const refs = bodies.flatMap((b) => extractCites(b));
-  const cites = await resolveCites(refs, lang);
+  const [cites, users] = await Promise.all([resolveCites(refs, lang), existingMentions(bodies)]);
   const labels = citeLabelsFor(lang);
-  return bodies.map((b) => renderForumBody(b, cites, labels));
+  const opts = { users, userHref: (u: string) => localizePath(lang, `u/${u}`) };
+  return bodies.map((b) => renderForumBody(b, cites, labels, opts));
 }

@@ -13,6 +13,9 @@ import { VOTE_SVG } from '../../../lib/ui/icons';
 import { listThreads, isForumCategory, isThreadSort, FORUM_CATEGORIES, THREAD_SORTS, THREADS_PAGE, TITLE_MAX, type ForumCategory, type ThreadSort } from '../../../lib/forum';
 import { upcomingSessions } from '../../../lib/cineclub';
 import { getMyProfile } from '../../../lib/social';
+import { isBanned } from '../../../lib/forummod';
+import { unreadCounts } from '../../../lib/forumactivity';
+import { isCiteKind, citeToken } from '../../../lib/forumbody';
 import { threadPath } from '../../../lib/forumpaths';
 import { breadcrumbLd } from '../../../lib/seo';
 
@@ -37,6 +40,15 @@ try {
   hilos = [];
 }
 const conPerfil = viewer ? !!(await getMyProfile(viewer.id)) : false;
+const bloqueado = conPerfil && viewer ? await isBanned(viewer.id).catch(() => false) : false;
+// Respuestas sin leer en los hilos que ya había abierto.
+const sinLeer = viewer ? await unreadCounts(viewer.id, hilos.map((h) => h.id)).catch(() => new Map<number, number>()) : new Map<number, number>();
+
+// «Abrir un hilo sobre esta película» desde una ficha: /foro?cita=film:603#nuevo.
+const citaParam = Astro.url.searchParams.get('cita') ?? '';
+const citaM = /^([a-z]+):([A-Za-z0-9._-]{1,120})$/.exec(citaParam);
+const citaInicial = citaM && isCiteKind(citaM[1]) ? `${citeToken(citaM[1], citaM[2])}\n` : '';
+const categoriaInicial: ForumCategory = cat ?? (citaInicial && ['film', 'cinema'].includes(citaM![1]) ? 'peliculas' : 'general');
 
 const base = localizePath(lang, 'foro');
 /** Enlace de la lista con la categoría, el orden y la página (lo que no cambia, se conserva). */
@@ -80,7 +92,7 @@ const hace = (d: Date) => timeAgo(d, locales[lang], ahora);
     <section class="mt-12" aria-labelledby="hilos">
       <div class="flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-2">
         <h2 id="hilos" class="text-headline-lg text-ink">{t('forum.threads')}</h2>
-        {conPerfil && <a href="#nuevo" class="btn btn-primary no-underline">{t('forum.newThread')}</a>}
+        {conPerfil && !bloqueado && <a href="#nuevo" class="btn btn-primary no-underline">{t('forum.newThread')}</a>}
       </div>
       <nav class="mt-4 flex flex-wrap gap-2" aria-label={t('forum.categories')}>
         <a href={hrefCat()} aria-current={!cat ? 'page' : undefined} class:list={['label border border-ink px-3 py-1 no-underline', !cat ? 'bg-ink text-white' : 'hover:bg-ink hover:text-white']}>{t('forum.all')}</a>
@@ -112,10 +124,13 @@ const hace = (d: Date) => timeAgo(d, locales[lang], ahora);
                   <p class="font-display text-headline-md leading-tight text-ink">{h.title}</p>
                   <p class="mt-1 font-mono text-meta-data text-muted">
                     {catLabel(h.category)} · @{h.author.username} · {hace(orden === 'new' ? h.createdAt : h.lastPostAt)}
+                    {(sinLeer.get(h.id) ?? 0) > 0 && (
+                      <span class="forum-new ml-1">{(sinLeer.get(h.id) ?? 0) === 1 ? t('forum.unreadOne') : t('forum.unreadN').replace('{n}', String(sinLeer.get(h.id)))}</span>
+                    )}
                   </p>
                 </div>
                 <span class="shrink-0 text-right font-mono text-meta-data text-muted">
-                  <span class="block font-display text-headline-md text-ink">{h.replies}</span>{t('forum.replies')}
+                  <span class="block font-display text-headline-md text-ink">{h.replies}</span>{h.replies === 1 ? t('forum.replyOne') : t('forum.replies')}
                 </span>
               </a>
             </li>
@@ -135,25 +150,27 @@ const hace = (d: Date) => timeAgo(d, locales[lang], ahora);
       <h2 class="text-headline-lg text-ink">{t('forum.newThread')}</h2>
       {!viewer ? (
         <p class="mt-3 text-body-md text-charcoal">
-          {t('forum.loginToWrite')} <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(base + '#nuevo')}`} class="text-ink">{t('forum.login')} →</a>
+          {t('forum.loginToWrite')} <a href={`${localizePath(lang, 'login')}?next=${encodeURIComponent(Astro.url.pathname + Astro.url.search + '#nuevo')}`} class="text-ink">{t('forum.login')} →</a>
         </p>
       ) : !conPerfil ? (
         <p class="mt-3 text-body-md text-charcoal">
           {t('forum.needProfile')} <a href={localizePath(lang, 'account')} class="text-ink">{t('forum.createProfile')} →</a>
         </p>
+      ) : bloqueado ? (
+        <p class="mt-3 text-body-md text-charcoal">{t('forum.banned')}</p>
       ) : (
         <form data-new-thread data-base={base} class="mt-4 flex flex-col gap-3" data-error={t('diary.error')} data-limit={t('forum.rateLimited')}>
           <label class="flex flex-col gap-1">
             <span class="label">{t('forum.category')}</span>
             <select name="category" class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md sm:w-72">
-              {FORUM_CATEGORIES.map((c) => <option value={c} selected={c === (cat ?? 'general')}>{catLabel(c)}</option>)}
+              {FORUM_CATEGORIES.map((c) => <option value={c} selected={c === categoriaInicial}>{catLabel(c)}</option>)}
             </select>
           </label>
           <label class="flex flex-col gap-1">
             <span class="label">{t('forum.threadTitle')}</span>
             <input name="title" required minlength="4" maxlength={TITLE_MAX} class="w-full border border-ink bg-white px-3 py-2 font-body text-body-md" />
           </label>
-          <ForumComposer lang={lang} label={t('forum.message')} rows={6} />
+          <ForumComposer lang={lang} label={t('forum.message')} rows={6} initial={citaInicial} />
           <p class="font-mono text-meta-data text-muted">{t('forum.publicNote')}</p>
           <div class="flex items-center gap-3">
             <button type="submit" class="btn btn-primary">{t('forum.publish')}</button>

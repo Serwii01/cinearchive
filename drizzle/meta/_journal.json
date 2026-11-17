@@ -218,6 +218,13 @@
       "when": 1794903447436,
       "tag": "0030_foro_hilos_y_votos",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1794906606911,
+      "tag": "0031_foro_moderacion_y_avisos",
+      "breakpoints": true
     }
   ]
 }

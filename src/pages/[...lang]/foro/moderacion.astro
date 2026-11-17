@@ -1,0 +1,114 @@
+---
+/**
+ * Moderación del foro (solo administradores): las denuncias sin resolver,
+ * agrupadas por mensaje, y las cuentas bloqueadas. Para quien no es admin, la
+ * página no existe (404), como si se adivinara una URL cualquiera.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { normalizeLang, useTranslations, localizePath, formatDate, type Lang } from '../../../i18n/ui';
+import { isAdmin } from '../../../lib/admin';
+import { pendingReports, listBans } from '../../../lib/forummod';
+import { threadPath } from '../../../lib/forumpaths';
+import { plainForumBody } from '../../../lib/forumbody';
+
+export const prerender = false;
+
+const lang: Lang = normalizeLang(Astro.params.lang);
+const t = useTranslations(lang);
+if (!isAdmin(Astro.locals.user)) {
+  Astro.locals.notFound = true;
+  return Astro.rewrite('/404');
+}
+
+const [denuncias, bloqueos] = await Promise.all([pendingReports().catch(() => []), listBans().catch(() => [])]);
+const enlace = (d: (typeof denuncias)[number]) =>
+  `${localizePath(lang, threadPath(d.threadId, d.threadTitle))}${d.kind === 'post' ? `#r${d.targetId}` : ''}`;
+---
+
+<BaseLayout title={t('forum.modTitle')} noindex>
+  <section class="frame py-12" data-mod data-error={t('diary.error')}>
+    <a href={localizePath(lang, 'admin')} class="label no-underline hover:text-ink">← {t('admin.title')}</a>
+    <h1 class="mt-3 text-display-mobile md:text-display-lg">{t('forum.modTitle')}</h1>
+    <p class="mt-3 max-w-2xl text-body-md text-charcoal">{t('forum.modIntro')}</p>
+
+    <h2 class="mt-10 border-b border-ink pb-2 text-headline-lg text-ink">{t('forum.modPending')} <span class="label">· {denuncias.length}</span></h2>
+    {denuncias.length === 0 ? (
+      <p class="mt-4 font-mono text-body-md text-muted">{t('forum.modNone')}</p>
+    ) : (
+      <ul class="mt-4 flex flex-col gap-4">
+        {denuncias.map((d) => (
+          <li class="border border-ink bg-surface" data-report-group={`${d.kind}:${d.targetId}`}>
+            <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-ink/30 px-4 py-2 font-mono text-meta-data text-muted">
+              <span class="label text-ink">{d.kind === 'thread' ? t('forum.modThread') : t('forum.modPost')}</span>
+              <a href={enlace(d)} class="text-ink">{d.threadTitle}</a>
+              <span>· @{d.author.username}{d.author.banned && ` (${t('forum.modBanned')})`}</span>
+              {d.hidden && <span class="text-error">· {t('forum.removed')}</span>}
+            </div>
+            <p class="whitespace-pre-line px-4 py-3 text-body-md text-charcoal">{plainForumBody(d.body, new Map()).slice(0, 600)}</p>
+            <ul class="border-t border-ink/20 px-4 py-2 font-mono text-meta-data text-muted">
+              {d.reports.map((r) => (
+                <li>
+                  {formatDate(r.at, lang)} · @{r.reporter} · <span class="text-ink">{t(`forum.reason.${r.reason}` as never)}</span>{r.note && <>: «{r.note}»</>}
+                </li>
+              ))}
+            </ul>
+            <div class="flex flex-wrap items-center gap-2 border-t border-ink/20 px-3 py-2">
+              <button type="button" class="label border border-ink px-3 py-1 hover:bg-ink hover:text-white" data-mod-action="dismiss" data-kind={d.kind} data-id={d.targetId}>{t('forum.modDismiss')}</button>
+              <button type="button" class="label border border-ink px-3 py-1 hover:bg-ink hover:text-white" data-mod-action="hide" data-kind={d.kind} data-id={d.targetId}>{t('forum.modHide')}</button>
+              <button type="button" class="label border border-error px-3 py-1 text-error hover:bg-error hover:text-white" data-mod-action="ban" data-kind={d.kind} data-id={d.targetId}>{t('forum.modBan')}</button>
+              <span data-out class="font-mono text-meta-data text-muted" role="status"></span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('forum.modBans')} <span class="label">· {bloqueos.length}</span></h2>
+    {bloqueos.length === 0 ? (
+      <p class="mt-4 font-mono text-body-md text-muted">{t('forum.modNoBans')}</p>
+    ) : (
+      <ul class="mt-4 border border-ink">
+        {bloqueos.map((b, i) => (
+          <li class:list={['flex flex-wrap items-center justify-between gap-3 bg-surface px-4 py-2', i > 0 && 'border-t border-ink/30']}>
+            <span><a href={localizePath(lang, `u/${b.username}`)} class="forum-author">@{b.username}</a> <span class="font-mono text-meta-data text-muted">· {formatDate(b.at, lang)}</span></span>
+            <button type="button" class="label border border-ink px-3 py-1 hover:bg-ink hover:text-white" data-unban={b.userId}>{t('forum.modUnban')}</button>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  <script>
+    const raiz = document.querySelector<HTMLElement>('[data-mod]')!;
+    const enviar = (body: object) =>
+      fetch('/api/forum/mod', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then((r) => r.ok);
+
+    document.addEventListener('click', async (e) => {
+      const el = e.target as Element;
+      const b = el.closest<HTMLButtonElement>('[data-mod-action]');
+      if (b) {
+        // Bloquear pide un segundo clic: es lo único que afecta a una persona, no a un mensaje.
+        if (b.dataset.modAction === 'ban' && !b.dataset.armed) {
+          b.dataset.armed = '1';
+          b.textContent = `${b.textContent} ?`;
+          return;
+        }
+        const grupo = b.closest<HTMLElement>('[data-report-group]')!;
+        grupo.querySelectorAll('button').forEach((x) => (x.disabled = true));
+        const ok = await enviar({ action: b.dataset.modAction, kind: b.dataset.kind, id: Number(b.dataset.id) });
+        if (ok) grupo.remove();
+        else {
+          grupo.querySelector('[data-out]')!.textContent = raiz.dataset.error!;
+          grupo.querySelectorAll('button').forEach((x) => (x.disabled = false));
+        }
+        return;
+      }
+      const u = el.closest<HTMLButtonElement>('[data-unban]');
+      if (u) {
+        u.disabled = true;
+        if (await enviar({ action: 'unban', userId: u.dataset.unban })) u.closest('li')?.remove();
+        else u.disabled = false;
+      }
+    });
+  </script>
+</BaseLayout>

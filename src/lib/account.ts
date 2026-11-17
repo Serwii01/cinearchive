@@ -20,6 +20,9 @@ import {
   badges,
   forumThreads,
   forumPosts,
+  forumVotes,
+  forumSubscriptions,
+  forumReports,
   cineclubMessages,
 } from '../db/schema';
 
@@ -49,7 +52,7 @@ export interface ExportInput {
   badges: Row[];
   providers: string[];
   /** Lo escrito en el foro y en el chat del cineclub (también lo oculto: es suyo). */
-  forum?: { threads: Row[]; posts: Row[]; chat: Row[] };
+  forum?: { threads: Row[]; posts: Row[]; chat: Row[]; votes?: Row[]; following?: Row[]; reports?: Row[] };
 }
 
 /**
@@ -78,9 +81,12 @@ export function shapeExport(d: ExportInput, now = new Date()) {
     followers: d.followers,
     badges: d.badges,
     forum: {
-      threads: (d.forum?.threads ?? []).map((t) => pick(t, ['id', 'category', 'title', 'body', 'createdAt', 'hidden'])),
-      replies: (d.forum?.posts ?? []).map((p) => pick(p, ['threadId', 'body', 'createdAt', 'hidden'])),
+      threads: (d.forum?.threads ?? []).map((t) => pick(t, ['id', 'category', 'title', 'body', 'createdAt', 'editedAt', 'hidden'])),
+      replies: (d.forum?.posts ?? []).map((p) => pick(p, ['id', 'threadId', 'parentId', 'body', 'createdAt', 'editedAt', 'hidden'])),
       cineclubChat: (d.forum?.chat ?? []).map((m) => pick(m, ['session', 'body', 'createdAt', 'hidden'])),
+      votes: (d.forum?.votes ?? []).map((v) => pick(v, ['kind', 'targetId', 'createdAt'])),
+      followedThreads: (d.forum?.following ?? []).map((s) => pick(s, ['threadId', 'createdAt'])),
+      reportsMade: (d.forum?.reports ?? []).map((r) => pick(r, ['kind', 'targetId', 'reason', 'note', 'createdAt', 'resolution'])),
     },
   };
 }
@@ -124,6 +130,9 @@ export async function exportUserData(userId: string) {
     threads: (await db.select().from(forumThreads).where(eq(forumThreads.userId, userId))) as Row[],
     posts: (await db.select().from(forumPosts).where(eq(forumPosts.userId, userId))) as Row[],
     chat: (await db.select().from(cineclubMessages).where(eq(cineclubMessages.userId, userId))) as Row[],
+    votes: (await db.select().from(forumVotes).where(eq(forumVotes.userId, userId))) as Row[],
+    following: (await db.select().from(forumSubscriptions).where(eq(forumSubscriptions.userId, userId))) as Row[],
+    reports: (await db.select().from(forumReports).where(eq(forumReports.reporterId, userId))) as Row[],
   };
 
   return shapeExport({
