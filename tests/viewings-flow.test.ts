@@ -13,12 +13,30 @@ describe('visionados desde la ficha', () => {
 
   it('la nota que se da va también al último visionado, que es la que enseña el diario', () => {
     expect(api).toContain('if (rating !== undefined) await rateLatestViewing(');
-    expect(lib).toMatch(/rateLatestViewing[\s\S]*orderBy\(desc\(userViewings\.watchedOn\), desc\(userViewings\.id\)\)/);
+    // Al último que se apuntó (por id), no al de fecha más reciente.
+    expect(lib).toMatch(/rateLatestViewing[\s\S]*?orderBy\(desc\(userViewings\.id\)\)/);
   });
 
-  it('cambiar solo «Cuándo la vi» mueve el visionado si es el único y es de la web', () => {
+  it('cambiar «Cuándo la viste» mueve el visionado si es el único y no viene de Letterboxd', () => {
     expect(api).toContain("if (typeof parsed.data.reviewedAt === 'string') await moveOnlyViewing(");
-    expect(lib).toMatch(/vs\.length !== 1 \|\| vs\[0\]\.source !== 'manual'/);
+    expect(lib).toMatch(/vs\.length !== 1 \|\| vs\[0\]\.source === 'letterboxd'/);
+  });
+
+  it('una sola regla: si queda vista (marcarla, puntuarla, reseñarla o favorita), tiene visionado con fecha', () => {
+    expect(api).toContain("await ensureFirstViewing(locals.user.id, tmdbId, typeof parsed.data.reviewedAt === 'string' ? parsed.data.reviewedAt : hoyEnEspana(now));");
+    // Y con «pendiente» no se apunta nada: lo mira ensureFirstViewing con el estado guardado.
+    expect(lib).toMatch(/if \(!film \|\| film\.status === 'want'\) return;/);
+  });
+
+  it('quitar la película borra también sus visionados (y la saca del diario)', () => {
+    expect(api).toContain('await db.delete(userViewings).where(and(eq(userViewings.userId, locals.user.id), eq(userViewings.tmdbId, parsed.data.tmdbId)));');
+  });
+
+  it('la migración 0028 completa los visionados de las vistas que no tenían', () => {
+    const sql = readFileSync('drizzle/0028_visionados_que_faltan.sql', 'utf8');
+    expect(sql).toContain(`WHERE uf."status" <> 'want'`);
+    expect(sql).toContain("'auto'");
+    expect(sql).toContain('NOT EXISTS');
   });
 
   it('«Vista otra vez» apunta un revisionado y avisa a la lista para repintarse', () => {
@@ -42,8 +60,8 @@ describe('reseñas: lo que manda la web', () => {
     expect(api).toContain('if (nadaQueGuardar)');
   });
 
-  it('una reseña sin nota apunta el primer visionado, como puntuar', () => {
-    expect(api).toMatch(/rating != null \|\| reseña \? hoyEnEspana\(now\)/);
+  it('una reseña sin nota deja la película vista, y con ello apunta el visionado', () => {
+    expect(readFileSync('src/lib/filmstate.ts', 'utf8')).toContain('puntuada || reseñada');
   });
 
   it('la fecha del editor de la reseña mueve el visionado', () => {

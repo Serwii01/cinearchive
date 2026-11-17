@@ -197,6 +197,20 @@
       "when": 1794867274890,
       "tag": "0027_newsletter",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1794869120966,
+      "tag": "0028_visionados_que_faltan",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1794879870613,
+      "tag": "0029_correos_propios",
+      "breakpoints": true
     }
   ]
 }

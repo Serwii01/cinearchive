@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { z } from 'zod';
 import { and, eq } from 'drizzle-orm';
 import { db } from '../../../db/client';
-import { userFilms, reviewLikes } from '../../../db/schema';
+import { userFilms, reviewLikes, userViewings } from '../../../db/schema';
 import { invalidateRecommendations } from '../../../lib/recs';
 import { invalidateStats } from '../../../lib/stats';
 import { aplicarReglas, fechaVista, hoyEnEspana } from '../../../lib/filmstate';
@@ -115,17 +115,16 @@ export const POST: APIRoute = async ({ locals, request }) => {
       },
     });
 
-  // Primer visionado: el día que el usuario diga, o hoy si acaba de puntuarla.
-  // Puntuar es haberla visto, y sin visionado la película no salía ni en el
-  // diario ni en «lo último que ha visto» del perfil, que leen user_viewings.
-  // Solo marcarla como vista no lo apunta: puede ser algo visto hace años.
-  // Si ya tiene algún visionado no se toca: cambiar la nota no es volver a verla.
-  const reseña = typeof note === 'string' && note.trim().length > 0;
-  const primerVisionado =
-    typeof parsed.data.reviewedAt === 'string' ? parsed.data.reviewedAt : rating != null || reseña ? hoyEnEspana(now) : null;
-  if (primerVisionado) {
-    await ensureFirstViewing(locals.user.id, tmdbId, primerVisionado);
-  }
+  // UNA SOLA REGLA (16-11-2026): si la película queda como vista —por marcarla,
+  // puntuarla, reseñarla o hacerla favorita—, tiene un visionado con fecha, y
+  // con él sale en el diario, en «Últimos visionados» del perfil y en el
+  // resumen del año. La fecha es la de «Cuándo la viste» si se manda, y si no,
+  // hoy (en España); cambiarla después mueve ese visionado (moveOnlyViewing).
+  // Antes, marcar como vista sin puntuar no lo apuntaba, y la película se
+  // quedaba fuera del diario. Si ya tiene algún visionado no se añade otro:
+  // volver a verla es «Vista otra vez».
+  // ensureFirstViewing mira el estado que ha quedado guardado: con «pendiente», nada.
+  await ensureFirstViewing(locals.user.id, tmdbId, typeof parsed.data.reviewedAt === 'string' ? parsed.data.reviewedAt : hoyEnEspana(now));
   // La nota también va al visionado (el último): es la que enseña el diario.
   if (rating !== undefined) await rateLatestViewing(locals.user.id, tmdbId, rating);
   // Con fecha de «Cuándo la viste» (desde la ficha o desde el editor de la
@@ -146,7 +145,11 @@ export const POST: APIRoute = async ({ locals, request }) => {
 
 const deleteSchema = z.object({ tmdbId: z.number().int().positive() });
 
-/** DELETE — quitar una película de la lista. */
+/**
+ * DELETE — quitar la película de tu colección: estado, nota, reseña y también
+ * sus visionados (y con ellos, del diario). Si sigue en el diario después de
+ * «quitarla», la regla «vista = en el diario» dejaría de cumplirse al revés.
+ */
 export const DELETE: APIRoute = async ({ locals, request }) => {
   if (!locals.user) return unauthorized();
   const parsed = deleteSchema.safeParse(await request.json().catch(() => null));
@@ -157,6 +160,7 @@ export const DELETE: APIRoute = async ({ locals, request }) => {
     .delete(userFilms)
     .where(and(eq(userFilms.userId, locals.user.id), eq(userFilms.tmdbId, parsed.data.tmdbId)));
   await db.delete(reviewLikes).where(and(eq(reviewLikes.authorId, locals.user.id), eq(reviewLikes.tmdbId, parsed.data.tmdbId)));
+  await db.delete(userViewings).where(and(eq(userViewings.userId, locals.user.id), eq(userViewings.tmdbId, parsed.data.tmdbId)));
   invalidateRecommendations(locals.user.id);
   invalidateStats(locals.user.id);
   return Response.json({ ok: true });

@@ -125,18 +125,20 @@ export async function ensureFirstViewing(userId: string, tmdbId: number, watched
 }
 
 /**
- * La nota que se acaba de dar va al visionado más reciente de esa película: el
- * diario enseña la nota de cada visionado, y sin esto el que se apuntaba al
- * puntuar se quedaba sin estrellas. Si se ha vuelto a ver («Vista otra vez»),
- * el más reciente es ese, y la nota nueva es la de ese revisionado; la de la
- * primera vez se queda como estaba.
+ * La nota que se acaba de dar va al último visionado que se apuntó de esa
+ * película: el diario enseña la nota de cada visionado, y sin esto el que se
+ * apuntaba al puntuar se quedaba sin estrellas. Si se ha vuelto a ver («Vista
+ * otra vez»), el último apuntado es ese, y la nota nueva es la de ese
+ * revisionado; la de la primera vez se queda como estaba. Por orden de
+ * apunte (id) y no de fecha: un revisionado puede llevar una fecha anterior
+ * (se apunta tarde lo que se vio el sábado) y la nota seguía yendo al otro.
  */
 export async function rateLatestViewing(userId: string, tmdbId: number, rating: number | null): Promise<void> {
   const [ultimo] = await db
     .select({ id: userViewings.id })
     .from(userViewings)
     .where(and(eq(userViewings.userId, userId), eq(userViewings.tmdbId, tmdbId)))
-    .orderBy(desc(userViewings.watchedOn), desc(userViewings.id))
+    .orderBy(desc(userViewings.id))
     .limit(1);
   if (!ultimo) return;
   await db.update(userViewings).set({ rating }).where(eq(userViewings.id, ultimo.id));
@@ -147,7 +149,8 @@ export async function rateLatestViewing(userId: string, tmdbId: number, rating: 
  * Cambiar «Cuándo la vi» cuando la película tiene UN solo visionado, apuntado
  * desde la web: es ese mismo día el que se corrige (se puntuó hoy y se vio el
  * sábado). Con más de uno no se toca nada, porque no se sabe cuál es, ni con
- * uno importado de Letterboxd, que trae su fecha de verdad.
+ * uno importado de Letterboxd, que trae su fecha de verdad. Los completados por
+ * la migración 0028 ('auto') sí, que su fecha es una aproximación.
  */
 export async function moveOnlyViewing(userId: string, tmdbId: number, watchedOn: string): Promise<void> {
   const vs = await db
@@ -155,7 +158,7 @@ export async function moveOnlyViewing(userId: string, tmdbId: number, watchedOn:
     .from(userViewings)
     .where(and(eq(userViewings.userId, userId), eq(userViewings.tmdbId, tmdbId)))
     .limit(2);
-  if (vs.length !== 1 || vs[0].source !== 'manual' || vs[0].watchedOn === watchedOn) return;
+  if (vs.length !== 1 || vs[0].source === 'letterboxd' || vs[0].watchedOn === watchedOn) return;
   await db.update(userViewings).set({ watchedOn }).where(eq(userViewings.id, vs[0].id));
   invalidateViewer(userId);
 }

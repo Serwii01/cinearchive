@@ -359,12 +359,12 @@ const etiquetaSemana = (iso: string) =>
       <span id="email-test-out" class="font-mono text-meta-data text-muted" aria-live="polite"></span>
     </div>
 
-    {/* ================= BOLETÍN DE NOVEDADES ================= */}
+    {/* ================= CORREOS (boletín y correos propios) ================= */}
     <h2 class="mt-12 border-b border-ink pb-2 text-headline-lg text-ink">{t('admin.newsTitle')}</h2>
     <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.newsNote')}</p>
     <div
       id="news"
-      class="mt-4 border border-ink bg-surface p-4"
+      class="mt-4 border border-ink bg-surface"
       data-l-sent={t('admin.newsSent')}
       data-l-pending={t('admin.newsPending')}
       data-l-running={t('admin.newsRunning')}
@@ -372,15 +372,66 @@ const etiquetaSemana = (iso: string) =>
       data-l-confirm={t('admin.newsConfirm')}
       data-l-fail={t('admin.emailTestFail')}
       data-l-ok={t('admin.emailTestOk')}
+      data-l-saved={t('admin.newsSaved')}
+      data-l-fixed={t('admin.newsFixed')}
+      data-l-locked={t('admin.newsLocked')}
+      data-l-invalid={t('admin.newsInvalid')}
+      data-l-del-confirm={t('admin.newsDeleteConfirm')}
+      data-l-item={t('admin.newsItem')}
+      data-l-item-title={t('admin.newsItemTitle')}
+      data-l-item-text={t('admin.newsItemText')}
+      data-l-item-path={t('admin.newsItemPath')}
+      data-l-item-remove={t('admin.newsItemRemove')}
     >
-      <p class="font-display text-headline-md text-ink" data-news-subject>…</p>
-      <p class="mt-1 font-mono text-meta-data text-muted" data-news-state>…</p>
-      <div class="mt-4 flex flex-wrap items-center gap-3">
-        <a href="/api/admin/newsletter?preview=es" target="_blank" rel="noopener" class="label border border-ink px-3 py-2 no-underline transition-colors hover:bg-ink hover:text-background">{t('admin.newsPreview')} ↗&#xFE0E;</a>
-        <button type="button" data-news-test class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-background">{t('admin.newsTest')}</button>
-        <button type="button" data-news-send class="label border border-error px-3 py-2 text-error transition-colors hover:bg-error hover:text-white">{t('admin.newsSend')}</button>
-        <span data-news-out class="font-mono text-meta-data text-muted" aria-live="polite"></span>
+      <div class="flex flex-wrap items-end gap-3 border-b border-ink p-4">
+        <label class="flex min-w-0 flex-1 flex-col gap-1">
+          <span class="label">{t('admin.newsPick')}</span>
+          <select data-news-issue class="w-full border border-ink bg-white px-2 py-2 font-body text-body-md"></select>
+        </label>
+        <button type="button" data-news-new class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-background">{t('admin.newsNew')}</button>
       </div>
+      <div class="p-4">
+        <p class="font-display text-headline-md text-ink" data-news-subject>…</p>
+        <p class="mt-1 font-mono text-meta-data text-muted" data-news-state>…</p>
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+          <a data-news-preview href="#" target="_blank" rel="noopener" class="label border border-ink px-3 py-2 no-underline transition-colors hover:bg-ink hover:text-background">{t('admin.newsPreview')} ↗&#xFE0E;</a>
+          <button type="button" data-news-edit class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-background">{t('admin.newsEdit')}</button>
+          <button type="button" data-news-dup class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-background">{t('admin.newsDuplicate')}</button>
+          <button type="button" data-news-test class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-background">{t('admin.newsTest')}</button>
+          <button type="button" data-news-send class="label border border-error px-3 py-2 text-error transition-colors hover:bg-error hover:text-white">{t('admin.newsSend')}</button>
+          <button type="button" data-news-delete class="label ml-auto text-error hover:underline">{t('admin.newsDelete')}</button>
+        </div>
+        <p data-news-out class="mt-2 min-h-[1.25rem] font-mono text-meta-data text-muted" aria-live="polite"></p>
+      </div>
+
+      {/* Editor de un correo propio: una pestaña por idioma; los vacíos reciben el castellano. */}
+      <form data-news-editor class="border-t border-ink bg-film-white p-4" hidden>
+        <nav class="flex flex-wrap border border-ink" aria-label={t('admin.newsLangs')}>
+          {(['es', 'en', 'gl', 'eu', 'ca'] as const).map((l, i) => (
+            <button type="button" data-news-tab={l} class:list={['label px-3 py-2', i > 0 && 'border-l border-ink', i === 0 && 'bg-ink text-white']}>{l.toUpperCase()}</button>
+          ))}
+        </nav>
+        <p class="mt-2 font-mono text-meta-data text-muted">{t('admin.newsLangsNote')}</p>
+        {(['es', 'en', 'gl', 'eu', 'ca'] as const).map((l, i) => (
+          <fieldset data-news-lang={l} class="mt-4 flex flex-col gap-3" hidden={i > 0}>
+            <label class="flex flex-col gap-1"><span class="label">{t('admin.newsSubject')}</span><input name="subject" maxlength="150" class="border border-ink bg-white px-3 py-2 font-body text-body-md" /></label>
+            <label class="flex flex-col gap-1"><span class="label">{t('admin.newsPreheader')}</span><input name="preheader" maxlength="200" class="border border-ink bg-white px-3 py-2 font-body text-body-md" /></label>
+            <label class="flex flex-col gap-1"><span class="label">{t('admin.newsHeading')}</span><input name="title" maxlength="150" class="border border-ink bg-white px-3 py-2 font-body text-body-md" /></label>
+            <label class="flex flex-col gap-1"><span class="label">{t('admin.newsIntro')}</span><textarea name="intro" rows="3" maxlength="3000" class="border border-ink bg-white px-3 py-2 font-body text-body-md"></textarea></label>
+            <div>
+              <span class="label">{t('admin.newsItems')}</span>
+              <ol data-news-items class="mt-2 flex flex-col gap-2"></ol>
+              <button type="button" data-news-add class="label mt-2 border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-background">+ {t('admin.newsAddItem')}</button>
+            </div>
+            <label class="flex flex-col gap-1"><span class="label">{t('admin.newsOutro')}</span><textarea name="outro" rows="2" maxlength="2000" class="border border-ink bg-white px-3 py-2 font-body text-body-md"></textarea></label>
+          </fieldset>
+        ))}
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+          <button type="submit" class="btn btn-primary">{t('admin.newsSave')}</button>
+          <button type="button" data-news-cancel class="label border border-ink px-3 py-2 transition-colors hover:bg-ink hover:text-background">{t('profile.cancel')}</button>
+          <span data-news-editor-out class="font-mono text-meta-data text-muted" aria-live="polite"></span>
+        </div>
+      </form>
     </div>
 
     {/* ================= FUENTES EXTERNAS ================= */}
@@ -839,48 +890,192 @@ const etiquetaSemana = (iso: string) =>
     }
   });
 
-  // Boletín: estado, prueba al propio administrador y envío a todos (con
-  // segundo clic de confirmación). Mientras envía, se refresca cada 3 s.
+  // Correos: elegir uno (los escritos aquí o los fijos), verlo, probarlo,
+  // enviarlo (doble clic) y escribir los propios con la plantilla del boletín.
+  // Mientras envía, el estado se refresca cada 3 s.
   const news = document.getElementById('news');
   if (news) {
     const N = news.dataset;
-    const q = <E extends HTMLElement>(s: string) => news.querySelector<E>(s)!;
+    const q = <E extends HTMLElement = HTMLElement>(s: string) => news.querySelector<E>(s)!;
     const out = q('[data-news-out]');
-    let issue = '';
-    const pinta = async () => {
+    const sel = q<HTMLSelectElement>('[data-news-issue]');
+    const editor = q<HTMLFormElement>('[data-news-editor]');
+    const LANGS = ['es', 'en', 'gl', 'eu', 'ca'] as const;
+    type Item = { title: string; text: string; path: string };
+    type Copia = { subject: string; preheader: string; title: string; intro: string; items: Item[]; outro: string };
+    type Lista = { id: string; subject: string; custom: boolean }[];
+    let lista: Lista = [];
+    let actual: { id: string; copy: Partial<Record<string, Copia>> } | null = null;
+    let editando: string | undefined;
+    const post = (body: object) =>
+      fetch('/api/admin/newsletter', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).catch(() => null);
+    const esPropio = () => !!lista.find((i) => i.id === sel.value)?.custom;
+
+    async function cargaLista(elegir?: string) {
       const r = await fetch('/api/admin/newsletter', { cache: 'no-store' }).catch(() => null);
       if (!r?.ok) return;
-      const d = (await r.json()) as { issue: string; subject: string; pending: number; sent: number; job: { running: boolean; sent: number; failed: number; total: number } | null };
-      issue = d.issue;
-      q('[data-news-subject]').textContent = d.subject;
-      const j = d.job;
+      const d = (await r.json()) as { issues: Lista; current: string };
+      lista = d.issues;
+      sel.replaceChildren(
+        ...lista.map((i) => {
+          const o = document.createElement('option');
+          o.value = i.id;
+          o.textContent = `${i.subject} · ${i.id}`;
+          return o;
+        }),
+      );
+      sel.value = elegir ?? d.current;
+      await pinta();
+    }
+
+    async function pinta() {
+      const id = sel.value;
+      const r = await fetch(`/api/admin/newsletter?issue=${encodeURIComponent(id)}`, { cache: 'no-store' }).catch(() => null);
+      if (!r?.ok) return;
+      const d = (await r.json()) as { issue: { id: string; copy: Partial<Record<string, Copia>> }; pending: number; sent: number; job: { issue: string; running: boolean; sent: number; failed: number; total: number } | null };
+      actual = d.issue;
+      q('[data-news-subject]').textContent = d.issue.copy.es?.subject ?? id;
+      const j = d.job && d.job.issue === id ? d.job : null;
       q('[data-news-state]').textContent = j?.running
         ? `${N.lRunning} ${j.sent + j.failed} / ${j.total}`
-        : `${d.issue} · ${N.lSent} ${formatNum(d.sent, nf)} · ${N.lPending} ${formatNum(d.pending, nf)}${j ? ` · ${N.lDone} (${j.sent} / ${j.failed})` : ''}`;
-      q<HTMLButtonElement>('[data-news-send]').disabled = !!j?.running || d.pending === 0;
-      if (j?.running) setTimeout(pinta, 3000);
+        : `${N.lSent} ${formatNum(d.sent, nf)} · ${N.lPending} ${formatNum(d.pending, nf)}${j ? ` · ${N.lDone} (${j.sent} / ${j.failed})` : ''}`;
+      q<HTMLAnchorElement>('[data-news-preview]').href = `/api/admin/newsletter?issue=${encodeURIComponent(id)}&preview=${document.documentElement.lang || 'es'}`;
+      const propio = esPropio();
+      // Uno que ya ha salido no se cambia ni se borra: lo recibido y lo que no, diría cosas distintas.
+      q<HTMLButtonElement>('[data-news-edit]').hidden = !propio || d.sent > 0;
+      q<HTMLButtonElement>('[data-news-delete]').hidden = !propio || d.sent > 0;
+      q<HTMLButtonElement>('[data-news-send]').disabled = !!d.job?.running || d.pending === 0;
+      if (d.job?.running) setTimeout(pinta, 3000);
+    }
+
+    // --- Editor ---
+    const fila = (lang: string, item: Item = { title: '', text: '', path: '' }) => {
+      const li = document.createElement('li');
+      li.className = 'grid grid-cols-1 gap-2 border border-ink bg-white p-3 sm:grid-cols-[1fr_1fr]';
+      const campo = (name: keyof Item, label: string, area = false) => {
+        const l = document.createElement('label');
+        l.className = `flex flex-col gap-1 ${area ? 'sm:col-span-2' : ''}`;
+        const s = document.createElement('span');
+        s.className = 'label';
+        s.textContent = label;
+        const i = area ? document.createElement('textarea') : document.createElement('input');
+        i.name = `item-${name}`;
+        i.value = item[name];
+        i.className = 'border border-ink bg-white px-2 py-1 font-body text-body-md';
+        if (area) (i as HTMLTextAreaElement).rows = 2;
+        l.append(s, i);
+        return l;
+      };
+      const quitar = document.createElement('button');
+      quitar.type = 'button';
+      quitar.className = 'label justify-self-start text-error hover:underline';
+      quitar.textContent = N.lItemRemove!;
+      quitar.addEventListener('click', () => li.remove());
+      li.append(campo('title', N.lItemTitle!), campo('path', N.lItemPath!), campo('text', N.lItemText!, true), quitar);
+      editor.querySelector(`[data-news-lang="${lang}"] [data-news-items]`)!.append(li);
     };
-    void pinta();
+    const pestaña = (lang: string) => {
+      editor.querySelectorAll<HTMLElement>('[data-news-lang]').forEach((f) => (f.hidden = f.dataset.newsLang !== lang));
+      editor.querySelectorAll<HTMLElement>('[data-news-tab]').forEach((b) => {
+        const on = b.dataset.newsTab === lang;
+        b.classList.toggle('bg-ink', on);
+        b.classList.toggle('text-white', on);
+      });
+    };
+    editor.querySelectorAll<HTMLElement>('[data-news-tab]').forEach((b) => b.addEventListener('click', () => pestaña(b.dataset.newsTab!)));
+    editor.querySelectorAll<HTMLElement>('[data-news-add]').forEach((b) =>
+      b.addEventListener('click', () => fila(b.closest<HTMLElement>('[data-news-lang]')!.dataset.newsLang!)),
+    );
+    const abre = (copy: Partial<Record<string, Copia>>, id?: string) => {
+      editando = id;
+      for (const l of LANGS) {
+        const fs = editor.querySelector<HTMLElement>(`[data-news-lang="${l}"]`)!;
+        const c = copy[l];
+        for (const k of ['subject', 'preheader', 'title', 'intro', 'outro'] as const) {
+          (fs.querySelector(`[name="${k}"]`) as HTMLInputElement).value = c?.[k] ?? '';
+        }
+        fs.querySelector('[data-news-items]')!.replaceChildren();
+        (c?.items ?? []).forEach((it) => fila(l, it));
+      }
+      if (!copy.es?.items?.length) fila('es');
+      pestaña('es');
+      editor.hidden = false;
+      q('[data-news-editor-out]').textContent = '';
+      editor.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    };
+    const lee = (): Partial<Record<string, Copia>> => {
+      const copy: Partial<Record<string, Copia>> = {};
+      for (const l of LANGS) {
+        const fs = editor.querySelector<HTMLElement>(`[data-news-lang="${l}"]`)!;
+        const v = (k: string) => (fs.querySelector(`[name="${k}"]`) as HTMLInputElement).value.trim();
+        const items = [...fs.querySelectorAll<HTMLElement>('[data-news-items] li')]
+          .map((li) => ({
+            title: (li.querySelector('[name="item-title"]') as HTMLInputElement).value.trim(),
+            text: (li.querySelector('[name="item-text"]') as HTMLTextAreaElement).value.trim(),
+            path: (li.querySelector('[name="item-path"]') as HTMLInputElement).value.trim(),
+          }))
+          .filter((i) => i.title && i.path);
+        // Un idioma sin asunto ni título se queda fuera: lo recibirá en castellano.
+        if (l !== 'es' && !v('subject') && !v('title')) continue;
+        copy[l] = { subject: v('subject'), preheader: v('preheader'), title: v('title'), intro: v('intro'), items, outro: v('outro') };
+      }
+      return copy;
+    };
+    editor.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const salida = q('[data-news-editor-out]');
+      const r = await post({ action: 'save', ...(editando ? { id: editando } : {}), copy: lee() });
+      const j = (await r?.json().catch(() => ({}))) as { id?: string; error?: string };
+      if (r?.ok && j.id) {
+        salida.textContent = N.lSaved!;
+        editor.hidden = true;
+        await cargaLista(j.id);
+      } else salida.textContent = j.error === 'sent' ? N.lLocked! : j.error === 'fixed' ? N.lFixed! : N.lInvalid!;
+    });
+    q('[data-news-cancel]').addEventListener('click', () => (editor.hidden = true));
+    q('[data-news-new]').addEventListener('click', () => abre({}));
+    q('[data-news-edit]').addEventListener('click', () => actual && abre(actual.copy, actual.id));
+    // Duplicar: el texto de este (también de un fijo) como punto de partida de uno nuevo.
+    q('[data-news-dup]').addEventListener('click', () => actual && abre(actual.copy));
+
+    // --- Acciones sobre el correo elegido ---
+    sel.addEventListener('change', () => {
+      editor.hidden = true;
+      void pinta();
+    });
     q('[data-news-test]').addEventListener('click', async () => {
       out.textContent = L.working;
-      const r = await fetch('/api/admin/newsletter', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'test', lang: document.documentElement.lang }) }).catch(() => null);
+      const r = await post({ action: 'test', issue: sel.value, lang: document.documentElement.lang });
       const j = (await r?.json().catch(() => ({}))) as { ok?: boolean; to?: string };
       out.textContent = r?.ok && j.ok ? `${N.lOk} → ${j.to ?? ''}` : N.lFail!;
     });
     const enviar = q<HTMLButtonElement>('[data-news-send]');
     enviar.addEventListener('click', async () => {
       // Primer clic: pide confirmación; el segundo envía. Nada de confirm().
-      if (!enviar.dataset.armed) {
-        enviar.dataset.armed = '1';
+      if (enviar.dataset.armed !== sel.value) {
+        enviar.dataset.armed = sel.value;
         out.textContent = N.lConfirm!;
         return;
       }
       delete enviar.dataset.armed;
       out.textContent = L.working;
-      const r = await fetch('/api/admin/newsletter', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'send', confirm: issue }) }).catch(() => null);
+      const r = await post({ action: 'send', issue: sel.value, confirm: sel.value });
       out.textContent = r?.ok ? '' : N.lFail!;
       void pinta();
     });
+    const borrar = q<HTMLButtonElement>('[data-news-delete]');
+    borrar.addEventListener('click', async () => {
+      if (borrar.dataset.armed !== sel.value) {
+        borrar.dataset.armed = sel.value;
+        out.textContent = N.lDelConfirm!;
+        return;
+      }
+      delete borrar.dataset.armed;
+      const r = await post({ action: 'delete', id: sel.value });
+      out.textContent = r?.ok ? '' : N.lFail!;
+      await cargaLista();
+    });
+    void cargaLista();
   }
 
   async function mantenimiento(body: object) {

@@ -10,7 +10,7 @@ import type { Lang } from '../i18n/ui';
 export interface NewsletterItem {
   title: string;
   text: string;
-  /** Ruta sin idioma (`foro`, `estrenos#el-dia`). */
+  /** Ruta sin idioma (`foro`, `estrenos#el-dia`) o una dirección completa (`https://…`). */
   path: string;
 }
 
@@ -26,7 +26,8 @@ export interface NewsletterCopy {
 
 export interface NewsletterIssue {
   id: string;
-  copy: Record<Lang, NewsletterCopy>;
+  /** El castellano es obligatorio; el idioma que falte cae en él. */
+  copy: { es: NewsletterCopy } & Partial<Record<Exclude<Lang, 'es'>, NewsletterCopy>>;
 }
 
 const foro2026: NewsletterIssue = {

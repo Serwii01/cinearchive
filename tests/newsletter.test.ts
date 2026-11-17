@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 
 vi.mock('../src/db/client', () => ({ db: {} }));
-const { unsubscribeToken, verifyUnsubscribe, unsubscribeUrl, buildIssueEmail } = await import('../src/lib/newsletter');
+const { unsubscribeToken, verifyUnsubscribe, unsubscribeUrl, buildIssueEmail, itemUrl, draftSchema } = await import('../src/lib/newsletter');
 const { CURRENT_ISSUE, ISSUES } = await import('../src/data/newsletter');
 
 describe('boletín de novedades', () => {
@@ -54,6 +54,41 @@ describe('boletín de novedades', () => {
   it('el panel solo prueba con el correo del administrador y pide repetir el número para enviar', () => {
     const api = readFileSync('src/pages/api/admin/newsletter.ts', 'utf8');
     expect(api).toContain('{ id: locals.user.id, email: locals.user.email }');
-    expect(api).toContain('parsed.data.confirm !== CURRENT_ISSUE.id');
+    expect(api).toContain('if (d.confirm !== issue.id)');
+  });
+});
+
+describe('correos propios desde /admin', () => {
+  const base = {
+    subject: 'Asunto',
+    title: 'Título',
+    items: [{ title: 'Foro', text: 'Pasa por el foro', path: 'foro' }],
+  };
+
+  it('un borrador necesita el castellano; los otros idiomas son opcionales', () => {
+    expect(draftSchema.safeParse({ es: base }).success).toBe(true);
+    expect(draftSchema.safeParse({ en: base }).success).toBe(false);
+    expect(draftSchema.safeParse({ es: { ...base, subject: '' } }).success).toBe(false);
+  });
+
+  it('los enlaces solo pueden ser rutas de la web o direcciones http(s)', () => {
+    const con = (path: string) => draftSchema.safeParse({ es: { ...base, items: [{ title: 'x', text: '', path }] } }).success;
+    expect(con('articles/abre-el-cineclub')).toBe(true);
+    expect(con('estrenos#el-dia')).toBe(true);
+    expect(con('https://festivalcinesevilla.eu/')).toBe(true);
+    expect(con('javascript:alert(1)')).toBe(false);
+    expect(con('<script>')).toBe(false);
+  });
+
+  it('una ruta se pone en el idioma de cada cual; una dirección completa se deja tal cual', () => {
+    expect(itemUrl('foro', 'ca', 'https://cinearchive.es')).toBe('https://cinearchive.es/ca/foro');
+    expect(itemUrl('/foro', 'es', 'https://cinearchive.es')).toBe('https://cinearchive.es/foro');
+    expect(itemUrl('https://archive.org/details/x', 'gl', 'https://cinearchive.es')).toBe('https://archive.org/details/x');
+  });
+
+  it('un correo que ya ha salido no se cambia ni se borra', () => {
+    const lib = readFileSync('src/lib/newsletter.ts', 'utf8');
+    expect(lib).toContain("if (id && (await sentCount(id)) > 0) return { error: 'sent' };");
+    expect(lib).toContain('if ((await sentCount(id)) > 0) return false;');
   });
 });

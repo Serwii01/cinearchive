@@ -39,6 +39,7 @@ const t = useTranslations(lang);
   data-l-watched={t('controls.watchedOn')}
   data-l-save={t('controls.save')}
   data-l-error={t('diary.error')}
+  data-l-remove-confirm={t('controls.removeConfirm')}
   data-l-saved={t('controls.saved')}
   data-l-remove={t('controls.remove')}
   data-login-url={localizePath(lang, 'login')}
@@ -64,7 +65,7 @@ const t = useTranslations(lang);
       const L = {
         want: d.lWant!, seen: d.lSeen!, fav: d.lFav!, rate: d.lRate!,
         note: d.lNote!, watched: d.lWatched!, save: d.lSave!,
-        saved: d.lSaved!, remove: d.lRemove!, error: d.lError!,
+        saved: d.lSaved!, remove: d.lRemove!, error: d.lError!, removeConfirm: d.lRemoveConfirm!,
       };
 
       // Tope del calendario: hoy en la hora LOCAL del usuario. Con toISOString
@@ -232,8 +233,20 @@ const t = useTranslations(lang);
           if (!fecha) return;
           if (await post({ reviewedAt: fecha })) { reviewed = fecha; flash(); }
         });
-        this.querySelector<HTMLButtonElement>('[data-remove]')?.addEventListener('click', async () => {
-          if (await borrar()) { status = ''; favorite = false; rating = 0; note = ''; reviewed = ''; render(); }
+        // Quitar borra también la reseña y los visionados (sale del diario):
+        // pide un segundo clic, sin confirm() del navegador.
+        this.querySelector<HTMLButtonElement>('[data-remove]')?.addEventListener('click', async (e) => {
+          const b = e.currentTarget as HTMLButtonElement;
+          if (!b.dataset.armed) {
+            b.dataset.armed = '1';
+            b.textContent = L.removeConfirm;
+            return;
+          }
+          if (await borrar()) {
+            status = ''; favorite = false; rating = 0; note = ''; reviewed = '';
+            render();
+            document.dispatchEvent(new CustomEvent('film:saved', { detail: { tmdbId } }));
+          }
         });
       };
 

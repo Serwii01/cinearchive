@@ -600,3 +600,16 @@ export const newsletterSends = pgTable(
   },
   (t) => ({ pk: primaryKey({ columns: [t.issue, t.userId] }) }),
 );
+
+/**
+ * Correos escritos desde /admin con la plantilla del boletín (16-11-2026). El
+ * texto va en `copy`, por idioma (el castellano es obligatorio; el resto cae
+ * en él). El id es el que se apunta en newsletter_sends: un correo no le llega
+ * dos veces a nadie aunque se envíe en varias tandas.
+ */
+export const newsletterIssues = pgTable('newsletter_issues', {
+  id: text('id').primaryKey(),
+  copy: jsonb('copy').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
